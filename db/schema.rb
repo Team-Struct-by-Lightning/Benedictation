@@ -13,7 +13,6 @@
 
 ActiveRecord::Schema.define(version: 20150123061459) do
 
-
   create_table "users", force: :cascade do |t|
     t.string   "name"
     t.string   "email"
@@ -25,7 +24,6 @@ ActiveRecord::Schema.define(version: 20150123061459) do
     t.string   "activation_digest"
     t.boolean  "activated",         default: false
     t.datetime "activated_at"
-
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true
