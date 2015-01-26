@@ -3,8 +3,14 @@
     <%= link_to "benedication", root_path, id: "logo" %>
     <nav>
       <ul class="nav navbar-nav navbar-right">
-        <li><%= link_to "Home",   root_path %></li>
-        <li><%= link_to "Log in", '#' %></li>
+        <% if current_user %>
+        	<li><%= link_to "#{current_user.name}", '#' %></li>
+        	<li><%= link_to "Home",   root_path %></li>
+          <li><%= link_to "Log out", signout_path, id: "sign_out" %></li>
+      	<% else %>
+      		<li><%= link_to "Home",   root_path %></li>
+        	<li><%= link_to "Log in", "/auth/google_oauth2", id: "sign_in" %></li>
+      	<% end %>
       </ul>
     </nav>
   </div>
