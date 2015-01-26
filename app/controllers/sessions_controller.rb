@@ -1,12 +1,16 @@
 class SessionsController < ApplicationController
+
+#this is really weird - why do i need to include this file? it was always auto-included in the sample app
+include SessionsHelper
+
   def create
     user = User.from_omniauth(env["omniauth.auth"])
-    session[:user_id] = user.id
+    log_in user
     redirect_to root_path
   end
-
+ 
   def destroy
-    session[:user_id] = nil
-    redirect_to root_path
+    log_out if logged_in?
+    redirect_to root_url
   end
 end
