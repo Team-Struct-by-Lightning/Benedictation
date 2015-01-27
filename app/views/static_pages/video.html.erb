@@ -1,0 +1,14 @@
+<div class="center jumbotron">
+  <h1>Welcome to Benedictation</h1>
+
+  <h2>
+    A smart peer to peer video web application
+  </h2>
+   <div>
+      <% if current_user %>
+      <% else %>
+        <%= link_to "Sign in with Google", "/auth/google_oauth2", id: "sign_in", class: "btn btn-lg btn-primary" %>
+      <% end %>
+    </div>
+</div>
+<%= image_tag("Shape-Lightning-25.png", alt: "Lightning logo") %>
