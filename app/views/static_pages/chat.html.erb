@@ -6,6 +6,7 @@
         <div id="sidebar-wrapper">
             <ul class="sidebar-nav">
                 <li class="sidebar-brand">
+<<<<<<< HEAD
                         <%= link_to "Groups", '#' %>
                 </li>
                 <% Relationship.where(user_id: current_user.id).pluck(:id).each do |relationship_id| %>
@@ -13,6 +14,38 @@
                         <%= link_to "#{Relationship.find_by(id: relationship_id).group.group_name}", '#' %>
                     </li>
                 <% end %>
+=======
+                    <a href="#">
+                        Groups
+                        <!-- This is temporary, it is the query that works (only gets first group)-->
+                        <%= Group.find_by_id(current_user.active_relationships[0].group_id).group_name%>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">Dashboard</a>
+                </li>
+                <li>
+                    <a href="#">Shortcuts</a>
+                </li>
+                <li>
+                    <a href="#">Overview</a>
+                </li>
+                <li>
+                    <a href="#">Events</a>
+                </li>
+                <li>
+                    <a href="#">About</a>
+                </li>
+                <li>
+                    <a href="#">Services</a>
+                </li>
+                <li>
+                    <a href="#">Contact</a>
+                </li>
+                
+                
+
+>>>>>>> a1f14db0df51da34c54aba3217b71532f8addba0
             </ul>
         </div>
         <!-- /#sidebar-wrapper -->
@@ -34,12 +67,6 @@
 
     </div>
     <!-- /#wrapper -->
-
-    <!-- jQuery -->
-    <script src="js/jquery.js"></script>
-
-    <!-- Bootstrap Core JavaScript -->
-    <script src="js/bootstrap.min.js"></script>
 
     <!-- Menu Toggle Script -->
     <script>

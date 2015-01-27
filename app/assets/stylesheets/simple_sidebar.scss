@@ -5,6 +5,8 @@
  */
 
 /* Toggle Styles */
+@import "bootstrap-sprockets";
+@import "bootstrap";
 
 #wrapper {
     padding-left: 0;
@@ -67,12 +69,12 @@
 .sidebar-nav li a {
     display: block;
     text-decoration: none;
-    color: #999999;
+    color: $gray-light;
 }
 
 .sidebar-nav li a:hover {
     text-decoration: none;
-    color: #999999;
+    color: $gray-lighter;
     background: rgba(255,255,255,0.2);
 }
 
@@ -88,11 +90,11 @@
 }
 
 .sidebar-nav > .sidebar-brand a {
-    color: #999999;
+    color: $gray-light;
 }
 
 .sidebar-nav > .sidebar-brand a:hover {
-    color: #999999;
+    color: $gray-lighter;
     background: none;
 }
 
