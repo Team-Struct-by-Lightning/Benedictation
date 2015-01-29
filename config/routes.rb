@@ -10,6 +10,9 @@ Rails.application.routes.draw do
 
   get 'chat' => 'static_pages#chat'
   get 'video' => 'static_pages#video'
+  get 'newgroup' => 'groups#new'
+
+  resources :groups
 
   #root to: "home#show"
   # The priority is based upon order of creation: first created -> highest priority.
