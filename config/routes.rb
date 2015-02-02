@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   get 'chat' => 'static_pages#chat'
   get 'video' => 'static_pages#video'
   get 'newgroup' => 'groups#new'
+  get 'giraffe' => 'static_pages#giraffe'
 
   resources :groups
 
