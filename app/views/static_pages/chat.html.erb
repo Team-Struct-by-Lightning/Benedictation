@@ -10,7 +10,16 @@
                 </li>
                 <% Relationship.where(user_id: current_user.id).pluck(:id).each do |relationship_id| %>
                     <li>
-                        <%= link_to "#{Relationship.find_by(id: relationship_id).group.group_name}", '#' %>
+                        <% @relationship = Relationship.find_by(id: relationship_id)%>
+                        <div>
+                            <%= link_to "#{Relationship.find_by(id: relationship_id).group.group_name}", '#' %>
+                        </div>
+                        <div>
+                           <%= form_for(current_user.active_relationships.find_by(id: relationship_id),
+                                         html: { method: :delete }) do |f| %>
+                              <%= f.submit "Delete group", class: "btn" %>
+                            <% end %>
+                        </div>
                     </li>
                 <% end %>
                 <li>
@@ -27,6 +36,9 @@
                     <div class="col-lg-12">
                         <h1>Start a group to begin chatting!</h1>
                         <p>Use the sidebar on the left to create a new group or to enter a group that has already been created.</p>
+                         <div>
+                            <%= link_to " Join a chat! ", room_path, class: "btn btn-primary"%>
+                         </div>
                         <!--<p>Make sure to keep all page content within the <code>#page-content-wrapper</code>.</p>-->
                         <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
                     </div>
@@ -53,5 +65,33 @@
     </script>
 
 </body>
+
+<script>
+  
+  $roomField = $("#room_name");
+  
+  var redirectToRoom = function(event) {
+    alert($roomField.val());
+    window.test_field = $roomField;
+    if (event.type === "click"){
+      if ($roomField.val() === ""){
+        alert("You have to set the name of the ROOM");
+      }else{
+        window.location = window.location.pathname + $roomField.val();
+      }
+    } else if (event.type === "keypress"){
+      if (event.keyCode === 13){
+        if ($roomField.val() === ""){
+          alert("You have to set the name of the ROOM");
+        } else {
+          window.location = window.location.pathname + $roomField.val();
+        }
+      }
+    }
+  }
+  
+  $("#room_name").on("keypress", redirectToRoom);
+  $("#btn-room").on("click", redirectToRoom);
+</script>
 
 </html>

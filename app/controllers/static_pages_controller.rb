@@ -5,4 +5,6 @@ class StaticPagesController < ApplicationController
   end
   def video
   end
+  def room
+  end
 end

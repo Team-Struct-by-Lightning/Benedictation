@@ -4,14 +4,15 @@ Rails.application.routes.draw do
   get 'auth/:provider/callback', to: 'sessions#create'
   get 'auth/failure', to: redirect('/')
   get 'signout', to: 'sessions#destroy', as: 'signout'
-
-  resources :sessions, only: [:create, :destroy]
-  resource :home, only: [:show]
-
   get 'chat' => 'static_pages#chat'
   get 'video' => 'static_pages#video'
   get 'newgroup' => 'groups#new'
   get 'giraffe' => 'static_pages#giraffe'
+  get 'room' => 'static_pages#room'
+
+  resources :sessions, only: [:create, :destroy]
+  resource :home, only: [:show]
+  resources :relationships,       only: [:create, :destroy]
 
   resources :groups
 
