@@ -35,7 +35,7 @@
 <%= javascript_tag do %>
   //var user_name = prompt("Your user name?");
   var user_name = '<%= j current_user.name%>';
-  alert(user_name);
+
   var $sendButton = $("#js-send-button-im");
   var $inputIM    = $("#js-input-im");
   var $chatBody   = $("#js-chat-body");

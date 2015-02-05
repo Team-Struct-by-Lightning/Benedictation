@@ -8,8 +8,7 @@ Rails.application.routes.draw do
   get 'video' => 'static_pages#video'
   get 'newgroup' => 'groups#new'
   get 'giraffe' => 'static_pages#giraffe'
-  get 'room' => 'static_pages#room'
-
+  get '/room/:id' => 'static_pages#room' 
   resources :sessions, only: [:create, :destroy]
   resource :home, only: [:show]
   resources :relationships,       only: [:create, :destroy]
