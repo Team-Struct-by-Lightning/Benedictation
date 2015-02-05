@@ -37,7 +37,7 @@
                         <h1>Start a group to begin chatting!</h1>
                         <p>Use the sidebar on the left to create a new group or to enter a group that has already been created.</p>
                          <div>
-                            <%= link_to " Join a chat! ", room_path, class: "btn btn-primary"%>
+                            <button type = "button" class = "btn btn-primary" id ="btn-room" > Create a chat</button>
                          </div>
                         <!--<p>Make sure to keep all page content within the <code>#page-content-wrapper</code>.</p>-->
                         <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
@@ -66,32 +66,16 @@
 
 </body>
 
-<script>
+<%= javascript_tag do %>
   
-  $roomField = $("#room_name");
+  roomField = '<%= j Group.first.group_name %>';
   
   var redirectToRoom = function(event) {
-    alert($roomField.val());
-    window.test_field = $roomField;
-    if (event.type === "click"){
-      if ($roomField.val() === ""){
-        alert("You have to set the name of the ROOM");
-      }else{
-        window.location = window.location.pathname + $roomField.val();
-      }
-    } else if (event.type === "keypress"){
-      if (event.keyCode === 13){
-        if ($roomField.val() === ""){
-          alert("You have to set the name of the ROOM");
-        } else {
-          window.location = window.location.pathname + $roomField.val();
-        }
-      }
-    }
+    window.test_field = roomField;
+    window.location = 'room' + '/';//+ roomField;
+    
   }
   
-  $("#room_name").on("keypress", redirectToRoom);
   $("#btn-room").on("click", redirectToRoom);
-</script>
-
+<% end %>
 </html>

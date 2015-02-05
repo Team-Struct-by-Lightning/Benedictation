@@ -5,6 +5,6 @@ class Group < ActiveRecord::Base
                                   dependent:   :destroy
 
 	def Group.new_token
-	SecureRandom.urlsafe_base64
+		SecureRandom.urlsafe_base64
 	end
 end

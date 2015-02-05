@@ -31,9 +31,7 @@
     Hang Up
   </button>
 </div>
- //<%javascript_tag do %>
- // var user_name = ''
- //<% end %>
+
 <%= javascript_tag do %>
   //var user_name = prompt("Your user name?");
   var user_name = '<%= j current_user.name%>';
