@@ -59,7 +59,6 @@ var comm = new Icecomm('9gv3ODZorBS2kVuNwnugBeV432PcNX3Qn0HmW33ofxK/u5Xolu');
       document.getElementById(options.callerID).remove();
 
     });
-    options.callerID: <%= current_user.name %>";
     comm.on('data', function(options) {
     console.log("data: ",options.data);
     //appendNewIM(options);
