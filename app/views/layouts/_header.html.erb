@@ -6,7 +6,6 @@
         <% if current_user %>
         	<li><%= link_to "#{current_user.name}", chat_path %></li>
         	<li><%= link_to "Home",   root_path %></li>
-          <li><%= link_to "Icecomm Chat", icecomm_chat_path, id: "icecomm_chat" %></li>
           <li><%= link_to "Log out", signout_path, id: "sign_out" %></li>
       	<% else %>
       		<li><%= link_to "Home",   root_path %></li>
