@@ -62,7 +62,7 @@ var comm = new Icecomm('9gv3ODZorBS2kVuNwnugBeV432PcNX3Qn0HmW33ofxK/u5Xolu');
 
     comm.on('data', function(options) {
     console.log("data: ",options.data);
-    appendNewIM(options);
+    //appendNewIM(options);
   });
 
    comm.on('data',appendNewIM);
