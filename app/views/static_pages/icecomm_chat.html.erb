@@ -1,0 +1,123 @@
+<script type="text/javascript" src="http://cdn.icecomm.io/icecomm.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+
+
+<div class="center jumbotron">
+  <h1>Icecomm Chat Demo</h1>
+
+<div class='container'>
+<div id = 'video-chat-body'>
+  <video id="localVideo" autoplay></video>
+</div>
+  <div class='row'>
+    <div class='panel panel-primary'>
+      <div class='panel-heading'>
+        Chat
+      </div>
+      <div class='panel-body' id='js-chat-body'></div>
+    </div>
+    <br>
+    <div class='input-group'>
+      <input class='form-control' id='js-input-im'>
+      <span class='input-group-btn'>
+        <button class='btn btn-primary' id='js-send-button-im'>
+          Send
+        </button>
+      </span>
+    </div>
+  </div>
+</div>
+
+<style>
+#js-chat-body {
+  max-height: 500px;
+  overflow: auto;
+}
+
+  video {
+    height: 200px;
+    width: 200px;
+}
+
+</style>
+
+
+<script>
+var comm = new Icecomm('9gv3ODZorBS2kVuNwnugBeV432PcNX3Qn0HmW33ofxK/u5Xolu');
+
+    comm.connect('awesomefuckingroom');
+
+    comm.on('local', function(options) {
+      localVideo.src = options.stream;
+      // localVideo.id = comm.getLocalID();
+    });
+
+    comm.on('connected', function(options) {
+      // append video elements one after the other when new people join the chat
+      document.getElementById("video-chat-body").appendChild(options.video);
+
+    });
+
+    comm.on('disconnect', function(options) {
+      document.getElementById(options.callerID).remove();
+    });
+
+    comm.on('data', function(options) {
+    console.log(options.data);
+  });
+
+  comm.on('data',appendNewIM);
+
+  // var user_name = prompt("Your user name?");
+  
+  var $sendButton = $("#js-send-button-im");
+  var $inputIM    = $("#js-input-im");
+  var $chatBody   = $("#js-chat-body");
+  var clientOptions;
+  
+  $sendButton.on('click', sendIM);
+  $inputIM.on('keypress', checkEnterKey);
+  
+  // send a message 
+  function sendIM() {
+    var content = $inputIM.val();
+    $inputIM.val("");
+    comm.send(content)
+    appendNewIM({
+    data: content, // the data that was sent from the remote client using the send method
+    callerID: comm.getLocalID() // the ID of the client who called the send method
+})
+  }
+
+  // click the send button when enter key is pressed
+  function checkEnterKey(event) {
+    if ( event.keyCode == 13 ) {
+      $sendButton.click();
+    }
+  }
+  
+  // stick new instant message onto the chat body
+  function appendNewIM(options) {
+    console.log("attempting to append");
+    $chatBody.prepend(mediaObjectIM(options.callerID, options.data));
+  }
+  
+  // media object to append to the page each time there's a new chat
+  function mediaObjectIM(user, message) {
+    // var leftRight = user === comm.getLocalID() ? 'right' : 'left'
+    return "  <div class='media'>"+
+           "    <a class='pull-"+ "left" +"' href='#'>"+
+           "      <img class='media-object' src='http://icons.iconarchive.com/icons/icons8/windows-8/48/Animals-Giraffe-icon.png'>"+
+           "    </a>"+
+           "    <div class='media-body', style='text-align: "+ "left" +"'>"+
+           "      <h4 class='media-heading'>"+ user + ": " + message + "</h4>"+""+
+           "    </div>"+
+           "  </div>"
+  }
+</script>
+
+
+
+
+
