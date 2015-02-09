@@ -35,40 +35,11 @@
   overflow: auto;
 }
 
-
-
-/*  video {
+  video {
     height: 200px;
     width: 200px;
-}*/
-
-button {
-  margin: 0 20px 0 0;
-  width: 85.9px;
-}
-button#hangupButton {
-  margin: 0;
 }
 
-div#speech {
-    float: right;
-    width: 33%;
-}
-
-video {
-  height: 225px;
-  margin: 0 0 20px 0;
-  vertical-align: top;
-}
-
-div#results {
-    font-size: 14px;
-    font-weight: bold;
-    border: 1px solid #ddd;
-    padding: 15px;
-    text-align: left;
-    min-height: 150px;
-}
 </style>
 
 
@@ -83,7 +54,7 @@ var comm = new Icecomm('9gv3ODZorBS2kVuNwnugBeV432PcNX3Qn0HmW33ofxK/u5Xolu');
     });
 
     comm.on('connected', function(options) {
-      // document.body.appendChild(options.video);
+      // append video elements one after the other when new people join the chat
       document.getElementById("video-chat-body").appendChild(options.video);
 
     });
@@ -96,7 +67,7 @@ var comm = new Icecomm('9gv3ODZorBS2kVuNwnugBeV432PcNX3Qn0HmW33ofxK/u5Xolu');
     console.log(options.data);
   });
 
-  comm.on('data',appendNewIM)
+  comm.on('data',appendNewIM);
 
   // var user_name = prompt("Your user name?");
   
@@ -132,7 +103,7 @@ var comm = new Icecomm('9gv3ODZorBS2kVuNwnugBeV432PcNX3Qn0HmW33ofxK/u5Xolu');
     $chatBody.prepend(mediaObjectIM(options.callerID, options.data));
   }
   
-  // ???
+  // media object to append to the page each time there's a new chat
   function mediaObjectIM(user, message) {
     // var leftRight = user === comm.getLocalID() ? 'right' : 'left'
     return "  <div class='media'>"+
@@ -145,28 +116,7 @@ var comm = new Icecomm('9gv3ODZorBS2kVuNwnugBeV432PcNX3Qn0HmW33ofxK/u5Xolu');
            "  </div>"
   }
 </script>
- 
- 
-<style>
-    #controls {
-        text-align: center;
-    }
-    #start_button {
-        font-size: 16pt;
-    }
-    #transcript {
-        color: darkred;
-        font-size: 16pt;
-        border: 1px solid #ccc;
-        padding: 5px;
-        text-align: center;
-    }
-    #instructions {
-        color: darkblue;
-        font-size: 14pt;
-        text-align: center;
-    }
-</style>
+
 
 
 
