@@ -7,6 +7,6 @@ class StaticPagesController < ApplicationController
   end
   def room
   end
-  def icecomm
+  def icecomm_chat
   end
 end

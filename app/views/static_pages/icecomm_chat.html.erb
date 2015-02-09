@@ -133,6 +133,9 @@ var comm = new Icecomm('9gv3ODZorBS2kVuNwnugBeV432PcNX3Qn0HmW33ofxK/u5Xolu');
   function mediaObjectIM(user, message) {
     // var leftRight = user === comm.getLocalID() ? 'right' : 'left'
     return "  <div class='media'>"+
+           "    <a class='pull-"+ "left" +"' href='#'>"+
+           "      <img class='media-object' src='http://icons.iconarchive.com/icons/icons8/windows-8/48/Animals-Giraffe-icon.png'>"+
+           "    </a>"+
            "    <div class='media-body', style='text-align: "+ "left" +"'>"+
            "      <h4 class='media-heading'>"+ user + ": " + message + "</h4>"+""+
            "    </div>"+
