@@ -1,5 +1,3 @@
-
-
 var RTCPeerConnection = null;
 var getUserMedia = null;
 var attachMediaStream = null;
