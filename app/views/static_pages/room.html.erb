@@ -78,7 +78,7 @@ var comm = new Icecomm('9gv3ODZorBS2kVuNwnugBeV432PcNX3Qn0HmW33ofxK/u5Xolu');
 
   // send a message
   function sendIM() {
-    var content = $inputIM.val() + "t-dawg needs a makeover" + "<%= current_user.name %>";
+    var content = "<%= current_user.name %>" + "@@@" + $inputIM.val() ;
     $inputIM.val("");
     comm.send(content)
     // append what you send to your own page
@@ -98,8 +98,13 @@ var comm = new Icecomm('9gv3ODZorBS2kVuNwnugBeV432PcNX3Qn0HmW33ofxK/u5Xolu');
   // stick new instant message onto the chat body
   function appendNewIM(options) {
     console.log("attempting to append");
-    var content = options.data.split("t-dawg needs a makeover")
-    $chatBody.prepend(mediaObjectIM(content[1], content[0]));
+    var message_data = options.data.split("@@@");
+    var caller_name = message_data[0];
+    message_data.reverse();
+    message_data.pop();
+    message_data.reverse();
+    message_data.join("@@@");
+    $chatBody.prepend(mediaObjectIM(caller_name, message_data));
   }
 
   // media object to append to the page each time there's a new chat
