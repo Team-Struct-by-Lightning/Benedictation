@@ -55,7 +55,7 @@ var comm = new Icecomm('9gv3ODZorBS2kVuNwnugBeV432PcNX3Qn0HmW33ofxK/u5Xolu');
 
     comm.on('disconnect', function(options) {
       document.getElementById(options.callerID).remove();
-      comm.close();
+      <!-- comm.close(); -->
     });
 
     comm.on('data', function(options) {
@@ -70,8 +70,8 @@ var comm = new Icecomm('9gv3ODZorBS2kVuNwnugBeV432PcNX3Qn0HmW33ofxK/u5Xolu');
   $sendButton.on('click', sendIM);
   $inputIM.on('keypress', checkEnterKey);
 
-  //With Turbolinks pages will change without a full reload, so you can't rely on the usual window.beforepageunload event. Instead Turbolinks fires events on document to provide hooks into the lifecycle of the page.
-  $(document).on("page:fetch", function(){comm.close()}); //starting to fetch a new target page
+  <!-- //With Turbolinks pages will change without a full reload, so you can't rely on the usual window.beforepageunload event. Instead Turbolinks fires events on document to provide hooks into the lifecycle of the page.
+  $(document).on("page:fetch", function(){comm.close()}); //starting to fetch a new target page -->
 
 
 
