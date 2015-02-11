@@ -45,8 +45,6 @@ var comm = new Icecomm('9gv3ODZorBS2kVuNwnugBeV432PcNX3Qn0HmW33ofxK/u5Xolu');
 
     comm.on('local', function(options) {
       localVideo.src = options.stream;
-      // localVideo.id = comm.getLocalID();
-      alert(window.location.pathname);
     });
 
     comm.on('connected', function(options) {
@@ -57,24 +55,25 @@ var comm = new Icecomm('9gv3ODZorBS2kVuNwnugBeV432PcNX3Qn0HmW33ofxK/u5Xolu');
 
     comm.on('disconnect', function(options) {
       document.getElementById(options.callerID).remove();
-
+      comm.close();
     });
+
     comm.on('data', function(options) {
     console.log("data: ",options.data);
-    //appendNewIM(options);
+    appendNewIM(options);
   });
-
-   comm.on('data',appendNewIM);
-
-  // var user_name = prompt("Your user name?");
 
   var $sendButton = $("#js-send-button-im");
   var $inputIM    = $("#js-input-im");
   var $chatBody   = $("#js-chat-body");
-  var clientOptions;
 
   $sendButton.on('click', sendIM);
   $inputIM.on('keypress', checkEnterKey);
+
+  //With Turbolinks pages will change without a full reload, so you can't rely on the usual window.beforepageunload event. Instead Turbolinks fires events on document to provide hooks into the lifecycle of the page.
+  $(document).on("page:fetch", function(){comm.close()}); //starting to fetch a new target page
+
+
 
   // send a message
   function sendIM() {
@@ -97,7 +96,6 @@ var comm = new Icecomm('9gv3ODZorBS2kVuNwnugBeV432PcNX3Qn0HmW33ofxK/u5Xolu');
 
   // stick new instant message onto the chat body
   function appendNewIM(options) {
-    console.log("attempting to append");
     var message_data = options.data.split("@@@");
     var caller_name = message_data[0];
     message_data.reverse();
