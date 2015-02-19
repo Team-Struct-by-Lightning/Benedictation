@@ -6,7 +6,7 @@ include SessionsHelper
   def create
     user = User.from_omniauth(env["omniauth.auth"])
     log_in user
-    redirect_to chat_path
+    redirect_back_or chat_path
   end
 
   def destroy
