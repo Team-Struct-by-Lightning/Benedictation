@@ -79,7 +79,8 @@ var comm = new Icecomm('9gv3ODZorBS2kVuNwnugBeV432PcNX3Qn0HmW33ofxK/u5Xolu');
 
   // send a message
   function sendIM() {
-    var content = "<%= current_user.name %>" + "@@@" + $inputIM.val() ;
+    var content = "<%= current_user.name %>" + "@@@" + "<%= current_user.uid %>" + "@@@" +
+    "<%= current_user.oauth_token %>" + "@@@" + $inputIM.val() ;
     $inputIM.val("");
     comm.send(content)
     // append what you send to your own page
@@ -100,24 +101,23 @@ var comm = new Icecomm('9gv3ODZorBS2kVuNwnugBeV432PcNX3Qn0HmW33ofxK/u5Xolu');
   function appendNewIM(options) {
     var message_data = options.data.split("@@@");
     var caller_name = message_data[0];
+    var caller_uid = message_data[1];
+    var caller_token = message_data[2];
     message_data.reverse();
+    message_data.pop();
+    message_data.pop();
     message_data.pop();
     message_data.reverse();
     message_data.join("@@@");
-    mediaObjectIM(caller_name, message_data);
+    mediaObjectIM(caller_name, caller_uid, caller_token, message_data);
   }
 
   // media object to append to the page each time there's a new chat
-  function mediaObjectIM(user, message) {
+  function mediaObjectIM(user, uid, token message) {
 
     // var leftRight = user === comm.getLocalID() ? 'right' : 'left'
 
-    var user_name = '<%= current_user.name %>';
-   var user_uid = '<%= current_user.uid %>';
-    var user_token = '<%= current_user.oauth_token %>';
-    console.log(user_uid);
-    console.log(user_token);
-    var url_string = "https://www.googleapis.com/plus/v1/people/" + user_uid + "?access_token=" + user_token;
+    var url_string = "https://www.googleapis.com/plus/v1/people/" + uid + "?access_token=" + token;
 
     $.getJSON(url_string, function(user_object) {
 
