@@ -4,8 +4,8 @@ class SessionsController < ApplicationController
 include SessionsHelper
 
   def create
-    user = User.from_omniauth(env["omniauth.auth"])
-    log_in user
+    created_user = User.from_omniauth(env["omniauth.auth"])
+    log_in created_user
     redirect_back_or chat_path
   end
 
