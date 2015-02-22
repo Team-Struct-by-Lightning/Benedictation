@@ -1,5 +1,4 @@
 <div class="center jumbotron">
-  <h1>Icecomm Chat Demo</h1>
 
 <div class='container'>
 <div id = 'video-chat-body'>
@@ -26,13 +25,22 @@
 
 <style>
 #js-chat-body {
-  max-height: 500px;
+  max-height: 250px;
   overflow: auto;
+  word-wrap: break-word;
 }
 
   video {
-    height: 200px;
-    width: 200px;
+    height: 250px;
+    width: 250px;
+    wrap: auto;
+}
+#js-input-im {
+}
+#js-send-button-im {
+  height: 31px;
+  margin-left: 5px;
+  margin-top: -3px;
 }
 
 </style>
@@ -77,9 +85,10 @@ var comm = new Icecomm('9gv3ODZorBS2kVuNwnugBeV432PcNX3Qn0HmW33ofxK/u5Xolu');
   console.log('turbolinks page fetch event');
   });
 
+
   // send a message
   function sendIM() {
-    var content = "<%= current_user.name %>" + "@@@" + "<%= current_user.uid %>" + "@@@" +
+      var content = "<%= current_user.name %>" + "@@@" + "<%= current_user.uid %>" + "@@@" +
     "<%= current_user.oauth_token %>" + "@@@" + $inputIM.val() ;
     $inputIM.val("");
     comm.send(content)
@@ -130,7 +139,13 @@ var comm = new Icecomm('9gv3ODZorBS2kVuNwnugBeV432PcNX3Qn0HmW33ofxK/u5Xolu');
            "    <div class='media-body', style='text-align: "+ "left" +"'>"+
            "      <h4 class='media-heading'>"+ user + ": " + message + "</h4>"+""+
            "    </div>"+
-           "  </div>" );
+           "  </div>" )
+           var height = 0;
+           $('div, .media').each(function(i, value) {
+            height += parseInt($(this).height());
+           });
+
+           $('div, .media').animate({scrollTop: height}, 'fast');
 
     });
     <!-- console.log($.user_object.responseJSON); -->
