@@ -16,4 +16,8 @@ class User < ActiveRecord::Base
     end
   end
 
+   def remove_relationship(group)
+    active_relationships.find_by(group_id: group).destroy
+  end
+
 end
