@@ -15,7 +15,7 @@
                                          html: { method: :delete }) do |f| %>
                                 <tr>
                                 <th colspan = "4" >
-                                <span style="float:left;"><a><%= f.submit "[ Delete ]", class: "delete-button" %></a>
+                                <span style="float:left;", class:"glyphicon"><a ><%= f.submit "[ x ]", class: "delete-button" %></a>
                                 </span>
                                 <span style="width: 100px;">
                                  </span>
@@ -70,6 +70,15 @@
     $("#menu-toggle").click(function(e) {
         e.preventDefault();
         $("#wrapper").toggleClass("active");
+    });
+
+
+     $("").hover(
+        function() {
+        $(this).preappend( );
+        }, function() {
+            console.log("DONE");
+    $( this ).find( "span:last" ).remove();
     });
 
     </script>
