@@ -10,21 +10,15 @@
                 </li >
                 <% Relationship.where(user_id: current_user.id).pluck(:id).each do |relationship_id| %>
                     <li>
-                        <div>
-                            <%= link_to "#{Relationship.find_by(id: relationship_id).group.group_name}", '#' %>
+                        <div class= 'groups', id="#{relationship_id}">
+                            <%= link_to "#{Relationship.find_by(id: relationship_id).group.group_name}",  "/room/#{Relationship.find_by(id: relationship_id).group.group_name}" %>
                         </div>
-                        <div>
+                         <div>
                            <%= form_for(current_user.active_relationships.find_by(id: relationship_id),
                                          html: { method: :delete }) do |f| %>
                               <%= f.submit "Delete group", class: "btn" %>
                             <% end %>
                         </div>
-                         <div>
-                            <button type = "button" class = "btn btn-primary" id ="btn-room"
-                            data-name = <%= Relationship.find_by(id: relationship_id).group.group_name%> >
-                                Create a chatroom with <%= Relationship.find_by(id: relationship_id).group.group_name%>
-                            </button>
-                         </div>
                     </li>
                 <% end %>
                 <li>
@@ -73,21 +67,10 @@
         $("#wrapper").toggleClass("toggled");
     });
 
+
     </script>
 
 
 </body>
-<%= javascript_tag do %>
 
-
-  var redirectToRoom = function(event) {
-    var relationship = document.getElementById('btn-room');
-    roomField = relationship.getAttribute('data-name');
-    alert(roomField);
-    //window.test_field = roomField;
-    window.location = 'room/'+ roomField;
-  }
-
-  $("#btn-room").on("click", redirectToRoom);
-<% end %>
 </html>
