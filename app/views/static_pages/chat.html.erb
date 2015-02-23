@@ -9,8 +9,8 @@
                         <%= link_to "Groups", '#' %>
                 </li >
                 <% Relationship.where(user_id: current_user.id).pluck(:id).each do |relationship_id| %>
-                    <li>
-                        <div class= 'groups', id="#{relationship_id}">
+                    <li class= 'groups', id=relationship_id >
+                        <div>
                             <%= link_to "#{Relationship.find_by(id: relationship_id).group.group_name}",  "/room/#{Relationship.find_by(id: relationship_id).group.group_name}" %>
                         </div>
                          <div>
@@ -67,6 +67,15 @@
         $("#wrapper").toggleClass("toggled");
     });
 
+    $(".groups").hover(
+        function() {
+        var relationship_id = $(this).id;
+        console.log(relationship_id);
+        $(this).append( $( "" ) );
+        }, function() {
+            console.log("DONE");
+    $( this ).find( "span:last" ).remove();
+    });
 
     </script>
 
