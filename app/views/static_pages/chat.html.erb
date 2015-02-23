@@ -1,24 +1,33 @@
 
 <body>
+
     <div id="wrapper">
 
         <!-- Sidebar -->
         <div id="sidebar-wrapper">
             <ul class="sidebar-nav">
-                <li class="sidebar-brand">
-                        <%= link_to "Groups", '#' %>
-                </li >
+               <li class="sidebar-brand"><a id="menu-toggle" href="#">Groups<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
                 <% Relationship.where(user_id: current_user.id).pluck(:id).each do |relationship_id| %>
                     <li class= 'groups', id=relationship_id >
-                        <div>
-                            <%= link_to "#{Relationship.find_by(id: relationship_id).group.group_name}",  "/room/#{Relationship.find_by(id: relationship_id).group.group_name}" %>
-                        </div>
-                         <div>
+                        <% group_name = Relationship.find_by(id: relationship_id).group.group_name %>
+                        <% group_name_url_string = "/room/" + group_name %>
                            <%= form_for(current_user.active_relationships.find_by(id: relationship_id),
                                          html: { method: :delete }) do |f| %>
-                              <%= f.submit "Delete group", class: "btn" %>
+                                <tr>
+                                <th colspan = "4" >
+                                <span style="float:left;"><a><%= f.submit "[ Delete ]", class: "delete-button" %></a>
+                                </span>
+                                <span style="width: 100px;">
+                                 </span>
+                                 <span>
+                                </span>
+                                <span>
+                                <a id="menu-group" href= "<%= group_name_url_string %>" ><%=group_name%></a>
+                                </span>
+                            </th>
+                        </tr>
                             <% end %>
-                        </div>
+
                     </li>
                 <% end %>
                 <li>
@@ -36,19 +45,15 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-12">
-                        <h1>Start a group to begin chatting!</h1>
-                        <p>Use the sidebar on the left to create a new group or to enter a group that has already been created.</p>
+                        <h1>Begin chatting!</h1>
+                        <p>Use the sidebar on the left to create a new group or to enter a group that has already been created. Click below to start a chat without a group.</p>
 
                         <div id="placeholder-div"></div>
-                        <p>
-                        <input class="button" type="button" value="Show participants!" id="showParticipants"
-                            style="visibility:hidden;"
-                            onClick="showParticipants()"/>
-                        </p>
+                          <%= link_to "Start chatting",  "/room/" + "BLAHAHAHAHAAH", class: 'button' %>
                         <div id="participantsDiv"></div>
 
+
                         <!--<p>Make sure to keep all page content within the <code>#page-content-wrapper</code>.</p>-->
-                        <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
                     </div>
                 </div>
             </div>
@@ -64,17 +69,7 @@
     <script>
     $("#menu-toggle").click(function(e) {
         e.preventDefault();
-        $("#wrapper").toggleClass("toggled");
-    });
-
-    $(".groups").hover(
-        function() {
-        var relationship_id = $(this).id;
-        console.log(relationship_id);
-        $(this).append( $( "" ) );
-        }, function() {
-            console.log("DONE");
-    $( this ).find( "span:last" ).remove();
+        $("#wrapper").toggleClass("active");
     });
 
     </script>
