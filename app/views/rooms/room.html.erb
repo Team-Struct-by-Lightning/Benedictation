@@ -1,27 +1,86 @@
-<div class="center jumbotron">
 
-<div class='container'>
-<div id = 'video-chat-body'>
-  <video id="localVideo" autoplay></video>
-</div>
-  <div class='row'>
-    <div class='panel panel-primary'>
-      <div class='panel-heading'>
-        Chat
-      </div>
-      <div class='panel-body' id='js-chat-body'></div>
-    </div>
-    <br>
-    <div class='input-group'>
-      <input class='form-control' id='js-input-im'>
-      <span class='input-group-btn'>
-        <button class='btn btn-primary' id='js-send-button-im'>
-          Send
-        </button>
-      </span>
-    </div>
-  </div>
-</div>
+
+
+
+
+ <div id="wrapper">
+
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+               <li class="sidebar-brand"><a id="menu-toggle" href="#">Groups<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
+                <% Relationship.where(user_id: current_user.id).pluck(:id).each do |relationship_id| %>
+                    <li class= 'groups', id=relationship_id >
+                        <% group_name = Relationship.find_by(id: relationship_id).group.group_name %>
+                        <% group_name_url_string = "/room/" + group_name %>
+
+                        <a id="menu-group" href= "<%= group_name_url_string %>" ><%=group_name%></a>
+
+                    </li>
+                <% end %>
+            </ul>
+        </div>
+        <!-- /#sidebar-wrapper -->
+
+
+<!-- Page Content -->
+        <div id="page-content-wrapper">
+            <% flash.each do |message_type, message| %>
+                <div class="alert alert-<%= message_type %>"><%= message %></div>
+            <% end %>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+
+                        <div id = 'video-chat-body'>
+                              <video id="localVideo" autoplay></video>
+                            </div>
+                              <div class='row'>
+                                <div class='panel panel-primary'>
+                                  <div class='panel-heading'>
+                                    Chat
+                                  </div>
+                                  <div class='panel-body' id='js-chat-body'></div>
+                                </div>
+                                <br>
+                                <div class='input-group' id="chat-location">
+                                  <input class='form-control' id='js-input-im'>
+                                  <span class='input-group-btn'>
+                                    <button class='btn btn-primary' id='js-send-button-im'>
+                                      Send
+                                    </button>
+                                  </span>
+                                </div>
+                              </div>
+
+
+                        <!--<p>Make sure to keep all page content within the <code>#page-content-wrapper</code>.</p>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /#page-content-wrapper -->
+
+
+  <script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("active");
+    });
+
+
+     $("").hover(
+        function() {
+        $(this).preappend( );
+        }, function() {
+            console.log("DONE");
+    $( this ).find( "span:last" ).remove();
+    });
+
+   </script>
+
+
+
 
 <style>
 #js-chat-body {
@@ -31,9 +90,15 @@
 }
 
   video {
-    height: 250px;
-    width: 250px;
+    height: 30%;
+    width: 30%;
+    margin-left: 1%;
+    margin-right: 1%;
+    margin-bottom: 1%;
     wrap: auto;
+}
+#localVideo {
+
 }
 #js-input-im {
 }
