@@ -1,48 +1,3 @@
-<div class='container'>
-    <div id = 'video-chat-body'>
-      <video id="localVideo" autoplay></video>
-    </div>
-    
-    <div class='row'>
-        <div class='panel panel-primary'>
-          <div class='panel-heading'>
-            Chat
-          </div>
-          <div class='panel-body' id='js-chat-body'></div>
-        </div>
-        <br>
-        <div class='input-group'>
-          <input class='form-control' id='js-input-im'>
-          <span class='input-group-btn'>
-            <button class='btn btn-primary' id='js-send-button-im'>
-              Send
-            </button>
-          </span>
-        </div>
-    </div>
-    
-    <button id="startBtn">Start Recording</button>
-    <button id="stopBtn">Stop Recording</button>
-</div>
-
-<!-- Sidebar -->
-<div id="sidebar-wrapper">
-    <ul class="sidebar-nav">
-       <li class="sidebar-brand"><a id="menu-toggle" href="#">Groups<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
-        <% Relationship.where(user_id: current_user.id).pluck(:id).each do |relationship_id| %>
-            <li class= 'groups', id=relationship_id >
-                <% group_name = Relationship.find_by(id: relationship_id).group.group_name %>
-                <% group_name_url_string = "/room/" + group_name %>
-
-                <a id="menu-group" href= "<%= group_name_url_string %>" ><%=group_name%></a>
-
-            </li>
-        <% end %>
-    </ul>
-</div>
-<!-- /#sidebar-wrapper -->
-
-
 <!-- Page Content -->
 <div id="page-content-wrapper">
     <% flash.each do |message_type, message| %>
@@ -78,9 +33,29 @@
             </div>
         </div>
     </div>
+    
+    <button id="startBtn">Start Recording</button>
+    <button id="stopBtn">Stop Recording</button>
+    
 </div>
 <!-- /#page-content-wrapper -->
 
+<!-- Sidebar -->
+<div id="sidebar-wrapper">
+    <ul class="sidebar-nav">
+       <li class="sidebar-brand"><a id="menu-toggle" href="#">Groups<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
+        <% Relationship.where(user_id: current_user.id).pluck(:id).each do |relationship_id| %>
+            <li class= 'groups', id=relationship_id >
+                <% group_name = Relationship.find_by(id: relationship_id).group.group_name %>
+                <% group_name_url_string = "/room/" + group_name %>
+
+                <a id="menu-group" href= "<%= group_name_url_string %>" ><%=group_name%></a>
+
+            </li>
+        <% end %>
+    </ul>
+</div>
+<!-- /#sidebar-wrapper -->
 
 <script>
     $("#menu-toggle").click(function(e) {

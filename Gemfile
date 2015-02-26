@@ -1,6 +1,4 @@
-# On Windows: use http
-# source 'https://rubygems.org'
-source 'http://rubygems.org'
+source 'https://rubygems.org'
 
 gem 'passenger',          '~> 4.0.59'
 gem 'rails',                '4.2.0'
@@ -15,12 +13,11 @@ gem 'jbuilder',             '2.2.3'
 gem 'rest-client',          '~> 1.7.3'
 gem "omniauth-google-oauth2", "~> 0.2.1"
 gem 'sdoc',                 '0.4.0', group: :doc
-gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw]  # Because Windows
 
 group :development, :test do
   gem 'sqlite3',     '1.3.9'
   #gem 'byebug',      '3.4.0'
-  #gem 'web-console', '2.0.0.beta3'     # Uncomment if not on Windows.
+  gem 'web-console', '2.0.0.beta3'
   gem 'spring',      '1.1.3'
 end
 
