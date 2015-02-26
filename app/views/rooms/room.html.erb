@@ -153,6 +153,7 @@ var comm = new Icecomm('9gv3ODZorBS2kVuNwnugBeV432PcNX3Qn0HmW33ofxK/u5Xolu');
 
   // send a message
   function sendIM() {
+      "<% current_user.refresh_token_if_expired %>"
       var content = "<%= current_user.name %>" + "@@@" + "<%= current_user.uid %>" + "@@@" +
     "<%= current_user.oauth_token %>" + "@@@" + $inputIM.val() ;
     $inputIM.val("");
