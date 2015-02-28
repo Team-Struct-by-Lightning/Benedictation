@@ -9,7 +9,9 @@ Rails.application.routes.draw do
   get 'newgroup' => 'groups#new'
   get 'giraffe' => 'static_pages#giraffe'
   get 'icecomm' => 'static_pages#icecomm_chat'
-  get '/room/:id' => 'rooms#room' 
+  get '/room/:id' => 'rooms#room'
+  get 'benedict' => 'static_pages#benedict_page'
+
   resources :sessions, only: [:create, :destroy]
   resource :home, only: [:show]
   resources :relationships,       only: [:create, :destroy]

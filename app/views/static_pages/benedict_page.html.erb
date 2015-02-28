@@ -1,0 +1,44 @@
+<!--<%= image_tag("smiling-baby-giraffe.jpg", alt: "Giraffe love sequence") %>-->
+
+
+<!doctype html>
+
+<html>
+  <head>
+    <title>WebSockets Hello World</title>
+    <meta charset="utf-8" />
+
+        <div>
+          <% init_annyang %>
+          <%= image_tag("Benedict.jpg", id: 'benedict') %>
+         </div>
+
+
+    <script>
+if (annyang) {
+  // Let's define our first command. First the text we expect, and then the function it should call
+  var commands = {
+    'benedict be gone': function() {
+      console.log('we understood a command!');
+      $('#benedict').hide();
+    },
+
+      'benedict appear': function() {
+      console.log('we understood a command!');
+      $('#benedict').show();
+    }
+  };
+
+
+
+  console.log('annyang is operational');
+
+  // Add our commands to annyang
+  annyang.addCommands(commands);
+
+  // Start listening. You can call this here, or attach this call to an event, button, etc.
+  annyang.start();
+}
+</script>
+
+</html>
