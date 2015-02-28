@@ -9,4 +9,6 @@ class StaticPagesController < ApplicationController
   end
   def icecomm_chat
   end
+  def benedict_page
+  end
 end
