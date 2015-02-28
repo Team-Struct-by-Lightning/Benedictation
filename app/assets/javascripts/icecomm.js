@@ -7372,6 +7372,7 @@ var Icecomm = function(APIKEY, appSettings) {
       console.log(message);
     }
   }
+  //
 
   function checkDebugMode() {
     if (appSettings && appSettings.debug === true) {
