@@ -19,9 +19,11 @@ class GroupsController < ApplicationController
         flash[:success] = "Added the group " + @group.group_name
         redirect_to chat_path
       else
+        flash.now[:danger] = 'Invalid group name: Valid groups contain 1-15 valid characters'
         render 'new'
       end
     else
+      flash.now[:danger] = 'Invalid group name: Valid groups contain 1-15 valid characters'
       render 'new'
     end
   end
