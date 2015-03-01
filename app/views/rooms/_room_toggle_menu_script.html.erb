@@ -1,0 +1,45 @@
+  <script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("active");
+    });
+
+
+     $("").hover(
+        function() {
+        $(this).preappend( );
+        }, function() {
+            console.log("DONE");
+    $( this ).find( "span:last" ).remove();
+    });
+
+   </script>
+
+
+<style>
+#js-chat-body {
+  max-height: 250px;
+  overflow: auto;
+  word-wrap: break-word;
+}
+
+  video {
+    height: 30%;
+    width: 30%;
+    margin-left: 1%;
+    margin-right: 1%;
+    margin-bottom: 1%;
+    wrap: auto;
+}
+#localVideo {
+
+}
+#js-input-im {
+}
+#js-send-button-im {
+  height: 31px;
+  margin-left: 5px;
+  margin-top: -3px;
+}
+
+</style>

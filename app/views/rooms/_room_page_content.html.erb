@@ -1,0 +1,38 @@
+<!-- Page Content -->
+        <div id="page-content-wrapper">
+            <% flash.each do |message_type, message| %>
+                <div class="alert alert-<%= message_type %>"><%= message %></div>
+            <% end %>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+
+                        <div id = 'video-chat-body'>
+                              <video id="localVideo" autoplay></video>
+                            </div>
+                              <div class='row'>
+                                <div class='panel panel-primary'>
+                                  <div class='panel-heading'>
+                                    Chat
+                                  </div>
+                                  <div class='panel-body' id='js-chat-body'></div>
+                                </div>
+                                <br>
+                                <div class='input-group' id="chat-location">
+                                  <input class='form-control' id='js-input-im'>
+                                  <span class='input-group-btn'>
+                                    <button class='btn btn-primary' id='js-send-button-im'>
+                                      Send
+                                    </button>
+                                  </span>
+                                </div>
+                              </div>
+
+                              <button id="startBtn">Start Recording</button>
+                              <button id="stopBtn">Stop Recording</button>
+
+                        <!--<p>Make sure to keep all page content within the <code>#page-content-wrapper</code>.</p>-->
+                    </div>
+                </div>
+            </div>
+            <!-- Page Content -->
