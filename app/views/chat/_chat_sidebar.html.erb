@@ -1,0 +1,35 @@
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+               <li class="sidebar-brand"><a id="menu-toggle" href="#">Groups<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
+                <% Relationship.where(user_id: current_user.id).pluck(:id).each do |relationship_id| %>
+                    <li class= 'groups', id=relationship_id >
+                        <% group = Relationship.find_by(id: relationship_id).group %>
+                        <% group_id = group.id %>
+                        <% group_name = group.group_name %>
+                        <% group_name_url_string = "/room/" + "#{group_id}" + "/" + group_name %>
+                           <%= form_for(current_user.active_relationships.find_by(id: relationship_id),
+                                         html: { method: :delete }) do |f| %>
+                                <tr>
+                                <th colspan = "4" >
+                                <span style="float:left;", class:"glyphicon"><a ><%= f.submit "[ x ]", class: "delete-button" %></a>
+                                </span>
+                                <span style="width: 100px;">
+                                 </span>
+                                 <span>
+                                </span>
+                                <span>
+                                <a id="menu-group" href= "<%= group_name_url_string %>" ><%=group_name%></a>
+                                </span>
+                            </th>
+                        </tr>
+                            <% end %>
+
+                    </li>
+                <% end %>
+                <li>
+                   <%= link_to "[ create new group + ]", newgroup_path %>
+                </li>
+            </ul>
+        </div>
+        <!-- /#sidebar-wrapper -->

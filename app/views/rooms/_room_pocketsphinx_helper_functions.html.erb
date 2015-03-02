@@ -1,0 +1,72 @@
+///////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////====POCKETSPHINX====///////////////////////////////
+    //////////////////////////////Helper Functions/////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////
+    var recognizer, recorder, callbackManager, audioContext;
+    var recorderReady = recognizerReady = false;
+
+    // This function initializes an instance of the recorder
+    // it posts a message right away and calls onReady when it
+    // is ready so that onmessage can be properly set
+    function spawnWorker(workerURL, onReady) {
+        recognizer = new Worker(workerURL);
+        recognizer.onmessage = function(event) {
+            onReady(recognizer);
+        };
+        recognizer.postMessage('');
+    };
+
+    // A convenience function to post a message to the recognizer and associate
+    // a callback to its response
+    function postRecognizerJob(message, callback) {
+        var msg = message || {};
+        if (callbackManager) msg.callbackId = callbackManager.add(callback);
+        if (recognizer) recognizer.postMessage(msg);
+    };
+
+    // This adds a keyword to listen for, by posting to the recognizer.
+    // (Simplified over the previous example to be really basic for now)
+    // Once we are done adding all keywords, we can designate the recognizer as ready.
+    var feedKeyword = function(word) {
+        postRecognizerJob({command: 'addKeyword', data: word}, recognizerReady() );
+    };
+
+    // This adds words to the recognizer. When it calls back, we add grammars
+    // The way pocketsphinx.js works -- you add a wordlist *first* then you add either your grammar or your keywords
+    // The keywords must have been added with addWords before they can be added with addKeyword.
+    // So we first addWords and then in its callback (ensuring it's finished) we add our keyword(s).
+    var feedWords = function(words) {
+         postRecognizerJob({command: 'addWords', data: words},
+                      function() {feedKeyword("NEW-YORK");});
+    };
+
+    // This initializes the recognizer. When it calls back, we add words
+    var initRecognizer = function() {
+        postRecognizerJob({command: 'initialize', data: [["-kws_threshold", "1"]]},
+                          function() {
+                            if (recorder) recorder.consumers = [recognizer];
+                            feedWords(wordList);});
+    };
+
+    // Called once the recognizer is ready
+    var recognizerReady = function() {
+         recognizerReady = true;
+         console.log("Recognizer ready");
+    };
+
+    // This starts recording.
+    // recorder.start() is passed the id of the keyword to recognize (or grammar to use).
+    // This current example only uses one keyword, so hardcoding id=0 is okay. This shouldn't stay this way.
+    // I'm just trying to minimize confusing things right now.
+    var startRecording = function() {
+        console.log("In startRecording")
+        if (recorder && recorder.start(0)) console.log("Recording");
+    };
+    // Stops recording
+    var stopRecording = function() {
+        recorder && recorder.stop();
+        console.log("Recording ended");
+    };
+
+    var comm = new Icecomm('9gv3ODZorBS2kVuNwnugBeV432PcNX3Qn0HmW33ofxK/u5Xolu');
+    comm.connect(window.location.pathname);
