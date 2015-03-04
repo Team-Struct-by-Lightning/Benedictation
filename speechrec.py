@@ -22,9 +22,9 @@ class SpeechRecognizer():
         
     def _rec_googleapi(self, input):
         APIKEY = "AIzaSyD9JtT_kVZ0S0vKsskgxrK_WtIE1G7FAjY"
-        audiotools.open(input).convert("32bittest.flac", audiotools.FlacAudio)
+        audiotools.open(input).convert("output.flac", audiotools.FlacAudio)
         headers = {"Content-Type": "audio/x-flac;rate=44100"}
-        speechfile = open("32bittest.flac","r")
+        speechfile = open("output.flac","r")
         target = "/speech-api/v2/recognize?output=json&lang=en-us&key=" + APIKEY
         request = self.connection.request("POST",target,speechfile,headers)
         
