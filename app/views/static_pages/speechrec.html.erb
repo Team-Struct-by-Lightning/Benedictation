@@ -44,7 +44,7 @@
         speechRegRec.record(); //start recorder -- is .start() instead? mixing up worker commands and recorder commands
         console.log("starting to record 10 seconds of speech");
         recordSpeech.recording = 1; // Set the flag indicating we're recording.
-        //ws.send("start"); //tell backend server to start listening
+        ws.send("start"); //tell backend server to start listening
 
         // export a wav every second, so we can send it using websockets
         // interval is created that passes the data to the backend, encoded as wav file, every second
@@ -58,12 +58,12 @@
                 speechRegRec.stop();
                 recordSpeech.recording = 0; // Set the flag indicating we're no longer recording.
                 console.log("Stopped recording speech");
-                //ws.send("stop");    // Tells the server to stop listening and start analyzing               
+                ws.send("stop");    // Tells the server to stop listening and start analyzing               
             }
             else{
                 speechRegRec.exportWAV(function(blob) {
                     speechRegRec.clear();
-                    //ws.send(blob);
+                    ws.send(blob);
                     console.log("sending blob: ",blob);
                 });
             }
@@ -199,16 +199,16 @@
         var host = "localhost";
         var port = "8888";
         var uri = "/recognize";
-        //ws = new WebSocket("ws://" + host + ":" + port + uri );
+        ws = new WebSocket("ws://" + host + ":" + port + uri );
         
-        // ws.onmessage = function(e) {
-        //     var jsonResponse = jQuery.parseJSON(e.data);
-        //     console.log(jsonResponse);
-        //     if (jsonResponse.hypotheses.length > 0) {
-        //         var bestMatch = jsonResponse.hypotheses[0].utterance;
-        //         alert(bestMatch);
-        //     }
-        // }
+        ws.onmessage = function(e) {
+            var jsonResponse = jQuery.parseJSON(e.data);
+            console.log(jsonResponse);
+            if (jsonResponse.hypotheses.length > 0) {
+                var bestMatch = jsonResponse.hypotheses[0].utterance;
+                alert(bestMatch);
+            }
+        }
         
         spawnWorker("javascripts/recognizer.js", function(worker) {
             // This is the onmessage function, once the worker is fully loaded

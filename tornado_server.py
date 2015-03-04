@@ -2,40 +2,40 @@ import tornado.ioloop
 import tornado.web
 import tornado.websocket
 import tornado.httpserver
-from nltk_test import find_nouns
+# from nltk_test import find_nouns
 import speechrec    # Put speechrec.py in the same folder
 import wave
 import os
 
 class WSHandler(tornado.websocket.WebSocketHandler):
-	def open(self):
-		print 'new connection'
-		self.write_message("Hello from the Python Server!")
+    def open(self):
+        print 'new connection'
+        self.write_message("Hello from the Python Server!")
 
-	def on_message(self, message):
-		print 'message received %s' % message
-		nouns_list = find_nouns(message)
-		for noun in nouns_list:
-			self.write_message(noun)
+    def on_message(self, message):
+        print 'message received %s' % message
+        nouns_list = find_nouns(message)
+        for noun in nouns_list:
+            self.write_message(noun)
 
-	def on_close(self):
-		print 'connection closed'
-	def check_origin(self, origin):
-		#parsed_origin = urllib.parse.urlparse(origin)
-		#print parsed_origin
-		return True
+    def on_close(self):
+        print 'connection closed'
+    def check_origin(self):
+        #parsed_origin = urllib.parse.urlparse(origin)
+        #print parsed_origin
+        return True
 
 # Handle audio data sent to /recognize.
 class SpeechWSHandler(tornado.websocket.WebSocketHandler):
     def open(self):
-		print "New connection to speech recognizer opened"
+        print "New connection to speech recognizer opened"
         self.recognizer = SpeechRecognizer()
         self.recording = False
         
     def on_message(self, message):
         print "speech-rec received message: %s" % message
         if self.recording == False and message == "start":
-                self.recording = True
+            self.recording = True
         if self.recording == True:
             if message == "stop":
                 self.recording = False
@@ -58,11 +58,11 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
     
     
 application = tornado.web.Application([
-	(r"/hello", WSHandler),
+    (r"/hello", WSHandler),
     (r"/recognize", SpeechWSHandler)
 ])
 
 if __name__ == "__main__":
-	http_server = tornado.httpserver.HTTPServer(application)
-	http_server.listen(8888)
-	tornado.ioloop.IOLoop.instance().start()
+    http_server = tornado.httpserver.HTTPServer(application)
+    http_server.listen(8888)
+    tornado.ioloop.IOLoop.instance().start()
