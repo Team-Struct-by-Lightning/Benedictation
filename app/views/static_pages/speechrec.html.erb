@@ -58,14 +58,14 @@
                 speechRegRec.stop();
                 recordSpeech.recording = 0; // Set the flag indicating we're no longer recording.
                 console.log("Stopped recording speech");
-                ws.send("stop");    // Tells the server to stop listening and start analyzing               
-            }
-            else{
                 speechRegRec.exportWAV(function(blob) {
+                  
+                    Recorder.forceDownload(blob, "output.wav");
                     speechRegRec.clear();
                     ws.send(blob);
                     console.log("sending blob: ",blob);
                 });
+                ws.send("stop");    // Tells the server to stop listening and start analyzing               
             }
         }, 1000); 
     }
