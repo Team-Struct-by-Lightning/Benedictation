@@ -43,7 +43,8 @@ class SpeechRecognizer():
         # os.remove("speech.flac")
         return hyp
 
+
 if __name__ == "__main__":
     sr = SpeechRecognizer()
-    text = sr.recognize("32bittest.wav")
+    text = sr.recognize("output.wav")
     print text        
