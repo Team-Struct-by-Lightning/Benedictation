@@ -2,6 +2,11 @@
 ////////////////////////////====POCKETSPHINX====///////////////////////////////
 //////////////////////////////Helper Functions/////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
+
+// This file and _room_icecomm_helper_functions are dependent on each other.
+// They both get rendered into the final, anyway, so it shouldn't matter, but it's messy.
+// TODO: wrap them in self-executing functions as modules do?
+
 var recognizer, recorder, speechRegRec, callbackManager, audioContext;
 var recorderReady = recognizerReady = false;
 var ws;

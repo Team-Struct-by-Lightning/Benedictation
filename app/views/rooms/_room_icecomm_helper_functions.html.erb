@@ -10,6 +10,21 @@ window.onload = function() {
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
     audioContext = new AudioContext();
 
+    // Set up the WebSocket in onload; so that it is available for use elsewhere.
+    var host = "localhost";
+    var port = "8888";
+    var uri = "/recognize";
+    ws = new WebSocket("ws://" + host + ":" + port + uri );
+    
+    ws.onmessage = function(e) {
+        var jsonResponse = jQuery.parseJSON(e.data);
+        console.log(jsonResponse);
+        if (jsonResponse.hypotheses.length > 0) {
+            var bestMatch = jsonResponse.hypotheses[0].utterance;
+            alert(bestMatch);
+        }
+    }
+    
     console.log("Initialized Icecomm, waiting for user media permissions...");
 
     comm.on('local', function(options) {
