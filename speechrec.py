@@ -46,5 +46,5 @@ class SpeechRecognizer():
 
 if __name__ == "__main__":
     sr = SpeechRecognizer()
-    text = sr.recognize("output.wav")
+    text = sr.recognize("output219.wav")
     print text        
