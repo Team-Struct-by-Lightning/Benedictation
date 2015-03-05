@@ -1,72 +1,113 @@
 ///////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////====POCKETSPHINX====///////////////////////////////
-    //////////////////////////////Helper Functions/////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////
-    var recognizer, recorder, callbackManager, audioContext;
-    var recorderReady = recognizerReady = false;
+////////////////////////////====POCKETSPHINX====///////////////////////////////
+//////////////////////////////Helper Functions/////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+var recognizer, recorder, speechRegRec, callbackManager, audioContext;
+var recorderReady = recognizerReady = false;
+var ws;
 
-    // This function initializes an instance of the recorder
-    // it posts a message right away and calls onReady when it
-    // is ready so that onmessage can be properly set
-    function spawnWorker(workerURL, onReady) {
-        recognizer = new Worker(workerURL);
-        recognizer.onmessage = function(event) {
-            onReady(recognizer);
-        };
-        recognizer.postMessage('');
-    };
+// Record speech for 10s and export it as .wav to a server every 1s.
+function recordSpeech() {
+    // Some JavaScript trickery: functions are objects, so they can have variables.
+    // In this case we simulate a "private static" variable indicating whether recording is already started or not;
+    // if it is, we don't do anything.
+    if( typeof recordSpeech.recording === 'undefined' ) {   // If it's not yet initialized:
+        recordSpeech.recording == 0;                        // Initialize it.
+        console.log("Initializing exportSpeech");
+    }
+    if( recordSpeech.recording == 1 ) {
+        console.log("Called exportSpeech after recording already started; ");
+        return; // Don't start recording if we are already.
+    }
+    
+    speechRegRec.record(); //start recorder
+    console.log("starting to record 10 seconds of speech");
+    recordSpeech.recording = 1; // Set the flag indicating we're recording.
+    ws.send("start"); //tell backend server to start listening
 
-    // A convenience function to post a message to the recognizer and associate
-    // a callback to its response
-    function postRecognizerJob(message, callback) {
-        var msg = message || {};
-        if (callbackManager) msg.callbackId = callbackManager.add(callback);
-        if (recognizer) recognizer.postMessage(msg);
-    };
+    // export a wav every second, so we can send it using websockets
+    // interval is created that passes the data to the backend, encoded as wav file, every second
+    var timesRun = 0;
+    var intervalKey = setInterval(function() {
+        // stop sending blobs after 10 seconds
+        timesRun ++;
+        if (timesRun == 10) {
+            clearInterval(intervalKey);
+            intervalKey = null;
+            speechRegRec.stop();
+            recordSpeech.recording = 0; // Set the flag indicating we're no longer recording.
+            console.log("Stopped recording speech");
+            speechRegRec.exportWAV(function(blob) {
+              
+                speechRegRec.clear();
+                ws.send(blob);
+                console.log("sending blob: ",blob);
+            });
+            ws.send("stop");    // Tells the server to stop listening and start analyzing               
+        }
+    }, 1000); 
+}
 
-    // This adds a keyword to listen for, by posting to the recognizer.
-    // (Simplified over the previous example to be really basic for now)
-    // Once we are done adding all keywords, we can designate the recognizer as ready.
-    var feedKeyword = function(word) {
-        postRecognizerJob({command: 'addKeyword', data: word}, recognizerReady() );
+// This function initializes an instance of the recorder
+// it posts a message right away and calls onReady when it
+// is ready so that onmessage can be properly set
+function spawnWorker(workerURL, onReady) {
+    recognizer = new Worker(workerURL);
+    recognizer.onmessage = function(event) {
+        onReady(recognizer);
     };
+    recognizer.postMessage('');
+};
 
-    // This adds words to the recognizer. When it calls back, we add grammars
-    // The way pocketsphinx.js works -- you add a wordlist *first* then you add either your grammar or your keywords
-    // The keywords must have been added with addWords before they can be added with addKeyword.
-    // So we first addWords and then in its callback (ensuring it's finished) we add our keyword(s).
-    var feedWords = function(words) {
-         postRecognizerJob({command: 'addWords', data: words},
-                      function() {feedKeyword("NEW-YORK");});
-    };
+// A convenience function to post a message to the recognizer and associate
+// a callback to its response
+function postRecognizerJob(message, callback) {
+    var msg = message || {};
+    if (callbackManager) msg.callbackId = callbackManager.add(callback);
+    if (recognizer) recognizer.postMessage(msg);
+};
 
-    // This initializes the recognizer. When it calls back, we add words
-    var initRecognizer = function() {
-        postRecognizerJob({command: 'initialize', data: [["-kws_threshold", "1"]]},
-                          function() {
-                            if (recorder) recorder.consumers = [recognizer];
-                            feedWords(wordList);});
-    };
+// This adds a keyword to listen for, by posting to the recognizer.
+// (Simplified over the previous example to be really basic for now)
+// Once we are done adding all keywords, we can designate the recognizer as ready.
+var feedKeyword = function(word) {
+    postRecognizerJob({command: 'addKeyword', data: word}, recognizerReady() );
+};
 
-    // Called once the recognizer is ready
-    var recognizerReady = function() {
-         recognizerReady = true;
-         console.log("Recognizer ready");
-    };
+// This adds words to the recognizer. When it calls back, we add grammars
+// The way pocketsphinx.js works -- you add a wordlist *first* then you add either your grammar or your keywords
+// The keywords must have been added with addWords before they can be added with addKeyword.
+// So we first addWords and then in its callback (ensuring it's finished) we add our keyword(s).
+var feedWords = function(words) {
+     postRecognizerJob({command: 'addWords', data: words},
+                  function() {feedKeyword("NEW-YORK");});
+};
 
-    // This starts recording.
-    // recorder.start() is passed the id of the keyword to recognize (or grammar to use).
-    // This current example only uses one keyword, so hardcoding id=0 is okay. This shouldn't stay this way.
-    // I'm just trying to minimize confusing things right now.
-    var startRecording = function() {
-        console.log("In startRecording")
-        if (recorder && recorder.start(0)) console.log("Recording");
-    };
-    // Stops recording
-    var stopRecording = function() {
-        recorder && recorder.stop();
-        console.log("Recording ended");
-    };
+// This initializes the recognizer. When it calls back, we add words
+var initRecognizer = function() {
+    postRecognizerJob({command: 'initialize', data: [["-kws_threshold", "1"]]},
+                      function() {
+                        if (recorder) recorder.consumers = [recognizer];
+                        feedWords(wordList);});
+};
 
-    var comm = new Icecomm('9gv3ODZorBS2kVuNwnugBeV432PcNX3Qn0HmW33ofxK/u5Xolu');
-    comm.connect(window.location.pathname);
+// Called once the recognizer is ready
+var recognizerReady = function() {
+     recognizerReady = true;
+     console.log("Recognizer ready");
+};
+
+// This starts recording.
+// recorder.start() is passed the id of the keyword to recognize (or grammar to use).
+// This current example only uses one keyword, so hardcoding id=0 is okay. This shouldn't stay this way.
+// I'm just trying to minimize confusing things right now.
+var startRecording = function()  {
+    console.log("In startRecording")
+    if (recorder && recorder.start(0)) console.log("Recording");
+};
+// Stops recording
+var stopRecording = function() {
+    recorder && recorder.stop();
+    console.log("Recording ended");
+};
+

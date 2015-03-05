@@ -34,33 +34,31 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
         print "New connection to speech recognizer opened"
         self.recognizer = speechrec.SpeechRecognizer()
         self.recording = False
+        self.text = ""
         
     def on_message(self, message):
         #print "speech-rec received message: %s" % message
         if self.recording == False and message == "start":
             self.recording = True
+            return
 
         if self.recording == True:
             if message == "stop":
                 self.recording = False
-                #self.write_message("test response %s" % message)
             else:
-                # message is a wav file, fully encoded, *with headers*.
-                # is it a file-like object? can Python read it? or is it a raw binary array which I must index into past the headers and use?
-                #msg_wav = wave.open(message, "rb")
-                #print type(message)
-                #message_data = str(message)[44:] # this skips the 44-byte header and gets the data
-                
-                f = open('output' + str(randint(0,500)) + '.wav' , 'w')
+                outfilename = 'output' + str(randint(0,500)) + '.wav'
+                f = open(outfilename , 'w')
                 f.write(message)
                 
                 print "wrote to file"
-                # write this to an open wavfile object
+                text = recognize(outfilename)
+                self.write_message(text)
+                os.remove(outfilename)
+     
                 
-        
     def on_close(self):
         print "Connection closed."
-        os.remove("speech.wav")
+        # os.remove("speech.wav")
     
     def check_origin(self,origin):
         return True
