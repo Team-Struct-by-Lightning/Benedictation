@@ -33,7 +33,7 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
         self.recording = False
         
     def on_message(self, message):
-        print "speech-rec received message: %s" % message
+        #print "speech-rec received message: %s" % message
         if self.recording == False and message == "start":
             self.recording = True
         if self.recording == True:
@@ -45,7 +45,10 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
                 # is it a file-like object? can Python read it? or is it a raw binary array which I must index into past the headers and use?
                 #msg_wav = wave.open(message, "rb")
                 #print type(message)
-                message_data = str(message)[44:]    # this skips the 44-byte header and gets the data
+                message_data = str(message)[44:] # this skips the 44-byte header and gets the data
+                f = open('output.wav', 'w')
+                f.write(message)
+                print "wrote to file"
                 # write this to an open wavfile object
                 
         

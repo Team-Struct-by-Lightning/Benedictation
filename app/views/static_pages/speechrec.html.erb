@@ -60,7 +60,6 @@
                 console.log("Stopped recording speech");
                 speechRegRec.exportWAV(function(blob) {
                   
-                    Recorder.forceDownload(blob, "output.wav");
                     speechRegRec.clear();
                     ws.send(blob);
                     console.log("sending blob: ",blob);
