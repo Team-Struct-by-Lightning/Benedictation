@@ -7,7 +7,7 @@ import speechrec    # Put speechrec.py in the same folder
 import wave
 import os
 from random import randint
-from speechrec import recognize
+from speechrec import SpeechRecognizer
 
 class WSHandler(tornado.websocket.WebSocketHandler):
     def open(self):
@@ -32,7 +32,7 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
     
     def open(self):
         print "New connection to speech recognizer opened"
-        self.recognizer = speechrec.SpeechRecognizer()
+        self.recognizer = SpeechRecognizer()
         self.recording = False
         self.text = ""
         
@@ -51,7 +51,7 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
                 f.write(message)
                 
                 print "wrote to file"
-                text = recognize(outfilename)
+                text = recognizer.recognize(outfilename)
                 self.write_message(text)
                 os.remove(outfilename)
      

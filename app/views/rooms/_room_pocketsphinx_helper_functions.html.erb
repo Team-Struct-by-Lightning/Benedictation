@@ -30,27 +30,18 @@ function recordSpeech() {
     recordSpeech.recording = 1; // Set the flag indicating we're recording.
     ws.send("start"); //tell backend server to start listening
 
-    // export a wav every second, so we can send it using websockets
-    // interval is created that passes the data to the backend, encoded as wav file, every second
-    var timesRun = 0;
-    var intervalKey = setInterval(function() {
-        // stop sending blobs after 10 seconds
-        timesRun ++;
-        if (timesRun == 10) {
-            clearInterval(intervalKey);
-            intervalKey = null;
-            speechRegRec.stop();
-            recordSpeech.recording = 0; // Set the flag indicating we're no longer recording.
-            console.log("Stopped recording speech");
-            speechRegRec.exportWAV(function(blob) {
-              
-                speechRegRec.clear();
-                ws.send(blob);
-                console.log("sending blob: ",blob);
-            });
-            ws.send("stop");    // Tells the server to stop listening and start analyzing               
-        }
-    }, 1000); 
+    // Changed setInterval to setTimeout -- maybe cleaner
+    setTimeout(function() {      
+        speechRegRec.stop();
+        recordSpeech.recording = 0; // Set the flag indicating we're no longer recording.
+        console.log("Stopped recording speech");
+        speechRegRec.exportWAV(function(blob) {          
+            speechRegRec.clear();
+            ws.send(blob);
+            console.log("sending blob: ",blob);
+        });
+        ws.send("stop");    // Tells the server to stop listening and start analyzing               
+    }, 10000); 
 }
 
 // This function initializes an instance of the recorder
@@ -72,28 +63,34 @@ function postRecognizerJob(message, callback) {
     if (recognizer) recognizer.postMessage(msg);
 };
 
-// This adds a keyword to listen for, by posting to the recognizer.
-// (Simplified over the previous example to be really basic for now)
-// Once we are done adding all keywords, we can designate the recognizer as ready.
-var feedKeyword = function(word) {
-    postRecognizerJob({command: 'addKeyword', data: word}, recognizerReady() );
+// This adds a keyword search from the array
+// We add them one by one and call it again as
+// a callback.
+// Once we are done adding all grammars, we can call
+// recognizerReady()
+var feedKeyword = function(g, index, id) {
+    if (id && (keywordIds.length > 0)) keywordIds[0].id = id.id;
+    if (index < g.length) {
+        keywordIds.unshift({title: g[index].title});
+        postRecognizerJob({command: 'addKeyword', data: g[index].g},
+                             function(id) {feedKeyword(keywords, index + 1, {id:id});});
+        } 
+    else { recognizerReady(); }
 };
 
 // This adds words to the recognizer. When it calls back, we add grammars
-// The way pocketsphinx.js works -- you add a wordlist *first* then you add either your grammar or your keywords
-// The keywords must have been added with addWords before they can be added with addKeyword.
-// So we first addWords and then in its callback (ensuring it's finished) we add our keyword(s).
 var feedWords = function(words) {
-     postRecognizerJob({command: 'addWords', data: words},
-                  function() {feedKeyword("NEW-YORK");});
+    postRecognizerJob({command: 'addWords', data: words},
+                function() {feedKeyword(keywords, 0);});
 };
 
 // This initializes the recognizer. When it calls back, we add words
 var initRecognizer = function() {
-    postRecognizerJob({command: 'initialize', data: [["-kws_threshold", "1"]]},
-                      function() {
-                        if (recorder) recorder.consumers = [recognizer];
-                        feedWords(wordList);});
+    // You can pass parameters to the recognizer, such as : {command: 'initialize', data: [["-hmm", "my_model"], ["-fwdflat", "no"]]}
+    postRecognizerJob({command: 'initialize', data: [["-kws_threshold","3"]]},    // took off the threshold argument.
+                    function() {
+                                if (recorder) recorder.consumers = [recognizer];
+                                feedWords(wordList);});
 };
 
 // Called once the recognizer is ready
