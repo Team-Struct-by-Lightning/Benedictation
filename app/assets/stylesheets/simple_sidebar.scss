@@ -137,10 +137,49 @@
 #wrapper.active {
     padding-left: 0px;
 }
+
 #wrapper.active #sidebar-wrapper {
     left: 50px;
 }
 
+#js-chat-body {
+  max-height: 100px;
+  overflow: auto;
+  word-wrap: break-word;
+}
+
+
+#speech-rec {
+    width: 150%;
+    margin-right: 50%;
+}
+
+#chat-body {
+    width: 73%;
+    margin-right: 5%;
+    padding-right: 5%;
+}
+
+
+#chat-location {
+    width: 100%
+}
+
+#startBtn {
+    margin-top: 5%;
+    margin-right: 0%;
+    float: left;
+}
+
+#stopBtn {
+    margin-left: 0%;
+    float: right;
+    margin-top: 5%;
+}
+
+#js-send-button-im.btn.btn-primary {
+    height: 140%;
+}
 
 @media(min-width:768px) {
     #wrapper {
