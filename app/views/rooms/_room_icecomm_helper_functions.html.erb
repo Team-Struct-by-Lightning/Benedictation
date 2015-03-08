@@ -57,12 +57,9 @@ window.onload = function() {
 
 
                     // start recording after we hear "benedict"
-
-                    console.log("newHyp length: ", newHyp.length);
                     var hypArray = newHyp.split(' ');
-                    console.log("size of hyp array: ",hypArray.length);
-                    console.log("hyp array: ",hypArray);
-                    console.log("numBenedicts: ",numBenedicts);
+                    console.log("hypothesis array: ",hypArray);
+                    console.log("numBenedicts recognized: ",numBenedicts);
                     if(hypArray[hypArray.length - 1] === "BENEDICT" && hypArray.length > numBenedicts)
                     {   numBenedicts  = numBenedicts + 1;
                         recordSpeech();
@@ -99,6 +96,7 @@ window.onload = function() {
     comm.on('disconnect', function(options) {
         console.log('disconnect happening');
         document.getElementById(options.callerID).remove();
+        stopRecording();
     });
 
     comm.on('data', function(options) {
