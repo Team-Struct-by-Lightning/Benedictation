@@ -6,13 +6,13 @@
   var $sendButton = $("#js-send-button-im");
   var $inputIM    = $("#js-input-im");
   var $chatBody   = $("#js-chat-body");
+  var $speechRecBody = $("#speech-rec");
   var localId = comm.getLocalID();
 
   $sendButton.on('click', sendIM);
   $inputIM.on('keypress', checkEnterKey);
 
   // With Turbolinks pages will change without a full reload, so you can't rely on the usual window.beforepageunload event. Instead Turbolinks fires events on document to provide hooks into the lifecycle of the page.
-
   $(document).on("page:fetch", function(){
   console.log('turbolinks page fetch event');
   });
@@ -27,6 +27,18 @@
     comm.send(content)
     // append what you send to your own page
     appendNewIM({
+        data: content,
+        callerID: "<%= current_user.name %>"
+    })
+  }
+
+  // send your benedict query result to everyone else in the chat
+  function sendBennyReply(reply){
+    "<% current_user.refresh_token_if_expired %>"
+      var content = "<%= current_user.name %>" + "@@@" + reply;
+    comm.send(content)
+    // append your result to your own page
+    appendNewBennyReply({
         data: content,
         callerID: "<%= current_user.name %>"
     })
@@ -54,10 +66,16 @@
     mediaObjectIM(caller_name, caller_uid, caller_token, message_data);
   }
 
+  // stick new reply from benny onto the speechrec body
+  function appendNewBennyReply(options) {
+    var message_data = options.data.split("@@@");
+    var caller_name = message_data[0];
+    var benny_reply = message_data[1]
+    mediaObjectSpeechrec(caller_name, benny_reply);
+  }
+
   // media object to append to the page each time there's a new chat
   function mediaObjectIM(user, uid, token, message) {
-
-    // var leftRight = user === comm.getLocalID() ? 'right' : 'left'
 
     var url_string = "https://www.googleapis.com/plus/v1/people/" + uid + "?access_token=" + token;
 
@@ -81,5 +99,19 @@
            $('div, .media').animate({scrollTop: height}, 'fast');
 
     });
-    // console.log($.user_object.responseJSON);
+  }
+
+  // media object to append to the page each time there's a new chat
+  function mediaObjectSpeechrec(user, message) {
+         $speechRecBody.append( "  <div class='benny'>"+
+           "    <div class='media-body', style='text-align: "+ "left" +"'>"+
+           "      <h4 class='media-heading'>"+ user + ": " + message + "</h4>"+""+
+           "    </div>"+
+           "  </div>" );
+
+           var height = 0;
+           $('div, .benny').each(function(i, value) {
+            height += parseInt($(this).height());
+           });
+           $('div, .benny').animate({scrollTop: height}, 'fast');
   }

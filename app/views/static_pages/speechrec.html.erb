@@ -33,7 +33,7 @@
         // In this case we simulate a "private static" variable indicating whether recording is already started or not;
         // if it is, we don't do anything.
         if( typeof recordSpeech.recording === 'undefined' ) {   // If it's not yet initialized:
-            recordSpeech.recording == 0;                        // Initialize it.
+            recordSpeech.recording = 0;                        // Initialize it.
             console.log("Initializing exportSpeech");
         }
         if( recordSpeech.recording == 1 ) {

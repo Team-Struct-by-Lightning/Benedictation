@@ -16,15 +16,15 @@ window.onload = function() {
     var uri = "/recognize";
     ws = new WebSocket("ws://" + host + ":" + port + uri );
     
+    // get benedict's reply from the python server
     ws.onmessage = function(e) {
-        var jsonResponse = jQuery.parseJSON(e.data);
-        console.log(jsonResponse);
-        if (jsonResponse.hypotheses.length > 0) {
-            var bestMatch = jsonResponse.hypotheses[0].utterance;
-            alert(bestMatch);
+        console.log("data from server: ", e.data);
+        if(e.data != ""){
+            sendBennyReply(e.data);
         }
     }
     
+    // Initialize Icecomm
     console.log("Initialized Icecomm, waiting for user media permissions...");
 
     comm.on('local', function(options) {
@@ -33,7 +33,7 @@ window.onload = function() {
         console.log(localAudioStream.getAudioTracks());
         console.log("Obtained user camera/microphone approval");
 
-        // Start the recognizer inside a WebWorker, and set up callbacks for the responses it will post.
+        // Start the "benedict" recognizer inside a WebWorker, and set up callbacks for the responses it will post.
         callbackManager = new CallbackManager();
         spawnWorker("<%= javascript_path 'recognizer.js' %>", function(worker) {
             worker.onmessage = function(e) {
@@ -49,9 +49,12 @@ window.onload = function() {
                     var newHyp = e.data.hyp;
                     if (e.data.hasOwnProperty('final') &&  e.data.final) newHyp = "Final: " + newHyp;
                     console.log("New hypothesis from recognizer: " + newHyp);  // this is where we do something with it
-                    if(newHyp === "BENEDICT")
-                    {
-                        recordSpeech(); // tell speechRecReg to start recording and sending to server
+
+                    // start recording after we hear "benedict"
+                    var hypArray = newHyp.split(' ');
+                    if(hypArray[hypArray.length - 1] === "BENEDICT")
+                    { 
+                        recordSpeech();
                     }
                 }
                 // This is the case when we have an error
@@ -69,9 +72,10 @@ window.onload = function() {
         var input = audioContext.createMediaStreamSource(localAudioStream);
         var audioRecorderConfig = {}; // I'm being basic
         recorder = new AudioRecorder(input, audioRecorderConfig);
+        speechRegRec = new Recorder(input);
         if (recorder) console.log("Audio recorder ready");
 
-        // If a recognizer is ready, set it to consume audio data from the recorder.
+        // If the recognizer is ready, set it to consume audio data from the recorder.
         if (recognizer) recorder.consumers = [recognizer];
         console.log("Recognizer listening to audio recorder. Begin speech recognition!");
     });
@@ -88,7 +92,15 @@ window.onload = function() {
 
     comm.on('data', function(options) {
         console.log("data: ",options.data);
-        appendNewIM(options);
+        var message_data = options.data.split("@@@");
+        // Benedict replies will only have user's name and their benedict query, chat messages have > 2 fields
+        if(message_data.length > 2){
+            appendNewIM(options);
+        }
+        else{
+            appendNewBennyReply(options);
+        }
+        
     });
 };
 

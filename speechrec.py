@@ -19,8 +19,10 @@ class SpeechRecognizer():
     # Return: recognition output, string
     def recognize(self, input):
         return self._rec_googleapi(input)
+
         
     def _rec_googleapi(self, input):
+        print "in googleapi func @@@@@@@@"
         APIKEY = "AIzaSyD9JtT_kVZ0S0vKsskgxrK_WtIE1G7FAjY"
         audiotools.open(input).convert("output.flac", audiotools.FlacAudio)
         headers = {"Content-Type": "audio/x-flac;rate=44100"}
@@ -29,18 +31,25 @@ class SpeechRecognizer():
         request = self.connection.request("POST",target,speechfile,headers)
         
         hyp = ""
+        json_result = ""
         response = self.connection.getresponse()
         if response.status == 200:
-            jdata = str(response.read()) 
-            print "raw response: ",jdata
+            jdata = response.read()
 
-            # Should return a string of JSON, in the form of a bytes literal (in Python 3), which is then converted to string
-            # data = self.jdecode.raw_decode(jdata)
-            # print data
-            # hyp = data.hypotheses[0].utterance
+            lines = str(jdata).splitlines()
+            if(len(lines) > 1):
+                json_result = lines[1]
+                try:
+                    decoded = json.loads(json_result)
+                    # pretty printing of json-formatted string
+                    # print json.dumps(decoded, sort_keys=True, indent=4)
+                    hyp = decoded['result'][0]['alternative'][0]['transcript']
+                    print "speech rec result: ", hyp
+                except (ValueError, KeyError, TypeError):
+                    print "JSON format error"
         
         speechfile.close()
-        # os.remove("speech.flac")
+        os.remove("output.flac")
         return hyp
 
 
