@@ -13,6 +13,7 @@ var ws;
 
 // Record speech for 10s and export it as .wav to a server every 1s.
 function recordSpeech() {
+    console.log("in recordSpeech function @@@");
     // console.log("we are in record speech function @@@@");
     // Some JavaScript trickery: functions are objects, so they can have variables.
     // In this case we simulate a "private static" variable indicating whether recording is already started or not;
@@ -108,6 +109,7 @@ var recognizerReady = function() {
 // This current example only uses one keyword, so hardcoding id=0 is okay. This shouldn't stay this way.
 // I'm just trying to minimize confusing things right now.
 var startRecording = function()  {
+    numBenedicts = 0;
     console.log("In startRecording")
     if (recorder && recorder.start(0)) console.log("Recording");
 };
