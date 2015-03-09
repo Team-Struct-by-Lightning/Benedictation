@@ -6,7 +6,7 @@
 var comm = new Icecomm('9gv3ODZorBS2kVuNwnugBeV432PcNX3Qn0HmW33ofxK/u5Xolu');
 comm.connect(window.location.pathname);
 
-var numBenedicts = 0;
+var numBenedicts = 1;
 
 
 
@@ -21,12 +21,12 @@ var numBenedicts = 0;
         console.log("data from server: ", e.data);
         if(e.data != ""){
             sendBennyReply(e.data);
-            recordSpeech.recording = 0;
         }
         else{
             recordSpeech.recording = 0;
             flag = 1;
         }
+    recordSpeech.recording = 0;
     }
 
 window.onload = function() {
@@ -64,6 +64,8 @@ window.onload = function() {
                     // start recording after we hear "benedict"
                     var hypArray = newHyp.split(' ');
                     console.log("hypothesis array: ",hypArray);
+                                        console.log("hypothesis array length: ",hypArray.length);
+
                     console.log("numBenedicts recognized: ",numBenedicts);
                     if(hypArray[hypArray.length - 1] === "BENEDICT" && hypArray.length > numBenedicts)
                     {   numBenedicts  = numBenedicts + 1;

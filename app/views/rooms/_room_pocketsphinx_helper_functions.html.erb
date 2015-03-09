@@ -53,6 +53,7 @@ intervalWait = setInterval(function() {
 
 // Record speech for 10s and export it as .wav to a server every 1s.
 function recordSpeech() {
+    console.log("recordspeech.recording: ",recordSpeech.recording);
     console.log("in recordSpeech function @@@");
     flag_ready = -1;
     // console.log("we are in record speech function @@@@");
