@@ -44,7 +44,7 @@ function recordSpeech() {
     append = "";
     i  = 0;
     first = true;
-    count = 10;
+    count = 5;
     flag = 0;
 
     intervally = setInterval(function(){
@@ -98,7 +98,7 @@ function recordSpeech() {
             ws.send("stop");    // Tells the server to stop listening and start analyzing
         });
 
-    }, 10000);
+    }, 5000);
 }
 
 // This function initializes an instance of the recorder
