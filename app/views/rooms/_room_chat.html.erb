@@ -81,7 +81,7 @@
 
     $.getJSON(url_string, function(user_object) {
 
-          $chatBody.append( "  <div class='media'>"+
+          $chatBody.append( "  <div class='media' id='chatty'>"+
            "    <a class='pull-"+ "left" +"' href='#'>"+
            "      <img class='media-object' src=" +
             user_object.image.url +
@@ -92,26 +92,27 @@
            "    </div>"+
            "  </div>" )
            var height = 0;
-           $('div, .media').each(function(i, value) {
+           $('div, #media').each(function(i, value) {
             height += parseInt($(this).height());
            });
 
-           $('div, .media').animate({scrollTop: height}, 'fast');
+           $('div, #media').animate({scrollTop: height}, 'fast');
 
     });
   }
 
   // media object to append to the page each time there's a new chat
   function mediaObjectSpeechrec(user, message) {
-         $speechRecBody.append( "  <div class='benny'>"+
+         flag = 1;
+         $speechRecBody.append( "  <div class='media' id='benny'>"+
            "    <div class='media-body', style='text-align: "+ "left" +"'>"+
            "      <h4 class='media-heading'>"+ user + ": " + message + "</h4>"+""+
            "    </div>"+
            "  </div>" );
 
            var height = 0;
-           $('div, .benny').each(function(i, value) {
+           $('div, #benny').each(function(i, value) {
             height += parseInt($(this).height());
            });
-           $('div, .benny').animate({scrollTop: height}, 'fast');
+           $('div, #benny').animate({scrollTop: height}, 'fast');
   }

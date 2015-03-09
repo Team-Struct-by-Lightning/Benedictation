@@ -15,7 +15,7 @@ var numBenedicts = 0;
     var port = "8888";
     var uri = "/recognize";
     ws = new WebSocket("ws://" + host + ":" + port + uri );
-    
+
     // get benedict's reply from the python server
     ws.onmessage = function(e) {
         console.log("data from server: ", e.data);
@@ -28,7 +28,7 @@ window.onload = function() {
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
     audioContext = new AudioContext();
 
-    
+
     // Initialize Icecomm
     console.log("Initialized Icecomm, waiting for user media permissions...");
 
@@ -109,7 +109,7 @@ window.onload = function() {
         else{
             appendNewBennyReply(options);
         }
-        
+
     });
 };
 
