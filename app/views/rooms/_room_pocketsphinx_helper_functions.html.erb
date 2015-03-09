@@ -13,6 +13,43 @@ var ws;
 var intervalk;
 var intervally;
 var flag;
+var flag_ready = 0;
+
+onLoadText = "Please wait";
+append = "";
+    i  = 0;
+    first_ready = true;
+    var flag_ready = 0;
+
+    intervally = setInterval(function(){
+         if(flag_ready == 1){
+            onLoadText = "Ready!";
+        }
+    },1000);
+
+intervalk = setInterval(function() {
+    if(first_ready === true){$("#loading").html("Please wait"); first_ready = false;}
+
+            if(onLoadText === "Please wait"){
+                 $("#loading").html("Please wait" + append);
+            }
+            else{
+                if (flag_ready == 1) {
+                    $("#loading").html("Ready to record.");
+                }
+                else {
+                    console.log(flag_ready + "   @@@@@@@@@");
+                }
+            }
+            append = append + ".";
+                i++;
+                if(i == 4) {
+                   append = "";
+                    i = 0;
+                }
+}, 500);
+
+
 
 
 
@@ -46,8 +83,10 @@ function recordSpeech() {
     first = true;
     count = 5;
     flag = 0;
+    flag_ready = -1;
 
     intervally = setInterval(function(){
+        flag_ready = -1;
         count -= 1;
         if(count == 0){
             originalText = "Analyzing";
@@ -59,7 +98,13 @@ function recordSpeech() {
         }
     },1000);
 
+    if (flag == 1){
+        flag = 0;
+        flag_ready = 1;
+    }
+
     intervalk = setInterval(function() {
+        flag_ready = -1;
         if(first === true){$("#loading").html("(" + count + ") " + "Recording"); first = false;}
 
         if(originalText === "Analyzing"){
@@ -163,8 +208,9 @@ var recognizerReady = function() {
 // I'm just trying to minimize confusing things right now.
 var startRecording = function()  {
     numBenedicts = 0;
-    console.log("In startRecording")
+    console.log("In startRecording");
     if (recorder && recorder.start(0)) console.log("Recording");
+    flag_ready = 1;
 };
 // Stops recording
 var stopRecording = function() {
