@@ -37,7 +37,6 @@
         "<% current_user.refresh_token_if_expired %>"
       var content = "benny" + "@@@" + "<%= current_user.name %>" + "@@@" + "<%= current_user.uid %>" + "@@@" +
     "<%= current_user.oauth_token %>" + "@@@" + reply;
-    $inputIM.val("");
     comm.send(content)
     // append what you send to your own page
     appendNewBennyReply({
