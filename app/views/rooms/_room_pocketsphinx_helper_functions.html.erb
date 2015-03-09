@@ -16,37 +16,35 @@ var flag;
 var flag_ready = 0;
 
 onLoadText = "Please wait";
-append = "";
-    i  = 0;
-    first_ready = true;
-    var flag_ready = 0;
+append_ready = "";
+i  = 0;
+first_ready = true;
+var flag_ready = 0;
 
-    intervally = setInterval(function(){
+    intervalReady = setInterval(function(){
          if(flag_ready == 1){
             onLoadText = "Ready!";
         }
     },1000);
 
-intervalk = setInterval(function() {
+intervalWait = setInterval(function() {
     if(first_ready === true){$("#loading").html("Please wait"); first_ready = false;}
 
             if(onLoadText === "Please wait"){
-                 $("#loading").html("Please wait" + append);
+                $("#loading").html("Please wait" + append_ready);
+                append_ready = append_ready + ".";
+                i++;
+                if(i == 4) {
+                   append_ready = "";
+                    i = 0;
+                }
             }
             else{
                 if (flag_ready == 1) {
                     $("#loading").html("Ready to record.");
                 }
-                else {
-                    console.log(flag_ready + "   @@@@@@@@@");
-                }
             }
-            append = append + ".";
-                i++;
-                if(i == 4) {
-                   append = "";
-                    i = 0;
-                }
+
 }, 500);
 
 
@@ -56,6 +54,7 @@ intervalk = setInterval(function() {
 // Record speech for 10s and export it as .wav to a server every 1s.
 function recordSpeech() {
     console.log("in recordSpeech function @@@");
+    flag_ready = -1;
     // console.log("we are in record speech function @@@@");
     // Some JavaScript trickery: functions are objects, so they can have variables.
     // In this case we simulate a "private static" variable indicating whether recording is already started or not;
@@ -66,7 +65,6 @@ function recordSpeech() {
     }
     if( recordSpeech.recording == 1 ) {
         // console.log("Called exportSpeech after recording already started; ");
-
         return; // Don't start recording if we are already.
     }
 
@@ -83,25 +81,23 @@ function recordSpeech() {
     first = true;
     count = 5;
     flag = 0;
-    flag_ready = -1;
+
+    intervalEnder = setInterval(function(){
+        if (flag == 1){
+            flag_ready = 1;
+            clearInterval(intervalk);
+            clearInterval(intervally);
+            flag = 0;
+        }
+    }, 100);
 
     intervally = setInterval(function(){
-        flag_ready = -1;
         count -= 1;
         if(count == 0){
             originalText = "Analyzing";
         }
-        if (flag == 1) {
-          clearInterval(intervally);
-          $("#loading").html("");
-          return;
-        }
     },1000);
 
-    if (flag == 1){
-        flag = 0;
-        flag_ready = 1;
-    }
 
     intervalk = setInterval(function() {
         flag_ready = -1;
@@ -119,11 +115,6 @@ function recordSpeech() {
         if(i == 4) {
             append = "";
             i = 0;
-        }
-        if (flag == 1) {
-          clearInterval(intervalk);
-          $("#loading").html("");
-          return;
         }
 
     }, 500);
