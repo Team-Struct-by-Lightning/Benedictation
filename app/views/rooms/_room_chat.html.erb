@@ -34,10 +34,12 @@
 
   // send your benedict query result to everyone else in the chat
   function sendBennyReply(reply){
-    "<% current_user.refresh_token_if_expired %>"
-      var content = "<%= current_user.name %>" + "@@@" + reply;
+        "<% current_user.refresh_token_if_expired %>"
+      var content = "benny" + "@@@" + "<%= current_user.name %>" + "@@@" + "<%= current_user.uid %>" + "@@@" +
+    "<%= current_user.oauth_token %>" + "@@@" + reply;
+    $inputIM.val("");
     comm.send(content)
-    // append your result to your own page
+    // append what you send to your own page
     appendNewBennyReply({
         data: content,
         callerID: "<%= current_user.name %>"
@@ -69,9 +71,17 @@
   // stick new reply from benny onto the speechrec body
   function appendNewBennyReply(options) {
     var message_data = options.data.split("@@@");
-    var caller_name = message_data[0];
-    var benny_reply = message_data[1]
-    mediaObjectSpeechrec(caller_name, benny_reply);
+    var caller_name = message_data[1];
+    var caller_uid = message_data[2];
+    var caller_token = message_data[3];
+    message_data.reverse();
+    message_data.pop();
+    message_data.pop();
+    message_data.pop();
+    message_data.pop();
+    message_data.reverse();
+    message_data.join("@@@");
+    mediaObjectSpeechrec(caller_name, caller_uid, caller_token, message_data);
   }
 
   // media object to append to the page each time there's a new chat
@@ -92,27 +102,38 @@
            "    </div>"+
            "  </div>" )
            var height = 0;
-           $('div, #media').each(function(i, value) {
+           $('div, #chatty').each(function(i, value) {
             height += parseInt($(this).height());
            });
 
-           $('div, #media').animate({scrollTop: height}, 'fast');
+           $('div, #chatty').animate({scrollTop: height}, 'fast');
 
     });
   }
 
   // media object to append to the page each time there's a new chat
-  function mediaObjectSpeechrec(user, message) {
+  function mediaObjectSpeechrec(user, uid, token, message) {
          flag = 1;
-         $speechRecBody.append( "  <div class='media' id='benny'>"+
+         var url_string = "https://www.googleapis.com/plus/v1/people/" + uid + "?access_token=" + token;
+
+          $.getJSON(url_string, function(user_object) {
+
+          $speechRecBody.append( "  <div class='media' id='benny'>"+
+           "    <a class='pull-"+ "left" +"' href='#'>"+
+           "      <img class='media-object' src=" +
+            user_object.image.url +
+           ">" +
+           "    </a>"+
            "    <div class='media-body', style='text-align: "+ "left" +"'>"+
            "      <h4 class='media-heading'>"+ user + ": " + message + "</h4>"+""+
            "    </div>"+
-           "  </div>" );
-
+           "  </div>" )
            var height = 0;
            $('div, #benny').each(function(i, value) {
             height += parseInt($(this).height());
            });
+
            $('div, #benny').animate({scrollTop: height}, 'fast');
+
+    });
   }

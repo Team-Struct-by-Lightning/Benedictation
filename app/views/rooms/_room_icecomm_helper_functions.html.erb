@@ -104,11 +104,11 @@ window.onload = function() {
         console.log("data: ",options.data);
         var message_data = options.data.split("@@@");
         // Benedict replies will only have user's name and their benedict query, chat messages have > 2 fields
-        if(message_data.length > 2){
-            appendNewIM(options);
+        if(message_data[0] === "benny"){
+            appendNewBennyReply(options);
         }
         else{
-            appendNewBennyReply(options);
+            appendNewIM(options);
         }
 
     });
