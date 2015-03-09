@@ -1,75 +1,126 @@
-    ///////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////====ICECOMM====/////////////////////////////////
-    //////////////////////////////Helper Functions/////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////
-    window.onload = function() {
-        window.AudioContext = window.AudioContext || window.webkitAudioContext;
-        audioContext = new AudioContext();
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////====ICECOMM====/////////////////////////////////
+//////////////////////////////Helper Functions/////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
-        console.log("Initialized Icecomm, waiting for user media permissions...");
+var comm = new Icecomm('9gv3ODZorBS2kVuNwnugBeV432PcNX3Qn0HmW33ofxK/u5Xolu');
+comm.connect(window.location.pathname);
 
-        comm.on('local', function(options) {
-            localVideo.src = options.stream;
-            localAudioStream = options.rawStream;
-            console.log(localAudioStream.getAudioTracks());
-            console.log("Obtained user camera/microphone approval");
+var numBenedicts = 1;
 
-            // Start the recognizer inside a WebWorker, and set up callbacks for the responses it will post.
-            callbackManager = new CallbackManager();
-            spawnWorker("<%= javascript_path 'recognizer.js' %>", function(worker) {
-                worker.onmessage = function(e) {
-                    // This is the case when we have a callback id to be called
-                    if (e.data.hasOwnProperty('id')) {
-                        var clb = callbackManager.get(e.data['id']);
-                        var data = {};
-                        if ( e.data.hasOwnProperty('data')) data = e.data.data;
-                        if(clb) clb(data);
+
+
+    // Set up the WebSocket in onload; so that it is available for use elsewhere.
+    var host = "localhost";
+    var port = "8888";
+    var uri = "/recognize";
+    ws = new WebSocket("ws://" + host + ":" + port + uri );
+
+    // get benedict's reply from the python server
+    ws.onmessage = function(e) {
+        console.log("data from server: ", e.data);
+        if(e.data != ""){
+            sendBennyReply(e.data);
+        }
+        else{
+            flag = 1;
+        }
+    recordSpeech.recording = 0;
+    }
+
+window.onload = function() {
+    window.AudioContext = window.AudioContext || window.webkitAudioContext;
+    audioContext = new AudioContext();
+
+
+    // Initialize Icecomm
+    console.log("Initialized Icecomm, waiting for user media permissions...");
+
+    comm.on('local', function(options) {
+        localVideo.src = options.stream;
+        localAudioStream = options.rawStream;
+        console.log(localAudioStream.getAudioTracks());
+        console.log("Obtained user camera/microphone approval");
+
+        // Start the "benedict" recognizer inside a WebWorker, and set up callbacks for the responses it will post.
+        callbackManager = new CallbackManager();
+        spawnWorker("<%= javascript_path 'recognizer.js' %>", function(worker) {
+            worker.onmessage = function(e) {
+                // This is the case when we have a callback id to be called
+                if (e.data.hasOwnProperty('id')) {
+                    var clb = callbackManager.get(e.data['id']);
+                    var data = {};
+                    if ( e.data.hasOwnProperty('data')) data = e.data.data;
+                    if(clb) clb(data);
+                }
+                // This is a case when the recognizer has a new hypothesis
+                if (e.data.hasOwnProperty('hyp')) {
+                    var newHyp = e.data.hyp;
+                    if (e.data.hasOwnProperty('final') &&  e.data.final) newHyp = "Final: " + newHyp;
+                    console.log("New hypothesis from recognizer: " + newHyp);  // this is where we do something with it
+
+
+                    // start recording after we hear "benedict"
+                    var hypArray = newHyp.split(' ');
+                    console.log("hypothesis array: ",hypArray);
+                                        console.log("hypothesis array length: ",hypArray.length);
+
+                    console.log("numBenedicts recognized: ",numBenedicts);
+                    if(hypArray[hypArray.length - 1] === "BENEDICT" && hypArray.length > numBenedicts)
+                    {   numBenedicts  = numBenedicts + 1;
+                        recordSpeech();
                     }
-                    // This is a case when the recognizer has a new hypothesis
-                    if (e.data.hasOwnProperty('hyp')) {
-                        var newHyp = e.data.hyp;
-                        if (e.data.hasOwnProperty('final') &&  e.data.final) newHyp = "Final: " + newHyp;
-                        console.log("New hypothesis from recognizer: " + newHyp);  // this is where we do something with it
-                    }
-                    // This is the case when we have an error
-                    if (e.data.hasOwnProperty('status') && (e.data.status == "error")) {
-                        console.log("Error in " + e.data.command + " with code " + e.data.code);
-                    }
-                };
-                // Once the worker is fully loaded, we can call the initialize function
-                // wherein the keyword(s) to recognize are passed in
-                console.log("Web Worker loaded, initializing recognizer...");
-                initRecognizer();
-            });
-
-            // Set up the AudioRecorder (used by PocketSphinx)
-            var input = audioContext.createMediaStreamSource(localAudioStream);
-            var audioRecorderConfig = {}; // I'm being basic
-            recorder = new AudioRecorder(input, audioRecorderConfig);
-            if (recorder) console.log("Audio recorder ready");
-
-            // If a recognizer is ready, set it to consume audio data from the recorder.
-            if (recognizer) recorder.consumers = [recognizer];
-            console.log("Recognizer listening to audio recorder. Begin speech recognition!");
+                }
+                // This is the case when we have an error
+                if (e.data.hasOwnProperty('status') && (e.data.status == "error")) {
+                    console.log("Error in " + e.data.command + " with code " + e.data.code);
+                }
+            };
+            // Once the worker is fully loaded, we can call the initialize function
+            // wherein the keyword(s) to recognize are passed in
+            console.log("Web Worker loaded, initializing recognizer...");
+            initRecognizer();
         });
 
-        comm.on('connected', function(options) {
-            // append video elements one after the other when new people join the chat
-            document.getElementById("video-chat-body").appendChild(options.video);
-        });
+        // Set up the AudioRecorder (used by PocketSphinx)
+        var input = audioContext.createMediaStreamSource(localAudioStream);
+        var audioRecorderConfig = {}; // I'm being basic
+        recorder = new AudioRecorder(input, audioRecorderConfig);
+        speechRegRec = new Recorder(input);
+        if (recorder) console.log("Audio recorder ready");
 
-        comm.on('disconnect', function(options) {
-            console.log('disconnect happening');
-            document.getElementById(options.callerID).remove();
-        });
+        // If the recognizer is ready, set it to consume audio data from the recorder.
+        if (recognizer) recorder.consumers = [recognizer];
+        console.log("Recognizer listening to audio recorder. Begin speech recognition!");
+    });
 
-        comm.on('data', function(options) {
-            console.log("data: ",options.data);
+    comm.on('connected', function(options) {
+        // append video elements one after the other when new people join the chat
+        document.getElementById("video-chat-body").appendChild(options.video);
+    });
+
+    comm.on('disconnect', function(options) {
+        console.log('disconnect happening');
+        document.getElementById(options.callerID).remove();
+        stopRecording();
+    });
+
+    comm.on('data', function(options) {
+        console.log("data: ",options.data);
+        var message_data = options.data.split("@@@");
+        // Benedict replies will only have user's name and their benedict query, chat messages have > 2 fields
+        if(message_data[0] === "benny"){
+            appendNewBennyReply(options);
+        }
+        else{
             appendNewIM(options);
-        });
-    };
+        }
 
-    var wordList = [["ONE", "W AH N"], ["TWO", "T UW"], ["THREE", "TH R IY"], ["FOUR", "F AO R"], ["FIVE", "F AY V"], ["SIX", "S IH K S"], ["SEVEN", "S EH V AH N"], ["EIGHT", "EY T"], ["NINE", "N AY N"], ["ZERO", "Z IH R OW"], ["NEW-YORK", "N UW Y AO R K"], ["NEW-YORK-CITY", "N UW Y AO R K S IH T IY"], ["PARIS", "P AE R IH S"] , ["PARIS(2)", "P EH R IH S"], ["SHANGHAI", "SH AE NG HH AY"], ["SAN-FRANCISCO", "S AE N F R AE N S IH S K OW"], ["LONDON", "L AH N D AH N"], ["BERLIN", "B ER L IH N"], ["SUCKS", "S AH K S"], ["ROCKS", "R AA K S"], ["IS", "IH Z"], ["NOT", "N AA T"], ["GOOD", "G IH D"], ["GOOD(2)", "G UH D"], ["GREAT", "G R EY T"], ["WINDOWS", "W IH N D OW Z"], ["LINUX", "L IH N AH K S"], ["UNIX", "Y UW N IH K S"], ["MAC", "M AE K"], ["AND", "AE N D"], ["AND(2)", "AH N D"], ["O", "OW"], ["S", "EH S"], ["X", "EH K S"]];
+    });
+};
 
-    document.getElementById("startBtn").onclick=startRecording;
-    document.getElementById("stopBtn").onclick=stopRecording;
+// This is the list of words that need to be added to the recognizer
+// This follows the CMU dictionary format
+var wordList = [["ONE", "W AH N"], ["TWO", "T UW"], ["THREE", "TH R IY"], ["FOUR", "F AO R"], ["FIVE", "F AY V"], ["SIX", "S IH K S"], ["SEVEN", "S EH V AH N"], ["EIGHT", "EY T"], ["NINE", "N AY N"], ["ZERO", "Z IH R OW"], ["NEW-YORK", "N UW Y AO R K"], ["NEW-YORK-CITY", "N UW Y AO R K S IH T IY"], ["PARIS", "P AE R IH S"] , ["PARIS(2)", "P EH R IH S"], ["SHANGHAI", "SH AE NG HH AY"], ["SAN-FRANCISCO", "S AE N F R AE N S IH S K OW"], ["LONDON", "L AH N D AH N"], ["BERLIN", "B ER L IH N"], ["SUCKS", "S AH K S"], ["ROCKS", "R AA K S"], ["IS", "IH Z"], ["NOT", "N AA T"], ["GOOD", "G IH D"], ["GOOD(2)", "G UH D"], ["GREAT", "G R EY T"], ["WINDOWS", "W IH N D OW Z"], ["LINUX", "L IH N AH K S"], ["UNIX", "Y UW N IH K S"], ["MAC", "M AE K"], ["AND", "AE N D"], ["AND(2)", "AH N D"], ["O", "OW"], ["S", "EH S"], ["X", "EH K S"], ["BENEDICT", "B EH N AH D IH K T"]];
+var keywords = [{title: "ONE", g: "ONE"}, {title: "TWO", g: "TWO"}, {title: "NEW-YORK", g: "NEW-YORK"}, {title: "BENEDICT", g: "BENEDICT"}];
+var keywordIds = [];

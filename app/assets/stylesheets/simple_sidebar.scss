@@ -149,6 +149,12 @@
 }
 
 
+#speech-rec-body {
+  max-height: 300px;
+  overflow: auto;
+  word-wrap: break-word;
+}
+
 #speech-rec {
     width: 150%;
     margin-right: 50%;
@@ -165,17 +171,6 @@
     width: 100%
 }
 
-#startBtn {
-    margin-top: 5%;
-    margin-right: 0%;
-    float: left;
-}
-
-#stopBtn {
-    margin-left: 0%;
-    float: right;
-    margin-top: 5%;
-}
 
 #js-send-button-im.btn.btn-primary {
     height: 140%;
