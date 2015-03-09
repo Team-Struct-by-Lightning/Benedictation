@@ -21,6 +21,7 @@ var numBenedicts = 0;
         console.log("data from server: ", e.data);
         if(e.data != ""){
             sendBennyReply(e.data);
+            recordSpeech.recording = 0;
         }
     }
 

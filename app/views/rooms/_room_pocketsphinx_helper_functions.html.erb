@@ -89,7 +89,7 @@ function recordSpeech() {
     // Changed setInterval to setTimeout -- maybe cleaner
     setTimeout(function() {
         speechRegRec.stop();
-        recordSpeech.recording = 0; // Set the flag indicating we're no longer recording.
+        //recordSpeech.recording = 0; // Set the flag indicating we're no longer recording.
         // console.log("Stopped recording speech");
         speechRegRec.exportWAV(function(blob) {
             speechRegRec.clear();
