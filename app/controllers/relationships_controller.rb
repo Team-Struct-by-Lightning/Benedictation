@@ -1,11 +1,12 @@
 class RelationshipsController < ApplicationController
 
 	def destroy
-		group = Relationship.find(params[:id]).group_id
+		groupID = Relationship.find_by_id(params[:id]).group_id
 
-	    current_user.remove_relationship(group)
-	  if (Relationship.where(group_id: group.id).empty?)
-	  	Group.delete(group_id)
+		Relationship.delete(Relationship.find_by_id(params[:id]).group_id)
+
+	  if (Relationship.where(group_id: groupID).empty?)
+	  	Group.delete(Group.find_by_id(groupID))
 	  end
 	  redirect_to chat_path
 	end
