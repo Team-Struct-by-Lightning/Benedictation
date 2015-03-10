@@ -53,7 +53,6 @@ intervalWait = setInterval(function() {
 
 // Record speech for 10s and export it as .wav to a server every 1s.
 function recordSpeech() {
-    console.log("recordspeech.recording: ",recordSpeech.recording);
     console.log("in recordSpeech function @@@");
     flag_ready = -1;
     // console.log("we are in record speech function @@@@");
@@ -62,17 +61,13 @@ function recordSpeech() {
     // if it is, we don't do anything.
     if( typeof recordSpeech.recording === 'undefined' ) {   // If it's not yet initialized:
         recordSpeech.recording = 0;                        // Initialize it.
-        // console.log("Initializing exportSpeech");
     }
     if( recordSpeech.recording == 1 ) {
-        // console.log("Called exportSpeech after recording already started; ");
         return; // Don't start recording if we are already.
     }
 
-    // console.log(recordSpeech.recording + " this is what was returned!!!");
-    // console.log("Recording!!!!!! @@@@@kevin")
-    speechRegRec.record(); //start recorder
-    console.log("starting to record 10 seconds of speech");
+    speechRegRec.record(); //start speechrec recorder
+    console.log("starting to record 5 seconds of speech");
     recordSpeech.recording = 1; // Set the flag indicating we're recording.
     ws.send("start"); //tell backend server to start listening
 
@@ -126,8 +121,6 @@ function recordSpeech() {
     // Changed setInterval to setTimeout -- maybe cleaner
     setTimeout(function() {
         speechRegRec.stop();
-        //recordSpeech.recording = 0; // Set the flag indicating we're no longer recording.
-        // console.log("Stopped recording speech");
         speechRegRec.exportWAV(function(blob) {
             speechRegRec.clear();
             ws.send(blob);
@@ -181,7 +174,7 @@ var feedWords = function(words) {
 // This initializes the recognizer. When it calls back, we add words
 var initRecognizer = function() {
     // You can pass parameters to the recognizer, such as : {command: 'initialize', data: [["-hmm", "my_model"], ["-fwdflat", "no"]]}
-    postRecognizerJob({command: 'initialize', data: [["-kws_threshold","2"]]},    // took off the threshold argument.
+    postRecognizerJob({command: 'initialize', data: [["-kws_threshold","1"]]},    // took off the threshold argument.
                     function() {
                                 if (recorder) recorder.consumers = [recognizer];
                                 feedWords(wordList);});
@@ -199,7 +192,6 @@ var recognizerReady = function() {
 // This current example only uses one keyword, so hardcoding id=0 is okay. This shouldn't stay this way.
 // I'm just trying to minimize confusing things right now.
 var startRecording = function()  {
-    numBenedicts = 0;
     console.log("In startRecording");
     if (recorder && recorder.start(0)) console.log("Recording");
     flag_ready = 1;
