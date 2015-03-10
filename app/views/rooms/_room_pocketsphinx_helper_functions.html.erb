@@ -64,10 +64,11 @@ function recordSpeech() {
     }
     if( recordSpeech.recording == 1 ) {
         return; // Don't start recording if we are already.
+        console.log("Tried to start recording speech when the recorder was already recording @@@")
     }
 
     speechRegRec.record(); //start speechrec recorder
-    console.log("starting to record 5 seconds of speech");
+    console.log("starting to record 5 seconds of speech @@@");
     recordSpeech.recording = 1; // Set the flag indicating we're recording.
     ws.send("start"); //tell backend server to start listening
 
@@ -174,7 +175,7 @@ var feedWords = function(words) {
 // This initializes the recognizer. When it calls back, we add words
 var initRecognizer = function() {
     // You can pass parameters to the recognizer, such as : {command: 'initialize', data: [["-hmm", "my_model"], ["-fwdflat", "no"]]}
-    postRecognizerJob({command: 'initialize', data: [["-kws_threshold","1"]]},    // took off the threshold argument.
+    postRecognizerJob({command: 'initialize', data: [["-kws_threshold","3"]]}, 
                     function() {
                                 if (recorder) recorder.consumers = [recognizer];
                                 feedWords(wordList);});
@@ -192,13 +193,13 @@ var recognizerReady = function() {
 // This current example only uses one keyword, so hardcoding id=0 is okay. This shouldn't stay this way.
 // I'm just trying to minimize confusing things right now.
 var startRecording = function()  {
-    console.log("In startRecording");
-    if (recorder && recorder.start(0)) console.log("Recording");
+    console.log("startRecording function");
+    if (recorder && recorder.start(0))
     flag_ready = 1;
 };
 // Stops recording
 var stopRecording = function() {
     recorder && recorder.stop();
-    console.log("Recording ended");
+    console.log("stopRecording function");
 };
 
