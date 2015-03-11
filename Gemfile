@@ -14,6 +14,7 @@ gem 'rest-client',          '~> 1.7.3'
 gem "omniauth-google-oauth2", "~> 0.2.1"
 gem 'sdoc',                 '0.4.0', group: :doc
 
+
 group :development, :test do
   gem 'sqlite3',     '1.3.9'
   #gem 'byebug',      '3.4.0'
