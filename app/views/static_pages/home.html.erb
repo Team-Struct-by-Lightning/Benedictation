@@ -5,11 +5,37 @@
 
 <div class= "cover_image">
   <div class = "overlay"></div>
-  <div class ="centered_text">
-    Welcome to Benedictation
+  <div class ="centered_title">
+    Benedictation
+  </div>
+  <div class ="centered_subtitle">
+    The smart way to meet.
+    <div>
+      <% if current_user %>
+      <% else %>
+        <%= link_to "Sign in with Google", "/auth/google_oauth2", id: "sign_in", class: "btn btn-lg btn-primary" %>
+      <% end %>
+    </div>
+  </div>
+
+</div>
+<div class="marketing">
+  <div class = "row">
+    <div class="col-md-4">
+      <img src="assets/lightbulb.png">
+      <h2>Answers Questions</h2>
+    </div>
+    <div class="col-md-4">
+      <img src="assets/speech.png">
+      <h2>Group Chats</h2>
+    </div>
+    <div class="col-md-4">
+      <img src="assets/notes.png">
+      <h2>Takes Notes</h2>
+    </div>
   </div>
 </div>
-
+<!--
 <div class="center jumbotron">
   <h1>Welcome to Benedictation</h1>
 
@@ -23,3 +49,4 @@
       <% end %>
     </div>
 </div>
+-->

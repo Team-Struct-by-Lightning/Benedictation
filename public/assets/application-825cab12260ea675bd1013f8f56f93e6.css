@@ -8036,12 +8036,17 @@ button.close {
 }
 
 /* line 17, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
+html {
+  width: 100%;
+}
+
+/* line 20, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
 body {
   width: 100%;
 }
 
 /* miscellaneous */
-/* line 22, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
+/* line 25, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
 .debug_dump {
   clear: both;
   float: left;
@@ -8053,27 +8058,27 @@ body {
 }
 
 /* sidebar */
-/* line 32, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
+/* line 35, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
 aside section.user_info {
   margin-top: 20px;
 }
-/* line 35, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
+/* line 38, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
 aside section {
   padding: 10px 0;
   margin-top: 20px;
 }
-/* line 38, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
+/* line 41, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
 aside section:first-child {
   border: 0;
   padding-top: 0;
 }
-/* line 42, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
+/* line 45, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
 aside section span {
   display: block;
   margin-bottom: 3px;
   line-height: 1;
 }
-/* line 47, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
+/* line 50, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
 aside section h1 {
   font-size: 1.4em;
   text-align: left;
@@ -8082,36 +8087,36 @@ aside section h1 {
   margin-top: 0px;
 }
 
-/* line 57, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
+/* line 60, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
 .gravatar {
   float: left;
   margin-right: 10px;
 }
 
-/* line 63, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
+/* line 66, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
 .gravatar_edit {
   margin-top: 15px;
 }
 
 /* forms */
-/* line 67, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
+/* line 70, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
 .checkbox {
   margin-top: -10px;
   margin-bottom: 10px;
 }
-/* line 70, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
+/* line 73, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
 .checkbox span {
   margin-left: 20px;
   font-weight: normal;
 }
 
-/* line 77, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
+/* line 80, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
 #session_remember_me {
   width: auto;
   margin-left: 0;
 }
 
-/* line 81, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
+/* line 84, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
 input, textarea, select, .uneditable-input {
   border: 1px solid #bbb;
   width: 100%;
@@ -8121,62 +8126,62 @@ input, textarea, select, .uneditable-input {
   box-sizing: border-box;
 }
 
-/* line 88, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
+/* line 91, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
 input {
   height: auto !important;
 }
 
-/* line 92, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
+/* line 95, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
 .btn.btn-primary {
   margin-top: 15px;
 }
 
-/* line 96, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
+/* line 99, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
 #error_explanation {
   color: red;
 }
-/* line 98, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
+/* line 101, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
 #error_explanation ul {
   color: red;
   margin: 0 0 30px 0;
 }
 
-/* line 106, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
+/* line 109, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
 .field_with_errors .form-control {
   color: #a94442;
 }
 
-/* line 110, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
+/* line 113, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
 html {
   overflow-y: scroll;
 }
 
-/* line 114, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
+/* line 117, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
 section {
   overflow: auto;
 }
 
-/* line 118, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
+/* line 121, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
 textarea {
   resize: vertical;
 }
 
-/* line 122, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
+/* line 125, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
 .center {
   text-align: center;
 }
 
-/* line 126, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
+/* line 129, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
 .center h1 {
   margin-bottom: 10px;
 }
 
-/* line 130, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
+/* line 133, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
 h1, h2, h3, h4, h5, h6 {
   line-height: 1;
 }
 
-/* line 135, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
+/* line 138, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
 h1 {
   font-size: 3em;
   letter-spacing: -2px;
@@ -8184,7 +8189,7 @@ h1 {
   text-align: center;
 }
 
-/* line 142, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
+/* line 145, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
 h2 {
   font-size: 1.2em;
   letter-spacing: -1px;
@@ -8194,13 +8199,13 @@ h2 {
   color: #777777;
 }
 
-/* line 151, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
+/* line 154, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
 p {
   font-size: 1.1em;
   line-height: 1.7em;
 }
 
-/* line 156, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
+/* line 159, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
 #logo {
   float: left;
   margin-right: 10px;
@@ -8211,13 +8216,13 @@ p {
   padding-top: 9px;
   font-weight: bold;
 }
-/* line 165, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
+/* line 168, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
 #logo:hover {
   color: red;
   text-decoration: none;
 }
 
-/* line 170, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
+/* line 173, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
 #red_logo {
   float: left;
   font-size: 1.7em;
@@ -8227,60 +8232,62 @@ p {
   padding-top: 9px;
   font-weight: bold;
 }
-/* line 178, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
+/* line 181, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
 #red_logo:hover {
   color: #fff;
   text-decoration: none;
 }
 
 /* footer */
-/* line 186, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
+/* line 189, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
 footer {
   margin-top: 45px;
   padding-top: 5px;
   border-top: 1px solid #eaeaea;
   color: #777777;
 }
-/* line 191, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
+/* line 194, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
 footer a {
   color: #555;
 }
-/* line 193, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
+/* line 196, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
 footer a:hover {
   color: #222;
 }
-/* line 197, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
+/* line 200, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
 footer small {
   float: left;
 }
-/* line 200, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
+/* line 203, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
 footer ul {
   float: right;
   list-style: none;
 }
-/* line 203, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
+/* line 206, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
 footer ul li {
   float: left;
   margin-left: 15px;
 }
 
 /* Users index */
-/* line 211, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
+/* line 214, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
 .users {
   list-style: none;
   margin: 0;
 }
-/* line 214, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
+/* line 217, /home/trevor/benedictation/app/assets/stylesheets/custom.css.scss */
 .users li {
   overflow: auto;
   padding: 10px 0;
   border-bottom: 1px solid #eeeeee;
 }
+@import url(http://fonts.googleapis.com/css?family=Roboto+Slab);
+@import url(http://fonts.googleapis.com/css?family=Roboto+Slab);
 /* line 3, /home/trevor/benedictation/app/assets/stylesheets/home.css.scss */
 .cover_image {
   background: url(smile.jpg) no-repeat fixed;
   width: 100%;
-  height: 650px;
+  height: 660px;
   padding-left: 0;
   padding-right: 0;
   background-size: cover;
@@ -8308,12 +8315,13 @@ footer ul li {
   width: 100%;
 }
 
-/* line 32, /home/trevor/benedictation/app/assets/stylesheets/home.css.scss */
-.centered_text {
-  position: relative;
+/* line 34, /home/trevor/benedictation/app/assets/stylesheets/home.css.scss */
+.centered_title {
+  font-family: 'Roboto Slab', serif;
+  position: absolute;
   top: 50%;
   left: 50%;
-  font-size: 5em;
+  font-size: 6em;
   text-align: center;
   padding-left: 10%;
   padding-right: 10%;
@@ -8323,6 +8331,48 @@ footer ul li {
   -webkit-transform: translate(-50%, -50%);
   -moz-transform: translate(-50%, -50%);
   -o-transform: translate(-50%, -50%);
+}
+
+/* line 50, /home/trevor/benedictation/app/assets/stylesheets/home.css.scss */
+.centered_subtitle {
+  font-family: 'Roboto Slab', serif;
+  position: absolute;
+  top: 65%;
+  left: 50%;
+  font-size: 3em;
+  text-align: center;
+  padding-left: 10%;
+  padding-right: 10%;
+  color: white;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+}
+
+/* line 66, /home/trevor/benedictation/app/assets/stylesheets/home.css.scss */
+.marketing {
+  padding-right: 15px;
+  margin-top: 20px;
+  padding-left: 15px;
+}
+
+/* line 74, /home/trevor/benedictation/app/assets/stylesheets/home.css.scss */
+.marketing .col-md-4 {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* line 79, /home/trevor/benedictation/app/assets/stylesheets/home.css.scss */
+.marketing h2 {
+  font-weight: normal;
+}
+
+/* line 82, /home/trevor/benedictation/app/assets/stylesheets/home.css.scss */
+.marketing .col-md-4 p {
+  margin-right: 10px;
+  margin-left: 10px;
 }
 
 /*!
