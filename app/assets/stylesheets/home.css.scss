@@ -1,10 +1,10 @@
 
 
-.coverimage {
+.cover_image {
 
   background: url(smile.jpg)  no-repeat fixed;
   width: 100%;
-  height: 1067px;
+  height: 650px;
   padding-left: 0;
   padding-right: 0;
   background-size: cover;
@@ -21,4 +21,26 @@
   top:0;
 
 }
-
+.overlay{
+    opacity: .37;
+    background-color: black;
+    position: absolute;
+    left: 0; top: 0; 
+    height: 100%; 
+    width: 100%;
+}
+.centered_text {
+    position:relative;
+    top: 50%;
+    left: 50%;
+    font-size: 5em;
+    text-align:center;
+    padding-left: 10%;
+    padding-right: 10%;
+    color: white;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+}
