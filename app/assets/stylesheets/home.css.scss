@@ -1,7 +1,11 @@
 
-@import url(http://fonts.googleapis.com/css?family=Roboto+Slab);
-.cover_image {
 
+/*===Fonts===*/
+@import url(http://fonts.googleapis.com/css?family=Roboto+Slab);
+
+
+/*===Images===*/
+.cover_image {
   background: url(smile.jpg)  no-repeat fixed;
   width: 100%;
   height: 660px;
@@ -19,8 +23,27 @@
   position:relative;
   left:0;
   top:0;
-
 }
+.contact_image {
+  background: url(contact.jpg)  no-repeat fixed;
+  width: 100%;
+  height: 660px;
+  padding-left: 0;
+  padding-right: 0;
+  background-size: cover;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-attachment: fixed;
+  background-position: center center;
+  min-height: 100%;
+  min-width: 100%;
+  box-sizing: content-box;
+  position:relative;
+  left:0;
+  top:0;
+}
+
 .overlay{
     opacity: .37;
     background-color: black;
@@ -30,7 +53,6 @@
     width: 100%;
 }
 
-@import url(http://fonts.googleapis.com/css?family=Roboto+Slab);
 .centered_title {
   font-family: 'Roboto Slab', serif;
     position:absolute;
@@ -63,16 +85,16 @@
     -moz-transform: translate(-50%, -50%);
     -o-transform: translate(-50%, -50%);
 }
+
+/*===Marketing section===*/
 .marketing {
   padding-right: 15px;
-
   margin-top:20px;
   padding-left: 15px;
   
 }
 
 .marketing .col-md-4 {
-
   margin-bottom: 20px;
   text-align: center;
 }
