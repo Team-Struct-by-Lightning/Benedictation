@@ -8386,6 +8386,21 @@ footer ul li {
   padding-right: 5%;
 }
 
+/* line 15, /Users/Kevin/Benedictation/app/assets/stylesheets/rooms.scss */
+#benny {
+  padding-bottom: 4%;
+}
+
+/* line 19, /Users/Kevin/Benedictation/app/assets/stylesheets/rooms.scss */
+.navbar-fixed-top {
+  background: #000;
+}
+
+/* line 23, /Users/Kevin/Benedictation/app/assets/stylesheets/rooms.scss */
+.navbar-inverse {
+  background-color: #000;
+}
+
 /*!
  * Start Bootstrap - Simple Sidebar HTML Template (http://startbootstrap.com)
  * Code licensed under the Apache License v2.0.
@@ -16440,7 +16455,7 @@ button.close {
   height: 100%;
   margin-left: -250px;
   overflow-y: auto;
-  background: #222;
+  background: #000;
   -webkit-transition: all 0.5s ease;
   -moz-transition: all 0.5s ease;
   -o-transition: all 0.5s ease;
