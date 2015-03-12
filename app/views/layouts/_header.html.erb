@@ -1,10 +1,10 @@
-<header class="navbar navbar-fixed-top navbar-inverse" data-no-turbolink>
+<header class="navbar navbar-fixed-top navbar-inverse" id="header-nav-bar" data-no-turbolink>
   <div class="container">
-    <%= link_to "benedictation", root_path, id: "logo" %>
+    <%= link_to "bene", root_path, id: "red_logo" %><%= link_to "dictation", root_path, id: "logo" %>
     <nav>
       <ul class="nav navbar-nav navbar-right">
         <% if current_user %>
-        	<li><%= link_to "#{current_user.name}", chat_path %></li>
+        	<li><%= link_to "#{current_user.name}'s Chatrooms", chat_path %></li>
         	<li><%= link_to "Home",   root_path %></li>
           <li><%= link_to "Log out", signout_path, id: "sign_out" %></li>
       	<% else %>
