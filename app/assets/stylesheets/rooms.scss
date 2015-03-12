@@ -1,3 +1,13 @@
 // Place all the styles related to the Rooms controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+.room-layout-table {
+	width: 100%;
+}
+
+#chat-body {
+    width: 60%;
+    margin-right: 5%;
+    padding-right: 5%;
+}

@@ -8374,6 +8374,17 @@ footer ul li {
   margin-right: 10px;
   margin-left: 10px;
 }
+/* line 5, /Users/Kevin/Benedictation/app/assets/stylesheets/rooms.scss */
+.room-layout-table {
+  width: 100%;
+}
+
+/* line 9, /Users/Kevin/Benedictation/app/assets/stylesheets/rooms.scss */
+#chat-body {
+  width: 60%;
+  margin-right: 5%;
+  padding-right: 5%;
+}
 
 /*!
  * Start Bootstrap - Simple Sidebar HTML Template (http://startbootstrap.com)
@@ -16573,51 +16584,44 @@ button.close {
   margin-right: 50%;
 }
 
-/* line 165, /Users/Kevin/Benedictation/app/assets/stylesheets/simple_sidebar.scss */
-#chat-body {
-  width: 73%;
-  margin-right: 5%;
-  padding-right: 5%;
-}
-
-/* line 172, /Users/Kevin/Benedictation/app/assets/stylesheets/simple_sidebar.scss */
+/* line 167, /Users/Kevin/Benedictation/app/assets/stylesheets/simple_sidebar.scss */
 #chat-location {
   width: 100%;
 }
 
-/* line 177, /Users/Kevin/Benedictation/app/assets/stylesheets/simple_sidebar.scss */
+/* line 172, /Users/Kevin/Benedictation/app/assets/stylesheets/simple_sidebar.scss */
 #js-send-button-im.btn.btn-primary {
   height: 140%;
 }
 
 @media (min-width: 768px) {
-  /* line 182, /Users/Kevin/Benedictation/app/assets/stylesheets/simple_sidebar.scss */
+  /* line 177, /Users/Kevin/Benedictation/app/assets/stylesheets/simple_sidebar.scss */
   #wrapper {
     padding-left: 250px;
   }
 
-  /* line 186, /Users/Kevin/Benedictation/app/assets/stylesheets/simple_sidebar.scss */
+  /* line 181, /Users/Kevin/Benedictation/app/assets/stylesheets/simple_sidebar.scss */
   #wrapper.toggled {
     padding-left: 100;
   }
 
-  /* line 190, /Users/Kevin/Benedictation/app/assets/stylesheets/simple_sidebar.scss */
+  /* line 185, /Users/Kevin/Benedictation/app/assets/stylesheets/simple_sidebar.scss */
   #sidebar-wrapper {
     width: 250px;
   }
 
-  /* line 194, /Users/Kevin/Benedictation/app/assets/stylesheets/simple_sidebar.scss */
+  /* line 189, /Users/Kevin/Benedictation/app/assets/stylesheets/simple_sidebar.scss */
   #wrapper.toggled #sidebar-wrapper {
     width: 100;
   }
 
-  /* line 198, /Users/Kevin/Benedictation/app/assets/stylesheets/simple_sidebar.scss */
+  /* line 193, /Users/Kevin/Benedictation/app/assets/stylesheets/simple_sidebar.scss */
   #page-content-wrapper {
     padding: relative;
     position: relative;
   }
 
-  /* line 203, /Users/Kevin/Benedictation/app/assets/stylesheets/simple_sidebar.scss */
+  /* line 198, /Users/Kevin/Benedictation/app/assets/stylesheets/simple_sidebar.scss */
   #wrapper.toggled #page-content-wrapper {
     position: relative;
     margin-right: 100;
