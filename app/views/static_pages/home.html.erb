@@ -1,13 +1,19 @@
-<% flash.each do |message_type, message| %>
-    <div class="alert alert-<%= message_type %>"><%= message %></div>
-<% end %>
+
 
 
 <div class= "cover_image">
   <div class = "overlay"></div>
+  
+  <div class = "messages">
+    <% flash.each do |message_type, message| %>
+      <div class="alert alert-<%= message_type %>"><%= message %></div>
+    <% end %>
+  </div> 
+
   <div class ="centered_title">
     Benedictation
   </div>
+
   <div class ="centered_subtitle">
     The smart way to meet.
     <div>
@@ -17,8 +23,8 @@
       <% end %>
     </div>
   </div>
-
 </div>
+
 <div class="marketing">
   <div class = "row">
     <div class="col-md-4">

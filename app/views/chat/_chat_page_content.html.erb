@@ -7,7 +7,8 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1>Hello <%= current_user.name %>, begin chatting!</h1>
-                        <p>Use the sidebar on the left to create a new group or to enter a group that has already been created. Click below to start a chat without a group.</p>
+                        <p>Use the sidebar on the left to create a new group or to enter a group that has already been created. Click below to start a chat without a group.
+                        During a video chat, remember to annunciate when addressing Benedict.</p>
 
                         <div id="placeholder-div"></div>
                           <%= link_to "Start chatting",  "/room/" + get_random_string + "/" +
