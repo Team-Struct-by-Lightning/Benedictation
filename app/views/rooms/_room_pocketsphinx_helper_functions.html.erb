@@ -15,6 +15,7 @@ var intervally;
 var flag;
 var flag_ready = 0;
 var bdown = 0;
+var trigger_flag = 1;
 
 onLoadText = "Please wait";
 append_ready = "";
@@ -112,17 +113,7 @@ function recordSpeech() {
 
 
 
-    // Changed setInterval to setTimeout -- maybe cleaner
-    // setTimeout(function() {
-    //     speechRegRec.stop();
-    //     speechRegRec.exportWAV(function(blob) {
-    //         speechRegRec.clear();
-    //         ws.send(blob);
-    //       console.log("sending blob: ",blob);
-    //         ws.send("stop");    // Tells the server to stop listening and start analyzing
-    //     });
 
-    // }, 5000);
 }
 
 // This function initializes an instance of the recorder

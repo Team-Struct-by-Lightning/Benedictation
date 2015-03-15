@@ -3,10 +3,16 @@ function tell(evt) {
         bdown = 1;
         recordSpeech();
         console.log("bdown = ",bdown);
+        //Changed setInterval to setTimeout -- maybe cleaner
+        setTimeout(function() {
+            jQuery.event.trigger({ type : 'keyup', which : 91 });
+            return;
+        }, 10000);
     }
     else if ((evt.which === 91) && evt.type === "keyup"){
         bdown = 0;
-        if( recordSpeech.recording == 1 ) {
+        if( recordSpeech.recording == 1 && trigger_flag == 1) {
+            trigger_flag = 0;
             speechRegRec.stop();
             originalText = "Analyzing";
             speechRegRec.exportWAV(function(blob) {
