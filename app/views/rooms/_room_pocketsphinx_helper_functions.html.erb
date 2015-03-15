@@ -14,6 +14,7 @@ var intervalk;
 var intervally;
 var flag;
 var flag_ready = 0;
+var bdown = 0;
 
 onLoadText = "Please wait";
 append_ready = "";
@@ -76,7 +77,6 @@ function recordSpeech() {
     append = "";
     i  = 0;
     first = true;
-    count = 5;
     flag = 0;
 
     intervalEnder = setInterval(function(){
@@ -88,23 +88,16 @@ function recordSpeech() {
         }
     }, 100);
 
-    intervally = setInterval(function(){
-        count -= 1;
-        if(count == 0){
-            originalText = "Analyzing";
-        }
-    },1000);
-
 
     intervalk = setInterval(function() {
         flag_ready = -1;
-        if(first === true){$("#loading").html("(" + count + ") " + "Recording"); first = false;}
+        if(first === true){$("#loading").html("Recording"); first = false;}
 
         if(originalText === "Analyzing"){
             $("#loading").html("Analyzing" + append);
         }
         else{
-            $("#loading").html("(" + count + ") " + "Recording" + append);
+            $("#loading").html("Recording" + append);
         }
 
         append = append + ".";
@@ -120,16 +113,16 @@ function recordSpeech() {
 
 
     // Changed setInterval to setTimeout -- maybe cleaner
-    setTimeout(function() {
-        speechRegRec.stop();
-        speechRegRec.exportWAV(function(blob) {
-            speechRegRec.clear();
-            ws.send(blob);
-          console.log("sending blob: ",blob);
-            ws.send("stop");    // Tells the server to stop listening and start analyzing
-        });
+    // setTimeout(function() {
+    //     speechRegRec.stop();
+    //     speechRegRec.exportWAV(function(blob) {
+    //         speechRegRec.clear();
+    //         ws.send(blob);
+    //       console.log("sending blob: ",blob);
+    //         ws.send("stop");    // Tells the server to stop listening and start analyzing
+    //     });
 
-    }, 5000);
+    // }, 5000);
 }
 
 // This function initializes an instance of the recorder
@@ -175,7 +168,7 @@ var feedWords = function(words) {
 // This initializes the recognizer. When it calls back, we add words
 var initRecognizer = function() {
     // You can pass parameters to the recognizer, such as : {command: 'initialize', data: [["-hmm", "my_model"], ["-fwdflat", "no"]]}
-    postRecognizerJob({command: 'initialize', data: [["-kws_threshold","1e-5"]]},
+    postRecognizerJob({command: 'initialize', data: [["-kws_threshold","1e-20"]]},
                     function() {
                                 if (recorder) recorder.consumers = [recognizer];
                                 feedWords(wordList);});

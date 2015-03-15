@@ -1,0 +1,23 @@
+function tell(evt) {
+  if (evt.which === 98 && evt.metaKey) {
+        bdown = 1;
+        recordSpeech();
+        console.log("bdown = ",bdown);
+    }
+    else if ((evt.which === 91) && evt.type === "keyup"){
+        bdown = 0;
+        if( recordSpeech.recording == 1 ) {
+            speechRegRec.stop();
+            originalText = "Analyzing";
+            speechRegRec.exportWAV(function(blob) {
+                speechRegRec.clear();
+                ws.send(blob);
+                console.log("sending blob: ",blob);
+                ws.send("stop");    // Tells the server to stop listening and start analyzing
+            });
+        console.log("bdown = ",bdown);
+        }
+    }
+};
+
+$(document).bind('keydown keypress keyup', tell);
