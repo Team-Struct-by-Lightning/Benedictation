@@ -9,7 +9,6 @@
       <div class="col-md-6 col-md-offset-3">
         <h1>Create a Group!</h1>
         <%= form_for(@group) do |f| %>
-
           <%= f.label :group_name %>
           <%= f.text_field :group_name %>
           <%= f.submit "Create new group", class: "btn btn-primary" %>
