@@ -1,12 +1,5 @@
-///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////====ICECOMM====/////////////////////////////////
-//////////////////////////////Helper Functions/////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-
 var comm = new Icecomm('9gv3ODZorBS2kVuNwnugBeV432PcNX3Qn0HmW33ofxK/u5Xolu');
 comm.connect(window.location.pathname);
-
-
 
     // Set up the WebSocket in onload; so that it is available for use elsewhere.
     var host = "localhost";
@@ -25,11 +18,7 @@ comm.connect(window.location.pathname);
         }
     recordSpeech.recording = 0;
     trigger_flag = 1;
-    startRecording(); //start listening for benedict again
     }
-
-
-    
 
     // Initialize Icecomm
     console.log("Initialized Icecomm, waiting for user media permissions...");
@@ -42,9 +31,10 @@ comm.connect(window.location.pathname);
         localAudioStream = options.rawStream;
         console.log(localAudioStream.getAudioTracks());
         console.log("Obtained user camera/microphone approval");
-        // Set up the AudioRecorder (used by PocketSphinx)
-        var input = audioContext.createMediaStreamSource(localAudioStream);
-        speechRegRec = new Recorder(input);
+
+        // Initialize our new recorder with its own copy of the local media stream 
+        var input = audioContext.createMediaStreamSource(localAudioStream); 
+        speechRegRec = new Recorder(input); 
     });
 
     comm.on('connected', function(options) {
@@ -61,7 +51,6 @@ comm.connect(window.location.pathname);
     comm.on('data', function(options) {
         console.log("data: ",options.data);
         var message_data = options.data.split("@@@");
-        // Benedict replies will only have user's name and their benedict query, chat messages have > 2 fields
         if(message_data[0] === "benny"){
             appendNewBennyReply(options);
         }
