@@ -8,17 +8,13 @@ Rails.application.routes.draw do
   get 'video' => 'static_pages#video'
   get 'newgroup' => 'groups#new'
   get 'newuser' => 'groups#newuser'
-  post "groups/adduser", :to => "groups#adduser"
   get 'giraffe' => 'static_pages#giraffe'
   get 'speechrec' => 'static_pages#speechrec'
   get '/room/:id/:name' => 'rooms#room'
+  post "groups/adduser", :to => "groups#adduser"
   resources :sessions, only: [:create, :destroy]
   resource :home, only: [:show]
   resources :relationships,       only: [:create, :destroy]
-
-  # resources :groups do 
-  #   post :adduser
-  # end
 
   #root to: "home#show"
   # The priority is based upon order of creation: first created -> highest priority.

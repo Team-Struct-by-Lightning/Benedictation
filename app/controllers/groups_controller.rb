@@ -28,7 +28,7 @@ class GroupsController < ApplicationController
   end
 
   def adduser
-    # check if user exists
+    # check if user exists in benedictation
     @useremail = params[:newmemberemail]
     @user = User.find_by(email: @useremail);
     if @user == nil
@@ -38,6 +38,7 @@ class GroupsController < ApplicationController
       @userid = @user.id
       @curgroupid = params[:currentgroupid]
       @group = Group.find(@curgroupid)
+      # check if user already in the group
       if Relationship.find_by(group_id: @curgroupid, user_id: @userid) != nil
         flash.now[:danger] = 'User is already part of this group'
         render 'newuser'
