@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   get 'speechrec' => 'static_pages#speechrec'
   get '/room/:id/:name' => 'rooms#room'
   post "groups/adduser", :to => "groups#adduser"
+  post "groups", :to => "groups#create"
   resources :sessions, only: [:create, :destroy]
   resource :home, only: [:show]
   resources :relationships,       only: [:create, :destroy]
