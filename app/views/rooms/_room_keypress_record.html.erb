@@ -5,20 +5,20 @@
 function tell(evt) {
 
     // if user presses & holds ctrl-b
-  if (evt.which === 98 && evt.metaKey) {
+  if (evt.which === 2) {
         bdown = 1;
         recordSpeech();
         console.log("bdown = ",bdown);
         // automatically trigger a keyup event after 10 seconds because
         //that's all the web speech api can handle
         setTimeout(function() {
-            jQuery.event.trigger({ type : 'keyup', which : 91 });
+            jQuery.event.trigger({ type : 'keyup', which : 17 });
             return;
         }, 10000);
     }
     // send the recorded speech to our server
     //when user releases ctrl-b (or 10 second timeout triggers a keyup event)
-    else if ((evt.which === 91) && evt.type === "keyup"){
+    else if ((evt.which === 17) && evt.type === "keyup"){
         bdown = 0;
         if( recordSpeech.recording == 1 && trigger_flag == 1) {
             trigger_flag = 0;
