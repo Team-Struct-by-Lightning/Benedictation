@@ -13,11 +13,10 @@ comm.connect(window.location.pathname);
         if(e.data != ""){
             sendBennyReply(e.data);
         }
-        else{
-            flag = 1;
-        }
-    recordSpeech.recording = 0;
-    trigger_flag = 1;
+
+        ready_to_record = 1;
+        recordSpeech.recording = 0;
+        trigger_flag = 1;
     }
 
     // Initialize Icecomm
@@ -26,15 +25,15 @@ comm.connect(window.location.pathname);
     comm.on('local', function(options) {
         window.AudioContext = window.AudioContext || window.webkitAudioContext;
         audioContext = new AudioContext();
-        flag_ready = 1;
+        ready_to_record = 1;
         localVideo.src = options.stream;
         localAudioStream = options.rawStream;
         console.log(localAudioStream.getAudioTracks());
         console.log("Obtained user camera/microphone approval");
 
-        // Initialize our new recorder with its own copy of the local media stream 
-        var input = audioContext.createMediaStreamSource(localAudioStream); 
-        speechRegRec = new Recorder(input); 
+        // Initialize our new recorder with its own copy of the local media stream
+        var input = audioContext.createMediaStreamSource(localAudioStream);
+        speechRegRec = new Recorder(input);
     });
 
     comm.on('connected', function(options) {
@@ -57,5 +56,4 @@ comm.connect(window.location.pathname);
         else{
             appendNewIM(options);
         }
-
     });

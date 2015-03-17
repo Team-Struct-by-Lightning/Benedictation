@@ -10,54 +10,70 @@
 var recognizer, recorder, speechRegRec, callbackManager, audioContext;
 var recorderReady = recognizerReady = false;
 var ws;
-var intervalk;
-var intervally;
-var flag;
-var flag_ready = 0;
+
+
+var ready_to_record = 0;
 var bdown = 0;
 var trigger_flag = 1;
 
 onLoadText = "Please wait";
-append_ready = "";
-i  = 0;
-first_ready = true;
-var flag_ready = 0;
 
-    intervalReady = setInterval(function(){
-         if(flag_ready == 1){
-            onLoadText = "Ready!";
-        }
-    },1000);
+append_wait = "";
+append_record = "";
+append_analyzing = "";
+
+temp_wait  = 0;
+temp_record = 0;
+temp_analyzing = 0;
+
+first_ready_to_record = true;
 
 intervalWait = setInterval(function() {
-    if(first_ready === true){$("#loading").html("Please wait"); first_ready = false;}
-
-            if(onLoadText === "Please wait"){
-                $("#loading").html("Please wait" + append_ready);
-                append_ready = append_ready + ".";
-                i++;
-                if(i == 4) {
-                   append_ready = "";
-                    i = 0;
-                }
+    switch(ready_to_record){
+        case 0:
+            $("#loading").html("Please wait" + append_wait);
+            append_wait = append_wait + ".";
+            temp_wait++;
+            if(temp_wait == 4) {
+               append_ready = "";
+                temp_wait = 0;
             }
-            else{
-                if (flag_ready == 1) {
-                    $("#loading").html("Ready to record.");
-                }
+            break;
+        case 2:
+            $("#loading").html("Recording" + append_record);
+            append_record = append_record + ".";
+            temp_record++;
+            if(temp_record == 4) {
+               append_record = "";
+                temp_record = 0;
             }
+            break;
+        case 3:
+            append_record = "";
+            $("#loading").html("Analyzing" + append_analyzing);
+            append_analyzing = append_analyzing + ".";
+            temp_analyzing++;
+            if(temp_analyzing == 4) {
+               append_analyzing = "";
+                temp_analyzing = 0;
+            }
+            break;
+        default:
+            $("#loading").html("Ready to record.");
+            append_wait = "";
+            append_analyzing = "";
+            temp_record = 0;
+            temp_analyzing = 0;
+            break;
+        }
 
 }, 500);
 
 
 
-
-
 // Record speech for 10s and export it as .wav to a server every 1s.
 function recordSpeech() {
-    console.log("in recordSpeech function @@@");
-    flag_ready = -1;
-    // console.log("we are in record speech function @@@@");
+
     // Some JavaScript trickery: functions are objects, so they can have variables.
     // In this case we simulate a "private static" variable indicating whether recording is already started or not;
     // if it is, we don't do anything.
@@ -73,117 +89,5 @@ function recordSpeech() {
     console.log("starting to record 5 seconds of speech @@@");
     recordSpeech.recording = 1; // Set the flag indicating we're recording.
     ws.send("start"); //tell backend server to start listening
-
-    originalText = "Recording";
-    append = "";
-    i  = 0;
-    first = true;
-    flag = 0;
-
-    intervalEnder = setInterval(function(){
-        if (flag == 1){
-            flag_ready = 1;
-            clearInterval(intervalk);
-            clearInterval(intervally);
-            flag = 0;
-        }
-    }, 100);
-
-
-    intervalk = setInterval(function() {
-        flag_ready = -1;
-        if(first === true){$("#loading").html("Recording"); first = false;}
-
-        if(originalText === "Analyzing"){
-            $("#loading").html("Analyzing" + append);
-        }
-        else{
-            $("#loading").html("Recording" + append);
-        }
-
-        append = append + ".";
-        i++;
-        if(i == 4) {
-            append = "";
-            i = 0;
-        }
-
-    }, 500);
-
-
-
-
-
 }
-
-// This function initializes an instance of the recorder
-// it posts a message right away and calls onReady when it
-// is ready so that onmessage can be properly set
-function spawnWorker(workerURL, onReady) {
-    recognizer = new Worker(workerURL);
-    recognizer.onmessage = function(event) {
-        onReady(recognizer);
-    };
-    recognizer.postMessage('');
-};
-
-// A convenience function to post a message to the recognizer and associate
-// a callback to its response
-function postRecognizerJob(message, callback) {
-    var msg = message || {};
-    if (callbackManager) msg.callbackId = callbackManager.add(callback);
-    if (recognizer) recognizer.postMessage(msg);
-};
-
-// This adds a keyword search from the array
-// We add them one by one and call it again as
-// a callback.
-// Once we are done adding all grammars, we can call
-// recognizerReady()
-var feedKeyword = function(g, index, id) {
-    if (id && (keywordIds.length > 0)) keywordIds[0].id = id.id;
-    if (index < g.length) {
-        keywordIds.unshift({title: g[index].title});
-        postRecognizerJob({command: 'addKeyword', data: g[index].g},
-                             function(id) {feedKeyword(keywords, index + 1, {id:id});});
-        }
-    else { recognizerReady(); }
-};
-
-// This adds words to the recognizer. When it calls back, we add grammars
-var feedWords = function(words) {
-    postRecognizerJob({command: 'addWords', data: words},
-                function() {feedKeyword(keywords, 0);});
-};
-
-// This initializes the recognizer. When it calls back, we add words
-var initRecognizer = function() {
-    // You can pass parameters to the recognizer, such as : {command: 'initialize', data: [["-hmm", "my_model"], ["-fwdflat", "no"]]}
-    postRecognizerJob({command: 'initialize', data: [["-kws_threshold","1e-20"]]},
-                    function() {
-                                if (recorder) recorder.consumers = [recognizer];
-                                feedWords(wordList);});
-};
-
-// Called once the recognizer is ready
-var recognizerReady = function() {
-     recognizerReady = true;
-     console.log("Recognizer ready");
-     startRecording();
-};
-
-// This starts recording.
-// recorder.start() is passed the id of the keyword to recognize (or grammar to use).
-// This current example only uses one keyword, so hardcoding id=0 is okay. This shouldn't stay this way.
-// I'm just trying to minimize confusing things right now.
-var startRecording = function()  {
-    console.log("startRecording function");
-    if (recorder && recorder.start(0))
-    flag_ready = 1;
-};
-// Stops recording
-var stopRecording = function() {
-    recorder && recorder.stop();
-    console.log("stopRecording function");
-};
 
