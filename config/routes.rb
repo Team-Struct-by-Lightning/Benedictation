@@ -7,14 +7,15 @@ Rails.application.routes.draw do
   get 'chat' => 'static_pages#chat'
   get 'video' => 'static_pages#video'
   get 'newgroup' => 'groups#new'
+  get 'newuser' => 'groups#newuser'
   get 'giraffe' => 'static_pages#giraffe'
   get 'speechrec' => 'static_pages#speechrec'
   get '/room/:id/:name' => 'rooms#room'
+  post "groups/adduser", :to => "groups#adduser"
+  post "groups", :to => "groups#create"
   resources :sessions, only: [:create, :destroy]
   resource :home, only: [:show]
   resources :relationships,       only: [:create, :destroy]
-
-  resources :groups
 
   #root to: "home#show"
   # The priority is based upon order of creation: first created -> highest priority.
