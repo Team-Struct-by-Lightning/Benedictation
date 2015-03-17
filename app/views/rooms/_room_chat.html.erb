@@ -112,7 +112,7 @@
 
   // media object to append to the page each time there's a new chat
   function mediaObjectSpeechrec(user, uid, token, message) {
-         flag = 1;
+
          var url_string = "https://www.googleapis.com/plus/v1/people/" + uid + "?access_token=" + token;
 
           $.getJSON(url_string, function(user_object) {

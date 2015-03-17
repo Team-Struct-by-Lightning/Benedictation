@@ -1,37 +1,47 @@
 
 /*  records speech while user holds down ctrl-b
-    98 = b, metaKey = ctrl 
+    98 = b, ctrlKey = ctrl, 17 = ctrl
 */
-function tell(evt) {
 
+function tell(evt) {
     // if user presses & holds ctrl-b
-  if (evt.which === 2) {
-        bdown = 1;
-        recordSpeech();
-        console.log("bdown = ",bdown);
-        // automatically trigger a keyup event after 10 seconds because
-        //that's all the web speech api can handle
-        setTimeout(function() {
-            jQuery.event.trigger({ type : 'keyup', which : 17 });
-            return;
-        }, 10000);
+    if (evt.which === 2) {
+        count_b += 1;
+        if (count_b == 1){
+
+            ready_to_record = 2; //lets the user know we are recording
+            bdown = 1;
+            count_trigger = 0; //initializes the trigger if needed
+
+            recordSpeech();
+            // automatically trigger a keyup event after 10 seconds because
+            //that's all the web speech api can handle
+            trigger_function = setTimeout( function() {
+                count_trigger += 1;
+                if (count_trigger == 1)
+                    jQuery.event.trigger({ type : 'keyup', which : 17});
+                return
+            }, 10000);
+        }
     }
     // send the recorded speech to our server
     //when user releases ctrl-b (or 10 second timeout triggers a keyup event)
     else if ((evt.which === 17) && evt.type === "keyup"){
         bdown = 0;
-        if( recordSpeech.recording == 1 && trigger_flag == 1) {
-            trigger_flag = 0;
+        console.log (evt.which, evt.type);
+        if( recordSpeech.recording == 1) {
+
+            count_trigger = 2; //prevents a trigger if not needed
+            ready_to_record = 3; //lets the user know we are analyzing
+
             speechRegRec.stop(); // stop recording
-            originalText = "Analyzing";
             // send the speech as a wav blob
             speechRegRec.exportWAV(function(blob) {
-                speechRegRec.clear(); 
+                speechRegRec.clear();
                 ws.send(blob);
                 console.log("sending blob: ",blob);
                 ws.send("stop");    // Tells the server to stop listening and start analyzing
             });
-        console.log("bdown = ",bdown);
         }
     }
 };
