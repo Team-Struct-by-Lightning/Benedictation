@@ -12,6 +12,7 @@ class StaticPagesController < ApplicationController
   end
   def room
     redirect
+    redirect_user
   end
   def icecomm_chat
     redirect
