@@ -8,9 +8,9 @@ class RelationshipsController < ApplicationController
 
 	  if (Relationship.where(group_id: groupID).empty?)
 	  	Group.delete(Group.find_by_id(groupID))
-	  	flash[:success] = "You have successfully deleted the group: #{group_name}."
+	  	flash[:success] = "You have successfully deleted the group: #{group_name}"
 		else
-			flash[:success] = 'You have successfully left the group: #{group_name}.'
+			flash[:success] = "You have successfully left the group: #{group_name}"
 	  end
 	  redirect_to chat_path
 	end
