@@ -15,7 +15,7 @@ class GroupsController < ApplicationController
       @relationship = Relationship.new(user_id:session[:user_id], group_id:@group[:id])
       if @relationship.save
         # Handle a successful save.
-        flash[:success] = "Added the group " + @group.group_name
+        flash[:success] = "Added the group: " + @group.group_name
         redirect_to chat_path
       else
         flash.now[:danger] = 'Invalid group name: Valid group names contain 1-15 valid characters'
@@ -32,7 +32,7 @@ class GroupsController < ApplicationController
     @useremail = params[:newmemberemail]
     @user = User.find_by(email: @useremail);
     if @user == nil
-       flash.now[:danger] = 'This user has not joined benedictation yet'
+       flash.now[:danger] = 'This user has not joined Benedictation yet'
        render 'newuser'
     else
       @userid = @user.id
