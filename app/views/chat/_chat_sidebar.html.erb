@@ -3,7 +3,7 @@
             <ul class="sidebar-nav">
                <li class="sidebar-brand"><a id="menu-toggle" href="#">Groups<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
                 <% Relationship.where(user_id: current_user.id).pluck(:id).each do |relationship_id| %>
-                    <li class= 'groups', id=relationship_id >
+                    <li class="dropdown-toggle" data-toggle="dropdown" unique=<%= relationship_id %> >
                         <% group = Relationship.find_by(id: relationship_id).group %>
                         <% group_id = group.id %>
                         <% group_name = group.group_name %>
@@ -19,8 +19,12 @@
                                  <span>
                                 </span>
                                 <span>
-                                <a id="menu-group" href= "<%= group_name_url_string %>" ><%=group_name%></a>
+                                <a id="menu-group"><%=group_name%></a>
                                 </span>
+                                 <ul class="add-user-hover" id=<%= relationship_id %> >
+                                    <li><a id="no-click" href="<%= group_name_url_string %>"> Go to room</a></li>
+                                    <li><a id="no-click"><%= link_to "Add a user", newuser_path(:currentgroupid => group_id) %></a></li>
+                                </ul>
                             </th>
                         </tr>
                             <% end %>
@@ -33,3 +37,24 @@
             </ul>
         </div>
         <!-- /#sidebar-wrapper -->
+<script>
+var parity = 0;
+$('.dropdown-toggle').click(function(e){
+    if (e.target.id === "no-click") {
+    }
+    else if (parity % 2 == 0) {
+        parity += 1;
+        var id = this.getAttribute("unique");
+        var str_id = id.toString();
+        $('#' +str_id).show();
+    }
+    else {
+        parity += 1;
+        var id = this.getAttribute("unique");
+        var str_id = id.toString();
+        $('#' + str_id).hide();
+    }
+});
+
+
+</script>

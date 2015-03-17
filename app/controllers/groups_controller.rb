@@ -6,7 +6,6 @@ class GroupsController < ApplicationController
   def new
     @group = Group.new
     @relationship = Relationship.new
-
   end
 
   def create
@@ -28,6 +27,35 @@ class GroupsController < ApplicationController
     end
   end
 
+  def adduser
+    # check if user exists in benedictation
+    @useremail = params[:newmemberemail]
+    @user = User.find_by(email: @useremail);
+    if @user == nil
+       flash.now[:danger] = 'This user has not joined benedictation yet'
+       render 'newuser'
+    else
+      @userid = @user.id
+      @curgroupid = params[:currentgroupid]
+      @group = Group.find(@curgroupid)
+      # check if user already in the group
+      if Relationship.find_by(group_id: @curgroupid, user_id: @userid) != nil
+        flash.now[:danger] = 'User is already part of this group'
+        render 'newuser'
+      else
+        @relationship = Relationship.new(user_id:@userid, group_id:@group[:id])
+        if @relationship.save
+          # Handle a successful save.
+          flash[:success] = "Added the user " + params[:newmemberemail].to_s + " id " + @userid.to_s
+          redirect_to chat_path
+        else
+          flash.now[:danger] = 'Could not add user'
+          render 'newuser'
+        end
+      end
+    end
+  end
+
   def destroy
     @group = Group.find_by_name(group_params)
     if @group.destroy
@@ -39,7 +67,6 @@ class GroupsController < ApplicationController
 
 
   private
-
     def group_params
       params.require(:group).permit(:group_name)
     end

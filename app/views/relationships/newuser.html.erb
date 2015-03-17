@@ -7,12 +7,11 @@
 <% end %>
     <div class="row">
       <div class="col-md-6 col-md-offset-3">
-        <h1>Create a Group!</h1>
-        <%= form_for(@group) do |f| %>
-          <%= f.label :group_name %>
-          <%= f.text_field :group_name %>
-          <%= f.submit "Create new group", class: "btn btn-primary" %>
-        <% end %>
+      <%= form_tag edit_group_path do %>
+      <%= label_tag :newmemberemail %>
+      <%= text_field_tag :newmemberemail, params[:newmemberemail] %>
+      <%= submit_tag "Add new user to group", class: "btn btn-primary" %>
+    <% end %>
       </div>
     </div>
   </div>
