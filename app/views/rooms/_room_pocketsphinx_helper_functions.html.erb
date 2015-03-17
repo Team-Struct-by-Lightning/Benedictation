@@ -35,7 +35,7 @@ intervalWait = setInterval(function() {
             append_wait = append_wait + ".";
             temp_wait++;
             if(temp_wait == 4) {
-               append_ready = "";
+               append_wait = "";
                 temp_wait = 0;
             }
             break;
@@ -82,11 +82,10 @@ function recordSpeech() {
     }
     if( recordSpeech.recording == 1 ) {
         return; // Don't start recording if we are already.
-        console.log("Tried to start recording speech when the recorder was already recording @@@")
     }
 
     speechRegRec.record(); //start speechrec recorder
-    console.log("starting to record 5 seconds of speech @@@");
+
     recordSpeech.recording = 1; // Set the flag indicating we're recording.
     ws.send("start"); //tell backend server to start listening
 }
