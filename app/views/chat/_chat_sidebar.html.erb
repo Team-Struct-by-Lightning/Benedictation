@@ -12,7 +12,7 @@
                                          html: { method: :delete }) do |f| %>
                                 <tr>
                                 <th colspan = "4" >
-                                <span style="float:left;", class:"glyphicon"><a ><%= f.submit "[ x ]", class: "delete-button" %></a>
+                                <span style="float:left;", class:"glyphicon", id="delete-x1"><a ><%= f.submit "[ x ]", class: "delete-button", id: "delete-x2" %></a>
                                 </span>
                                 <span style="width: 100px;">
                                  </span>
@@ -40,7 +40,7 @@
 <script>
 var parity = 0;
 $('.dropdown-toggle').click(function(e){
-    if (e.target.id === "no-click") {
+    if (e.target.id === "no-click" || e.target.id === "delete-x1" || e.target.id === "delete-x2") {
     }
     else if (parity % 2 == 0) {
         parity += 1;
