@@ -4,7 +4,7 @@ class RelationshipsController < ApplicationController
 		groupID = Relationship.find_by_id(params[:id]).group_id
 		group_name = Group.find_by_id(groupID).group_name
 
-		Relationship.delete(Relationship.where(group_id: groupID))
+		Relationship.delete(Relationship.where(group_id: groupID, user_id: current_user.id))
 
 	  if (Relationship.where(group_id: groupID).empty?)
 	  	Group.delete(Group.find_by_id(groupID))
