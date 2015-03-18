@@ -8,12 +8,14 @@
         <% flash.each do |message_type, message| %>
           <div class="alert alert-<%= message_type %>"><%= message %></div>
         <% end %>
-<%= form_tag({:action => "adduser", :controller => "groups"}) do |f| %>
-      <%= label_tag "New Member Email" %>
-      <%= text_field_tag :newmemberemail, params[:newmemberemail] %>
-      <%= hidden_field_tag :currentgroupid , params[:currentgroupid] %>
-      <%= submit_tag "Add new user to group", class: "btn btn-primary" %>
-    <% end %>
+
+        <h1>Add a person to your group: <%= get_current_group_name %></h1>
+
+        <%= form_tag({:action => "adduser", :controller => "groups"}) do |f| %>
+          <%= label_tag "New Member Email" %>
+          <%= text_field_tag :newmemberemail, params[:newmemberemail] %>
+          <%= submit_tag "Add new user to group", class: "btn btn-primary" %>
+        <% end %>
       </div>
     </div>
   </div>
