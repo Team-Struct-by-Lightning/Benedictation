@@ -23,7 +23,7 @@
                                 </span>
                                  <ul class="add-user-hover" id=<%= relationship_id %> >
                                     <li><a id="no-click" href="<%= group_name_url_string %>"> Go to room</a></li>
-                                    <li><a id="no-click"><%= link_to "Add a user", newuser_path(:currentgroupid => group_id) %></a></li>
+                                    <li><a id="no-click"><%= link_to "Add a user", "newuser/#{group_id}"%></a></li>
                                 </ul>
                             </th>
                         </tr>

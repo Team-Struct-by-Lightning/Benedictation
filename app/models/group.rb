@@ -4,8 +4,4 @@ class Group < ActiveRecord::Base
 	has_many :active_relationships, class_name:  "Relationship",
                                   foreign_key: "group_id",
                                   dependent:   :destroy
-
-	def Group.new_token
-		SecureRandom.urlsafe_base64
-	end
 end

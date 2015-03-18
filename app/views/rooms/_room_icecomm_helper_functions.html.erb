@@ -32,9 +32,9 @@ comm.connect(window.location.pathname);
         console.log(localAudioStream.getAudioTracks());
         console.log("Obtained user camera/microphone approval");
 
-        // Initialize our new recorder with its own copy of the local media stream 
-        var input = audioContext.createMediaStreamSource(localAudioStream); 
-        speechRegRec = new Recorder(input); 
+        // Initialize our new recorder with its own copy of the local media stream
+        var input = audioContext.createMediaStreamSource(localAudioStream);
+        speechRegRec = new Recorder(input);
     });
 
     comm.on('connected', function(options) {
@@ -45,7 +45,6 @@ comm.connect(window.location.pathname);
     comm.on('disconnect', function(options) {
         console.log('disconnect happening');
         document.getElementById(options.callerID).remove();
-        stopRecording();
     });
 
     comm.on('data', function(options) {
