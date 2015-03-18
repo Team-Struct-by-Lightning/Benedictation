@@ -6954,6 +6954,7 @@ var Icecomm = function(APIKEY, appSettings) {
 
     if (callerID === undefined) {
       for (var callerID in localPeerConnections) {
+        console.log("Local peer connections: ", localPeerConnections);
         console.log("CallerID: ", callerID);
         if (localPeerConnections[callerID].isReady === 'open') {
           dataChannels[callerID].send(data);
