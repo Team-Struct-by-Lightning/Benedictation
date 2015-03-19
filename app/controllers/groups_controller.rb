@@ -21,7 +21,8 @@ class GroupsController < ApplicationController
     if current_user.nil?
       redirect
     else
-      @group = Group.new(group_params)    # Not the final implementation!
+
+      @group = Group.new(popup_group_params)    # Not the final implementation!
 
       if @group.save
         @relationship = Relationship.new(user_id:session[:user_id], group_id:@group[:id])
@@ -46,22 +47,22 @@ class GroupsController < ApplicationController
       redirect
     else
       @useremail = params[:newmemberemail]
+      @curgroupid = params[:groupid]
       
       if (/\A([\w+\-].?)+@gmail.com$/.match(@useremail)).nil?
-        flash.now[:danger] = 'This is not a valid Gmail.  Please check the email again.'
+        flash[:danger] = 'This is not a valid Gmail address.  Please check the email again.'
         redirect_to chat_path
       else
         @user = User.find_by(email: @useremail);
         if @user.nil?
-           flash.now[:danger] = 'This user has not joined Benedictation yet.'
+           flash[:danger] = 'This user has not joined Benedictation yet.'
            redirect_to chat_path
         else
           @userid = @user.id
-          @curgroupid = get_group_id
           @group = Group.find(@curgroupid)
           # check if user already in the group
           if Relationship.find_by(group_id: @curgroupid, user_id: @userid) != nil
-            flash.now[:danger] = 'User is already part of this group'
+            flash[:danger] = 'User is already part of this group'
             render 'newuser'
           else
             @relationship = Relationship.new(user_id:@userid, group_id:@group[:id])
@@ -70,7 +71,7 @@ class GroupsController < ApplicationController
               flash[:success] = "Added #{User.find(@userid).name} to the group #{Group.find(@curgroupid).group_name}"
               redirect_to chat_path
             else
-              flash.now[:danger] = 'Could not add user'
+              flash[:danger] = 'Could not add user'
               render 'newuser'
             end
           end
@@ -79,45 +80,7 @@ class GroupsController < ApplicationController
     end
   end 
 
-  def adduser
-    # check if user exists in benedictation
-
-    if current_user.nil?
-      redirect
-    else
-      @useremail = params[:newmemberemail]
-
-      if (/\A([\w+\-].?)+@gmail.com$/.match(@useremail)).nil?
-        flash.now[:danger] = 'This is not a valid Gmail.  Please check the email again.'
-        render 'newuser'
-      else
-        @user = User.find_by(email: @useremail);
-        if @user.nil?
-           flash.now[:danger] = 'This user has not joined Benedictation yet.'
-           render 'newuser'
-        else
-          @userid = @user.id
-          @curgroupid = get_group_id
-          @group = Group.find(@curgroupid)
-          # check if user already in the group
-          if Relationship.find_by(group_id: @curgroupid, user_id: @userid) != nil
-            flash.now[:danger] = 'User is already part of this group'
-            render 'newuser'
-          else
-            @relationship = Relationship.new(user_id:@userid, group_id:@group[:id])
-            if @relationship.save
-              # Handle a successful save.
-              flash[:success] = "Added #{User.find(@userid).name} to the group #{Group.find(@curgroupid).group_name}"
-              redirect_to chat_path
-            else
-              flash.now[:danger] = 'Could not add user'
-              render 'newuser'
-            end
-          end
-        end
-      end
-    end
-  end
+  
 
   def destroy
     @group = Group.find_by_name(group_params)
@@ -132,6 +95,10 @@ class GroupsController < ApplicationController
   private
     def group_params
       params.require(:group).permit(:group_name)
+    end
+
+    def popup_group_params
+      params.permit(:group_name)
     end
 
 end

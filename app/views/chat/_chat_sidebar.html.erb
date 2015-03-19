@@ -21,40 +21,30 @@
                                     <!--<a ><%= link_to "[ + ]", "newuser/#{group_id}", 
                                      class: "add-user-button" %></a> -->
 
-                                    <a class="popup-with-form add-user-button" href="#test-form" + <% group_name%> >[ + ]</a>
+                                    <a class="popup-with-form add-user-button" href="#add-user" >[ + ]</a>
 
                                     
                                     
                                 </span>
                                 <span style="width: 100px;">
-                                 </span>
-                                 <span>
                                 </span>
                                 <span>
-                                <a id="menu-group"><%= "#" + group_name%></a>
-                                
-                                
+                                 <a id="menu-group" href=<%= group_name_url_string %> ><%= "#" + group_name%>
+                                 </a>
                                 </span>
-                                 <ul class="add-user-hover" id=<%= relationship_id %> >
-                                    <li><a id="no-click" href="<%= group_name_url_string %>"> Go to room</a></li>
-                                    <li><a id="no-click"><%= link_to "Add a user", "newuser/#{group_id}"%></a></li>
-                                </ul>
+                                
                             </th>
                         </tr>
 
                             <% end %>
-                            <%= group_name %>
                             <!-- form itself -->
-                            <div id="test-form" + <%= group_name %> class="white-popup-block mfp-hide">
-                                <%= relationship_id %>
-                                <% flash.each do |message_type, message| %>
-                                  <div class="alert alert-<%= message_type %>"><%= message %></div>
-                                <% end %>
+                            <div id="add-user" class="white-popup-block mfp-hide">
+                               
                                 <h1>Form to add user</h1>
                                 <%= form_tag(controller: "groups", action: "popupadduser", method: "post") do |f| %>
                                   <%= label_tag "New Member Email" %>
                                   <%= text_field_tag :newmemberemail, params[:newmemberemail] %>
-                                  <%= group_name %>
+                                  <%= hidden_field_tag :groupid, group_id%>
                                   <%= submit_tag "Add new user to group", class: "btn btn-primary" %>
                                 <% end %>
                             </div>
@@ -62,8 +52,18 @@
                     </li>
                 <% end %>
                 <li>
-                   <%= link_to "[ create new group + ]", newgroup_path %>
+                   <!--<%= link_to "[ create new group + ]", newgroup_path %> -->
+                   <a class="popup-with-form " href="#create-group" >[ create new group + ]</a>
                 </li>
+                <div id="create-group" class="white-popup-block mfp-hide">
+                   
+                    <h1>Create a Group!</h1>
+                        <%= form_tag(controller: "groups", action: "create", method: "post") do |f| %>
+                          <%= label_tag  "Group Name" %>
+                          <%= text_field_tag :group_name, params[:group_name] %>
+                          <%= submit_tag "Create new group", class: "btn btn-primary" %>
+                        <% end %>
+                </div>
             </ul>
         </div>
         <!-- /#sidebar-wrapper -->

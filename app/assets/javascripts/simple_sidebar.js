@@ -5,6 +5,9 @@ $("#menu-toggle").click(function(e) {
     $("#wrapper").toggleClass("toggled");
 });
 
+
+
+
 $(document).ready(function() {
 	
 	$('.popup-with-form').magnificPopup({
@@ -24,9 +27,6 @@ $(document).ready(function() {
 			}
 		}
 	});
-
-
-
-
 });
+
 
