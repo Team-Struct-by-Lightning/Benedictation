@@ -12,7 +12,10 @@ gem 'turbolinks',           '2.3.0'
 gem 'jbuilder',             '2.2.3'
 gem 'rest-client',          '~> 1.7.3'
 gem "omniauth-google-oauth2", "~> 0.2.1"
+gem 'magnific-popup-rails'
+
 gem 'sdoc',                 '0.4.0', group: :doc
+
 
 
 group :development, :test do

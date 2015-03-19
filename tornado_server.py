@@ -7,6 +7,7 @@ import speechrec    # Put speechrec.py in the same folder
 import wave
 import os
 from random import randint
+from nltk_test import schedule_meeting
 import speechrec
 
 class WSHandler(tornado.websocket.WebSocketHandler):
@@ -57,7 +58,9 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
                 
                 print "wrote to file"
                 text = self.recognizer.recognize(outfilename)
-                self.write_message(text)
+                return_val = schedule_meeting(text)
+
+                self.write_message(return_val)
                 os.remove(outfilename)
                 print "we have finished writing @@@@@"
      
