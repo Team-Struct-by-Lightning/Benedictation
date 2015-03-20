@@ -58,9 +58,9 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
                 
                 print "wrote to file"
                 text = self.recognizer.recognize(outfilename)
-                return_val = schedule_meeting(text)
+                #return_val = schedule_meeting(text)
 
-                self.write_message(return_val)
+                self.write_message(text)
                 os.remove(outfilename)
                 print "we have finished writing @@@@@"
      

@@ -21,7 +21,6 @@ class GroupsController < ApplicationController
     if current_user.nil?
       redirect
     else
-
       @group = Group.new(popup_group_params)    # Not the final implementation!
 
       if @group.save
@@ -31,12 +30,12 @@ class GroupsController < ApplicationController
           flash[:success] = "Added the group: " + @group.group_name
           redirect_to chat_path
         else
-          flash.now[:danger] = 'Invalid group name: Valid group names contain 1-15 valid characters'
-          render 'new'
+          flash[:danger] = 'Invalid group name: Valid group names contain 1-15 valid characters'
+          redirect_to chat_path
         end
       else
-        flash.now[:danger] = 'Invalid group name: Valid group names contain 1-15 valid characters'
-        render 'new'
+        flash[:danger] = 'Invalid group name: Valid group names contain 1-15 valid characters'
+        redirect_to chat_path
       end
     end
   end
