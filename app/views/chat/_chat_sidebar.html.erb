@@ -8,35 +8,35 @@
                         <% group_id = group.id %>
                         <% group_name = group.group_name %>
                         <% group_name_url_string = "/room/" + "#{group_id}" + "/" + group_name %>
-                        
+
                            <%= form_for(current_user.active_relationships.find_by(id: relationship_id),
                                          html: { method: :delete }) do |f| %>
 
-                                <tr>
-                                <th colspan = "4" >
-                                <span style="float:left;", class:"glyphicon", id="delete-x1">
-                                    <a ><%= f.submit "[ x ]", class: "delete-button", id: "delete-x2" %></a>
-                                </span>
-                               
-                                <a class="popup-with-form add-user-button" href="#add-user" >[ + ]</a>
 
-                                  
-                                
-                                <span style="width: 100px;">
-                                </span>
-                                <span>
-                                 <a id="menu-group" href=<%= group_name_url_string %> ><%= "#" + group_name%>
-                                 </a>
-                                </span>
-                                
-                            </th>
-                        </tr>
+                            <tr>
+                                <th colspan = "4" >
+                                    <span style="float:left;", class:"glyphicon", id="delete-x1">
+                                        <a ><%= f.submit "[ x ]", class: "delete-button", id: "delete-x2" %></a>
+                                    </span>
+                                    <span style="width: 100px;">
+                                    </span>
+                                    <span>
+                                    </span>
+                                    <span>
+                                        <a id="menu-group"><%= "#" + group_name%></a>
+                                    </span>
+                                         <ul class="add-user-hover" id=<%= relationship_id %> >
+                                            <li><a id="no-click" href="<%= group_name_url_string %>"> Go to room</a></li>
+                                            <li><a class="popup-with-form" href=<%= '#add-user' + group_id.to_s %> id="no-click" value="">Add a user</a></li>
+                                        </ul>
+                                </th>
+                            </tr>
 
                             <% end %>
                             <!-- form itself -->
-                            <div id="add-user" class="white-popup-block mfp-hide">
-                               
-                                <h1>Form to add user</h1>
+                             <div id=<%= 'add-user' + group_id.to_s %> class="white-popup-block mfp-hide">
+
+                                <h1>Add a user to the group:  <%= group_name %></h1>
                                 <%= form_tag(controller: "groups", action: "popupadduser", method: "post") do |f| %>
                                   <%= label_tag "New Member Email" %>
                                   <%= text_field_tag :newmemberemail, params[:newmemberemail] %>
@@ -48,11 +48,10 @@
                     </li>
                 <% end %>
                 <li>
-                  
+
                    <a class="popup-with-form " href="#create-group" >[ create new group + ]</a>
                 </li>
                 <div id="create-group" class="white-popup-block mfp-hide">
-                   
                     <h1>Create a Group!</h1>
                         <%= form_tag(controller: "groups", action: "create", method: "post") do |f| %>
                           <%= label_tag  "Group Name" %>
