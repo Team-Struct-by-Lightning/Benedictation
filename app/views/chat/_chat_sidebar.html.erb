@@ -17,14 +17,11 @@
                                 <span style="float:left;", class:"glyphicon", id="delete-x1">
                                     <a ><%= f.submit "[ x ]", class: "delete-button", id: "delete-x2" %></a>
                                 </span>
-                                <span style="float:right;", class:"glyphicon", id="add-user-x1">
-                                    <!--<a ><%= link_to "[ + ]", "newuser/#{group_id}", 
-                                     class: "add-user-button" %></a> -->
-
-                                    <a class="popup-with-form add-user-button" href="#add-user" >[ + ]</a>
+                               
+                                <a class="popup-with-form add-user-button" href="#add-user" >[ + ]</a>
 
                                   
-                                </span>
+                                
                                 <span style="width: 100px;">
                                 </span>
                                 <span>
@@ -51,7 +48,7 @@
                     </li>
                 <% end %>
                 <li>
-                   <!--<%= link_to "[ create new group + ]", newgroup_path %> -->
+                  
                    <a class="popup-with-form " href="#create-group" >[ create new group + ]</a>
                 </li>
                 <div id="create-group" class="white-popup-block mfp-hide">

@@ -62,7 +62,7 @@ class GroupsController < ApplicationController
           # check if user already in the group
           if Relationship.find_by(group_id: @curgroupid, user_id: @userid) != nil
             flash[:danger] = 'User is already part of this group'
-            render 'newuser'
+            redirect_to chat_path
           else
             @relationship = Relationship.new(user_id:@userid, group_id:@group[:id])
             if @relationship.save
@@ -71,7 +71,7 @@ class GroupsController < ApplicationController
               redirect_to chat_path
             else
               flash[:danger] = 'Could not add user'
-              render 'newuser'
+              redirect_to chat_path
             end
           end
         end
