@@ -1,7 +1,5 @@
 class SessionsController < ApplicationController
 
-include SessionsHelper
-
   def create
     created_user = User.from_omniauth(env["omniauth.auth"])
     create_state

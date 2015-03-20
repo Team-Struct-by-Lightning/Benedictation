@@ -1,6 +1,5 @@
 class GroupsController < ApplicationController
 
-  include SessionsHelper
   include GroupsHelper
 
 	def show

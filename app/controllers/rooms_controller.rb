@@ -1,6 +1,5 @@
 class RoomsController < ApplicationController
 
-include SessionsHelper
 include RoomsHelper
 
   def room
