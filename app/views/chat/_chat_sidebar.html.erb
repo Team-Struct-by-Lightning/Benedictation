@@ -3,7 +3,7 @@
             <ul class="sidebar-nav">
                <li class="sidebar-brand"><a id="menu-toggle" href="#">Groups<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
                 <% Relationship.where(user_id: current_user.id).pluck(:id).each do |relationship_id| %>
-                    <li class="dropdown-toggle" data-toggle="dropdown" unique=<%= relationship_id %> >
+                    <li class="dropdown-toggle" data-toggle="dropdown" unique=<%= relationship_id %> value="0" >
                         <% group = Relationship.find_by(id: relationship_id).group %>
                         <% group_id = group.id %>
                         <% group_name = group.group_name %>
@@ -27,7 +27,7 @@
                                     </span>
                                          <ul class="add-user-hover" id=<%= relationship_id %> >
                                             <li><a id="no-click" href="<%= group_name_url_string %>"> Go to room</a></li>
-                                            <li><a class="popup-with-form" href=<%= '#add-user' + group_id.to_s %> id="no-click" value="">Add a user</a></li>
+                                            <li><a class="popup-with-form" href=<%= '#add-user' + group_id.to_s %> id="no-click" >Add a user</a></li>
                                         </ul>
                                 </th>
                             </tr>
@@ -63,18 +63,18 @@
         </div>
         <!-- /#sidebar-wrapper -->
 <script>
-var parity = 0;
+
 $('.dropdown-toggle').click(function(e){
     if (e.target.id === "no-click" || e.target.id === "delete-x1" || e.target.id === "delete-x2") {
     }
-    else if (parity % 2 == 0) {
-        parity += 1;
+    else if (this.value % 2 == 0) {
+        this.value += 1;
         var id = this.getAttribute("unique");
         var str_id = id.toString();
         $('#' +str_id).show();
     }
     else {
-        parity += 1;
+        this.value += 1;
         var id = this.getAttribute("unique");
         var str_id = id.toString();
         $('#' + str_id).hide();
