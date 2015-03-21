@@ -15,19 +15,28 @@
 
                             <tr>
                                 <th colspan = "4" >
-                                    <span style="float:left;", class:"glyphicon", id="delete-x1">
-                                        <a ><%= f.submit "[ x ]", class: "delete-button", id: "delete-x2" %>
+                                    
+                                    <span>
+                                        <a class="popup-with-form " href=<%= '#delete-user' + relationship_id.to_s %> > 
+                                            <span class="glyphicon glyphicon-remove" aria-hidden="true">
+                                            </span> 
                                         </a>
                                     </span>
                                     <span>
-                                        <a class="popup-with-form add-user-button" href=<%= '#add-user' + group_id.to_s %> > [ + ]</a>
+                                        <a class="popup-with-form" href=<%= '#add-user' + group_id.to_s %> >
+                                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 
+                                        
+                                        </a>
+                                        
                                     </span>
                                     <span>
-                                        <a class = "go-to-room-button" href=<%= group_name_url_string %>>[ -> ]</a>
+                                        <a href=<%= group_name_url_string %>>
+                                            <span class="glyphicon glyphicon-step-forward" aria-hidden="true">
+                                            </span>
+                                        </a>
                                     </span>
 
 
-                                    <span style="width: 100px;"></span>
                                     <span>
                                         <% if group_name_url_string.length < 8 %>
                                         <a class="menu-group" id=<%= "menu-group" + group_id.to_s%>><%= "#" + group_name%></a>
@@ -41,15 +50,25 @@
                             </tr>
 
                             <% end %>
-                            <!-- form itself -->
+                            
                              <div id=<%= 'add-user' + group_id.to_s %> class="white-popup-block mfp-hide">
 
                                 <h1>Add a user to the group:  <%= group_name %></h1>
                                 <%= form_tag(controller: "groups", action: "popupadduser", method: "post") do |f| %>
-                                  <%= label_tag "New Member Email" %>
+                                  <%= label_tag "New Member Email:" %>
                                   <%= text_field_tag :newmemberemail, params[:newmemberemail] %>
                                   <%= hidden_field_tag :groupid, group_id%>
                                   <%= submit_tag "Add new user to group", class: "btn btn-primary" %>
+                                <% end %>
+                            </div>
+
+                            <div id=<%= 'delete-user' + relationship_id.to_s %> class="white-popup-block mfp-hide">
+
+                                <h1> Are you sure you want to leave the group <%= group_name %> ?</h1>
+                                <br>
+                                  <%= form_for(current_user.active_relationships.find_by(id: relationship_id),
+                                         html: { method: :delete }) do |f| %>
+                                  <%= f.submit "Leave group" , class: "btn btn-primary" %>
                                 <% end %>
                             </div>
 
