@@ -16,19 +16,27 @@
                             <tr>
                                 <th colspan = "4" >
                                     <span style="float:left;", class:"glyphicon", id="delete-x1">
-                                        <a ><%= f.submit "[ x ]", class: "delete-button", id: "delete-x2" %></a>
-                                    </span>
-                                    <span style="width: 100px;">
-                                    </span>
-                                    <span>
+                                        <a ><%= f.submit "[ x ]", class: "delete-button", id: "delete-x2" %>
+                                        </a>
                                     </span>
                                     <span>
-                                        <a id="menu-group"><%= "#" + group_name%></a>
+                                        <a class="popup-with-form add-user-button" href=<%= '#add-user' + group_id.to_s %> > [ + ]</a>
                                     </span>
-                                         <ul class="add-user-hover" id=<%= relationship_id %> >
-                                            <li><a id="no-click" href="<%= group_name_url_string %>"> Go to room</a></li>
-                                            <li><a class="popup-with-form" href=<%= '#add-user' + group_id.to_s %> id="no-click" >Add a user</a></li>
-                                        </ul>
+                                    <span>
+                                        <a class = "go-to-room-button" href=<%= group_name_url_string %>>[ -> ]</a>
+                                    </span>
+
+
+                                    <span style="width: 100px;"></span>
+                                    <span>
+                                        <% if group_name_url_string.length < 8 %>
+                                        <a id="menu-group" ><%= "#" + group_name%></a>
+                                        <% else %>
+                                        <a id="menu-group" ><%= "#" + truncate(group_name, length: 9 )%></a>
+                                        <% end %>
+                                    </span>
+                                    
+
                                 </th>
                             </tr>
 
@@ -55,13 +63,14 @@
                     <h1>Create a Group!</h1>
                         <%= form_tag(controller: "groups", action: "create", method: "post") do |f| %>
                           <%= label_tag  "Group Name" %>
-                          <%= text_field_tag :group_name, params[:group_name] %>
+                          <%= text_field_tag :group_name, params[:group_name.downcase] %>
                           <%= submit_tag "Create new group", class: "btn btn-primary" %>
                         <% end %>
                 </div>
             </ul>
         </div>
         <!-- /#sidebar-wrapper -->
+
 <script>
 
 $('.dropdown-toggle').click(function(e){
@@ -83,3 +92,4 @@ $('.dropdown-toggle').click(function(e){
 
 
 </script>
+

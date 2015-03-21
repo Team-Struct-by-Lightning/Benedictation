@@ -21,7 +21,9 @@ class GroupsController < ApplicationController
     if current_user.nil?
       redirect
     else
-      @group = Group.new(popup_group_params)    # Not the final implementation!
+      downcase_params = popup_group_params
+      downcase_params[:group_name] = downcase_params[:group_name].downcase
+      @group = Group.new(downcase_params)    # Not the final implementation!
 
       if @group.save
         @relationship = Relationship.new(user_id:session[:user_id], group_id:@group[:id])
