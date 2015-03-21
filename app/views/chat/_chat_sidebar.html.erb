@@ -1,7 +1,7 @@
         <!-- Sidebar -->
         <div id="sidebar-wrapper">
             <ul class="sidebar-nav">
-               <li class="sidebar-brand"><a id="menu-toggle" href="#">Groups<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
+               <li class="sidebar-brand"><a id="menu-toggle" href="#">Groups<span id="main_icon" class="glyphicon glyphicon-align-justify" value="0"></span></a></li>
                 <% Relationship.where(user_id: current_user.id).pluck(:id).each do |relationship_id| %>
                     <li class="dropdown-toggle" data-toggle="dropdown" unique=<%= relationship_id %> value="0" >
                         <% group = Relationship.find_by(id: relationship_id).group %>
@@ -35,7 +35,7 @@
                                         <a id="menu-group" ><%= "#" + truncate(group_name, length: 9 )%></a>
                                         <% end %>
                                     </span>
-                                    
+
 
                                 </th>
                             </tr>
@@ -73,20 +73,24 @@
 
 <script>
 
-$('.dropdown-toggle').click(function(e){
-    if (e.target.id === "no-click" || e.target.id === "delete-x1" || e.target.id === "delete-x2") {
-    }
-    else if (this.value % 2 == 0) {
+$('.sidebar-brand').click(function(e){
+
+    if (this.value % 2 == 1) {
         this.value += 1;
-        var id = this.getAttribute("unique");
-        var str_id = id.toString();
-        $('#' +str_id).show();
+        console.log("why isn't it showing up!?")
+        //var id = this.getAttribute("unique");
+        //var str_id = id.toString();
+        //$('#' + str_id).show();
+        $('.add-user-button').fadeIn( "slow" );
+        $('.go-to-room-button').fadeIn( "slow" );
     }
     else {
         this.value += 1;
-        var id = this.getAttribute("unique");
-        var str_id = id.toString();
-        $('#' + str_id).hide();
+        //var id = this.getAttribute("unique");
+        //var str_id = id.toString();
+        //$('#' + str_id).hide();
+        $('.add-user-button').fadeOut( "fast" );
+        $('.go-to-room-button').fadeOut( "fast" );
     }
 });
 

@@ -7,16 +7,16 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1>Hello <%= current_user.name %>, begin chatting!</h1>
-                
+
 
                         <p>Use the sidebar on the left to create a new group or to enter a group that has already been created. Click below to start a chat without a group.
-                        During a video chat, hold down <b>Cntrl-B</b> to address Benedict. </p>
+                        During a video chat, hold down <b>Cntrl-B</b> to address Benedict.
 
                         <div id="placeholder-div"></div>
                           <%= link_to "Start chatting",  "/room/" + get_random_string + "/" +
                           get_random_string, class: 'btn btn-primary' %>
                         <div id="participantsDiv"></div>
-                      
+
 
 
                         <!--<p>Make sure to keep all page content within the <code>#page-content-wrapper</code>.</p>-->
