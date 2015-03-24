@@ -5,4 +5,8 @@ module ApplicationHelper
 		SecureRandom.urlsafe_base64
 	end
 
+	 def current_user
+    @current_user ||= User.find(session[:user_id]) if session[:user_id]
+  end
+
 end
