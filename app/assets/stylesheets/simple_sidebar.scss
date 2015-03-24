@@ -74,12 +74,6 @@
     color: $gray-light;
 }
 
-.sidebar-nav li a:hover {
-    text-decoration: none;
-    color: $gray-lighter;
-    background: rgba(255,255,255,0.2);
-}
-
 
 
 .sidebar-nav li a:active,
@@ -97,11 +91,6 @@
     color: $gray-light;
 }
 
-.sidebar-nav > .sidebar-brand a:hover {
-    color: $gray-lighter;
-    background: none;
-}
-
 
 
 .delete-button {
@@ -116,10 +105,6 @@
      margin-left: 10px;
 }
 
-.delete-button div:hover {
-    color: $gray-lighter;
-    background: none;
-}
 
 .add-user-button {
     background:none!important;
@@ -132,11 +117,7 @@
      float:right;
      margin-right: 10px;
 }
-.add-user-button div:hover {
-  margin-right: 60px;
-    color: $gray-lighter;
-    background: none;
-}
+
 .go-to-room-button {
     background:none!important;
      border:none;
@@ -147,10 +128,6 @@
      float:right;
      width: 50px;
      margin-right: 0px;
-}
-.go-to-room-button div:hover {
-    color: $gray-lighter;
-    background: none;
 }
 
 
@@ -247,3 +224,71 @@
   margin: 40px auto;
   position: relative;
 }
+
+.glyph-remove {
+  float: left;
+  margin-top: 4.8%;
+  margin-left: -49%;
+}
+
+.glyph-plus {
+  float: right;
+  margin-right: 68%;
+  margin-top: -11.9%;
+}
+
+.glyph-step-forward {
+  float: right;
+  width: 10%;
+  margin-right: 60%;
+  margin-top: -12%;
+}
+
+.glyph-name {
+  margin-bottom: 10%;
+}
+
+.glyphicon-remove {
+
+}
+
+.menu-group {
+  margin-left: 10%;
+}
+
+.edit_relationship:hover {
+    text-decoration: none;
+    color: $gray-lighter;
+    background: rgba(255,255,255,0.2);
+}
+
+
+
+/*
+.sidebar-nav li a:hover {
+    text-decoration: none;
+    color: $gray-lighter;
+    background: rgba(255,255,255,0.2);
+}
+
+.delete-button div:hover {
+    color: $gray-lighter;
+    background: none;
+}
+
+.add-user-button div:hover {
+  margin-right: 60px;
+    color: $gray-lighter;
+    background: none;
+}
+
+.go-to-room-button div:hover {
+    color: $gray-lighter;
+    background: none;
+}
+
+.sidebar-nav > .sidebar-brand a:hover {
+    color: $gray-lighter;
+    background: none;
+}
+*/

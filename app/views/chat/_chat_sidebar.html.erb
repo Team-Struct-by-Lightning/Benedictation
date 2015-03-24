@@ -13,31 +13,17 @@
                                          html: { method: :delete }) do |f| %>
 
 
+
                             <tr>
                                 <th colspan = "4" >
-                                    
-                                    <span>
-                                        <a class="popup-with-form " href=<%= '#delete-user' + relationship_id.to_s %> > 
-                                            <span class="glyphicon glyphicon-remove" aria-hidden="true">
-                                            </span> 
-                                        </a>
-                                    </span>
-                                    <span>
-                                        <a class="popup-with-form" href=<%= '#add-user' + group_id.to_s %> >
-                                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 
-                                        
-                                        </a>
-                                        
-                                    </span>
-                                    <span>
-                                        <a href=<%= group_name_url_string %>>
-                                            <span class="glyphicon glyphicon-step-forward" aria-hidden="true">
-                                            </span>
+
+                                    <span class="glyph-remove">
+                                        <a class="popup-with-form glyphicon glyphicon-remove" href=<%= '#delete-user' + relationship_id.to_s %> aria-hidden="true">
+
                                         </a>
                                     </span>
 
-
-                                    <span>
+                                    <span class="glyph-name">
                                         <% if group_name_url_string.length < 8 %>
                                         <a class="menu-group" id=<%= "menu-group" + group_id.to_s%>><%= "#" + group_name%></a>
                                         <% else %>
@@ -45,12 +31,22 @@
                                         <% end %>
                                     </span>
 
+                                    <span class="glyph-plus">
+                                        <a class="popup-with-form glyphicon glyphicon-plus" href=<%= '#add-user' + group_id.to_s %> aria-hidden="true">
+                                        </a>
+
+                                    </span>
+                                    <span class="glyph-step-forward">
+                                        <a class="glyphicon glyphicon-step-forward" href=<%= group_name_url_string %> aria-hidden="true">
+                                        </a>
+                                    </span>
+
 
                                 </th>
                             </tr>
 
                             <% end %>
-                            
+
                              <div id=<%= 'add-user' + group_id.to_s %> class="white-popup-block mfp-hide">
 
                                 <h1>Add a user to the group:  <%= group_name %></h1>
