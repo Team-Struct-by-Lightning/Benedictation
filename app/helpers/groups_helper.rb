@@ -10,6 +10,25 @@ module GroupsHelper
 		Group.find(id).group_name
 	end
 
+  def new_group
+    @group = Group.new(group_params)    # Not the final implementation!
+
+    if @group.save
+      @relationship = Relationship.new(user_id:session[:user_id], group_id:@group[:id])
+      if @relationship.save
+        # Handle a successful save.
+        flash[:success] = "Added the group: " + @group.group_name
+        redirect_to chat_path
+      else
+        flash.now[:danger] = 'Invalid group name: Valid group names contain 1-15 valid characters'
+        render 'new'
+      end
+    else
+      flash.now[:danger] = 'Invalid group name: Valid group names contain 1-15 valid characters'
+      render 'new'
+    end
+  end
+
 	def add_user_to_group
 		@useremail = params[:newmemberemail]
 
