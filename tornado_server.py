@@ -75,6 +75,10 @@ application = tornado.web.Application([
 ])
 
 if __name__ == "__main__":
-    http_server = tornado.httpserver.HTTPServer(application)
+    benny_ssl_options = {
+        "certfile": os.path.join("/etc/nginx/ssl/benedictation_io/ssl-bundle.crt"),
+        "keyfile": os.path.join("/etc/nginx/ssl/benedictation_io/benedictation-private-key-file.pem")
+    }  
+    http_server = tornado.httpserver.HTTPServer(application,xheaders=True,ssl_options=benny_ssl_options)
     http_server.listen(8888)
     tornado.ioloop.IOLoop.instance().start()
