@@ -8,6 +8,7 @@ comm.connect(window.location.pathname);
  console.log("location.protocol: ",location.protocol);
  if (location.protocol !== "https:") {
      websocketprotocol = "ws://";
+     myLocation = myLocation.split(":")[0];
  }
  var uri = "/recognize";
  console.log("" + websocketprotocol + myLocation + ":" + port + uri);
