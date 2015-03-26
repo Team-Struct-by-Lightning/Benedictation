@@ -2,12 +2,15 @@ import tornado.ioloop
 import tornado.web
 import tornado.websocket
 import tornado.httpserver
+from json import loads
+from urllib2 import urlopen
 # from nltk_test import find_nouns
 import speechrec    # Put speechrec.py in the same folder
 import wave
 import os
 from random import randint
 import speechrec
+import socket
 
 class WSHandler(tornado.websocket.WebSocketHandler):
     def open(self):
@@ -75,10 +78,20 @@ application = tornado.web.Application([
 ])
 
 if __name__ == "__main__":
-    benny_ssl_options = {
-        "certfile": os.path.join("/etc/nginx/ssl/benedictation_io/ssl-bundle.crt"),
-        "keyfile": os.path.join("/etc/nginx/ssl/benedictation_io/benedictation-private-key-file.pem")
-    }  
-    http_server = tornado.httpserver.HTTPServer(application,xheaders=True,ssl_options=benny_ssl_options)
+ 
+    # This line will connect to the website, read its contents
+    # and parse the JSON output
+	
+    data = loads(urlopen("http://httpbin.org/ip").read())
+    public_ip = data["origin"]
+    print "The public IP is : %s" % data["origin"]
+    if str(public_ip) == "52.11.133.36":
+        benny_ssl_options = {
+            "certfile": os.path.join("/etc/nginx/ssl/benedictation_io/ssl-bundle.crt"),
+            "keyfile": os.path.join("/etc/nginx/ssl/benedictation_io/benedictation-private-key-file.pem")
+        }   
+        http_server = tornado.httpserver.HTTPServer(application,xheaders=True,ssl_options=benny_ssl_options)
+    else:
+	http_server = tornado.httpserver.HTTPServer(application)
     http_server.listen(8888)
     tornado.ioloop.IOLoop.instance().start()
