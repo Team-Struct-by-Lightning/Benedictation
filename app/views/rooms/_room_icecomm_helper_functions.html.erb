@@ -5,13 +5,12 @@ comm.connect(window.location.pathname);
    var myLocation = location.host;
  var port = "8888";
  var websocketprotocol = "wss://";
- console.log("location.protocol: ",location.protocol);
  if (location.protocol !== "https:") {
      websocketprotocol = "ws://";
      myLocation = myLocation.split(":")[0];
  }
  var uri = "/recognize";
- console.log("" + websocketprotocol + myLocation + ":" + port + uri);
+ console.log("connecting to this websocket: " + websocketprotocol + myLocation + ":" + port + uri);
  ws = new WebSocket(websocketprotocol + myLocation + ":" + port + uri);
     
     ws = new WebSocket(websocketprotocol + myLocation + ":" + port + uri );
