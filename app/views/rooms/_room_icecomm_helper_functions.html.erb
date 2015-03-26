@@ -1,12 +1,19 @@
 var comm = new Icecomm('9gv3ODZorBS2kVuNwnugBeV432PcNX3Qn0HmW33ofxK/u5Xolu', {debug: true});
 comm.connect(window.location.pathname);
 
-    // Set up the WebSocket in onload; so that it is available for use elsewhere.
-    var host = "benedictation.io";
-    var myLocation = location.host
-    var port = "8888";
-    var uri = "/recognize";
-    ws = new WebSocket("wss://" + myLocation + ":" + port + uri );
+    // Set up the WebSocket
+     var myLocation = location.host;
+ var port = "8888";
+ var websocketprotocol = "wss://";
+ console.log("location.protocol: ",location.protocol);
+ if (location.protocol !== "https:") {
+     websocketprotocol = "ws://";
+ }
+ var uri = "/recognize";
+ console.log("" + websocketprotocol + myLocation + ":" + port + uri);
+ ws = new WebSocket(websocketprotocol + myLocation + ":" + port + uri);
+    
+    ws = new WebSocket(websocketprotocol + myLocation + ":" + port + uri );
 
     // get benedict's reply from the python server
     ws.onmessage = function(e) {
