@@ -12,8 +12,6 @@ comm.connect(window.location.pathname);
  var uri = "/recognize";
  console.log("connecting to this websocket: " + websocketprotocol + myLocation + ":" + port + uri);
  ws = new WebSocket(websocketprotocol + myLocation + ":" + port + uri);
-    
-    ws = new WebSocket(websocketprotocol + myLocation + ":" + port + uri );
 
     // get benedict's reply from the python server
     ws.onmessage = function(e) {
