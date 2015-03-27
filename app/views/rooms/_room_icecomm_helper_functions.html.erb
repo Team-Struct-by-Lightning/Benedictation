@@ -1,11 +1,17 @@
-var comm = new Icecomm('9gv3ODZorBS2kVuNwnugBeV432PcNX3Qn0HmW33ofxK/u5Xolu');
+var comm = new Icecomm('9gv3ODZorBS2kVuNwnugBeV432PcNX3Qn0HmW33ofxK/u5Xolu', {debug: true});
 comm.connect(window.location.pathname);
 
-    // Set up the WebSocket in onload; so that it is available for use elsewhere.
-    var host = "localhost";
-    var port = "8888";
-    var uri = "/recognize";
-    ws = new WebSocket("ws://" + host + ":" + port + uri );
+    // Set up the WebSocket
+   var myLocation = location.host;
+ var port = "8888";
+ var websocketprotocol = "wss://";
+ if (location.protocol !== "https:") {
+     websocketprotocol = "ws://";
+     myLocation = myLocation.split(":")[0];
+ }
+ var uri = "/recognize";
+ console.log("connecting to this websocket: " + websocketprotocol + myLocation + ":" + port + uri);
+ ws = new WebSocket(websocketprotocol + myLocation + ":" + port + uri);
 
     // get benedict's reply from the python server
     ws.onmessage = function(e) {
