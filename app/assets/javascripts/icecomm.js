@@ -81,7 +81,7 @@ browserHandler.isFireFox = isFireFox;
 
 function assignBrowser() {
   if (navigator.mozGetUserMedia) {
-    browserType = 'Mozilla';
+    browserType = 'Firefox';
   }
 
   if (navigator.webkitGetUserMedia) {
@@ -117,12 +117,11 @@ dataChannelHandler.setChannel = setChannel;
 dataChannelHandler.send = send;
 dataChannelHandler.removeDataChannel = removeDataChannel;
 dataChannelHandler.isOpen = isOpen;
-dataChannelHandler.isPending = isPending;
 dataChannelHandler.setPending = setPending;
 
 function removeDataChannel(callerID) {
   if (dataChannels[callerID]) {
-    dataChannels[callerID] = undefined;
+    delete dataChannels[callerID];
   }
 }
 
@@ -201,14 +200,6 @@ function setOpen(callerID) {
 function isOpen(callerID) {
   if (dataChannels[callerID]) {
     return dataChannels[callerID].status === 'open';
-  }
-
-  return false;
-}
-
-function isPending(callerID) {
-  if (dataChannels[callerID]) {
-    return dataChannels[callerID].status === 'pending';
   }
 
   return false;
@@ -364,8 +355,8 @@ var r = require('./roomHandler');
 
 var Icecomm = function(APIKEY, appSettings) {
   // socket.connect('http://localhost:8080');
-  // socket.connect('https://server-stag.icecomm.io:443');
-  socket.connect('https://server.icecomm.io:443');
+  socket.connect('https://server-stag.icecomm.io:443');
+  // socket.connect('https://server.icecomm.io:443');
   // socket = io.connect('https://icecomm-server-prod.elasticbeanstalk.com:443');
 
   /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -432,6 +423,10 @@ var Icecomm = function(APIKEY, appSettings) {
 
   this.close = function() {
     s.stopLocalStream();
+  }
+
+  this.getLocalStream = function() {
+    return s.getLocalStream();
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -635,7 +630,7 @@ function removePeer(callerID) {
   dc.removeDataChannel(callerID);
   if (localPeerConnections[callerID]) {
     localPeerConnections[callerID].channel.close();
-    localPeerConnections[callerID] = undefined;
+    delete localPeerConnections[callerID];
   }
 }
 
@@ -680,10 +675,8 @@ function send(callerID, data) {
       if (dc.isOpen(callerID)) {
         dc.send(callerID, data);
       } else {
-        if(dc.isPending(callerID)){
-            utils.printDebugMessage('added data to queue');
-            dc.setPending(callerID, data);
-        }
+        utils.printDebugMessage('added data to queue');
+        dc.setPending(callerID, data);
       }
     }
   }
@@ -7555,30 +7548,30 @@ function setLocalStream(stream) {
 }
 
 function createStreamOptions(localOrRemote, ID) {
-  var options = {};
   var stream;
-
-  if (localOrRemote === 'local') {
-    options.myID = d.getMyID();
-    stream = localStream;
-    ID = d.getMyID();
-
-    if (b.isChrome()) {
-      var audiolessStream = new MediaStream(localStream.getVideoTracks());
-      stream = audiolessStream;
-    }
-  }
   if (localOrRemote === 'remote') {
-    options.callerID = ID;
     stream = remoteStreams[ID];
   }
-  options.stream = URL.createObjectURL(stream);
-  options.rawStream = localStream;
-  options.video = utils.createVideoElement(ID, stream);
-
-  return options;
+  if (localOrRemote === 'local') {
+    stream = localStream;
+  }
+  var streamOptions = new StreamOptions(stream, ID, localOrRemote);
+  return streamOptions;
 }
 
+function StreamOptions(stream, ID, localOrRemote) {
+  var localOrRemote = localOrRemote;
+  this.stream = URL.createObjectURL(stream);
+  this.rawStream = stream;
+  if (localOrRemote) {
+    this.callerID  = ID;
+  }
+
+  this.getVideo = function() {
+    return utils.createVideoElement(ID, stream, localOrRemote);
+  }
+
+}
 
 module.exports = streamHandler;
 },{"./adapter":2,"./browserHandler":3,"./domainHandler":5,"./utils":13}],13:[function(require,module,exports){
@@ -7591,7 +7584,7 @@ utils.errorHandler = errorHandler;
 utils.enableDebugMode = enableDebugMode;
 utils.disableDebugMode = disableDebugMode;
 utils.printDebugMessage = printDebugMessage;
-utils.parseDescription = parseDescription;
+// utils.parseDescription = parseDescription;
 utils.createRoomSettings = createRoomSettings;
 utils.is = is;
 utils.createVideoElement = createVideoElement;
@@ -7643,20 +7636,20 @@ function printDebugMessage(message) {
   }
 }
 
-function parseDescription(description) {
-  if (browserType === "Mozilla") {
-    if (description.sdp.match('m=application 9 RTP/SAVPF ')) {
-      description.sdp = description.sdp.replace('m=application 9 RTP/SAVPF ', 'm=application 9 RTP/SAVPF');
-    }
-  }
-  if (browserType === "Chrome") {
-    if (!description.sdp.match('m=application 9 RTP/SAVPF ')) {
-      description.sdp = description.sdp.replace('m=application 9 RTP/SAVPF', 'm=application 9 RTP/SAVPF ');
-    }
-  }
+// function parseDescription(description) {
+//   if (browserType === "Mozilla") {
+//     if (description.sdp.match('m=application 9 RTP/SAVPF ')) {
+//       description.sdp = description.sdp.replace('m=application 9 RTP/SAVPF ', 'm=application 9 RTP/SAVPF');
+//     }
+//   }
+//   if (browserType === "Chrome") {
+//     if (!description.sdp.match('m=application 9 RTP/SAVPF ')) {
+//       description.sdp = description.sdp.replace('m=application 9 RTP/SAVPF', 'm=application 9 RTP/SAVPF ');
+//     }
+//   }
 
-  return description;
-}
+//   return description;
+// }
 
 function createRoomSettings(settings) {
   var roomSettings = {};
@@ -7684,11 +7677,16 @@ function is(type, obj) {
     return obj !== undefined && obj !== null && clas === type;
 }
 
-function createVideoElement(ID, stream) {
+function createVideoElement(ID, stream, localOrRemote) {
   var tempVideo = document.createElement('video');
   tempVideo.src = URL.createObjectURL(stream);
-  tempVideo.id = ID;
   tempVideo.autoplay = true;
+  if (localOrRemote === 'local') {
+    tempVideo.setAttribute('muted', 'muted')
+  }
+  if (localOrRemote === 'remote') {
+    tempVideo.id = ID;
+  }
   return tempVideo;
 }
 
