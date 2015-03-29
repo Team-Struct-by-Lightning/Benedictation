@@ -33,3 +33,6 @@ speechrec.pyc
 
 #ignores rubymine IDE files
 .idea/*
+
+#environment variables
+*.env
