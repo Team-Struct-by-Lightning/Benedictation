@@ -18,3 +18,16 @@ def find_nouns(sentence):
 			#print word
 
 	return return_list
+
+def schedule_meeting(sentence):
+	tokens = nltk.word_tokenize(sentence)
+	tagged = nltk.pos_tag(tokens)
+
+	simplifiedTags = [(word, map_tag('en-ptb', 'universal', tag)) for word, tag in tagged]
+	retval = 'false'
+	for word, tag in simplifiedTags:
+		print word, tag
+		if(tag == 'VERB' and word == 'schedule'):
+			retval = 'true'
+
+	return retval

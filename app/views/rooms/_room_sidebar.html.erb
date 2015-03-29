@@ -9,7 +9,7 @@
                         <% group_name = group.group_name %>
                         <% group_name_url_string = "/room/" + "#{group_id}" + "/" + group_name %>
 
-                        <a id="menu-group" href= "<%= group_name_url_string %>" ><%=group_name%></a>
+                        <a id="menu-group" href= "<%= group_name_url_string %>" ><%= "#" + group_name%></a>
 
                     </li>
                 <% end %>
