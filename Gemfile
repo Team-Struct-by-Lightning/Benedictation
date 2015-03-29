@@ -12,13 +12,12 @@ gem 'jbuilder',             '2.2.3'
 gem 'rest-client',          '~> 1.7.3'
 gem "omniauth-google-oauth2", "~> 0.2.1"
 gem 'magnific-popup-rails'
-
+gem 'pg',                   '0.17.1'
 gem 'sdoc',                 '0.4.0', group: :doc
 
 
 
 group :development, :test do
-  gem 'pg',           '0.17.1'
   gem 'web-console', '2.0.0.beta3'
   gem 'spring',      '1.1.3'
 end
@@ -30,6 +29,5 @@ group :test do
 end
 
 group :production do
-  gem 'pg',             '0.17.1'
   gem 'rails_12factor', '0.0.2'
 end
