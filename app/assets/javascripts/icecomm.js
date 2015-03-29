@@ -1,207 +1,770 @@
-// 'use strict';
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+var utils = require('./utils');
 
-var RTCPeerConnection = null;
-var getUserMedia = null;
-var attachMediaStream = null;
-var reattachMediaStream = null;
-var webrtcDetectedBrowser = null;
-var webrtcDetectedVersion = null;
+var connectCallback;
+var EventEmitter = {};
+var eventsObj = {};
 
-function maybeFixConfiguration(pcConfig) {
-  if (!pcConfig) {
-    return;
-  }
-  for (var i = 0; i < pcConfig.iceServers.length; i++) {
-    if (pcConfig.iceServers[i].hasOwnProperty('urls')) {
-      pcConfig.iceServers[i].url = pcConfig.iceServers[i].urls;
-      delete pcConfig.iceServers[i].urls;
+EventEmitter.trigger = trigger;
+EventEmitter.on = on;
+EventEmitter.setConnectCallback = setConnectCallback;
+EventEmitter.callConnectCallback = callConnectCallback;
+
+function trigger(event, options) {
+  if (eventsObj[event]) {
+    options = options || {};
+    for (var i = 0; i < eventsObj[event].length; i++) {
+      eventsObj[event][i](options);
     }
   }
 }
+
+function on(event, callback) {
+  if (!eventsObj[event]) {
+    eventsObj[event] = [];
+  }
+  eventsObj[event].push(callback);
+}
+
+function setConnectCallback(settings, callback) {
+  connectCallback = undefined;
+  if (callback !== undefined) {
+    connectCallback = callback;
+  }
+  if (utils.is('Function', settings)) {
+    connectCallback = settings;
+  }
+}
+
+function callConnectCallback() {
+  if (connectCallback) {
+    connectCallback();
+  }
+}
+
+module.exports = EventEmitter;
+},{"./utils":13}],2:[function(require,module,exports){
+var getUserMedia;
+var RTCMediaStream;
 
 if (navigator.mozGetUserMedia) {
-  // console.log('This appears to be Firefox');
-
-  window.webrtcDetectedBrowser = 'firefox';
-
-  window.webrtcDetectedVersion =
-    parseInt(navigator.userAgent.match(/Firefox\/([0-9]+)\./)[1], 10);
-
-  // The RTCPeerConnection object.
-  RTCPeerConnection = function(pcConfig, pcConstraints) {
-    // .urls is not supported in FF yet.
-    maybeFixConfiguration(pcConfig);
-    return new mozRTCPeerConnection(pcConfig, pcConstraints);
-  };
-
-  // The RTCSessionDescription object.
-  RTCSessionDescription = mozRTCSessionDescription;
-
-  // The RTCIceCandidate object.
-  RTCIceCandidate = mozRTCIceCandidate;
-
-  // Get UserMedia (only difference is the prefix).
-  // Code from Adam Barth.
-  window.getUserMedia = navigator.mozGetUserMedia.bind(navigator);
-  navigator.getUserMedia = getUserMedia;
-
-  // Creates iceServer from the url for FF.
-  window.createIceServer = function(url, username, password) {
-    var iceServer = null;
-    var urlParts = url.split(':');
-    if (urlParts[0].indexOf('stun') === 0) {
-      // Create iceServer with stun url.
-      iceServer = {
-        'url': url
-      };
-    } else if (urlParts[0].indexOf('turn') === 0) {
-      if (webrtcDetectedVersion < 27) {
-        // Create iceServer with turn url.
-        // Ignore the transport parameter from TURN url for FF version <=27.
-        var turnUrlParts = url.split('?');
-        // Return null for createIceServer if transport=tcp.
-        if (turnUrlParts.length === 1 ||
-          turnUrlParts[1].indexOf('transport=udp') === 0) {
-          iceServer = {
-            'url': turnUrlParts[0],
-            'credential': password,
-            'username': username
-          };
-        }
-      } else {
-        // FF 27 and above supports transport parameters in TURN url,
-        // So passing in the full url to create iceServer.
-        iceServer = {
-          'url': url,
-          'credential': password,
-          'username': username
-        };
-      }
-    }
-    return iceServer;
-  };
-
-  window.createIceServers = function(urls, username, password) {
-    var iceServers = [];
-    // Use .url for FireFox.
-    for (var i = 0; i < urls.length; i++) {
-      var iceServer = createIceServer(urls[i],
-        username,
-        password);
-      if (iceServer !== null) {
-        iceServers.push(iceServer);
-      }
-    }
-    return iceServers;
-  };
-
-  // Attach a media stream to an element.
-  window.attachMediaStream = function(element, stream) {
-    console.log('Attaching media stream');
-    element.mozSrcObject = stream;
-    element.play();
-  };
-
-  window.reattachMediaStream = function(to, from) {
-    // console.log('Reattaching media stream');
-    to.mozSrcObject = from.mozSrcObject;
-    to.play();
-  };
-
-} else if (navigator.webkitGetUserMedia) {
-  // console.log('This appears to be Chrome');
-
-  window.webrtcDetectedBrowser = 'chrome';
-  // Temporary fix until crbug/374263 is fixed.
-  // Setting Chrome version to 999, if version is unavailable.
-  var result = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
-  if (result !== null) {
-    window.webrtcDetectedVersion = parseInt(result[2], 10);
-  } else {
-    window.webrtcDetectedVersion = 999;
-  }
-
-  // Creates iceServer from the url for Chrome M33 and earlier.
-  window.createIceServer = function(url, username, password) {
-    var iceServer = null;
-    var urlParts = url.split(':');
-    if (urlParts[0].indexOf('stun') === 0) {
-      // Create iceServer with stun url.
-      iceServer = {
-        'url': url
-      };
-    } else if (urlParts[0].indexOf('turn') === 0) {
-      // Chrome M28 & above uses below TURN format.
-      iceServer = {
-        'url': url,
-        'credential': password,
-        'username': username
-      };
-    }
-    return iceServer;
-  };
-
-  // Creates iceServers from the urls for Chrome M34 and above.
-  window.createIceServers = function(urls, username, password) {
-    var iceServers = [];
-    if (webrtcDetectedVersion >= 34) {
-      // .urls is supported since Chrome M34.
-      iceServers = {
-        'urls': urls,
-        'credential': password,
-        'username': username
-      };
-    } else {
-      for (var i = 0; i < urls.length; i++) {
-        var iceServer = createIceServer(urls[i],
-          username,
-          password);
-        if (iceServer !== null) {
-          iceServers.push(iceServer);
-        }
-      }
-    }
-    return iceServers;
-  };
-
-  // The MediaStream object.
-  MediaStream = webkitMediaStream;
-
-  // The RTCPeerConnection object.
-  RTCPeerConnection = function(pcConfig, pcConstraints) {
-    // .urls is supported since Chrome M34.
-    if (webrtcDetectedVersion < 34) {
-      maybeFixConfiguration(pcConfig);
-    }
-    return new webkitRTCPeerConnection(pcConfig, pcConstraints);
-  };
-
-  // Get UserMedia (only difference is the prefix).
-  // Code from Adam Barth.
-  window.getUserMedia = navigator.webkitGetUserMedia.bind(navigator);
-  navigator.getUserMedia = getUserMedia;
-
-  // Attach a media stream to an element.
-  window.attachMediaStream = function(element, stream) {
-    if (typeof element.srcObject !== 'undefined') {
-      element.srcObject = stream;
-    } else if (typeof element.mozSrcObject !== 'undefined') {
-      element.mozSrcObject = stream;
-    } else if (typeof element.src !== 'undefined') {
-      element.src = URL.createObjectURL(stream);
-    } else {
-      console.log('Error attaching stream to element.');
-    }
-  };
-
-  window.reattachMediaStream = function(to, from) {
-    to.src = from.src;
-  };
-} else {
-  console.log('Browser does not appear to be WebRTC-capable');
+  getUserMedia = navigator.mozGetUserMedia.bind(navigator);
+  RTCMediaStream = MediaStream;
+}
+if (navigator.webkitGetUserMedia) {
+  getUserMedia = navigator.webkitGetUserMedia.bind(navigator);
+  RTCMediaStream = webkitMediaStream;
 }
 
+navigator.getUserMedia = getUserMedia;
 
+module.exports.RTCSessionDescription = window.RTCSessionDescription ||
+  window.mozRTCSessionDescription;
+module.exports.RTCPeerConnection = window.RTCPeerConnection ||
+  window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
+module.exports.RTCIceCandidate = window.RTCIceCandidate ||
+  window.mozRTCIceCandidate;
+module.exports.navigator = navigator;
+module.exports.MediaStream = RTCMediaStream;
+
+
+},{}],3:[function(require,module,exports){
+var navigator = require('./adapter').navigator;
+
+var browserHandler = {};
+var browserType;
+
+browserHandler.assignBrowser = assignBrowser;
+browserHandler.getBrowser = getBrowser;
+browserHandler.isChrome = isChrome;
+browserHandler.isFireFox = isFireFox;
+
+function assignBrowser() {
+  if (navigator.mozGetUserMedia) {
+    browserType = 'Mozilla';
+  }
+
+  if (navigator.webkitGetUserMedia) {
+    browserType = "Chrome";
+  }
+}
+
+function getBrowser() {
+  return browserType;
+}
+
+function isChrome() {
+  return browserType === 'Chrome';
+}
+
+function isFireFox() {
+  return browserType === 'Firefox';
+}
+
+module.exports = browserHandler;
+},{"./adapter":2}],4:[function(require,module,exports){
+var utils = require('./utils');
+var s = require('./streamHandler');
+var EventEmitter = require('./EventEmitter');
+
+var dataChannelHandler = {};
+var dataChannels = {};
+var pendingData = {};
+
+dataChannelHandler.addListenersToDataChannel = addListenersToDataChannel;
+dataChannelHandler.createDataChannel = createDataChannel;
+dataChannelHandler.setChannel = setChannel;
+dataChannelHandler.send = send;
+dataChannelHandler.removeDataChannel = removeDataChannel;
+dataChannelHandler.isOpen = isOpen;
+dataChannelHandler.isPending = isPending;
+dataChannelHandler.setPending = setPending;
+
+function removeDataChannel(callerID) {
+  if (dataChannels[callerID]) {
+    dataChannels[callerID] = undefined;
+  }
+}
+
+function addListenersToDataChannel(callerID) {
+
+  dataChannels[callerID].channel.onerror = utils.errorHandler;
+
+  dataChannels[callerID].channel.onmessage = function(event) {
+    messageDataHandler(callerID, event.data)
+  }
+
+  dataChannels[callerID].channel.onopen = function(event) {
+    openDataHandler(callerID);
+  }
+
+  dataChannels[callerID].channel.onclose = closeDataHandler
+}
+
+function createDataChannel(callerID, localPeerConnections) {
+  dataChannels[callerID] = {};
+  dataChannels[callerID].status = 'pending';
+  dataChannels[callerID].channel = localPeerConnections[callerID].channel.createDataChannel('RTCDataChannel', {reliable: true});
+}
+
+function setChannel(callerID, channel) {
+  dataChannels[callerID] = {};
+  dataChannels[callerID].status = 'pending';
+  dataChannels[callerID].channel = channel;
+}
+
+function send(callerID, data) {
+  if (data) {
+    dataChannels[callerID].channel.send(data);
+  }
+}
+
+function messageDataHandler(callerID, data) {
+  var options = {};
+  options.data = JSON.parse(data);
+  options.callerID = callerID;
+  EventEmitter.trigger('data', options);
+}
+
+function openDataHandler(callerID) {
+  utils.printDebugMessage('data channels open');
+  sendIfPending(callerID);
+  setOpen(callerID);
+  var options = s.createStreamOptions('remote', callerID);
+  EventEmitter.trigger('connected', options);
+}
+
+function closeDataHandler() {
+  utils.printDebugMessage('ON CLOSE CALLED');
+}
+
+function onLeftHandler(callerID) {
+  pc.removePeer(callerID);
+  var options = {};
+  options.callerID = callerID;
+  EventEmitter.trigger('disconnect', options);
+}
+
+function sendIfPending(callerID) {
+  if (dataChannels[callerID].status === 'pending') {
+    utils.printDebugMessage('sending pending data');
+    var data = pendingData[callerID];
+    send(callerID, data);
+    delete pendingData[callerID];
+  }
+}
+
+function setOpen(callerID) {
+  dataChannels[callerID].status = 'open';
+}
+
+function isOpen(callerID) {
+  if (dataChannels[callerID]) {
+    return dataChannels[callerID].status === 'open';
+  }
+
+  return false;
+}
+
+function isPending(callerID) {
+  if (dataChannels[callerID]) {
+    return dataChannels[callerID].status === 'pending';
+  }
+
+  return false;
+}
+
+function setPending(callerID, data) {
+  dataChannels[callerID].status = 'pending';
+  pendingData[callerID] = data;
+}
+
+module.exports = dataChannelHandler;
+},{"./EventEmitter":1,"./streamHandler":12,"./utils":13}],5:[function(require,module,exports){
+var domainHandler = {};
+
+var utils = require('./utils');
+var navigator = require('./adapter').navigator;
+var r = require('./roomHandler');
+var EventEmitter = require('./EventEmitter');
+
+var myID;
+var currentDomain = {};
+
+domainHandler.getMyID = getMyID;
+domainHandler.setMyID = setMyID;
+domainHandler.setDomain = setDomain;
+domainHandler.getDomain = getDomain;
+domainHandler.getRooms = getRooms;
+domainHandler.isForMe = isForMe;
+domainHandler.getRemoteIDs = getRemoteIDs;
+domainHandler.getRoomSize = getRoomSize;
+domainHandler.sendGlobalEvent = sendGlobalEvent;
+
+
+function getDomain() {
+  return currentDomain;
+}
+
+function isForMe(ID) {
+  return myID === ID;
+}
+
+function getRooms() {
+  var rooms = [];
+  for (var room in currentDomain) {
+    rooms.push(room);
+  }
+
+  return rooms;
+}
+
+function getMyID() {
+  return myID;
+}
+
+function setMyID(ID) {
+  myID = ID;
+}
+
+function setDomain(domain) {
+  currentDomain = domain;
+}
+
+// can optimize later to use server callerID
+function differenceInDomain(event, oldDomain) {
+  var options = {};
+  var largerDomain;
+  var smallerDomain;
+  if (event === 'global_disconnect') {
+    largerDomain = oldDomain;
+    smallerDomain = currentDomain;
+  }
+  if (event === 'global_connect') {
+    largerDomain = currentDomain;
+    smallerDomain = oldDomain;
+  }
+
+  for (var room in largerDomain) {
+    if (!smallerDomain[room]) {
+      options.room = room;
+      options.callerID = largerDomain[room][0];
+      return options;
+    }
+    if (smallerDomain[room].length !== largerDomain[room].length) {
+      for (var i = 0; i < largerDomain[room].length; i++) {
+        if (smallerDomain[room].indexOf(largerDomain[room][i]) < 0) {
+          options.room = room;
+          options.callerID = largerDomain[room][0];
+          return options;
+        }
+      }
+    }
+  }
+}
+
+function getRoomSize() {
+  var currentRoom = r.getCurrentRoom();
+  return currentDomain[currentRoom].length;
+}
+
+function getRemoteIDs() {
+  var remoteIDs = [];
+  var currentRoom = r.getCurrentRoom();
+  for (var i = 0; i < currentDomain[currentRoom].length; i++) {
+    if (currentDomain[currentRoom][i] !== myID) {
+      remoteIDs.push(currentDomain[currentRoom][i]);
+    }
+  }
+
+  return remoteIDs;
+}
+
+function sendGlobalEvent(event, oldDomain) {
+  var options = differenceInDomain(event, oldDomain);
+  if (options.callerID.myID !== myID) {
+    EventEmitter.trigger(event, options);
+  }
+}
+
+module.exports = domainHandler;
+},{"./EventEmitter":1,"./adapter":2,"./roomHandler":9,"./utils":13}],6:[function(require,module,exports){
+var socket = require('./socketHandler');
+var d = require('./domainHandler');
+
+var iceCandidateHandler = {};
+
+iceCandidateHandler.sendIceCandidate = sendIceCandidate;
+
+function sendIceCandidate(callerID, candidate) {
+  if (candidate) {
+    var candidateObj = {
+      label: candidate.sdpMLineIndex,
+      from: d.getMyID(),
+      to: callerID,
+      candidate: candidate.candidate
+    };
+    socket.emit('candidate', candidateObj);
+  }
+}
+
+module.exports = iceCandidateHandler;
+},{"./domainHandler":5,"./socketHandler":11}],7:[function(require,module,exports){
+'use strict';
+
+var utils = require('./utils');
+var pc = require('./peerConnectionHandler');
+var EventEmitter = require('./EventEmitter');
+var b = require('./browserHandler');
+var dc = require('./dataChannelHandler');
+var d = require('./domainHandler');
+var s = require('./streamHandler');
+var socket = require('./socketHandler');
+var r = require('./roomHandler');
+
+var Icecomm = function(APIKEY, appSettings) {
+  // socket.connect('http://localhost:8080');
+  // socket.connect('https://server-stag.icecomm.io:443');
+  socket.connect('https://server.icecomm.io:443');
+  // socket = io.connect('https://icecomm-server-prod.elasticbeanstalk.com:443');
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+
+  utils.checkDebugMode(appSettings);
+  b.assignBrowser();
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+
+  this.send = function(data, callerID) {
+    pc.send(callerID, data);
+  }
+
+  this.on = function(event, callback) {
+    EventEmitter.on(event, callback);
+  }
+
+  this.connect = function(room, settings, callback) {
+    r.setRoomSettings(settings);
+
+    // leave any room if in one and enter new one
+    if (r.getCurrentRoom()) {
+      this.leave();
+      socket.emit('leave');
+    }
+    r.setCurrentRoom(room);
+
+    // sets connect callback depending if callback is in second or third paramter
+    EventEmitter.setConnectCallback(settings, callback);
+
+    checkSettingsBeforeCall();
+  }
+
+  this.getLocalID = function() {
+    return d.getMyID();
+  }
+
+  this.getRemoteIDs = function() {
+    return d.getRemoteIDs;
+  }
+
+  this.getRooms = function() {
+    return d.getRooms();
+  }
+
+  this.getRoomSize = function() {
+    return d.getRoomSize();
+  }
+
+  this.isHost = function() {
+    return r.getHostStatus();
+  }
+
+  this.getDomain = function(){
+    return d.getDomain();
+  }
+
+  this.leave = function() {
+    r.setCurrentRoom(undefined);
+    s.stopLocalStream();
+    pc.removeAllPeers();
+    socket.emit('leave');
+  }
+
+  this.close = function() {
+    s.stopLocalStream();
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+
+  function checkSettingsBeforeCall() {
+    // Gets media stream if parameter and no current localstream
+    if (r.wantsStream() && (s.isLocalStopped())) {
+      r.getUserMedia(gotStreamSuccess);
+    } else {
+      joinRoom();
+    }
+  }
+
+  function gotStreamSuccess(stream) {
+    s.setLocalStream(stream);
+
+    // fill local user video
+    var options = s.createStreamOptions('local');
+    EventEmitter.trigger('local', options);
+    joinRoom();
+  }
+
+  function joinRoom() {
+    var roomInfo = r.createRoomInfo(APIKEY);
+    socket.emit('join', roomInfo);
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+
+  socket.on('join', function(IDPacket) {
+    var otherIDs = IDPacket.otherIDs;
+    d.setMyID(IDPacket.myID);
+    r.setHost(false);
+
+    if (otherIDs.length === 0) {
+      r.setHost(true);
+    }
+
+    EventEmitter.callConnectCallback();
+    pc.setServerInfo(IDPacket.serverInfo);
+
+    for (var i = 0; i < otherIDs.length; i++) {
+      pc.call(otherIDs[i]);
+    }
+
+    utils.printDebugMessage('otherIDs on join ' + otherIDs);
+  });
+
+  socket.on('offer', function(descriptionObj) {
+    if (d.isForMe(descriptionObj.to)) {
+      var callerID = descriptionObj.from;
+      var description = descriptionObj.description;
+      pc.offerEvent(callerID, description);
+    }
+  });
+
+  socket.on('answer', function(descriptionObj) {
+    if (d.isForMe(descriptionObj.to)) {
+      var callerID = descriptionObj.from;
+      var description = descriptionObj.description;
+      pc.answerEvent(callerID, description);
+    }
+  });
+
+  socket.on('candidate', function(candidateObj) {
+    if (d.isForMe(candidateObj.to)) {
+      var callerID = candidateObj.from;
+      var candidate = utils.createIceCandidate(candidateObj);
+      pc.addIceCandidate(callerID, candidate);
+    }
+  });
+
+  socket.on('domain', function(domainPayload) {
+    var event = domainPayload.event;
+    var newDomain = domainPayload.domain;
+    var oldDomain = d.getDomain();
+    d.setDomain(newDomain);
+    d.sendGlobalEvent(event, oldDomain);
+  });
+
+  socket.on('left', function(callerID) {
+    pc.onLeftHandler(callerID);
+  });
+
+  socket.on('problem', utils.errorHandler);
+
+}
+
+window.Icecomm = Icecomm;
+},{"./EventEmitter":1,"./browserHandler":3,"./dataChannelHandler":4,"./domainHandler":5,"./peerConnectionHandler":8,"./roomHandler":9,"./socketHandler":11,"./streamHandler":12,"./utils":13}],8:[function(require,module,exports){
+var RTCSessionDescription = require('./adapter').RTCSessionDescription;
+var utils = require('./utils');
+var RTCPeerConnection = require('./adapter').RTCPeerConnection;
+var dc = require('./dataChannelHandler');
+var EventEmitter = require('./EventEmitter');
+var s = require('./streamHandler');
+var d = require('./domainHandler');
+var ic = require('./iceCandidateHandler');
+var socket = require('./socketHandler');
+var r = require('./roomHandler');
+
+var peerConnectionHandler = {};
+var serverInfo;
+var localPeerConnections = {};
+var myID;
+var optionalRtpDataChannels = { optional: [ { RtpDataChannels: false } ] };
+
+// peerConnectionHandler.setOpen = setOpen;
+// peerConnectionHandler.removePeer = removePeer;
+// peerConnectionHandler.sendIfPending = sendIfPending;
+peerConnectionHandler.addIceCandidate = addIceCandidate;
+peerConnectionHandler.offerEvent = offerEvent;
+peerConnectionHandler.answerEvent = answerEvent;
+peerConnectionHandler.send = send;
+peerConnectionHandler.removeAllPeers = removeAllPeers;
+peerConnectionHandler.call = call;
+peerConnectionHandler.setServerInfo = setServerInfo;
+peerConnectionHandler.onLeftHandler = onLeftHandler;
+
+function call(callerID) {
+  createPeerConnection(callerID, true);
+
+  if (r.wantsStream()) {
+    addLocalStream(callerID);
+  }
+  createOffer(callerID);
+}
+
+function removeAllPeers() {
+  for (var callerID in localPeerConnections) {
+    removePeer(callerID);
+    var options = {};
+    options.callerID = callerID;
+    EventEmitter.trigger('disconnect', options);
+  }
+}
+
+function setRemoteDescription(callerID, description, callback) {
+  localPeerConnections[callerID].channel.setRemoteDescription(description, callback, utils.errorHandler);
+}
+
+function createAnswer(callerID) {
+  localPeerConnections[callerID].channel.createAnswer(function(localDescription) {
+    utils.printDebugMessage('offer success, creating answer', callerID);
+    localDescription.sdp = utils.parseSDP(localDescription.sdp);
+    createDescription(localDescription, callerID, 'answer');
+  }, utils.errorHandler);
+}
+
+function createPeerConnection(callerID, isCaller) {
+  localPeerConnections[callerID] = {};
+  localPeerConnections[callerID].channel = new RTCPeerConnection(serverInfo, optionalRtpDataChannels);
+
+  // data channel created when offer is received (after both peers create peer connection)
+  if (isCaller) {
+    dc.createDataChannel(callerID, localPeerConnections);
+    dc.addListenersToDataChannel(callerID);
+  }
+
+  localPeerConnections[callerID].channel.onicecandidate = function (event) {
+    ic.sendIceCandidate(callerID, event.candidate);
+  };
+
+  localPeerConnections[callerID].channel.onaddstream = function gotRemoteStream(event){
+    s.addRemoteStream(callerID, event.stream);
+  };
+
+  localPeerConnections[callerID].channel.onnegotiationneeded = utils.negotiationNeededHandler;
+  localPeerConnections[callerID].channel.ondatachannel = function(event) {
+    dc.setChannel(callerID, event.channel);
+    dc.addListenersToDataChannel(callerID);
+  }
+}
+
+function createOffer(callerID) {
+  localPeerConnections[callerID].channel.createOffer(function(description) {
+      description.sdp = utils.parseSDP(description.sdp);
+      createDescription(description, callerID, 'offer');
+    }, utils.errorHandler);
+}
+
+function createDescription(description, callerID, offerOrAnswer) {
+  var descriptionObj = {
+    description: description,
+    from: d.getMyID(),
+    // roomSettings: roomSettings,
+    to: callerID
+  };
+
+  if (offerOrAnswer === 'offer') {
+    descriptionObj.serverInfo = serverInfo;
+  }
+  localPeerConnections[callerID].channel.setLocalDescription(description, function() {
+    utils.printDebugMessage('sending ' + offerOrAnswer + ' to ' + callerID);
+    socket.emit(offerOrAnswer, descriptionObj);
+  }, utils.errorHandler);
+}
+
+function removePeer(callerID) {
+  s.removeRemoteStream(callerID);
+  dc.removeDataChannel(callerID);
+  if (localPeerConnections[callerID]) {
+    localPeerConnections[callerID].channel.close();
+    localPeerConnections[callerID] = undefined;
+  }
+}
+
+function addIceCandidate(callerID, candidate) {
+  localPeerConnections[callerID].channel.addIceCandidate(candidate, function() {
+    utils.printDebugMessage('success on setting candidate');
+  }, utils.errorHandler);
+}
+
+function onLeftHandler(callerID) {
+  removePeer(callerID);
+  var options = {};
+  options.callerID = callerID;
+  EventEmitter.trigger('disconnect', options);
+}
+
+function offerEvent(callerID, remoteDescription) {
+  createPeerConnection(callerID);
+
+  if (r.wantsStream()) {
+    addLocalStream(callerID);
+  }
+
+  var offer = new RTCSessionDescription(remoteDescription);
+  setRemoteDescription(callerID, offer, function() {
+    createAnswer(callerID);
+  });
+}
+
+function answerEvent(callerID, remoteDescription) {
+  utils.printDebugMessage('receive answer from ' + callerID);
+  var answer = new RTCSessionDescription(remoteDescription);
+  setRemoteDescription(callerID, answer, function() {
+    utils.printDebugMessage('answer successful');
+  });
+}
+
+function send(callerID, data) {
+  data = JSON.stringify(data);
+  if (callerID === undefined) {
+    for (var callerID in localPeerConnections) {
+      if (dc.isOpen(callerID)) {
+        dc.send(callerID, data);
+      } else {
+        if(dc.isPending(callerID)){
+            utils.printDebugMessage('added data to queue');
+            dc.setPending(callerID, data);
+        }
+      }
+    }
+  }
+  else if (callerID) {
+    dc.send(callerID, data);
+  }
+}
+
+function addLocalStream(callerID) {
+  localPeerConnections[callerID].channel.addStream(s.getLocalStream());
+}
+
+function setServerInfo(info) {
+  serverInfo = info;
+}
+
+module.exports = peerConnectionHandler;
+},{"./EventEmitter":1,"./adapter":2,"./dataChannelHandler":4,"./domainHandler":5,"./iceCandidateHandler":6,"./roomHandler":9,"./socketHandler":11,"./streamHandler":12,"./utils":13}],9:[function(require,module,exports){
+var utils = require('./utils');
+
+var roomHandler = {};
+var currentRoom;
+var currentRoomSettings;
+var isHost;
+
+roomHandler.setHost = setHost;
+roomHandler.setCurrentRoom = setCurrentRoom;
+roomHandler.getCurrentRoom = getCurrentRoom;
+roomHandler.getRoomSettings = getRoomSettings;
+roomHandler.setRoomSettings = setRoomSettings;
+roomHandler.wantsStream = wantsStream;
+roomHandler.createRoomInfo = createRoomInfo;
+roomHandler.getUserMedia = getUserMedia;
+roomHandler.getHostStatus = getHostStatus;
+
+function getUserMedia(callback) {
+  navigator.getUserMedia(currentRoomSettings.constraints, callback, utils.errorHandler);
+}
+
+function createRoomInfo(apiKey) {
+  var roomInfo = {
+      room: currentRoom,
+      apiKey: apiKey,
+      // roomSettings: currentRoomSettings,
+      roomLimit: currentRoomSettings.limit
+    }
+
+  return roomInfo;
+}
+
+function wantsStream() {
+  return currentRoomSettings.stream;
+}
+
+function getRoomSettings() {
+  return currentRoomSettings;
+}
+
+function setRoomSettings(roomSettings) {
+  currentRoomSettings = utils.createRoomSettings(roomSettings);
+}
+
+function getHostStatus() {
+  return isHost;
+}
+
+function setCurrentRoom(room) {
+  currentRoom = room;
+}
+
+function getCurrentRoom() {
+  return currentRoom;
+}
+
+function setHost(hostStatus) {
+  isHost = hostStatus;
+}
+
+module.exports = roomHandler;
+},{"./utils":13}],10:[function(require,module,exports){
+(function (global){
 !function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.io=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
 
 module.exports = _dereq_('./lib/');
@@ -4849,240 +5412,240 @@ module.exports = (function() {
 /*! http://mths.be/utf8js v2.0.0 by @mathias */
 ;(function(root) {
 
-  // Detect free variables `exports`
-  var freeExports = typeof exports == 'object' && exports;
+    // Detect free variables `exports`
+    var freeExports = typeof exports == 'object' && exports;
 
-  // Detect free variable `module`
-  var freeModule = typeof module == 'object' && module &&
-    module.exports == freeExports && module;
+    // Detect free variable `module`
+    var freeModule = typeof module == 'object' && module &&
+        module.exports == freeExports && module;
 
-  // Detect free variable `global`, from Node.js or Browserified code,
-  // and use it as `root`
-  var freeGlobal = typeof global == 'object' && global;
-  if (freeGlobal.global === freeGlobal || freeGlobal.window === freeGlobal) {
-    root = freeGlobal;
-  }
+    // Detect free variable `global`, from Node.js or Browserified code,
+    // and use it as `root`
+    var freeGlobal = typeof global == 'object' && global;
+    if (freeGlobal.global === freeGlobal || freeGlobal.window === freeGlobal) {
+        root = freeGlobal;
+    }
 
-  /*--------------------------------------------------------------------------*/
+    /*--------------------------------------------------------------------------*/
 
-  var stringFromCharCode = String.fromCharCode;
+    var stringFromCharCode = String.fromCharCode;
 
-  // Taken from http://mths.be/punycode
-  function ucs2decode(string) {
-    var output = [];
-    var counter = 0;
-    var length = string.length;
-    var value;
-    var extra;
-    while (counter < length) {
-      value = string.charCodeAt(counter++);
-      if (value >= 0xD800 && value <= 0xDBFF && counter < length) {
-        // high surrogate, and there is a next character
-        extra = string.charCodeAt(counter++);
-        if ((extra & 0xFC00) == 0xDC00) { // low surrogate
-          output.push(((value & 0x3FF) << 10) + (extra & 0x3FF) + 0x10000);
-        } else {
-          // unmatched surrogate; only append this code unit, in case the next
-          // code unit is the high surrogate of a surrogate pair
-          output.push(value);
-          counter--;
+    // Taken from http://mths.be/punycode
+    function ucs2decode(string) {
+        var output = [];
+        var counter = 0;
+        var length = string.length;
+        var value;
+        var extra;
+        while (counter < length) {
+            value = string.charCodeAt(counter++);
+            if (value >= 0xD800 && value <= 0xDBFF && counter < length) {
+                // high surrogate, and there is a next character
+                extra = string.charCodeAt(counter++);
+                if ((extra & 0xFC00) == 0xDC00) { // low surrogate
+                    output.push(((value & 0x3FF) << 10) + (extra & 0x3FF) + 0x10000);
+                } else {
+                    // unmatched surrogate; only append this code unit, in case the next
+                    // code unit is the high surrogate of a surrogate pair
+                    output.push(value);
+                    counter--;
+                }
+            } else {
+                output.push(value);
+            }
         }
-      } else {
-        output.push(value);
-      }
-    }
-    return output;
-  }
-
-  // Taken from http://mths.be/punycode
-  function ucs2encode(array) {
-    var length = array.length;
-    var index = -1;
-    var value;
-    var output = '';
-    while (++index < length) {
-      value = array[index];
-      if (value > 0xFFFF) {
-        value -= 0x10000;
-        output += stringFromCharCode(value >>> 10 & 0x3FF | 0xD800);
-        value = 0xDC00 | value & 0x3FF;
-      }
-      output += stringFromCharCode(value);
-    }
-    return output;
-  }
-
-  /*--------------------------------------------------------------------------*/
-
-  function createByte(codePoint, shift) {
-    return stringFromCharCode(((codePoint >> shift) & 0x3F) | 0x80);
-  }
-
-  function encodeCodePoint(codePoint) {
-    if ((codePoint & 0xFFFFFF80) == 0) { // 1-byte sequence
-      return stringFromCharCode(codePoint);
-    }
-    var symbol = '';
-    if ((codePoint & 0xFFFFF800) == 0) { // 2-byte sequence
-      symbol = stringFromCharCode(((codePoint >> 6) & 0x1F) | 0xC0);
-    }
-    else if ((codePoint & 0xFFFF0000) == 0) { // 3-byte sequence
-      symbol = stringFromCharCode(((codePoint >> 12) & 0x0F) | 0xE0);
-      symbol += createByte(codePoint, 6);
-    }
-    else if ((codePoint & 0xFFE00000) == 0) { // 4-byte sequence
-      symbol = stringFromCharCode(((codePoint >> 18) & 0x07) | 0xF0);
-      symbol += createByte(codePoint, 12);
-      symbol += createByte(codePoint, 6);
-    }
-    symbol += stringFromCharCode((codePoint & 0x3F) | 0x80);
-    return symbol;
-  }
-
-  function utf8encode(string) {
-    var codePoints = ucs2decode(string);
-
-    // console.log(JSON.stringify(codePoints.map(function(x) {
-    //  return 'U+' + x.toString(16).toUpperCase();
-    // })));
-
-    var length = codePoints.length;
-    var index = -1;
-    var codePoint;
-    var byteString = '';
-    while (++index < length) {
-      codePoint = codePoints[index];
-      byteString += encodeCodePoint(codePoint);
-    }
-    return byteString;
-  }
-
-  /*--------------------------------------------------------------------------*/
-
-  function readContinuationByte() {
-    if (byteIndex >= byteCount) {
-      throw Error('Invalid byte index');
+        return output;
     }
 
-    var continuationByte = byteArray[byteIndex] & 0xFF;
-    byteIndex++;
-
-    if ((continuationByte & 0xC0) == 0x80) {
-      return continuationByte & 0x3F;
+    // Taken from http://mths.be/punycode
+    function ucs2encode(array) {
+        var length = array.length;
+        var index = -1;
+        var value;
+        var output = '';
+        while (++index < length) {
+            value = array[index];
+            if (value > 0xFFFF) {
+                value -= 0x10000;
+                output += stringFromCharCode(value >>> 10 & 0x3FF | 0xD800);
+                value = 0xDC00 | value & 0x3FF;
+            }
+            output += stringFromCharCode(value);
+        }
+        return output;
     }
 
-    // If we end up here, itâ€™s not a continuation byte
-    throw Error('Invalid continuation byte');
-  }
+    /*--------------------------------------------------------------------------*/
 
-  function decodeSymbol() {
-    var byte1;
-    var byte2;
-    var byte3;
-    var byte4;
-    var codePoint;
-
-    if (byteIndex > byteCount) {
-      throw Error('Invalid byte index');
+    function createByte(codePoint, shift) {
+        return stringFromCharCode(((codePoint >> shift) & 0x3F) | 0x80);
     }
 
-    if (byteIndex == byteCount) {
-      return false;
+    function encodeCodePoint(codePoint) {
+        if ((codePoint & 0xFFFFFF80) == 0) { // 1-byte sequence
+            return stringFromCharCode(codePoint);
+        }
+        var symbol = '';
+        if ((codePoint & 0xFFFFF800) == 0) { // 2-byte sequence
+            symbol = stringFromCharCode(((codePoint >> 6) & 0x1F) | 0xC0);
+        }
+        else if ((codePoint & 0xFFFF0000) == 0) { // 3-byte sequence
+            symbol = stringFromCharCode(((codePoint >> 12) & 0x0F) | 0xE0);
+            symbol += createByte(codePoint, 6);
+        }
+        else if ((codePoint & 0xFFE00000) == 0) { // 4-byte sequence
+            symbol = stringFromCharCode(((codePoint >> 18) & 0x07) | 0xF0);
+            symbol += createByte(codePoint, 12);
+            symbol += createByte(codePoint, 6);
+        }
+        symbol += stringFromCharCode((codePoint & 0x3F) | 0x80);
+        return symbol;
     }
 
-    // Read first byte
-    byte1 = byteArray[byteIndex] & 0xFF;
-    byteIndex++;
+    function utf8encode(string) {
+        var codePoints = ucs2decode(string);
 
-    // 1-byte sequence (no continuation bytes)
-    if ((byte1 & 0x80) == 0) {
-      return byte1;
+        // console.log(JSON.stringify(codePoints.map(function(x) {
+        //  return 'U+' + x.toString(16).toUpperCase();
+        // })));
+
+        var length = codePoints.length;
+        var index = -1;
+        var codePoint;
+        var byteString = '';
+        while (++index < length) {
+            codePoint = codePoints[index];
+            byteString += encodeCodePoint(codePoint);
+        }
+        return byteString;
     }
 
-    // 2-byte sequence
-    if ((byte1 & 0xE0) == 0xC0) {
-      var byte2 = readContinuationByte();
-      codePoint = ((byte1 & 0x1F) << 6) | byte2;
-      if (codePoint >= 0x80) {
-        return codePoint;
-      } else {
+    /*--------------------------------------------------------------------------*/
+
+    function readContinuationByte() {
+        if (byteIndex >= byteCount) {
+            throw Error('Invalid byte index');
+        }
+
+        var continuationByte = byteArray[byteIndex] & 0xFF;
+        byteIndex++;
+
+        if ((continuationByte & 0xC0) == 0x80) {
+            return continuationByte & 0x3F;
+        }
+
+        // If we end up here, itâ€™s not a continuation byte
         throw Error('Invalid continuation byte');
-      }
     }
 
-    // 3-byte sequence (may include unpaired surrogates)
-    if ((byte1 & 0xF0) == 0xE0) {
-      byte2 = readContinuationByte();
-      byte3 = readContinuationByte();
-      codePoint = ((byte1 & 0x0F) << 12) | (byte2 << 6) | byte3;
-      if (codePoint >= 0x0800) {
-        return codePoint;
-      } else {
-        throw Error('Invalid continuation byte');
-      }
+    function decodeSymbol() {
+        var byte1;
+        var byte2;
+        var byte3;
+        var byte4;
+        var codePoint;
+
+        if (byteIndex > byteCount) {
+            throw Error('Invalid byte index');
+        }
+
+        if (byteIndex == byteCount) {
+            return false;
+        }
+
+        // Read first byte
+        byte1 = byteArray[byteIndex] & 0xFF;
+        byteIndex++;
+
+        // 1-byte sequence (no continuation bytes)
+        if ((byte1 & 0x80) == 0) {
+            return byte1;
+        }
+
+        // 2-byte sequence
+        if ((byte1 & 0xE0) == 0xC0) {
+            var byte2 = readContinuationByte();
+            codePoint = ((byte1 & 0x1F) << 6) | byte2;
+            if (codePoint >= 0x80) {
+                return codePoint;
+            } else {
+                throw Error('Invalid continuation byte');
+            }
+        }
+
+        // 3-byte sequence (may include unpaired surrogates)
+        if ((byte1 & 0xF0) == 0xE0) {
+            byte2 = readContinuationByte();
+            byte3 = readContinuationByte();
+            codePoint = ((byte1 & 0x0F) << 12) | (byte2 << 6) | byte3;
+            if (codePoint >= 0x0800) {
+                return codePoint;
+            } else {
+                throw Error('Invalid continuation byte');
+            }
+        }
+
+        // 4-byte sequence
+        if ((byte1 & 0xF8) == 0xF0) {
+            byte2 = readContinuationByte();
+            byte3 = readContinuationByte();
+            byte4 = readContinuationByte();
+            codePoint = ((byte1 & 0x0F) << 0x12) | (byte2 << 0x0C) |
+                (byte3 << 0x06) | byte4;
+            if (codePoint >= 0x010000 && codePoint <= 0x10FFFF) {
+                return codePoint;
+            }
+        }
+
+        throw Error('Invalid UTF-8 detected');
     }
 
-    // 4-byte sequence
-    if ((byte1 & 0xF8) == 0xF0) {
-      byte2 = readContinuationByte();
-      byte3 = readContinuationByte();
-      byte4 = readContinuationByte();
-      codePoint = ((byte1 & 0x0F) << 0x12) | (byte2 << 0x0C) |
-        (byte3 << 0x06) | byte4;
-      if (codePoint >= 0x010000 && codePoint <= 0x10FFFF) {
-        return codePoint;
-      }
+    var byteArray;
+    var byteCount;
+    var byteIndex;
+    function utf8decode(byteString) {
+        byteArray = ucs2decode(byteString);
+        byteCount = byteArray.length;
+        byteIndex = 0;
+        var codePoints = [];
+        var tmp;
+        while ((tmp = decodeSymbol()) !== false) {
+            codePoints.push(tmp);
+        }
+        return ucs2encode(codePoints);
     }
 
-    throw Error('Invalid UTF-8 detected');
-  }
+    /*--------------------------------------------------------------------------*/
 
-  var byteArray;
-  var byteCount;
-  var byteIndex;
-  function utf8decode(byteString) {
-    byteArray = ucs2decode(byteString);
-    byteCount = byteArray.length;
-    byteIndex = 0;
-    var codePoints = [];
-    var tmp;
-    while ((tmp = decodeSymbol()) !== false) {
-      codePoints.push(tmp);
+    var utf8 = {
+        'version': '2.0.0',
+        'encode': utf8encode,
+        'decode': utf8decode
+    };
+
+    // Some AMD build optimizers, like r.js, check for specific condition patterns
+    // like the following:
+    if (
+        typeof define == 'function' &&
+        typeof define.amd == 'object' &&
+        define.amd
+    ) {
+        define(function() {
+            return utf8;
+        });
+    }   else if (freeExports && !freeExports.nodeType) {
+        if (freeModule) { // in Node.js or RingoJS v0.8.0+
+            freeModule.exports = utf8;
+        } else { // in Narwhal or RingoJS v0.7.0-
+            var object = {};
+            var hasOwnProperty = object.hasOwnProperty;
+            for (var key in utf8) {
+                hasOwnProperty.call(utf8, key) && (freeExports[key] = utf8[key]);
+            }
+        }
+    } else { // in Rhino or a web browser
+        root.utf8 = utf8;
     }
-    return ucs2encode(codePoints);
-  }
-
-  /*--------------------------------------------------------------------------*/
-
-  var utf8 = {
-    'version': '2.0.0',
-    'encode': utf8encode,
-    'decode': utf8decode
-  };
-
-  // Some AMD build optimizers, like r.js, check for specific condition patterns
-  // like the following:
-  if (
-    typeof define == 'function' &&
-    typeof define.amd == 'object' &&
-    define.amd
-  ) {
-    define(function() {
-      return utf8;
-    });
-  } else if (freeExports && !freeExports.nodeType) {
-    if (freeModule) { // in Node.js or RingoJS v0.8.0+
-      freeModule.exports = utf8;
-    } else { // in Narwhal or RingoJS v0.7.0-
-      var object = {};
-      var hasOwnProperty = object.hasOwnProperty;
-      for (var key in utf8) {
-        hasOwnProperty.call(utf8, key) && (freeExports[key] = utf8[key]);
-      }
-    }
-  } else { // in Rhino or a web browser
-    root.utf8 = utf8;
-  }
 
 }(this));
 
@@ -6916,499 +7479,222 @@ function toArray(list, index) {
 (1)
 });
 
-var Icecomm = function(APIKEY, appSettings) {
-  var eventsObj = {};
-  var socket = io.connect('https://server.icecomm.io:443');
-  // var socket = io.connect('https://icecomm-server-stag.elasticbeanstalk.com:443');
-  var localPeerConnections = {};
-  var pendingData = {};
-  var dataChannels = {};
-  var remoteStreams = {};
-  var dataChannelOptions ={
-    ordered: false,
-    maxRetransmitTime: 3000
-  };
-  var optionalRtpDataChannels = {
-      optional: [
-      {
-        RtpDataChannels: true
-      },
-      {
-        DtlsSrtpKeyAgreement: true
-      },
-      ]
-  };
-  var debugMode = false;
-  var timeToConnect;
-  var localStream, myID, currentRoom, currentDomain, isHost, browserType;
-
-  /////////////////////////////////////////////////////////////////////////////////////////////////
-
-  checkDebugMode();
-  assignBrowser();
-
-  /////////////////////////////////////////////////////////////////////////////////////////////////
-
-  this.send = function(data, callerID) {
-    data = JSON.stringify(data);
-
-    if (callerID === undefined) {
-      for (var callerID in localPeerConnections) {
-        console.log("Local peer connections: ", localPeerConnections);
-        console.log("CallerID: ", callerID);
-        if (localPeerConnections[callerID].isReady === 'open') {
-          dataChannels[callerID].send(data);
-        } else {
-          printDebugMessage('added data to queue');
-          localPeerConnections[callerID].isReady = 'pending';
-          pendingData[callerID] = data;
-        }
-      }
-    }
-    else if (callerID) {
-      dataChannels[callerID].send(data);
-    }
-  }
-
-  this.test = function() {
-    return localPeerConnections;
-  }
-
-  this.on = function(event, callback) {
-    if (!eventsObj[event]) {
-      eventsObj[event] = [];
-    }
-    eventsObj[event].push(callback);
-  }
-
-  this.connect = function(room, settings) {
-    timeToConnect = Date.now();
-    var roomSettings = createRoomSettings(settings);
-
-    if (currentRoom) {
-      this.leave();
-    }
-
-    currentRoom = room;
-
-    checkSettingsBeforeCall(roomSettings);
-  }
-
-  this.getLocalID = function() {
-    return myID;
-  }
-
-  this.getRemoteIDs = function() {
-    var remoteIDs = [];
-    for (var i = 0; i < currentDomain[currentRoom].length; i ++) {
-      if (currentDomain[currentRoom][i] !== myID) {
-        remoteIDs.push(currentDomain[currentRoom][i]);
-      }
-    }
-
-    return remoteIDs;
-  }
-
-  this.getRooms = function() {
-    var rooms = [];
-    for (var room in currentDomain) {
-      rooms.push(room);
-    }
-
-    return rooms;
-  }
-
-  this.getRoomSize = function() {
-    return currentDomain[currentRoom].length;
-  }
-
-  this.isHost = function() {
-    return isHost;
-  }
-
-  this.getDomain = function(){
-    return currentDomain;
-  }
-
-  this.leave = function() {
-    currentRoom = undefined;
-    localStream.stop();
-    for (var callerID in localPeerConnections) {
-      removePeer(callerID);
-    }
-    socket.emit('leave');
-  }
-
-  this.close = function() {
-    localStream.stop();
-  }
-
-  this.getPing = function() {
-    return timeToConnect;
-  }
-
-  this.leave = function() {
-    currentRoom = undefined;
-    localStream.stop();
-    for (var callerID in localPeerConnections) {
-      removePeer(callerID);
-    }
-    socket.emit('leave');
-  }
-
-  /////////////////////////////////////////////////////////////////////////////////////////////////
-
-  socket.on('problem', errorHandler);
-
-  socket.on('domain', function(domain) {
-    currentDomain = domain;
-  });
-
-  socket.on('left', onLeftHandler);
-
-  socket.on('join', function(IDPacket) {
-    timeToConnect = Date.now() - timeToConnect;
-    var otherIDs = IDPacket.otherIDs;
-    myID = IDPacket.myID;
-    isHost = false;
-
-    printDebugMessage('otherIDs on join ' + otherIDs);
-
-    if (otherIDs.length === 0) {
-      isHost = true;
-    }
-
-    for (var i = 0; i < otherIDs.length; i++) {
-      call(otherIDs[i], IDPacket.roomSettings, IDPacket.serverInfo);
-    }
-  });
-
-  socket.on('offer', function(descriptionObj) {
-
-    // Check to make sure offer is for this client
-    if (myID === descriptionObj.to) {
-      offerEvent(descriptionObj.from, descriptionObj.description, descriptionObj.roomSettings, descriptionObj.serverInfo);
-    }
-  });
-
-  socket.on('answer', function(descriptionObj) {
-
-    // Check if message is for this client
-    if (descriptionObj.to === myID) {
-      answerEvent(descriptionObj.from, descriptionObj.description);
-    }
-  });
-
-  socket.on('candidate', function(candidateObj) {
-    var callerID = candidateObj.from;
-
-    // Check if message is for this client
-    if (myID === candidateObj.to) {
-      var candidate = new RTCIceCandidate({
-        sdpMLineIndex: candidateObj.label,
-        candidate: candidateObj.candidate
-      });
-      localPeerConnections[callerID].channel.addIceCandidate(candidate, function() {
-        printDebugMessage('success on setting candidate');
-      }, errorHandler);
-    }
-  });
-
-  /////////////////////////////////////////////////////////////////////////////////////////////////
-
-  function createRoomSettings(settings) {
-    var roomSettings = {};
-    roomSettings.stream = true;
-    roomSettings.constraints = {video: true, audio: true};
-
-    if (settings && settings.stream === false) {
-      roomSettings.stream = false;
-    }
-    if (settings && settings.limit) {
-      roomSettings.limit = settings.limit;
-    }
-    if (settings && settings.video === false) {
-      roomSettings.constraints.video = false;
-    }
-    if (settings && settings.audio === false) {
-      roomSettings.constraints.audio = false;
-    }
-
-    return roomSettings;
-  }
-
-  function checkSettingsBeforeCall(roomSettings) {
-
-    // Gets media stream if paramter and no current localstream
-    if (roomSettings.stream && (!localStream || localStream.ended)) {
-      navigator.getUserMedia(roomSettings.constraints, function(stream) {
-        gotStreamSuccess(stream, roomSettings);
-      }, errorHandler);
-    } else {
-      joinRoom(roomSettings);
-    }
-  }
-
-  function joinRoom(roomSettings) {
-    var roomInfo = {
-      room: currentRoom,
-      apiKey: APIKEY,
-      roomSettings: roomSettings,
-      roomLimit: roomSettings.limit
-    }
-
-    socket.emit('leave');
-    socket.emit('join', roomInfo);
-  }
-
-  function answerEvent(callerID, remoteDescription) {
-    printDebugMessage('receive answer from ' + callerID);
-    var answer = new RTCSessionDescription(remoteDescription);
-    localPeerConnections[callerID].channel.setRemoteDescription(answer, function() {
-      printDebugMessage('answer successful');
-    }, errorHandler);
-  }
-
-  function offerEvent(callerID, remoteDescription, roomSettings, serverInfo) {
-    createPeerConnections(callerID, serverInfo);
-
-    if (roomSettings.stream) {
-      localPeerConnections[callerID].channel.addStream(localStream);
-    }
-
-    var offer = new RTCSessionDescription(remoteDescription);
-    localPeerConnections[callerID].channel.setRemoteDescription(offer, function() {
-      localPeerConnections[callerID].channel.createAnswer(function(localDescription) {
-        printDebugMessage('offer success, creating answer');
-        createDescription(localDescription, callerID, roomSettings, 'answer');
-      }, errorHandler);
-    }, errorHandler);
-  }
-
-  function gotStreamSuccess(stream, roomSettings) {
-    localStream = stream;
-
-    // fill local user video
-    var options = createStreamOptions('local');
-
-    trigger('local', options);
-    joinRoom(roomSettings);
-  }
-
-  function call(callerID, roomSettings, serverInfo) {
-    createPeerConnections(callerID, serverInfo);
-
-    if (roomSettings.stream) {
-      localPeerConnections[callerID].channel.addStream(localStream);
-    }
-    localPeerConnections[callerID].channel.createOffer(function(description) {
-        createDescription(description, callerID, roomSettings, 'offer', serverInfo);
-      }, errorHandler);
-  }
-
-  function createPeerConnections(callerID, serverInfo) {
-    localPeerConnections[callerID] = {};
-    localPeerConnections[callerID].channel = new RTCPeerConnection(serverInfo, optionalRtpDataChannels);
-
-    createDataChannels(callerID);
-
-    localPeerConnections[callerID].channel.onicecandidate = function (event) {
-      iceCandidateHandler(callerID, event.candidate);
-    };
-
-    localPeerConnections[callerID].channel.onaddstream = function gotRemoteStream(event){
-      addRemoteStream(callerID, event.stream);
-    };
-
-    localPeerConnections[callerID].channel.onnegotiationneeded = negotiationNeededHandler;
-  }
-
-  function createDataChannels(callerID) {
-    dataChannels[callerID] = localPeerConnections[callerID].channel.createDataChannel('RTCDataChannel', {reliable: true});
-
-    dataChannels[callerID].onerror = errorHandler;
-
-    dataChannels[callerID].onmessage = function(event) {
-      messageDataHandler(callerID, event.data)
-    }
-
-    dataChannels[callerID].onopen = function(event) {
-      openDataHandler(callerID);
-    }
-
-    dataChannels[callerID].onclose = closeDataHandler
-  }
-
-  function addRemoteStream(callerID, stream) {
-    remoteStreams[callerID] = stream;
-  }
-
-  function messageDataHandler(callerID, data) {
-    var options = {};
-    options.data = JSON.parse(data);
-    options.callerID = callerID;
-    trigger('data', options);
-  }
-
-  function openDataHandler(callerID) {
-    printDebugMessage('data channels open');
-    if (localPeerConnections[callerID].isReady === 'pending') {
-      printDebugMessage('sending pending data');
-      var data = pendingData[callerID];
-      dataChannels[callerID].send(data);
-      delete pendingData[callerID];
-    }
-
-    localPeerConnections[callerID].isReady = 'open';
-    var options = createStreamOptions('remote', callerID);
-    trigger('connected', options);
-  }
-
-  function createDescription(description, callerID, roomSettings, offerOrAnswer, serverInfo) {
-    var descriptionObj = {
-      description: description,
-      from: myID,
-      roomSettings: roomSettings,
-      to: callerID
-    };
-
-    if (offerOrAnswer === 'offer') {
-      descriptionObj.serverInfo = serverInfo;
-    }
-
-    localPeerConnections[callerID].channel.setLocalDescription(description, function() {
-      printDebugMessage('sending ' + offerOrAnswer + ' to ' + callerID);
-      socket.emit(offerOrAnswer, descriptionObj);
-    }, errorHandler);
-  }
-
-  function closeDataHandler() {
-    printDebugMessage('ON CLOSE CALLED');
-  }
-
-  function iceCandidateHandler(callerID, candidate) {
-    if (candidate) {
-      var candidateObj = {
-        label: candidate.sdpMLineIndex,
-        from: myID,
-        to: callerID,
-        candidate: candidate.candidate
-      };
-
-      socket.emit('candidate', candidateObj);
-    }
-  }
-
-  function negotiationNeededHandler() {
-    printDebugMessage('on negotiationNeededHandler');
-  }
-
-  function errorHandler(err){
-    printDebugMessage('Error ' + err);
-  }
-
-  function trigger(event, options) {
-    if (eventsObj[event]) {
-      options = options || {};
-      for (var i = 0; i < eventsObj[event].length; i++) {
-        eventsObj[event][i](options);
-      }
-    }
-  }
-
-  function onLeftHandler(callerID) {
-    removePeer(callerID);
-  }
-
-  function createStreamOptions(localOrRemote, ID) {
-    var options = {};
-    var stream;
-
-    if (localOrRemote === 'local') {
-      options.myID = myID;
-      stream = localStream;
-      ID = myID;
-
-      if (browserType === 'Chrome') {
-        var audiolessStream = new MediaStream(localStream.getVideoTracks());
-        stream = audiolessStream;
-      }
-    }
-    if (localOrRemote === 'remote') {
-      options.callerID = ID;
-      stream = remoteStreams[ID];
-    }
-    options.stream = URL.createObjectURL(stream);
-    options.rawStream = localStream;
-    options.video = createVideoElement(ID, stream);
-
-    return options;
-  }
-
-  function createVideoElement(ID, stream) {
-    var tempVideo = document.createElement('video');
-    tempVideo.src = URL.createObjectURL(stream);
-    tempVideo.id = ID;
-    tempVideo.autoplay = true;
-    return tempVideo;
-  }
-
-  function removePeer(callerID) {
-    if (remoteStreams[callerID]) {
-      delete remoteStreams[callerID];
-    }
-    if (localPeerConnections[callerID]) {
-      localPeerConnections[callerID].channel.close();
-      localPeerConnections[callerID] = undefined;
-    }
-    if (dataChannels[callerID]) {
-      dataChannels[callerID] = undefined;
-    }
-    var options = {};
-    options.callerID = callerID;
-    trigger('disconnect', options);
-  }
-
-  function printDebugMessage(message) {
-    if (debugMode) {
-      console.log(message);
-    }
-  }
-  //
-
-  function checkDebugMode() {
-    if (appSettings && appSettings.debug === true) {
-      debugMode = true;
-    }
-  }
-
-  function onLeftHandler(callerID) {
-    removePeer(callerID);
-  }
-
-  // function parseDescription(description) {
-  //   if (browserType === "Mozilla") {
-  //     if (description.sdp.match('m=application 9 RTP/SAVPF ')) {
-  //       description.sdp = description.sdp.replace('m=application 9 RTP/SAVPF ', 'm=application 9 RTP/SAVPF');
-  //     }
-  //   }
-  //   if (browserType === "Chrome") {
-  //     if (!description.sdp.match('m=application 9 RTP/SAVPF ')) {
-  //       description.sdp = description.sdp.replace('m=application 9 RTP/SAVPF', 'm=application 9 RTP/SAVPF ');
-  //     }
-  //   }
-
-  //   return description;
-  // }
-
-  function assignBrowser() {
-    if (navigator.mozGetUserMedia) {
-      browserType = 'Mozilla';
-    }
-
-    if (navigator.webkitGetUserMedia) {
-      browserType = "Chrome";
-    }
-  }
-
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],11:[function(require,module,exports){
+var io = require('./socket.io');
+var socketHandler = {};
+var connectCallback;
+var socket;
+socketHandler.emit = emit;
+socketHandler.on = on;
+socketHandler.connect = connect;
+
+
+function connect(url) {
+  socket = io.connect(url);
 }
+
+function emit(event, payLoad) {
+  socket.emit(event, payLoad);
+}
+
+function on(event, callback) {
+  socket.on(event, callback);
+}
+
+module.exports = socketHandler;
+},{"./socket.io":10}],12:[function(require,module,exports){
+var MediaStream = require('./adapter').MediaStream;
+var utils = require('./utils');
+var d = require('./domainHandler');
+var b = require('./browserHandler');
+
+var streamHandler = {};
+var localStream;
+var remoteStreams = {};
+
+streamHandler.setLocalStream = setLocalStream;
+streamHandler.createStreamOptions = createStreamOptions;
+streamHandler.stopLocalStream = stopLocalStream;
+streamHandler.isLocalStopped = isLocalStopped;
+streamHandler.getLocalStream = getLocalStream;
+streamHandler.addRemoteStream = addRemoteStream;
+streamHandler.getRemoteStream = getRemoteStream;
+streamHandler.removeRemoteStream = removeRemoteStream;
+
+function removeRemoteStream(callerID) {
+  if (remoteStreams[callerID]) {
+    delete remoteStreams[callerID];
+  }
+}
+
+function getLocalStream() {
+  return localStream;
+}
+
+function addRemoteStream(callerID, stream) {
+  remoteStreams[callerID] = stream;
+}
+
+function getRemoteStream(callerID) {
+  return remoteStreams[callerID];
+}
+
+function isLocalStopped() {
+  return !localStream || localStream.ended;
+}
+
+function stopLocalStream() {
+  if (localStream) {
+    localStream.stop();
+  }
+}
+
+function setLocalStream(stream) {
+  localStream = stream;
+}
+
+function createStreamOptions(localOrRemote, ID) {
+  var options = {};
+  var stream;
+
+  if (localOrRemote === 'local') {
+    options.myID = d.getMyID();
+    stream = localStream;
+    ID = d.getMyID();
+
+    if (b.isChrome()) {
+      var audiolessStream = new MediaStream(localStream.getVideoTracks());
+      stream = audiolessStream;
+    }
+  }
+  if (localOrRemote === 'remote') {
+    options.callerID = ID;
+    stream = remoteStreams[ID];
+  }
+  options.stream = URL.createObjectURL(stream);
+  options.rawStream = localStream;
+  options.video = utils.createVideoElement(ID, stream);
+
+  return options;
+}
+
+
+module.exports = streamHandler;
+},{"./adapter":2,"./browserHandler":3,"./domainHandler":5,"./utils":13}],13:[function(require,module,exports){
+var RTCIceCandidate = require('./adapter').RTCIceCandidate;
+var utils = {};
+var debugMode = false;
+
+
+utils.errorHandler = errorHandler;
+utils.enableDebugMode = enableDebugMode;
+utils.disableDebugMode = disableDebugMode;
+utils.printDebugMessage = printDebugMessage;
+utils.parseDescription = parseDescription;
+utils.createRoomSettings = createRoomSettings;
+utils.is = is;
+utils.createVideoElement = createVideoElement;
+utils.checkDebugMode = checkDebugMode;
+utils.negotiationNeededHandler = negotiationNeededHandler;
+utils.parseSDP = parseSDP;
+utils.createIceCandidate = createIceCandidate;
+
+function createIceCandidate(candidateObj) {
+  var candidate = new RTCIceCandidate({
+    sdpMLineIndex: candidateObj.label,
+    candidate: candidateObj.candidate
+  });
+
+  return candidate;
+}
+
+function parseSDP(sdp) {
+  var sdpLines = sdp.split('\r\n');
+  var invalidLineIndex = sdpLines.indexOf(
+      'a=fmtp:0 profile-level-id=0x42e00c;packetization-mode=1');
+    if (invalidLineIndex > -1) {
+      sdpLines.splice(invalidLineIndex, 1);
+    }
+    return sdpLines.join('\r\n');
+}
+
+function checkDebugMode(appSettings) {
+  if (appSettings && appSettings.debug === true) {
+    enableDebugMode();
+  }
+}
+
+function enableDebugMode() {
+  debugMode = true;
+}
+
+function disableDebugMode() {
+  debugMode = false;
+}
+
+function errorHandler(err){
+  printDebugMessage('Error ' + err);
+}
+
+function printDebugMessage(message) {
+  if (debugMode) {
+    console.log(message);
+  }
+}
+
+function parseDescription(description) {
+  if (browserType === "Mozilla") {
+    if (description.sdp.match('m=application 9 RTP/SAVPF ')) {
+      description.sdp = description.sdp.replace('m=application 9 RTP/SAVPF ', 'm=application 9 RTP/SAVPF');
+    }
+  }
+  if (browserType === "Chrome") {
+    if (!description.sdp.match('m=application 9 RTP/SAVPF ')) {
+      description.sdp = description.sdp.replace('m=application 9 RTP/SAVPF', 'm=application 9 RTP/SAVPF ');
+    }
+  }
+
+  return description;
+}
+
+function createRoomSettings(settings) {
+  var roomSettings = {};
+  roomSettings.stream = true;
+  roomSettings.constraints = {video: true, audio: true};
+
+  if (settings && settings.stream === false) {
+    roomSettings.stream = false;
+  }
+  if (settings && settings.limit) {
+    roomSettings.limit = settings.limit;
+  }
+  if (settings && settings.video === false) {
+    roomSettings.constraints.video = false;
+  }
+  if (settings && settings.audio === false) {
+    roomSettings.constraints.audio = false;
+  }
+
+  return roomSettings;
+}
+
+function is(type, obj) {
+    var clas = Object.prototype.toString.call(obj).slice(8, -1);
+    return obj !== undefined && obj !== null && clas === type;
+}
+
+function createVideoElement(ID, stream) {
+  var tempVideo = document.createElement('video');
+  tempVideo.src = URL.createObjectURL(stream);
+  tempVideo.id = ID;
+  tempVideo.autoplay = true;
+  return tempVideo;
+}
+
+function negotiationNeededHandler() {
+  utils.printDebugMessage('on negotiationNeededHandler');
+}
+
+module.exports = utils;
+},{"./adapter":2}]},{},[7]);

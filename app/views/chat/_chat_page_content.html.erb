@@ -9,9 +9,8 @@
                         <div class='center-div'>
                         <h1>Hello <%= current_user.name %>, begin chatting!</h1>
 
-
                         <p>Use the sidebar on the left to create a new group or to enter a group that has already been created. Click below to start a chat without a group.
-                        During a video chat, hold down <b>Cntrl-B</b> to address Benedict.
+                        During a video chat, hold down <b>Ctrl-B</b> to address Benedict.
 
                         </div>
                         <% Relationship.where(user_id: current_user.id).pluck(:id).each do |relationship_id| %>
@@ -23,11 +22,10 @@
 
 
                             <p>Use the sidebar on the left to create a new group or to enter a group that has already been created. Click below to start a chat without a group.
-                            During a video chat, hold down <b>Cntrl-B</b> to address Benedict.
+                            During a video chat, hold down <b>Ctrl-B</b> to address Benedict.
 
                         </div>
                         <% end %>
-
 
                         <div id="placeholder-div"></div>
                           <%= link_to "Start chatting",  "/room/" + get_random_string + "/" +

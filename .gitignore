@@ -29,3 +29,7 @@
 #Ignores the .wav and .flac files from speech rec
 *.wav
 *.flac
+speechrec.pyc
+
+#ignores rubymine IDE files
+.idea/*
