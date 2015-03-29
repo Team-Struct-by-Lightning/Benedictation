@@ -17,11 +17,11 @@
                             <tr>
                                 <th colspan = "4" >
 
-                                    <span class="glyph-remove">
+                                    <abbr title="Delete User"><span class="glyph-remove">
                                         <a class="popup-with-form glyphicon glyphicon-remove" href=<%= '#delete-user' + relationship_id.to_s %> aria-hidden="true">
 
                                         </a>
-                                    </span>
+                                    </span></abbr>
 
                                     <span class="glyph-name">
                                         <% if group_name_url_string.length < 8 %>
@@ -31,15 +31,15 @@
                                         <% end %>
                                     </span>
 
-                                    <span class="glyph-plus">
+                                     <abbr title="Add User"><span class="glyph-plus">
                                         <a class="popup-with-form glyphicon glyphicon-plus" href=<%= '#add-user' + group_id.to_s %> aria-hidden="true">
                                         </a>
 
-                                    </span>
-                                    <span class="glyph-step-forward">
+                                    </span></abbr>
+                                     <abbr title="Go to Chat Room"><span class="glyph-step-forward">
                                         <a class="glyphicon glyphicon-step-forward" href=<%= group_name_url_string %> aria-hidden="true">
                                         </a>
-                                    </span>
+                                    </span></abbr>
 
 
                                 </th>
