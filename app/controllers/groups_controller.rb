@@ -24,15 +24,16 @@ class GroupsController < ApplicationController
     end
   end
 
-  def adduser
-    # check if user exists in benedictation
 
+  def popupadduser
     if current_user.nil?
       redirect
     else
       add_user_to_group
     end
   end
+
+
 
   def destroy
     @group = Group.find_by_name(group_params)
@@ -47,6 +48,10 @@ class GroupsController < ApplicationController
   private
     def group_params
       params.require(:group).permit(:group_name)
+    end
+
+    def popup_group_params
+      params.permit(:group_name)
     end
 
 end

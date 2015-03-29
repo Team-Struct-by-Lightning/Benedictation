@@ -12,6 +12,8 @@ Rails.application.routes.draw do
   get '/room/:id/:name' => 'rooms#room'
   get 'newuser/:id/' => 'groups#newuser'
   post 'newuser/:id/', :to => "groups#adduser"
+  post 'chat', :to => "groups#popupadduser"
+
   post 'groups', :to => "groups#create"
   resources :sessions, only: [:create, :destroy]
   resource :home, only: [:show]
