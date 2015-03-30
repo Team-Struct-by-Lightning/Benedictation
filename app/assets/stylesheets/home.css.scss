@@ -6,7 +6,7 @@
 
 /*===Images===*/
 .cover_image {
-  background: url(smile_webcam.jpg)  no-repeat fixed;
+  background: image-url("smile_webcam.jpg")  no-repeat fixed;
   width: 100%;
   height: 660px;
   padding-left: 0;
@@ -25,7 +25,7 @@
   top:0;
 }
 .contact_image {
-  background: url(contact.jpg)  no-repeat fixed;
+  background: image-url("contact.jpg")  no-repeat fixed;
   width: 100%;
   height: 660px;
   padding-left: 0;
@@ -48,8 +48,8 @@
     opacity: .37;
     background-color: black;
     position: absolute;
-    left: 0; top: 0; 
-    height: 100%; 
+    left: 0; top: 0;
+    height: 100%;
     width: 100%;
 }
 
@@ -104,7 +104,7 @@
   padding-right: 15px;
   margin-top:20px;
   padding-left: 15px;
-  
+
 }
 
 .marketing .col-md-4 {
