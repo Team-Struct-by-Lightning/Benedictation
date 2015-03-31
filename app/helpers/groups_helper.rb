@@ -1,14 +1,4 @@
 module GroupsHelper
-	def get_group_id
-		url_string = request.original_url
-		url_array = url_string.split('/')
-		url_array[-1]
-	end
-
-	def get_current_group_name
-		id = get_group_id
-		Group.find(id).group_name
-	end
 
   def new_group
     @group = Group.new(popup_group_params)    # Not the final implementation!
@@ -31,6 +21,7 @@ module GroupsHelper
 
 	def add_user_to_group
 		@useremail = params[:newmemberemail]
+    @curgroupid = params[:groupid]
 
       if (/\A([\w+\-].?)+@gmail.com$/.match(@useremail)).nil?
         flash.now[:danger] = 'This is not a valid Gmail.  Please check the email again.'
@@ -42,7 +33,6 @@ module GroupsHelper
            render 'newuser'
         else
           @userid = @user.id
-          @curgroupid = get_group_id
           @group = Group.find(@curgroupid)
           # check if user already in the group
           if Relationship.find_by(group_id: @curgroupid, user_id: @userid) != nil
