@@ -11,7 +11,7 @@ module GroupsHelper
 	end
 
   def new_group
-    @group = Group.new(group_params)    # Not the final implementation!
+    @group = Group.new(popup_group_params)    # Not the final implementation!
 
     if @group.save
       @relationship = Relationship.new(user_id:session[:user_id], group_id:@group[:id])
