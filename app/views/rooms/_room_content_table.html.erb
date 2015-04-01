@@ -9,9 +9,7 @@
         <th id='chat-body' valign='top'>
           <div id = "drop-spot">
             <p style = "top: 50%; left:50%;">DROP SPOT</p>
-            <div id = "holder">
-              Holding something
-            </div>
+         
           </div>
           <div class='panel panel-primary'>
             <div class='panel-heading'>
@@ -45,8 +43,11 @@ $(function() {
       activeClass: "active-spot",
       hoverClass: "hover-spot",
       drop: function( event, ui ) {
-        
+        $("#drop-spot").append( $("#localVideo"));
+        $("#localVideo").css("top", "0%");
+        $("#localVideo").css("left", "0%");
         $("#localVideo").animate({ width: "500px" });
+        $("#localVideo").get(0).play();
       }
     });
  });
