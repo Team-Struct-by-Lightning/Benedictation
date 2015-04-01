@@ -36,3 +36,6 @@ speechrec.pyc
 
 #environment variables
 *.env
+
+#because postgres is a respectible woman, with which I do not wish to be in contact with
+/config/database.yml

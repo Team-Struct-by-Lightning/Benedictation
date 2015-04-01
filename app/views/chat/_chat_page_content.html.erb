@@ -18,18 +18,29 @@
                         <% group_id = group.id %>
                         <% group_name = group.group_name %>
                         <div class='center-div-group' id=<%="center-div" + group_id.to_s %> >
-                            <h1>Hello <%= current_user.name %>, manage the group: <%= group_name %></h1>
+                            <h1><%= group_name %></h1>
 
-
-                            <p>Use the sidebar on the left to create a new group or to enter a group that has already been created. Click below to start a chat without a group.
-                            During a video chat, hold down <b>Ctrl-B</b> to address Benedict.
+                            <div>
+                            <h3>Users in this group:</h3>
+                            <% Relationship.where(group_id: group_id).pluck(:user_id).each do |uid| %>
+                                    <div>
+                                        <span>
+                                            <% if %>
+                                            <%= image_tag("green_circle.png", :class => "circle-jerk") %>
+                                            <% else %>
+                                            <% end %>
+                                        </span>
+                                        <span><%= User.find_by_id(uid).name %></span>
+                                    </div>
+                            <% end %>
+                            </div>
 
                         </div>
                         <% end %>
 
                         <div id="placeholder-div"></div>
-                          <%= link_to "Start chatting",  "/room/" + get_random_string + "/" +
-                          get_random_string, class: 'btn btn-primary' %>
+                          <%= link_to  "Start chatting",  "/room/" + get_random_string + "/" +
+                          get_random_string, class: 'btn btn-primary random-button' %>
                         <div id="participantsDiv"></div>
 
 
@@ -48,6 +59,7 @@
 
             $('.center-div').hide();
             $('.center-div-group').hide();
+            $('.random-button').hide();
             $('#center-div' + id_array[1]).show();
         });
 

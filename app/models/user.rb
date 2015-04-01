@@ -2,6 +2,18 @@ class User < ActiveRecord::Base
   has_many :active_relationships, class_name:  "Relationship",
                                   foreign_key: "user_id",
                                   dependent:   :destroy
+
+
+  @logged_in = 0
+
+  def log_in
+    @logged_in = 1
+  end
+
+  def log_out
+    @logged_in = 0
+  end
+
   def self.from_omniauth(auth)
     where(provider: auth.provider, uid: auth.uid).first_or_initialize.tap do |user|
       user.provider = auth.provider
