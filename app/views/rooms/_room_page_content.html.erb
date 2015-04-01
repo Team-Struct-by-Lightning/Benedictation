@@ -1,20 +1,35 @@
 <!-- Page Content -->
-        <div id="page-content-wrapper">
+ <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+ <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+        <div id="page-wrapper">
             <% flash.each do |message_type, message| %>
                 <div class="alert alert-<%= message_type %>"><%= message %></div>
             <% end %>
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-lg-12">
-
-                         <div id = 'video-chat-body'>
+              
+                         <div id = 'video-sidebar'>
                               <video id="localVideo" autoplay></video>
                             </div>
-                              <div class='row'>
-                              <%= render 'rooms/room_content_table' %>
+                              <div class = "benedict-zone">
+                                <%= render 'rooms/room_content_table' %>
                             </div>
-                        <!--<p>Make sure to keep all page content within the <code>#page-content-wrapper</code>.</p>-->
-                    </div>
+                            <div id="benedict-sidebar-wrapper">
+                              <ul class="benedict-sidebar-nav">
+                                <li class="sidebar-brand"><p>  </p></li>
+                               
+                                  <p> HELLO </p>
+                              </ul>
+                            </div>
+                    
                 </div>
             </div>
             <!-- Page Content -->
+        </div>
+
+             <script>
+              $(function() {
+                $( "#localVideo" ).draggable({  revert: "invalid"  });
+              });
+              </script>

@@ -1,15 +1,53 @@
 // Place all the styles related to the Rooms controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
-
+@import "bootstrap-sprockets";
+@import "bootstrap";
 .room-layout-table {
-	width: 100%;
+  position: fixed;
+  left:250px;
+  right:250px;
+	width: 50%;
+ height: 100%;
 }
-
+.active-spot{
+  
+  width: 500px;
+  height:500px;
+  border: 2px dashed black;
+}
+.hover-spot{
+  
+}
+.dropped{
+  background-color: black;
+  width: 500px;
+  height:500px;
+}
+#drop-spot{
+  width:300px;
+  height:300px;
+}
 #chat-body {
     width: 60%;
     margin-right: 5%;
     padding-right: 5%;
+}
+#page-wrapper{
+   margin-top: 50px;
+}
+#video-sidebar{
+  width:250px;
+  position: fixed;
+  float: left;
+}
+
+#localVideo{
+
+  width:250px;
+  height:100%;
+  margin: 0;
+  cursor:move;
 }
 
 #benny {
@@ -36,4 +74,75 @@
 #speech-rec {
     width: 150%;
     margin-right: 50%;
+}
+
+
+/* Benedict Sidebar */
+
+
+#wrapper {
+    padding-left: 0;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+
+#wrapper.toggled {
+    padding-left: 250px;
+}
+
+#benedict-sidebar-wrapper {
+    z-index: 1000;
+    position: fixed;
+    right: 250px;
+    width: 300px;
+    height: 100%;
+    margin-right: -250px;
+    overflow-y: auto;
+    background: #000;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+    margin-top: -50px;
+}
+
+#wrapper.toggled #benedict-sidebar-wrapper {
+    width: 250px;
+}
+
+.benedict-sidebar-nav {
+    position: absolute;
+    top: 45px;
+    width: 250px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.benedict-sidebar-nav  li {
+    text-indent: 20px;
+    line-height: 40px;
+}
+
+.benedict-sidebar-nav  li a {
+    display: block;
+    text-decoration: none;
+    color: $gray-light;
+}
+
+.benedict-sidebar-nav  li a:active,
+.benedict-sidebar-nav  li a:focus {
+    text-decoration: none;
+}
+
+.benedict-sidebar-nav  > .benedict-sidebar-brand {
+    height: 65px;
+    font-size: 18px;
+    line-height: 60px;
+}
+
+.benedict-sidebar-nav  > .benedict-sidebar-brand a {
+    color: $gray-light;
 }

@@ -46,8 +46,9 @@ comm.connect(window.location.pathname);
         // append video elements one after the other when new people join the chat
         //remoteVideo.src = option.stream
         //remoteVideo.id = options.callerID;
-        document.getElementById("video-chat-body").appendChild(options.video);
-
+        document.getElementById("video-sidebar").appendChild(options.video);
+        
+    
     });
 
     comm.on('disconnect', function(options) {

@@ -1,14 +1,18 @@
 <table class='room-layout-table'>
     <tr>
       <th>
-      </th>
-      <th>
         <a style="color:red;font-size:20px; font-weight: bold;" id="loading"></a>
-
-    </th>
+      </th>
     </tr>
     <tr>
+
         <th id='chat-body' valign='top'>
+          <div id = "drop-spot">
+            <p style = "top: 50%; left:50%;">DROP SPOT</p>
+            <div id = "holder">
+              Holding something
+            </div>
+          </div>
           <div class='panel panel-primary'>
             <div class='panel-heading'>
               Chat
@@ -34,3 +38,16 @@
         </th>
     </tr>
 </table>
+<script>
+$(function() {
+  $( "#drop-spot" ).droppable({
+      accept: "#localVideo",
+      activeClass: "active-spot",
+      hoverClass: "hover-spot",
+      drop: function( event, ui ) {
+        
+        $("#localVideo").css("width", "500px")
+      }
+    });
+ });
+  </script>
