@@ -25,9 +25,10 @@
                             <% Relationship.where(group_id: group_id).pluck(:user_id).each do |uid| %>
                                     <div>
                                         <span>
-                                            <% if %>
-                                            <%= image_tag("green_circle.png", :class => "circle-jerk") %>
+                                            <% if user_logged_in(uid) %>
+                                                <%= image_tag("green_circle.png", :class => "circle-jerk") %>
                                             <% else %>
+                                                <%= image_tag("gray_circle.png", :class => "circle-jerk") %>
                                             <% end %>
                                         </span>
                                         <span><%= User.find_by_id(uid).name %></span>
