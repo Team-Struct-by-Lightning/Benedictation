@@ -12216,7 +12216,11 @@ var Icecomm = function(APIKEY, appSettings) {
   }
 
   this.getLocalID = function() {
-    return d.getMyID().ID;
+    if (d.getMyID()) {
+      return d.getMyID().ID;
+    } else {
+      utils.printDebugMessage('Local ID has not been set');
+    }
   }
 
   this.getRemoteIDs = function() {
@@ -19532,4 +19536,3 @@ function negotiationNeededHandler() {
 
 module.exports = utils;
 },{"./adapter":3}]},{},[8]);
-
