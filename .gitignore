@@ -36,3 +36,6 @@ speechrec.pyc
 
 #environment variables
 *.env
+
+#because the database.yml is user idependent we add it here
+/config/database.yml
