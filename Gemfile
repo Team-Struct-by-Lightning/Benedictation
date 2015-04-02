@@ -10,6 +10,8 @@ gem 'jquery-rails',         '4.0.3'
 gem 'turbolinks',           '2.3.0'
 gem 'jbuilder',             '2.2.3'
 gem 'rest-client',          '~> 1.7.3'
+gem 'google-api-client', :require => 'google/api_client'
+gem 'omniauth'
 gem "omniauth-google-oauth2", "~> 0.2.1"
 gem 'magnific-popup-rails'
 gem 'pg',                   '0.17.1'
