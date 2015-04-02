@@ -5,11 +5,9 @@
       </th>
     </tr>
     <tr>
-
         <th id='chat-body' valign='top'>
           <div id = "drop-spot">
             <p style = "top: 50%; left:50%;">DROP SPOT</p>
-         
           </div>
           <div class='panel panel-primary'>
             <div class='panel-heading'>
@@ -20,11 +18,11 @@
           <div class='input-group' id="chat-location">
             <input class='form-control' id='js-input-im'>
             <span class='input-group-btn'>
-            <button class='btn btn-primary' id='js-send-button-im'>
-            Send
-          </button>
-        </span>
-      </div>
+              <button class='btn btn-primary' id='js-send-button-im'>
+              Send
+              </button>
+            </span>
+          </div>
         </th>
         <th id='speech-rec' valign='top'>
           <div class='panel panel-primary'>
@@ -43,11 +41,13 @@ $(function() {
       activeClass: "active-spot",
       hoverClass: "hover-spot",
       drop: function( event, ui ) {
+        $("benedict-sidebar-wrapper").append($("#chat-body"));
         $("#drop-spot").append( $("#localVideo"));
         $("#localVideo").css("top", "0%");
         $("#localVideo").css("left", "0%");
         $("#localVideo").animate({ width: "500px" });
         $("#localVideo").get(0).play();
+
       }
     });
  });
