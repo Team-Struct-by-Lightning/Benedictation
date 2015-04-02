@@ -19523,7 +19523,7 @@ function createVideoElement(stream, source, ID) {
   tempVideo.autoplay = true;
   if (source === 'local') {
     tempVideo.muted = true;
-  }
+  } 
   if (source === 'remote') {
     tempVideo.id = ID;
   }
