@@ -34,6 +34,7 @@ comm.connect(window.location.pathname);
         ready_to_record = 1;
         localVideo.src = options.stream;
         localAudioStream = options.rawStream;
+        localVideo.muted = true;
         console.log(localAudioStream.getAudioTracks());
         console.log("Obtained user camera/microphone approval");
 
