@@ -34,6 +34,7 @@ comm.connect(window.location.pathname);
         ready_to_record = 1;
         localVideo.src = options.stream;
         localAudioStream = options.rawStream;
+        localVideo.muted = true;
         console.log(localAudioStream.getAudioTracks());
         console.log("Obtained user camera/microphone approval");
 
@@ -46,8 +47,15 @@ comm.connect(window.location.pathname);
         // append video elements one after the other when new people join the chat
         //remoteVideo.src = option.stream
         //remoteVideo.id = options.callerID;
-        document.getElementById("video-sidebar").appendChild(options.video);
         
+        document.getElementById("video-sidebar").appendChild(options.getVideo());
+        var new_video = document.getElementById(options.callerID);
+        var height = screen.height;
+        new_video.style.width = "128px";
+        new_video.style.margin = "0px";
+        new_video.style.cursor = "move";
+        $( new_video ).draggable({  revert: "invalid"  });
+
     
     });
 
