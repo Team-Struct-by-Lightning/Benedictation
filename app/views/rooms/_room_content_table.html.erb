@@ -1,14 +1,11 @@
-<table class='room-layout-table'>
-    <tr>
-      <th>
-        <a style="color:red;font-size:20px; font-weight: bold;" id="loading"></a>
-      </th>
-    </tr>
-    <tr>
-        <th id='chat-body' valign='top'>
-          <div id = "drop-spot">
-            <p style = "top: 50%; left:50%;">DROP SPOT</p>
-          </div>
+<div class='room-layout-table'>
+      
+      <div id = "drop-spot">
+        <p >DROP SPOT</p>
+      </div>
+
+
+        <div id='chat-body' valign='top'>
           <div class='panel panel-primary'>
             <div class='panel-heading'>
               Chat
@@ -23,31 +20,33 @@
               </button>
             </span>
           </div>
-        </th>
-        <th id='speech-rec' valign='top'>
-          <div class='panel panel-primary'>
-            <div class='panel-heading'>
-              Speech Recognition
+          <a style="color:red;font-size:20px; font-weight: bold;" id="loading"></a>
+          <div id='speech-rec' >
+            <div class='panel panel-primary'>
+              <div class='panel-heading'>
+                Speech Recognition
+              </div>
+              <div class='panel-body' id='speech-rec-body'></div>
             </div>
-            <div class='panel-body' id='speech-rec-body'></div>
           </div>
-        </th>
-    </tr>
-</table>
+        </div>
+</div>
 <script>
 $(function() {
   $( "#drop-spot" ).droppable({
-      accept: "#localVideo",
+
       activeClass: "active-spot",
       hoverClass: "hover-spot",
       drop: function( event, ui ) {
-        $("benedict-sidebar-wrapper").append($("#chat-body"));
+       
+        $("after-sidebar").append($("#chat-body"));
+        $("#chat-body").animate({left:"+= 50"});
         $("#drop-spot").append( $("#localVideo"));
         $("#localVideo").css("top", "0%");
         $("#localVideo").css("left", "0%");
         $("#localVideo").animate({ width: "500px" });
         $("#localVideo").get(0).play();
-
+        $("chat-body").css("top", "50%");
       }
     });
  });
