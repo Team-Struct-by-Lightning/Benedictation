@@ -46,6 +46,9 @@ Rails.application.configure do
 
   config.secret_key_base = ENV["SECRET_KEY_BASE"]
 
+  GOOGLE_KEY = ENV['GOOGLE_KEY']
+  GOOGLE_SECRET = ENV['GOOGLE_SECRET']
+
   # Use the lowest log level to ensure availability of diagnostic information
   # when problems arise.
   config.log_level = :debug

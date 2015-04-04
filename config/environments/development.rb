@@ -9,6 +9,9 @@ Rails.application.configure do
   # Do not eager load code on boot.
   config.eager_load = false
 
+
+  GOOGLE_KEY = ENV['GOOGLE_KEY']
+  GOOGLE_SECRET = ENV['GOOGLE_SECRET']
   # Show full error reports and disable caching.
   config.consider_all_requests_local       = true
   config.action_controller.perform_caching = false
@@ -35,7 +38,7 @@ Rails.application.configure do
   # Checks for improperly declared sprockets dependencies.
   # Raises helpful error messages.
   config.assets.raise_runtime_errors = true
-	
+
   #config.force_ssl = true
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
