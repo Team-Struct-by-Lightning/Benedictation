@@ -43,3 +43,5 @@ nltk_test.pyc
 
 #because the database.yml is user idependent we add it here
 /config/database.yml
+/config/secrets.yml
+/config/google.yml
