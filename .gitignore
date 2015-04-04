@@ -29,7 +29,10 @@
 #Ignores the .wav and .flac files from speech rec
 *.wav
 *.flac
+
+#Ignores the compiled python files
 speechrec.pyc
+tornado_server.pyc
 
 #ignores rubymine IDE files
 .idea/*
