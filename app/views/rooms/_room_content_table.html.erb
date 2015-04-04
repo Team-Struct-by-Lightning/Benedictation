@@ -20,8 +20,9 @@
               </button>
             </span>
           </div>
-          <a style="color:red;font-size:20px; font-weight: bold;" id="loading"></a>
-          <div id='speech-rec' >
+          
+          
+          <!--<div id='speech-rec' >
             <div class='panel panel-primary'>
               <div class='panel-heading'>
                 Speech Recognition
@@ -29,6 +30,7 @@
               <div class='panel-body' id='speech-rec-body'></div>
             </div>
           </div>
+          -->
         </div>
 </div>
 <script>
@@ -39,14 +41,18 @@ $(function() {
       hoverClass: "hover-spot",
       drop: function( event, ui ) {
        
-        $("after-sidebar").append($("#chat-body"));
-        $("#chat-body").animate({left:"+= 50"});
+        $("#benedict-sidebar-wrapper").append($("#chat-body"));
+        //$("#chat-body").animate({left:"+= 50"});
+
         $("#drop-spot").append( $("#localVideo"));
         $("#localVideo").css("top", "0%");
         $("#localVideo").css("left", "0%");
         $("#localVideo").animate({ width: "500px" });
         $("#localVideo").get(0).play();
-        $("chat-body").css("top", "50%");
+
+        $("#chat-body").animate({ width: "100%" });
+        $("#chat-body").animate({ top: "+=120px" }, 400 );
+
       }
     });
  });
