@@ -86,9 +86,7 @@ if __name__ == "__main__":
     # and parse the JSON output
 	
     data = loads(urlopen("http://httpbin.org/ip").read())
-    public_ip = data["origin"]
-    print "The public IP is : %s" % data["origin"]
-    if str(public_ip) == "52.11.133.36":
+    if "local" not in str(socket.gethostname()):
         benny_ssl_options = {
             "certfile": os.path.join("/etc/nginx/ssl/benedictation_io/ssl-bundle.crt"),
             "keyfile": os.path.join("/etc/nginx/ssl/benedictation_io/benedictation-private-key-file.pem")
