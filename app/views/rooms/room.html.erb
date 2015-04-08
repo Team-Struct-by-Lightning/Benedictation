@@ -1,19 +1,17 @@
 <div class = "container"style ="padding-top:60px">
- <div id="wrapper">
-
+  <div id="wrapper">
          <%= render 'rooms/room_sidebar' %>
          <%= render 'rooms/room_page_content' %>
-
-
+	</div>
 </div>
-        <!-- /#page-content-wrapper -->
-</div>
+
 <%= render 'rooms/room_toggle_menu_script' %>
 
 <%= javascript_tag do %>
-<%= render 'rooms/room_pocketsphinx_helper_functions' %>
-<%= render 'rooms/room_icecomm_helper_functions' %>
-<%= render 'rooms/room_keypress_record' %>
-<%= render 'rooms/room_chat' %>
+
+	<%= render 'rooms/room_pocketsphinx_helper_functions' %>
+	<%= render 'rooms/room_icecomm_helper_functions' %>
+	<%= render 'rooms/room_keypress_record' %>
+	<%= render 'rooms/room_chat' %>
 
 <% end %>

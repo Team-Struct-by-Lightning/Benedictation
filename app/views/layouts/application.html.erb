@@ -6,7 +6,6 @@
                                            "data-turbolinks-track" => true %>
     <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
     <%= csrf_meta_tags %>
-    <%= render 'layouts/shim' %>
     <%= favicon_link_tag 'favicon.ico' %>
   </head>
   <body data-no-turbolink>
@@ -14,6 +13,6 @@
     <div >
       <%= yield %>
     </div>
-    
+
   </body>
 </html>

@@ -8,27 +8,7 @@
          <%= render 'chat/chat_page_content' %>
 
     </div>
-    <!-- /#wrapper -->
 
-
-    <!-- Menu Toggle Script -->
-    <script>
-    $("#menu-toggle").click(function(e) {
-        e.preventDefault();
-        $("#wrapper").toggleClass("active");
-    });
-
-
-     $("").hover(
-        function() {
-        $(this).preappend( );
-        }, function() {
-            console.log("DONE");
-    $( this ).find( "span:last" ).remove();
-    });
-
-    </script>
+    <%= render 'chat/chat_menu_toggle_script' %>
 
 </div>
-
-</html>
