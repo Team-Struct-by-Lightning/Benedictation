@@ -1,6 +1,7 @@
 module RoomsHelper
 	require 'google/api_client'
 	require 'json'
+	require 'wikipedia'
 
 	GoogleAPIKeys = YAML.load_file("#{::Rails.root}/config/google.yml")[::Rails.env]
 
@@ -67,6 +68,7 @@ module RoomsHelper
 			puts "We will acess the youtube api!"
 		when 'wikipedia'
 			puts "We will acess the wikipedia api!"
+			query_wikipedia(json_hash)
 		else
 			"NOTHING HAPPENED!?!?!?!?!??!?!??!?!"
 		end
@@ -95,6 +97,27 @@ module RoomsHelper
 
 	def wolfram_alpha_json(json_hash)
 
+	end
+
+
+	def query_wikipedia(json_hash)
+
+		page = Wikipedia.find( json_hash['query'] )
+
+		wiki_hash = Hash.new
+		wiki_hash['title'] = page.title
+		wiki_hash['content'] = page.content
+		wiki_hash['categories'] = page.categories
+		wiki_hash['links'] = page.links
+		wiki_hash['extlinks'] = page.extlinks
+		wiki_hash['images'] = page.images
+		wiki_hash['image_urls'] = page.image_urls
+		wiki_hash['image_descriptionurls'] = page.image_descriptionurls
+		wiki_hash['coordinates'] = page.coordinates
+		wiki_hash['templates'] = page.templates
+
+		puts wiki_hash
+		wiki_hash
 	end
 
 	def create_calendar_event(json)

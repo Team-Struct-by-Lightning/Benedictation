@@ -14,7 +14,7 @@ Rails.application.routes.draw do
   post 'newuser/:id/', :to => "groups#adduser"
   post 'chat', :to => "groups#popupadduser"
   post 'groups', :to => "groups#create"
-  post '/calendar_api' => "rooms#api_help"
+  post '/check_api' => "rooms#api_help"
   resources :sessions, only: [:create, :destroy]
   resource :home, only: [:show]
   resources :relationships,       only: [:create, :destroy]

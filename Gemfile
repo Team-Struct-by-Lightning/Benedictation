@@ -16,6 +16,7 @@ gem "omniauth-google-oauth2", "~> 0.2.1"
 gem 'magnific-popup-rails'
 gem 'pg',                   '0.17.1'
 gem 'sdoc',                 '0.4.0', group: :doc
+gem 'wikipedia-client'
 
 
 
