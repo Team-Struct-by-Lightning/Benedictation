@@ -34,5 +34,19 @@
         <script>
           $(function() {
             $( "#localVideo" ).draggable({  revert: "invalid"  });
+
+            $( "#video-sidebar" ).droppable({
+
+                activeClass: "active-sidebar",
+                drop: function( event, ui ) {
+
+                  $("#video-sidebar").append( $("#localVideo"));
+                  $("#localVideo").css("top", "0%");
+                  $("#localVideo").css("left", "0%");
+                  $("#localVideo").animate({ width: "154px" });
+                  $("#localVideo").get(0).play();
+
+                }
+              });
           });
         </script>

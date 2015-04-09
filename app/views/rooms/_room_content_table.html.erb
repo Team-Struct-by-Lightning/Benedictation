@@ -1,7 +1,6 @@
 <div class='room-layout-table'>
       
       <div id = "drop-spot">
-        <p >DROP SPOT</p>
       </div>
 
 
@@ -47,12 +46,14 @@ $(function() {
         $("#drop-spot").append( $("#localVideo"));
         $("#localVideo").css("top", "0%");
         $("#localVideo").css("left", "0%");
-        $("#localVideo").animate({ width: "500px" });
+        $("#localVideo").animate({ width: "100%" });
         $("#localVideo").get(0).play();
 
         $("#chat-body").animate({ width: "100%" });
         $("#chat-body").animate({ top: "+=120px" }, 400 );
-
+        if($("#video-sidebar").height() < 100){
+          $("#video-sidebar").css("height", "200px");
+        }
       }
     });
  });
