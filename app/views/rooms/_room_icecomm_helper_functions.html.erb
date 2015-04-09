@@ -19,20 +19,11 @@ comm.connect(window.location.pathname);
         if(e.data != ""){
             try {
                 var myData = JSON.parse(e.data);
-                if (e.data.indexOf("calendar") > -1){
-                    $.ajax({
-                        type: "POST",
-                        url: "/check_api",
-                        data: {jsonData: JSON.stringify(myData)}
-                    });
-                }
-                if (e.data.indexOf("query") > -1){
-                    $.ajax({
+                $.ajax({
                     type: "POST",
                     url: "/check_api",
                     data: {jsonData: JSON.stringify(myData)}
-                  });
-                }
+                });
             } catch (e) {
                 console.log("data from server not JSON");
             }

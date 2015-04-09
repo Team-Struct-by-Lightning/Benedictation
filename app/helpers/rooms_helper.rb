@@ -2,6 +2,8 @@ module RoomsHelper
 	require 'google/api_client'
 	require 'json'
 	require 'wikipedia'
+	require 'net/http'
+	require 'open-uri'
 
 	GoogleAPIKeys = YAML.load_file("#{::Rails.root}/config/google.yml")[::Rails.env]
 
@@ -62,8 +64,9 @@ module RoomsHelper
 			create_calendar_event(json_event)
 		when 'docs'
 			puts "We will acess the google docs api!"
-		when 'wolfram_alpha'
+		when 'wolfram'
 			puts "We will acess the wolfram alpha api!"
+			query_wolfram_alpha(json_hash)
 		when 'youtube'
 			puts "We will acess the youtube api!"
 		when 'wikipedia'
@@ -95,8 +98,15 @@ module RoomsHelper
 			}
 	end
 
-	def wolfram_alpha_json(json_hash)
-
+	def query_wolfram_alpha(json_hash)
+		query_string = json_hash['query']
+		app_id = "P3P4W5-LGWA2A3RU2"
+		wolfram_url = URI.parse("http://api.wolframalpha.com/v2/query?input=" + query_string + "&appid=" + app_id)
+		req = Net::HTTP::Get.new(wolfram_url.to_s)
+		res = Net::HTTP.start(wolfram_url.host, wolfram_url.port) {|http|
+		  http.request(req)
+		}
+		puts res.body
 	end
 
 
