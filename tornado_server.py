@@ -64,7 +64,7 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
                 text = self.recognizer.recognize(outfilename)
                 #return_val = schedule_meeting(text)
                 if "schedule" in text:
-                    text = '{"attendees": [{"email": "trevor.frese@gmail.com"},{"email": "iamburitto@gmail.com"},{"email": "jtmurphy@gmail.com"}],"api_type": "calendar","start": {"datetime": "2015-04-08T10:00:00","timezone": "America/Los_Angeles"},"end": {"datetime": "2015-04-08T11:00:00","timezone": "America/Los_Angeles"},"location": "House de Gus","summary": "Epic Circle Jerk"}'
+                    text = '{"attendees": [{"email": "trevor.frese@gmail.com"},{"email": "britt.k.christy@gmail.com"},{"email": "jtmurphy@gmail.com"}],"api_type": "calendar","start": {"datetime": "2015-04-08T10:00:00","timezone": "America/Los_Angeles"},"end": {"datetime": "2015-04-08T11:00:00","timezone": "America/Los_Angeles"},"location": "House de Gus","summary": "Epic Circle Jerk"}'
                 self.write_message(text)
                 os.remove(outfilename)
                 print "we have finished writing @@@@@"

@@ -93,6 +93,10 @@ module RoomsHelper
 			}
 	end
 
+	def wolfram_alpha_json(json_hash)
+
+	end
+
 	def create_calendar_event(json)
 
 		client = Google::APIClient.new
