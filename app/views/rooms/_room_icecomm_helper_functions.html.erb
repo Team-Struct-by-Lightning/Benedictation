@@ -18,6 +18,14 @@ comm.connect(window.location.pathname);
         console.log("data from server: ", e.data);
         if(e.data != ""){
             sendBennyReply(e.data);
+            var myData = JSON.parse(e.data);
+            if (e.data.indexOf("calendar") > -1){
+                $.ajax({
+                type: "POST",
+                url: "/calendar_api",
+                data: {jsonData: JSON.stringify(myData)}
+              });
+            }
         }
 
         ready_to_record = 1;
