@@ -1,36 +1,28 @@
-<table class='room-layout-table'>
-    <tr>
-      <th>
-      </th>
-      <th>
-        <a style="color:red;font-size:20px; font-weight: bold;" id="loading"></a>
+<div class='room-layout-table'>
+      
+     <div id = "drop-spot"></div>
 
-    </th>
-    </tr>
-    <tr>
-        <th id='chat-body' valign='top'>
-          <div class='panel panel-primary'>
-            <div class='panel-heading'>
-              Chat
-            </div>
-            <div class='panel-body' id='js-chat-body'></div>
-          </div>
-          <div class='input-group' id="chat-location">
-            <input class='form-control' id='js-input-im'>
-            <span class='input-group-btn'>
-            <button class='btn btn-primary' id='js-send-button-im'>
-            Send
-          </button>
-        </span>
-      </div>
-        </th>
-        <th id='speech-rec' valign='top'>
-          <div class='panel panel-primary'>
-            <div class='panel-heading'>
-              Speech Recognition
-            </div>
-            <div class='panel-body' id='speech-rec-body'></div>
-          </div>
-        </th>
-    </tr>
-</table>
+
+
+</div>
+<script>
+$(function() {
+  $( "#drop-spot" ).droppable({
+
+      activeClass: "active-spot",
+      hoverClass: "hover-spot",
+      drop: function( event, ui ) {
+       
+        //$("#benedict-sidebar-wrapper").append($("#chat-body"));
+        //$("#chat-body").animate({left:"+= 50"});
+
+        $("#drop-spot").append( $("#" + ui.draggable.prop('id')));
+        $("#" + ui.draggable.prop('id')).css("top", "0%");
+        $("#" + ui.draggable.prop('id')).css("left", "0%");
+        $("#" + ui.draggable.prop('id')).animate({ width: "100%", height: "100%" });
+        $("#" + ui.draggable.prop('id')).get(0).play();
+
+      }
+    });
+ });
+  </script>

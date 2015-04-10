@@ -1,15 +1,141 @@
 // Place all the styles related to the Rooms controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
-
+@import "bootstrap-sprockets";
+@import "bootstrap";
 .room-layout-table {
-	width: 100%;
+  position: fixed;
+  left:160px;
+  right:300px;
+	width: auto;
+  height:100%;
+}
+.active-spot{
+  
+  width: 500px;
+  height:500px;
+  border: 2px dashed black;
 }
 
+.dropped{
+  background-color: black;
+  width: 500px;
+  height:500px;
+}
+#drop-spot{
+  width:100%;
+  height:92%;
+}
+
+#page-wrapper{
+   margin-top: 50px;
+}
+
+/*Chat stuff */  
+
+#js-chat-body.panel-body{
+  padding-left: 0;
+  padding-right: 10px;
+  padding-top: 0;
+  padding-bottom: 0;
+
+}
+#chat-body > div.panel.panel-primary > div.panel-heading{
+  padding-top: 5px;
+  padding-left: 10px;
+  padding-right: 5px;
+  padding-bottom: 5px;
+}
 #chat-body {
-    width: 60%;
-    margin-right: 5%;
-    padding-right: 5%;
+  padding-top: 50px;
+  width: 100%;
+}
+#chatty{
+  margin-top: 5px;
+}
+.panel.panel-primary{
+  margin-bottom: 5px;
+}
+.media-object{
+  width: 75%;
+  height: 75%;
+}
+#minimize{
+  color: white;
+}
+#chat-body > div.panel.panel-primary > div.panel-heading{
+  background-color: $gray-dark;
+  border-color: $gray-dark;
+}
+#js-send-button-im{
+  background-color: $gray-dark;
+  border-color: $gray-dark;
+}
+#chat-body > div.panel.panel-primary{
+  border-color: $gray-dark;
+}
+
+/* Benedict List*/
+#benedict-list{
+  width: 100%;
+}
+#benny-item{
+
+  width: 100%;
+  height: 100%;
+  border-style: solid;
+  border-width: 4px;
+}
+
+.favicon{
+  width:11%;
+  height:11%;
+}
+
+
+/* Video sidebar */ 
+#video-sidebar{
+  width:160px;
+}
+#video-spot-1{
+  width:100%;
+  height:120px;
+
+  float: left;
+}
+#video-spot-2{
+  width:100%;
+  height:120px;
+
+  float: left;
+
+}
+#video-spot-3{
+  width:100%;
+  height:120px; 
+  float: left;
+
+}
+#video-spot-4{
+  width:100%;
+  height:120px;
+  float: left;
+}
+#video-spot-5{
+  width:100%;
+  height:120px;
+  float: left;
+}
+.active-video-spot{
+  
+  border: 2px dashed black;
+}
+
+#localVideo{
+  width: 100%;
+  height:100%;
+  margin: 0;
+  cursor:move;
 }
 
 #benny {
@@ -36,4 +162,75 @@
 #speech-rec {
     width: 150%;
     margin-right: 50%;
+}
+
+
+/* Benedict Sidebar */
+
+
+#wrapper {
+    padding-left: 0;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+
+#wrapper.toggled {
+    padding-left: 250px;
+}
+
+#benedict-sidebar-wrapper {
+    z-index: 1000;
+    position: fixed;
+    right: 250px;
+    width: 300px;
+    height: 100%;
+    margin-right: -250px;
+    overflow-y: auto;
+    background: #000;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+    margin-top: -50px;
+}
+
+#wrapper.toggled #benedict-sidebar-wrapper {
+    width: 250px;
+}
+
+.benedict-sidebar-nav {
+    position: absolute;
+    top: 45px;
+    width: 250px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.benedict-sidebar-nav  li {
+    text-indent: 20px;
+    line-height: 40px;
+}
+
+.benedict-sidebar-nav  li a {
+    display: block;
+    text-decoration: none;
+    color: $gray-light;
+}
+
+.benedict-sidebar-nav  li a:active,
+.benedict-sidebar-nav  li a:focus {
+    text-decoration: none;
+}
+
+.benedict-sidebar-nav  > .benedict-sidebar-brand {
+    height: 65px;
+    font-size: 18px;
+    line-height: 60px;
+}
+
+.benedict-sidebar-nav  > .benedict-sidebar-brand a {
+    color: $gray-light;
 }
