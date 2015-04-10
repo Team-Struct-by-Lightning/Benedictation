@@ -4,6 +4,8 @@ module RoomsHelper
 	require 'wikipedia'
 	require 'net/http'
 	require 'open-uri'
+	require 'fileutils'
+	require 'nokogiri'
 
 	GoogleAPIKeys = YAML.load_file("#{::Rails.root}/config/google.yml")[::Rails.env]
 
@@ -101,12 +103,18 @@ module RoomsHelper
 	def query_wolfram_alpha(json_hash)
 		query_string = json_hash['query']
 		app_id = "P3P4W5-LGWA2A3RU2"
-		wolfram_url = URI.parse("http://api.wolframalpha.com/v2/query?input=" + query_string + "&appid=" + app_id)
-		req = Net::HTTP::Get.new(wolfram_url.to_s)
-		res = Net::HTTP.start(wolfram_url.host, wolfram_url.port) {|http|
-		  http.request(req)
-		}
-		puts res.body
+		wolfram_url = URI.parse("http://api.wolframalpha.com/v2/query?input=" + query_string + "&appid=" + app_id + "&format=html")
+		html = open(wolfram_url)
+		doc = Nokogiri::HTML(html.read)
+		markups = []
+		doc.css("markup").each do |markup|
+			markup.css("ul").each do |ul|
+				ul.content = ""
+			end
+			markups << markup.inner_html
+		end
+		@wolfram_html = (markups.join("\n").gsub(']]&gt;', '')).gsub('&amp;','&')
+		File.open('blah.html', 'w') { |file| file.write(@wolfram_html) }
 	end
 
 

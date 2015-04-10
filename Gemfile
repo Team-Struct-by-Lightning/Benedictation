@@ -17,6 +17,7 @@ gem 'magnific-popup-rails'
 gem 'pg',                   '0.17.1'
 gem 'sdoc',                 '0.4.0', group: :doc
 gem 'wikipedia-client'
+gem 'nokogiri', '~> 1.6.6.2'
 
 
 
