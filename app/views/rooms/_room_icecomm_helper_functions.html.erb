@@ -17,6 +17,16 @@ comm.connect(window.location.pathname);
     ws.onmessage = function(e) {
         console.log("data from server: ", e.data);
         if(e.data != ""){
+            try {
+                var myData = JSON.parse(e.data);
+                $.ajax({
+                    type: "POST",
+                    url: "/check_api",
+                    data: {jsonData: JSON.stringify(myData)}
+                });
+            } catch (e) {
+                console.log("data from server not JSON");
+            }
             sendBennyReply(e.data);
         }
 
@@ -44,10 +54,11 @@ comm.connect(window.location.pathname);
     });
 
     comm.on('connected', function(options) {
+
         // append video elements one after the other when new people join the chat
         //remoteVideo.src = option.stream
         //remoteVideo.id = options.callerID;
-        
+
         document.getElementById("video-spot-2").appendChild(options.getVideo());
         var new_video = document.getElementById(options.callerID);
         new_video.style.width = "100%";
@@ -56,12 +67,15 @@ comm.connect(window.location.pathname);
         new_video.style.cursor = "move";
         $( new_video ).draggable({  revert: "invalid"  });
 
-    
+        //document.getElementById("video-chat-body").appendChild(options.getVideo());
+
+
+
     });
 
     comm.on('disconnect', function(options) {
         console.log('disconnect happening');
-        document.getElementById(options.callerID).remove();
+        document.getElementById(options.ID).remove();
     });
 
     comm.on('data', function(options) {

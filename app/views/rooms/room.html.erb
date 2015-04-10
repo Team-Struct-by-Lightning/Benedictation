@@ -1,14 +1,16 @@
 <div id = "page_wrapper">
          <%= render 'rooms/room_page_content' %>
 </div>
-        <!-- /#page-content-wrapper -->
+
+
 
 <%= render 'rooms/room_toggle_menu_script' %>
 
 <%= javascript_tag do %>
-<%= render 'rooms/room_pocketsphinx_helper_functions' %>
-<%= render 'rooms/room_icecomm_helper_functions' %>
-<%= render 'rooms/room_keypress_record' %>
-<%= render 'rooms/room_chat' %>
+
+	<%= render 'rooms/room_pocketsphinx_helper_functions' %>
+	<%= render 'rooms/room_icecomm_helper_functions' %>
+	<%= render 'rooms/room_keypress_record' %>
+	<%= render 'rooms/room_chat' %>
 
 <% end %>

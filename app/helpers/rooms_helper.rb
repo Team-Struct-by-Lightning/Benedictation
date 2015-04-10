@@ -1,4 +1,14 @@
 module RoomsHelper
+	require 'google/api_client'
+	require 'json'
+	require 'wikipedia'
+	require 'net/http'
+	require 'open-uri'
+	require 'fileutils'
+	require 'nokogiri'
+
+	GoogleAPIKeys = YAML.load_file("#{::Rails.root}/config/google.yml")[::Rails.env]
+
 	def redirect_user
 		url_string = request.original_url
 		url_array = url_string.split('/')
@@ -21,5 +31,140 @@ module RoomsHelper
 				redirect_to chat_path
 			end
 		end
+	end
+
+
+
+
+##############################################################################################################
+##############################################################################################################
+##############################################################################################################
+##############################################################################################################
+
+																	#API CODE!  ADD STUFF HERE PLEASE
+
+##############################################################################################################
+##############################################################################################################
+##############################################################################################################
+##############################################################################################################
+
+
+	def string_to_json(json_string)
+		puts json_string
+		hash = JSON.parse(json_string)
+		puts hash
+		hash
+	end
+
+	def choose_api(json)
+		json_hash = string_to_json(json)
+
+		case json_hash['api_type']
+		when 'calendar'
+			puts "We will access the calendar api!"
+			json_event = calendar_json(json_hash)
+			create_calendar_event(json_event)
+		when 'docs'
+			puts "We will access the google docs api!"
+		when 'wolfram'
+			puts "We will access the wolfram alpha api!"
+			query_wolfram_alpha(json_hash)
+		when 'youtube'
+			puts "We will access the youtube api!"
+		when 'wikipedia'
+			puts "We will access the wikipedia api!"
+			query_wikipedia(json_hash)
+		else
+			"NOTHING HAPPENED!?!?!?!?!??!?!??!?!"
+		end
+	end
+
+	def calendar_json(json_hash)
+
+		attendee_array = []
+		json_hash['attendees'].each do |email|
+			attendee_array << email['email']
+		end
+		json_event = {
+				'summary' => json_hash['summary'],
+				'location' => json_hash['location'],
+				'start' => {
+					'dateTime' => json_hash['start']['datetime'],
+					'timeZone' => json_hash['start']['timezone']
+				},
+				'end' => {
+					'dateTime' => json_hash['end']['datetime'],
+					'timeZone' => json_hash['end']['timezone']
+				},
+				'attendees' => attendee_array
+			}
+	end
+
+	def query_wolfram_alpha(json_hash)
+		query_string = json_hash['query']
+		app_id = "P3P4W5-LGWA2A3RU2"
+		wolfram_url = URI.parse("http://api.wolframalpha.com/v2/query?input=" + query_string + "&appid=" + app_id + "&format=html")
+		html = open(wolfram_url)
+		doc = Nokogiri::HTML(html.read)
+		markups = []
+		doc.css("markup").each do |markup|
+			markup.css("ul").each do |ul|
+				ul.content = ""
+			end
+			markups << markup.inner_html
+		end
+		@wolfram_html = (markups.join("\n").gsub(']]&gt;', '')).gsub('&amp;','&')
+		File.open('blah.html', 'w') { |file| file.write(@wolfram_html) }
+	end
+
+
+	def query_wikipedia(json_hash)
+
+		page = Wikipedia.find( json_hash['query'] )
+
+		wiki_hash = Hash.new
+		wiki_hash['title'] = page.title
+		wiki_hash['content'] = page.content
+		wiki_hash['categories'] = page.categories
+		wiki_hash['links'] = page.links
+		wiki_hash['extlinks'] = page.extlinks
+		wiki_hash['images'] = page.images
+		wiki_hash['image_urls'] = page.image_urls
+		wiki_hash['image_descriptionurls'] = page.image_descriptionurls
+		wiki_hash['coordinates'] = page.coordinates
+		wiki_hash['templates'] = page.templates
+
+		puts wiki_hash
+		wiki_hash
+	end
+
+	def create_calendar_event(json)
+
+		client = Google::APIClient.new
+		client.authorization.client_id = GoogleAPIKeys["app_id"]
+		client.authorization.client_secret = GoogleAPIKeys["secret"]
+		client.authorization.scope = "https://www.googleapis.com/auth/calendar"
+		client.authorization.refresh_token = current_user.refresh_token
+		client.authorization.access_token = current_user.oauth_token
+
+		if client.authorization.refresh_token && client.authorization.expired?
+		  client.authorization.fetch_access_token!
+		end
+
+		service = client.discovered_api('calendar', 'v3')
+
+		result = client.execute(:api_method => service.events.insert,
+														:parameters => {'calendarId' => 'primary'},
+														:body 			=> JSON.dump(json),
+														:headers		=> {'Content-Type' =>
+																						'application/json'})
+
+		print result.data.id
+	end
+
+	def undo_calendar_event(id)
+		result = client.execute(:api_method => service.events.delete,
+                        		:parameters => {'calendarId' => 'primary',
+                        										'eventId' => id})
 	end
 end

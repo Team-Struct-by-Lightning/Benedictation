@@ -12,6 +12,7 @@ from random import randint
 from nltk_test import schedule_meeting
 import speechrec
 import socket
+import json
 
 class WSHandler(tornado.websocket.WebSocketHandler):
     def open(self):
@@ -33,14 +34,14 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 
 # Handle audio data sent to /recognize.
 class SpeechWSHandler(tornado.websocket.WebSocketHandler):
-    
+
     def open(self):
         print "New connection to speech recognizer opened"
         self.recognizer = speechrec.SpeechRecognizer()
         print self.recognizer
         self.recording = False
         self.text = ""
-        
+
     def on_message(self, message):
         #print "speech-rec received message: %s" % message
         if self.recording == False and message == "start":
@@ -58,41 +59,43 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
                 f = open(outfilename , 'w')
                 f.write(message)
                 f.close()
-                
-                print "wrote to file"
-                text = self.recognizer.recognize(outfilename)
-                #return_val = schedule_meeting(text)
 
+                print "wrote to file"
+                text = self.recognizer.recognize(outfilename).lower()
+                if "schedule" in text:
+                    text = '{"attendees": [{"email": "trevor.frese@gmail.com"},{"email": "britt.k.christy@gmail.com"},{"email": "jtmurphy@gmail.com"}],"api_type": "calendar","start": {"datetime": "2015-04-08T10:00:00","timezone": "America/Los_Angeles"},"end": {"datetime": "2015-04-08T11:00:00","timezone": "America/Los_Angeles"},"location": "House de Gus","summary": "Epic Circle Jerk"}'
+                if "search" in text:
+                    text = '{"api_type": "wikipedia", "query": "peanut butter"}'
+                if "wolfram" in text:
+                    text = '{"api_type": "wolfram", "query": "isla vista weather"}' 
                 self.write_message(text)
                 os.remove(outfilename)
                 print "we have finished writing @@@@@"
-     
-                
+
+
     def on_close(self):
         print "Connection closed."
-        
+
     def check_origin(self,origin):
         return True
-    
-    
+
+
 application = tornado.web.Application([
     (r"/hello", WSHandler),
     (r"/recognize", SpeechWSHandler)
 ])
 
 if __name__ == "__main__":
- 
+
     # This line will connect to the website, read its contents
     # and parse the JSON output
-	
+
     data = loads(urlopen("http://httpbin.org/ip").read())
-    public_ip = data["origin"]
-    print "The public IP is : %s" % data["origin"]
-    if str(public_ip) == "52.11.133.36":
+    if "local" not in str(socket.gethostname()):
         benny_ssl_options = {
             "certfile": os.path.join("/etc/nginx/ssl/benedictation_io/ssl-bundle.crt"),
             "keyfile": os.path.join("/etc/nginx/ssl/benedictation_io/benedictation-private-key-file.pem")
-        }   
+        }
         http_server = tornado.httpserver.HTTPServer(application,xheaders=True,ssl_options=benny_ssl_options)
     else:
 	http_server = tornado.httpserver.HTTPServer(application)

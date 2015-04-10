@@ -1,0 +1,5 @@
+<% email = current_user.email %>
+<% email_name = email.split('@')[0] %>
+<% user_timezone = "America/Los_Angeles" %>
+<% email_url = "https://www.google.com/calendar/embed?src=" + email_name + "%40gmail.com&ctz=" + user_timezone %>
+<iframe src=<%= email_url %> style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>

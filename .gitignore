@@ -29,10 +29,19 @@
 #Ignores the .wav and .flac files from speech rec
 *.wav
 *.flac
+
+#Ignores the compiled python files
 speechrec.pyc
+tornado_server.pyc
+nltk_test.pyc
 
 #ignores rubymine IDE files
 .idea/*
 
 #environment variables
 *.env
+
+#because the database.yml is user idependent we add it here
+/config/database.yml
+/config/secrets.yml
+/config/google.yml
