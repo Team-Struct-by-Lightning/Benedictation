@@ -50,6 +50,22 @@
                     </span>
                   </div>
                   
+                  <div id = "benedict-list"> 
+                    <div id= "benny-item">
+        
+                      <%= image_tag("googz.ico", class: "favicon") %>
+                      <a>Schedule me a meeting benedict.</a>
+                      
+                    </div>
+                    <div id= "benny-item">
+                      <%= image_tag("wolfram.jpg", class: "favicon") %>
+                      <a>What is the square root of 100?</a>
+                    </div>
+                    <div id= "benny-item">
+                      <%= image_tag("wikipedia.ico", class: "favicon") %>
+                      <a>What's a dog?</a>
+                    </div>
+                  </div>
                   
                   <!--<div id='speech-rec' >
                     <div class='panel panel-primary'>
@@ -70,14 +86,26 @@
         <script>
           $(function() {
 
+            
             $( "#localVideo" ).draggable({  
+              
               revert: "invalid" , opacity: .7,
-              start: function() {
 
-                  $(this).css("width", "154px" );
-                  
+              create: function(event, ui) { 
+                $(this).draggable("option", "cursorAt", {
+                      left: Math.floor(80),
+                      top: Math.floor(60)
+                  }); 
               },
-              cursorAt: {left:70, top:70}
+              start: function(event, ui){
+                
+                if($(this).width() > 160){
+                  $(this).css("width", "160px" );
+                  $(this).css("height", "120px");
+                }
+        
+              }
+              
             });
 
             $( "#video-spot-1" ).droppable({

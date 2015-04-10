@@ -19,7 +19,7 @@ $(function() {
         $("#drop-spot").append( $("#" + ui.draggable.prop('id')));
         $("#" + ui.draggable.prop('id')).css("top", "0%");
         $("#" + ui.draggable.prop('id')).css("left", "0%");
-        $("#" + ui.draggable.prop('id')).animate({ width: "100%" });
+        $("#" + ui.draggable.prop('id')).animate({ width: "100%", height: "100%" });
         $("#" + ui.draggable.prop('id')).get(0).play();
 
       }

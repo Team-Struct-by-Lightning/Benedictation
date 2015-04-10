@@ -63,6 +63,35 @@
 #minimize{
   color: white;
 }
+#chat-body > div.panel.panel-primary > div.panel-heading{
+  background-color: $gray-dark;
+  border-color: $gray-dark;
+}
+#js-send-button-im{
+  background-color: $gray-dark;
+  border-color: $gray-dark;
+}
+#chat-body > div.panel.panel-primary{
+  border-color: $gray-dark;
+}
+
+/* Benedict List*/
+#benedict-list{
+  width: 100%;
+}
+#benny-item{
+
+  width: 100%;
+  height: 100%;
+  border-style: solid;
+  border-width: 4px;
+}
+
+.favicon{
+  width:11%;
+  height:11%;
+}
+
 
 /* Video sidebar */ 
 #video-sidebar{
