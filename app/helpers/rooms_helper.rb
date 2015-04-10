@@ -65,14 +65,14 @@ module RoomsHelper
 			json_event = calendar_json(json_hash)
 			create_calendar_event(json_event)
 		when 'docs'
-			puts "We will acess the google docs api!"
+			puts "We will access the google docs api!"
 		when 'wolfram'
-			puts "We will acess the wolfram alpha api!"
+			puts "We will access the wolfram alpha api!"
 			query_wolfram_alpha(json_hash)
 		when 'youtube'
-			puts "We will acess the youtube api!"
+			puts "We will access the youtube api!"
 		when 'wikipedia'
-			puts "We will acess the wikipedia api!"
+			puts "We will access the wikipedia api!"
 			query_wikipedia(json_hash)
 		else
 			"NOTHING HAPPENED!?!?!?!?!??!?!??!?!"
