@@ -6,47 +6,145 @@
             <% flash.each do |message_type, message| %>
                 <div class="alert alert-<%= message_type %>"><%= message %></div>
             <% end %>
-            <div class="container-fluid">
-                <div class="row">
+
+        
+             <div id = 'video-sidebar'>
+              <div id = "video-spot-1"> <video id="localVideo" autoplay></video> </div>
+              <div id = "video-spot-2"> </div>
+              <div id = "video-spot-3"> </div>
+              <div id = "video-spot-4"> </div>
+              <div id = "video-spot-5"> </div>
+
+             </div>
+             
+            
+                
               
-                   <div id = 'video-sidebar'>
-                      <video id="localVideo" autoplay></video>
-                    </div>
+              
 
-                    <div class = "benedict-zone">
-                        <%= render 'rooms/room_content_table' %>
-                    </div>
+              <div class = "benedict-zone">
+                  <%= render 'rooms/room_content_table' %>
+              </div>
 
-                    <div id="benedict-sidebar-wrapper">
-                      <ul class="benedict-sidebar-nav">
-                        <li class="sidebar-brand">
-                          <a style="color:red;font-size:20px; font-weight: bold;" id="loading"></a>
-                        </li>
-                          
-                      </ul>
-                    </div>
+              <div id="benedict-sidebar-wrapper">
+                <ul class="benedict-sidebar-nav">
+                  <li class="sidebar-brand">
+                    <!--<a style="color:red;font-size:20px; font-weight: bold;" id="loading"></a>-->
+                  </li>
                     
+                </ul>
+                <div id='chat-body' valign='top'>
+                  <div class='panel panel-primary'>
+                    <div class='panel-heading'>
+                      Chat
+                      <a class ="glyphicon glyphicon-minus" id = "minimize" href = "javascript:minimize();"> </a>
+                    </div>
+                    <div class='panel-body' id='js-chat-body'></div>
+                  </div>
+                  <div class='input-group' id="chat-location">
+                    <input class='form-control' id='js-input-im'>
+                    <span class='input-group-btn'>
+                      <button class='btn btn-primary' id='js-send-button-im'>
+                      Send
+                      </button>
+                    </span>
+                  </div>
+                  
+                  
+                  <!--<div id='speech-rec' >
+                    <div class='panel panel-primary'>
+                      <div class='panel-heading'>
+                        Speech Recognition
+                      </div>
+                      <div class='panel-body' id='speech-rec-body'></div>
+                    </div>
+                  </div>
+                  -->
                 </div>
-            </div>
+              </div>
+                    
+
             <!-- Page Content -->
         </div>
 
         <script>
           $(function() {
-            $( "#localVideo" ).draggable({  revert: "invalid"  });
 
-            $( "#video-sidebar" ).droppable({
+            $( "#localVideo" ).draggable({  
+              revert: "invalid" , opacity: .7,
+              start: function() {
 
-                activeClass: "active-sidebar",
+                  $(this).css("width", "154px" );
+                  
+              },
+              cursorAt: {left:70, top:70}
+            });
+
+            $( "#video-spot-1" ).droppable({
+
+                activeClass: "active-video-spot",
                 drop: function( event, ui ) {
-
-                  $("#video-sidebar").append( $("#localVideo"));
-                  $("#localVideo").css("top", "0%");
-                  $("#localVideo").css("left", "0%");
-                  $("#localVideo").animate({ width: "154px" });
-                  $("#localVideo").get(0).play();
+                  
+                  $("#video-spot-1").append( $("#" + ui.draggable.prop('id')) ) ;
+                  $("#" + ui.draggable.prop('id')).css("top", "0%");
+                  $("#" + ui.draggable.prop('id')).css("left", "0%");
+                  $("#" + ui.draggable.prop('id')).css("width", "100%");
+                  $("#" + ui.draggable.prop('id')).get(0).play();
 
                 }
               });
+
+             $( "#video-spot-2" ).droppable({
+              
+                activeClass: "active-video-spot",
+                drop: function( event, ui ) {
+                  $("#video-spot-2").append( $("#" + ui.draggable.prop('id')) );
+                  $("#" + ui.draggable.prop('id')).css("top", "0%");
+                  $("#" + ui.draggable.prop('id')).css("left", "0%");
+                  $("#" + ui.draggable.prop('id')).css("width", "100%");
+                  $("#" + ui.draggable.prop('id')).get(0).play();
+
+                }
+              });
+              $( "#video-spot-3" ).droppable({
+              
+                activeClass: "active-video-spot",
+                drop: function( event, ui ) {
+
+                  $("#video-spot-3").append( $("#" + ui.draggable.prop('id')));
+                  $("#" + ui.draggable.prop('id')).css("top", "0%");
+                  $("#" + ui.draggable.prop('id')).css("left", "0%");
+                  $("#" + ui.draggable.prop('id')).css("width", "100%");
+                  $("#" + ui.draggable.prop('id')).get(0).play();
+
+                }
+              });
+              $( "#video-spot-4" ).droppable({
+              
+                activeClass: "active-video-spot",
+                drop: function( event, ui ) {
+
+                  $("#video-spot-4").append( $("#" + ui.draggable.prop('id')));
+                  $("#" + ui.draggable.prop('id')).css("top", "0%");
+                  $("#" + ui.draggable.prop('id')).css("left", "0%");
+                  $("#" + ui.draggable.prop('id')).css("width", "100%");
+                  $("#" + ui.draggable.prop('id')).get(0).play();
+
+                }
+              });
+              $( "#video-spot-5" ).droppable({
+              
+                activeClass: "active-video-spot",
+                drop: function( event, ui ) {
+
+                  $("#video-spot-5").append( $("#" + ui.draggable.prop('id')));
+                  $("#" + ui.draggable.prop('id')).css("top", "0%");
+                  $("#" + ui.draggable.prop('id')).css("left", "0%");
+                  $("#" + ui.draggable.prop('id')).css("width", "100%");
+                  $("#" + ui.draggable.prop('id')).get(0).play();
+
+                }
+              });
+
           });
         </script>

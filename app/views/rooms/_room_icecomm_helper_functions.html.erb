@@ -48,11 +48,10 @@ comm.connect(window.location.pathname);
         //remoteVideo.src = option.stream
         //remoteVideo.id = options.callerID;
         
-        document.getElementById("video-sidebar").appendChild(options.getVideo());
+        document.getElementById("video-spot-2").appendChild(options.getVideo());
         var new_video = document.getElementById(options.callerID);
-        var height = screen.height;
-        height / 5
-        new_video.style.width = "154px";
+        new_video.style.width = "100%";
+        new_video.style.height = "100%";
         new_video.style.margin = "0px";
         new_video.style.cursor = "move";
         $( new_video ).draggable({  revert: "invalid"  });

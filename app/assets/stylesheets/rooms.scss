@@ -5,10 +5,10 @@
 @import "bootstrap";
 .room-layout-table {
   position: fixed;
-  left:250px;
-  right:250px;
-	width: 50%;
- height: 100%;
+  left:160px;
+  right:300px;
+	width: auto;
+  height:100%;
 }
 .active-spot{
   
@@ -24,33 +24,86 @@
 }
 #drop-spot{
   width:100%;
-  height:100%;
+  height:92%;
 }
 
-
-#chat-body {
-    width: 60%;
-    margin-right: 5%;
-    padding-right: 5%;
-}
 #page-wrapper{
    margin-top: 50px;
 }
 
+/*Chat stuff */  
+
+#js-chat-body.panel-body{
+  padding-left: 0;
+  padding-right: 10px;
+  padding-top: 0;
+  padding-bottom: 0;
+
+}
+#chat-body > div.panel.panel-primary > div.panel-heading{
+  padding-top: 5px;
+  padding-left: 10px;
+  padding-right: 5px;
+  padding-bottom: 5px;
+}
+#chat-body {
+  padding-top: 50px;
+  width: 100%;
+}
+#chatty{
+  margin-top: 5px;
+}
+.panel.panel-primary{
+  margin-bottom: 5px;
+}
+.media-object{
+  width: 75%;
+  height: 75%;
+}
+#minimize{
+  color: white;
+}
+
 /* Video sidebar */ 
 #video-sidebar{
-  width:154px;
-  position: fixed;
+  width:160px;
+}
+#video-spot-1{
+  width:100%;
+  height:120px;
+
   float: left;
 }
-.active-sidebar{
+#video-spot-2{
+  width:100%;
+  height:120px;
+
+  float: left;
+
+}
+#video-spot-3{
+  width:100%;
+  height:120px; 
+  float: left;
+
+}
+#video-spot-4{
+  width:100%;
+  height:120px;
+  float: left;
+}
+#video-spot-5{
+  width:100%;
+  height:120px;
+  float: left;
+}
+.active-video-spot{
   
   border: 2px dashed black;
 }
 
 #localVideo{
-
-  width:154px;
+  width: 100%;
   height:100%;
   margin: 0;
   cursor:move;

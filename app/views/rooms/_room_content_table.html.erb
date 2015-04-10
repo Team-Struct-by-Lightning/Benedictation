@@ -1,36 +1,9 @@
 <div class='room-layout-table'>
       
-      <div id = "drop-spot">
-      </div>
+     <div id = "drop-spot"></div>
 
 
-        <div id='chat-body' valign='top'>
-          <div class='panel panel-primary'>
-            <div class='panel-heading'>
-              Chat
-            </div>
-            <div class='panel-body' id='js-chat-body'></div>
-          </div>
-          <div class='input-group' id="chat-location">
-            <input class='form-control' id='js-input-im'>
-            <span class='input-group-btn'>
-              <button class='btn btn-primary' id='js-send-button-im'>
-              Send
-              </button>
-            </span>
-          </div>
-          
-          
-          <!--<div id='speech-rec' >
-            <div class='panel panel-primary'>
-              <div class='panel-heading'>
-                Speech Recognition
-              </div>
-              <div class='panel-body' id='speech-rec-body'></div>
-            </div>
-          </div>
-          -->
-        </div>
+
 </div>
 <script>
 $(function() {
@@ -40,20 +13,15 @@ $(function() {
       hoverClass: "hover-spot",
       drop: function( event, ui ) {
        
-        $("#benedict-sidebar-wrapper").append($("#chat-body"));
+        //$("#benedict-sidebar-wrapper").append($("#chat-body"));
         //$("#chat-body").animate({left:"+= 50"});
 
-        $("#drop-spot").append( $("#localVideo"));
-        $("#localVideo").css("top", "0%");
-        $("#localVideo").css("left", "0%");
-        $("#localVideo").animate({ width: "100%" });
-        $("#localVideo").get(0).play();
+        $("#drop-spot").append( $("#" + ui.draggable.prop('id')));
+        $("#" + ui.draggable.prop('id')).css("top", "0%");
+        $("#" + ui.draggable.prop('id')).css("left", "0%");
+        $("#" + ui.draggable.prop('id')).animate({ width: "100%" });
+        $("#" + ui.draggable.prop('id')).get(0).play();
 
-        $("#chat-body").animate({ width: "100%" });
-        $("#chat-body").animate({ top: "+=120px" }, 400 );
-        if($("#video-sidebar").height() < 100){
-          $("#video-sidebar").css("height", "200px");
-        }
       }
     });
  });

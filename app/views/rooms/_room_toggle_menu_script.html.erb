@@ -13,6 +13,10 @@
     $( this ).find( "span:last" ).remove();
     });
 
+    function minimize(){
+    
+    $("#minimize").toggleClass("minimized");
+    }
    </script>
 
 
@@ -22,7 +26,9 @@
   overflow: auto;
   word-wrap: break-word;
 }
-
+.minimized{
+  max-height: 0px;
+}
 #benny {
   margin-top: 0%;
   margin-left: 2%;
@@ -42,9 +48,7 @@
     margin-bottom: 1%;
     wrap: auto;
 }
-#localVideo {
 
-}
 #js-input-im {
 }
 #js-send-button-im {
