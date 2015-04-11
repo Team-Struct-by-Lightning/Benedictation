@@ -7,7 +7,7 @@
                 <div class="alert alert-<%= message_type %>"><%= message %></div>
             <% end %>
 
-        
+
              <div id = 'video-sidebar'>
               <div id = "video-spot-1"> <video id="localVideo" autoplay></video> </div>
               <div id = "video-spot-2"> </div>
@@ -16,11 +16,11 @@
               <div id = "video-spot-5"> </div>
 
              </div>
-             
-            
-                
-              
-              
+
+
+
+
+
 
               <div class = "benedict-zone">
                   <%= render 'rooms/room_content_table' %>
@@ -31,7 +31,7 @@
                   <li class="sidebar-brand">
                     <!--<a style="color:red;font-size:20px; font-weight: bold;" id="loading"></a>-->
                   </li>
-                    
+
                 </ul>
                 <div id='chat-body' valign='top'>
                   <div class='panel panel-primary'>
@@ -49,24 +49,24 @@
                       </button>
                     </span>
                   </div>
-                  
-                  <div id = "benedict-list"> 
+
+                  <div id = "benedict-list">
                     <div id= "benny-item">
-        
+
                       <%= image_tag("googz.ico", class: "favicon") %>
-                      <a>Schedule me a meeting benedict.</a>
-                      
+                      <a class="benny-query">Schedule me a meeting benedict.</a>
+
                     </div>
                     <div id= "benny-item">
                       <%= image_tag("wolfram.jpg", class: "favicon") %>
-                      <a>What is the square root of 100?</a>
+                      <a class="benny-query">What is the square root of 100?</a>
                     </div>
                     <div id= "benny-item">
                       <%= image_tag("wikipedia.ico", class: "favicon") %>
-                      <a>What's a dog?</a>
+                      <a class="benny-query">What's a dog?</a>
                     </div>
                   </div>
-                  
+
                   <!--<div id='speech-rec' >
                     <div class='panel panel-primary'>
                       <div class='panel-heading'>
@@ -78,7 +78,7 @@
                   -->
                 </div>
               </div>
-                    
+
 
             <!-- Page Content -->
         </div>
@@ -86,33 +86,33 @@
         <script>
           $(function() {
 
-            
-            $( "#localVideo" ).draggable({  
-              
+
+            $( "#localVideo" ).draggable({
+
               revert: "invalid" , opacity: .7,
 
-              create: function(event, ui) { 
+              create: function(event, ui) {
                 $(this).draggable("option", "cursorAt", {
                       left: Math.floor(80),
                       top: Math.floor(60)
-                  }); 
+                  });
               },
               start: function(event, ui){
-                
+
                 if($(this).width() > 160){
                   $(this).css("width", "160px" );
                   $(this).css("height", "120px");
                 }
-        
+
               }
-              
+
             });
 
             $( "#video-spot-1" ).droppable({
 
                 activeClass: "active-video-spot",
                 drop: function( event, ui ) {
-                  
+
                   $("#video-spot-1").append( $("#" + ui.draggable.prop('id')) ) ;
                   $("#" + ui.draggable.prop('id')).css("top", "0%");
                   $("#" + ui.draggable.prop('id')).css("left", "0%");
@@ -123,7 +123,7 @@
               });
 
              $( "#video-spot-2" ).droppable({
-              
+
                 activeClass: "active-video-spot",
                 drop: function( event, ui ) {
                   $("#video-spot-2").append( $("#" + ui.draggable.prop('id')) );
@@ -135,7 +135,7 @@
                 }
               });
               $( "#video-spot-3" ).droppable({
-              
+
                 activeClass: "active-video-spot",
                 drop: function( event, ui ) {
 
@@ -148,7 +148,7 @@
                 }
               });
               $( "#video-spot-4" ).droppable({
-              
+
                 activeClass: "active-video-spot",
                 drop: function( event, ui ) {
 
@@ -161,7 +161,7 @@
                 }
               });
               $( "#video-spot-5" ).droppable({
-              
+
                 activeClass: "active-video-spot",
                 drop: function( event, ui ) {
 

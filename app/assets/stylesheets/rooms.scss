@@ -11,7 +11,7 @@
   height:100%;
 }
 .active-spot{
-  
+
   width: 500px;
   height:500px;
   border: 2px dashed black;
@@ -31,23 +31,49 @@
    margin-top: 50px;
 }
 
-/*Chat stuff */  
+/*Chat stuff */
+
+#js-input-im {
+  background-color: #CCCCCC;
+  border-color: #CCCCCC;
+  color: #000000
+}
+
+#js-send-button-im {
+  color: #CCCCCC;
+  top: 1px;
+}
+
+#js-send-button-im:hover{
+  color: #FFFFFF
+}
+
+
+.pull-left {
+  padding-left: 5px;
+  margin-right: -5px;
+  padding-bottom: 5px;
+}
 
 #js-chat-body.panel-body{
   padding-left: 0;
   padding-right: 10px;
   padding-top: 0;
   padding-bottom: 0;
-
+  background-color: #CCCCCC;
+  border-color: #CCCCCC;
 }
+
+
 #chat-body > div.panel.panel-primary > div.panel-heading{
   padding-top: 5px;
   padding-left: 10px;
   padding-right: 5px;
   padding-bottom: 5px;
 }
+
 #chat-body {
-  padding-top: 50px;
+  padding-top: 55px;
   width: 100%;
 }
 #chatty{
@@ -61,12 +87,21 @@
   height: 75%;
 }
 #minimize{
-  color: white;
+  color: #CCCCCC;
+}
+#minimize:hover{
+  color: #FFFFFF
 }
 #chat-body > div.panel.panel-primary > div.panel-heading{
   background-color: $gray-dark;
   border-color: $gray-dark;
+  color: #CCCCCC;
 }
+
+#chat-body > div.panel.panel-primary > div.panel-heading:hover{
+  color: #FFFFFF;
+}
+
 #js-send-button-im{
   background-color: $gray-dark;
   border-color: $gray-dark;
@@ -77,14 +112,19 @@
 
 /* Benedict List*/
 #benedict-list{
+  padding-top: 10px;
   width: 100%;
 }
 #benny-item{
-
+  padding: 10px;
   width: 100%;
   height: 100%;
   border-style: solid;
   border-width: 4px;
+}
+
+.benny-query {
+  padding-left: 10px;
 }
 
 .favicon{
@@ -92,8 +132,16 @@
   height:11%;
 }
 
+.ui-draggable-dragging {
+  z-index: 2000;
+}
 
-/* Video sidebar */ 
+.media-heading {
+  font-size: small;
+  padding-top: 10px;
+}
+
+/* Video sidebar */
 #video-sidebar{
   width:160px;
 }
@@ -112,7 +160,7 @@
 }
 #video-spot-3{
   width:100%;
-  height:120px; 
+  height:120px;
   float: left;
 
 }
@@ -127,7 +175,7 @@
   float: left;
 }
 .active-video-spot{
-  
+
   border: 2px dashed black;
 }
 
@@ -181,7 +229,7 @@
 }
 
 #benedict-sidebar-wrapper {
-    z-index: 1000;
+    z-index: 1;
     position: fixed;
     right: 250px;
     width: 300px;
@@ -194,10 +242,13 @@
     -o-transition: all 0.5s ease;
     transition: all 0.5s ease;
     margin-top: -50px;
+    padding-right: 10px;
+    padding-left: 10px;
 }
 
 #wrapper.toggled #benedict-sidebar-wrapper {
     width: 250px;
+    z-index: 1;
 }
 
 .benedict-sidebar-nav {
