@@ -91,14 +91,13 @@
 
     $.getJSON(url_string, function(user_object) {
 
+
           $chatBody.append( "  <div class='media' id='chatty'>"+
-           "    <a class='pull-"+ "left" +"' href='#'>"+
-           "      <img class='media-object' src=" +
+          "    <div class='media-body' id='div-chat-message', style='text-align: "+ "left" +"'>"+
+           "      <h4 class='media-heading' id='h4-chat-message'>" + "<span class='chat-message'>"+
+           "      <img class='media-object' id='prof-pic' align='left' src=" +
             user_object.image.url +
-           ">" +
-           "    </a>"+
-           "    <div class='media-body', style='text-align: "+ "left" +"'>"+
-           "      <h4 class='media-heading'>"+ user + ": " + message + "</h4>"+""+
+           ">" + "<a class='chat-user-name' href='#'>" + user + "</a>: " + message + "</span></h4>"+""+
            "    </div>"+
            "  </div>" )
            var height = 0;
@@ -110,7 +109,7 @@
 
     });
   }
-  
+
   // media object to append to the page each time there's a new chat
   function mediaObjectSpeechrec(user, uid, token, message) {
 
@@ -119,13 +118,11 @@
           $.getJSON(url_string, function(user_object) {
 
           $speechRecBody.append( "  <div class='media' id='benny'>"+
-           "    <a class='pull-"+ "left" +"' href='#'>"+
-           "      <img class='media-object' src=" +
-            user_object.image.url +
-           ">" +
-           "    </a>"+
            "    <div class='media-body', style='text-align: "+ "left" +"'>"+
-           "      <h4 class='media-heading'>"+ user + ": " + message + "</h4>"+""+
+           "      <h4 class='media-heading'>" + "<span class='chat-message'>"+
+           "      <img class='media-object' id='prof-pic' src=" +
+            user_object.image.url +
+           ">" + user + ": " + message + "</span></h4>"+""+
            "    </div>"+
            "  </div>" )
            var height = 0;

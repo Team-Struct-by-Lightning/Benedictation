@@ -132,6 +132,40 @@
   height:11%;
 }
 
+.chat-user-name {
+  text-decoration: none !important;
+}
+
+.chat-user-name:hover {
+  color: #428bca !important;;
+  text-decoration: none !important;
+}
+
+.chat-user-name:visited {
+    text-decoration: none !important;
+    color: #428bca !important;
+}
+
+
+
+#prof-pic {
+  top: 2px;
+  height: 25px;
+  width: 25px;
+  margin-right: 8px;
+}
+
+#div-chat-message {
+  margin-bottom: 5px;
+}
+
+#h4-chat-message {
+  margin: 5px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding-top: 3px;
+}
+
 .ui-draggable-dragging {
   z-index: 2000;
 }
