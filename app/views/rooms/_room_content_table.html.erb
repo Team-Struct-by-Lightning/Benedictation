@@ -15,7 +15,7 @@ $(function() {
        
         //$("#benedict-sidebar-wrapper").append($("#chat-body"));
         //$("#chat-body").animate({left:"+= 50"});
-
+        take_spot(5, $("#" + ui.draggable.prop('id')), $("#drop-spot"));
         $("#drop-spot").append( $("#" + ui.draggable.prop('id')));
         $("#" + ui.draggable.prop('id')).css("top", "0%");
         $("#" + ui.draggable.prop('id')).css("left", "0%");

@@ -52,7 +52,6 @@
 
                   <div id = "benedict-list">
                     <div id= "benny-item">
-
                       <%= image_tag("googz.ico", class: "favicon") %>
                       <a class="benny-query">Schedule me a meeting benedict.</a>
 
@@ -84,8 +83,9 @@
         </div>
 
         <script>
+          var video_spots = [0,0,0,0,0,0];
+          
           $(function() {
-
 
             $( "#localVideo" ).draggable({
 
@@ -107,12 +107,12 @@
               }
 
             });
-
+            take_spot(0, $( "#localVideo" ));
             $( "#video-spot-1" ).droppable({
 
                 activeClass: "active-video-spot",
                 drop: function( event, ui ) {
-
+                  take_spot(0, $("#" + ui.draggable.prop('id')), $("#video-spot-1"));
                   $("#video-spot-1").append( $("#" + ui.draggable.prop('id')) ) ;
                   $("#" + ui.draggable.prop('id')).css("top", "0%");
                   $("#" + ui.draggable.prop('id')).css("left", "0%");
@@ -126,6 +126,7 @@
 
                 activeClass: "active-video-spot",
                 drop: function( event, ui ) {
+                  take_spot(1, $("#" + ui.draggable.prop('id')));
                   $("#video-spot-2").append( $("#" + ui.draggable.prop('id')) );
                   $("#" + ui.draggable.prop('id')).css("top", "0%");
                   $("#" + ui.draggable.prop('id')).css("left", "0%");
@@ -138,7 +139,7 @@
 
                 activeClass: "active-video-spot",
                 drop: function( event, ui ) {
-
+                  take_spot(2, $("#" + ui.draggable.prop('id')));
                   $("#video-spot-3").append( $("#" + ui.draggable.prop('id')));
                   $("#" + ui.draggable.prop('id')).css("top", "0%");
                   $("#" + ui.draggable.prop('id')).css("left", "0%");
@@ -151,7 +152,7 @@
 
                 activeClass: "active-video-spot",
                 drop: function( event, ui ) {
-
+                  take_spot(3, $("#" + ui.draggable.prop('id')));
                   $("#video-spot-4").append( $("#" + ui.draggable.prop('id')));
                   $("#" + ui.draggable.prop('id')).css("top", "0%");
                   $("#" + ui.draggable.prop('id')).css("left", "0%");
@@ -164,7 +165,7 @@
 
                 activeClass: "active-video-spot",
                 drop: function( event, ui ) {
-
+                  take_spot(4, $("#" + ui.draggable.prop('id')));
                   $("#video-spot-5").append( $("#" + ui.draggable.prop('id')));
                   $("#" + ui.draggable.prop('id')).css("top", "0%");
                   $("#" + ui.draggable.prop('id')).css("left", "0%");

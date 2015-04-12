@@ -15,7 +15,37 @@
 
     function minimize(){
 
-      $("#js-chat-body").toggle();
+      $("#js-chat-body").slideToggle();
+    }
+
+    function take_spot(spot_num, video, spot_to_take){
+
+      id = video.attr('id'); 
+      for(i = 0; i < 6; i++){
+        if(video_spots[i] == id){ //if video was already in list, remove it
+            video_spots[i] = 0;
+          }
+        }
+
+        video_spots[spot_num] = id;
+        //alert(video_spots);
+    }
+    function get_free_spot(){
+      if(video_spots[0] == 0){
+        return "video-spot-1";
+      }
+      if(video_spots[1] == 0){
+        return "video-spot-2";
+      }
+      if(video_spots[2] == 0){
+        return "video-spot-3";
+      }
+      if(video_spots[3] == 0){
+        return "video-spot-4";
+      }
+      if(video_spots[4] == 0){
+        return "video-spot-5";
+      }
     }
    </script>
 
