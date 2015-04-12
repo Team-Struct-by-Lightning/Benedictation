@@ -42,10 +42,9 @@
                     <div class='panel-body' id='js-chat-body'></div>
                   </div>
                   <div class='input-group' id="chat-location">
-                    <input class='form-control' id='js-input-im'>
+                    <input class='form-control' id='js-input-im' placeholder="Send a message">
                     <span class='input-group-btn'>
                       <button class='btn btn-primary' id='js-send-button-im'>
-                      Send
                       </button>
                     </span>
                   </div>
@@ -84,7 +83,7 @@
 
         <script>
           var video_spots = [0,0,0,0,0,0];
-          
+
           $(function() {
 
             $( "#localVideo" ).draggable({
