@@ -104,8 +104,9 @@
            $('div, #chatty').each(function(i, value) {
             height += parseInt($(this).height());
            });
-
-           $('div, #chatty').animate({scrollTop: height}, 'fast');
+           //var d = $('#chat-box');
+           //d.scrollTop(d.prop("scrollHeight"));
+           $('#js-chat-body').animate({scrollTop: height}, 'fast');
 
     });
   }
