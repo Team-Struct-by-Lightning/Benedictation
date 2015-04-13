@@ -17,6 +17,57 @@
   border: 2px dashed black;
 }
 
+#benedict-query-header {
+  background-color: #333333;
+  color: #CCCCCC;
+  border-radius: 3px;
+  width: 278px;
+  height: 31px;
+  padding: 5px;
+  padding-left: 10px;
+  margin-bottom: 10px;
+}
+
+.benedict-query-header-text{
+  color: #CCCCCC;
+  text-decoration: none !important;
+}
+
+.benedict-query-header-text:hover {
+  color: #FFFFFF;
+  text-decoration: none !important;
+}
+
+.benedict-query-header-text:visited {
+  color: #CCCCCC;
+  text-decoration: none !important;
+}
+
+.chat-header{
+  color: #CCCCCC;
+  text-decoration: none !important;
+}
+
+.chat-header:hover {
+  color: #FFFFFF;
+  text-decoration: none !important;
+}
+
+.chat-header:visited {
+  color: #CCCCCC;
+  text-decoration: none !important;
+}
+
+
+.video-sidebar {
+  overflow-y: scroll;
+  max-height: 500px;
+}
+
+.small-vids {
+  background-color: #CCCCCC;
+}
+
 .dropped{
   background-color: black;
   width: 500px;
@@ -38,7 +89,7 @@
   border-color: #CCCCCC;
   color: #4D4D4D;
   height: 25px !important;
-  width: 101%;
+  width: 278px !important;
   border-radius: 3px;
   left: 1px;
 }
@@ -51,6 +102,9 @@
   border: 0px;
 }
 
+#chat-location{
+  padding-bottom: 20px;
+}
 
 #chat-send-button{
   color: #CCCCCC;
@@ -84,6 +138,10 @@
   border-color: #CCCCCC;
 }
 
+.room-layout-table {
+  background-color: #CCCCCC;
+}
+
 
 #chat-body > div.panel.panel-primary > div.panel-heading{
   padding-top: 5px;
@@ -106,14 +164,26 @@
   width: 75%;
   height: 75%;
 }
-#minimize{
+#minimize-chat{
   color: #CCCCCC;
   position: relative;
   left:75%;
 }
-#minimize:hover{
+#minimize-chat:hover{
   color: #FFFFFF
 }
+
+#minimize-query{
+  position: relative;
+  left: 45%;
+  top: 1px;
+  color: #CCCCCC;
+}
+
+#minimize-query:hover{
+  color: #FFFFFF;
+}
+
 #chat-body > div.panel.panel-primary > div.panel-heading{
   background-color: $gray-dark;
   border-color: $gray-dark;
@@ -134,25 +204,60 @@
 
 /* Benedict List*/
 #benedict-list{
-  padding-top: 10px;
-  width: 100%;
+  width: 278px;
 }
-#benny-item{
+
+.benny-list-body {
+  width: 278px;
+  overflow-y: scroll;
+  max-height: 200px;
+  position: relative;
+  top: -9px;
+  background: #CCCCCC;
+  color: #CCCCCC;
+}
+
+
+.benny-item{
   width: 100%;
-  height: 100%;
+  height: 60px;
+  padding: 10px;
+  color: #CCCCCC;
   border-style: solid;
   border-width: 4px;
   overflow: hidden;
+  background-color: #8F8F8F;
+  border-radius: 10px;
+  word-wrap: break-word;
+  margin-top: 2px;
+}
+
+.benny-item a {
+  color: #CCCCCC
+}
+
+.benny-item:hover a{
+  color: #FFFFFF;
+}
+
+.benny-item:visited a{
+  color: #CCCCCC;
 }
 
 .benny-query {
   float: right;
   width: 89%;
+  position: relative;
+  left: 10px;
+  top: 6px;
 }
 
 .favicon{
   width:11%;
   float: left;
+  position: relative;
+  top: 3px;
+  left: 3px;
 }
 
 .chat-user-name {

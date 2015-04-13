@@ -13,9 +13,9 @@
     $( this ).find( "span:last" ).remove();
     });
 
-    function minimize(){
+    function minimize(string){
 
-      $("#js-chat-body").slideToggle();
+      $(string).slideToggle();
     }
 
     function take_spot(spot_num, video, spot_to_take){
