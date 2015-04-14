@@ -62,8 +62,10 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
 
                 print "wrote to file"
                 text = self.recognizer.recognize(outfilename).lower()
-                if "schedule" in text:
-                    text = '{"attendees": [{"email": "trevor.frese@gmail.com"},{"email": "britt.k.christy@gmail.com"},{"email": "jtmurphy@gmail.com"}],"api_type": "calendar","start": {"datetime": "2015-04-08T10:00:00","timezone": "America/Los_Angeles"},"end": {"datetime": "2015-04-08T11:00:00","timezone": "America/Los_Angeles"},"location": "House de Gus","summary": "Epic Circle Jerk"}'
+                
+                if schedule_meeting(text):
+                    print 'adding to gcal'
+                    text = '{"attendees": [{"email": "trevor.frese@gmail.com"},{"email": "britt.k.christy@gmail.com"},{"email": "jtmurphy@gmail.com"}],"api_type": "calendar","start": {"datetime": "2015-04-13T10:00:00","timezone": "America/Los_Angeles"},"end": {"datetime": "2015-04-15T11:00:00","timezone": "America/Los_Angeles"},"location": "House de Gus","summary": "Epic Circle Jerk"}'
                 if "search" in text:
                     text = '{"api_type": "wikipedia", "query": "peanut butter"}'
                 if "wolfram" in text:
@@ -91,13 +93,14 @@ if __name__ == "__main__":
     # and parse the JSON output
 
     data = loads(urlopen("http://httpbin.org/ip").read())
-    if "local" not in str(socket.gethostname()):
+    '''if "local" or "ubuntu" not in str(socket.gethostname()):
+
         benny_ssl_options = {
             "certfile": os.path.join("/etc/nginx/ssl/benedictation_io/ssl-bundle.crt"),
             "keyfile": os.path.join("/etc/nginx/ssl/benedictation_io/benedictation-private-key-file.pem")
         }
         http_server = tornado.httpserver.HTTPServer(application,xheaders=True,ssl_options=benny_ssl_options)
-    else:
-	http_server = tornado.httpserver.HTTPServer(application)
+    else:'''
+    http_server = tornado.httpserver.HTTPServer(application)
     http_server.listen(8888)
     tornado.ioloop.IOLoop.instance().start()
