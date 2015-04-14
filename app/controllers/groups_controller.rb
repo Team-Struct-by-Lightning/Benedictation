@@ -54,4 +54,8 @@ class GroupsController < ApplicationController
       params.permit(:group_name)
     end
 
+    def set_current_group_params
+      params.permit(:group_id)
+    end
+
 end
