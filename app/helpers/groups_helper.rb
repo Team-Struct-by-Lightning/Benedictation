@@ -1,25 +1,6 @@
 module GroupsHelper
 
 
-
-  def get_chat_history
-      # returns chat history string from redis as array of strings
-      $redis.lrange(redis_chat_history_key,0,-1)
-  end
-
-  def clear_chat_history
-    $redis.del([redis_chat_history_key])
-  end
-
-  def updateChatHistory(message)
-    #append to end of chat history (key = groupname:groupid:chathistory)
-    $redis.rpush(redis_chat_history_key, message)
-  end
-
-  def redis_chat_history_key
-    "#{@group[:group_name]}:#{@group[:id]}}:chathistory"
-  end
-
   def set_current_group
     @group = Group.find(params[:id])
   end

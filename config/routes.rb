@@ -15,6 +15,9 @@ Rails.application.routes.draw do
   post 'chat', :to => "groups#popupadduser"
   post 'groups', :to => "groups#create"
   post '/check_api' => "rooms#api_help"
+  post '/updateChatHistory' => "groups#updateChatHistory"
+  get '/get_chat_history' => "groups#get_chat_history"
+  get '/clear_chat_history' => "groups#clear_chat_history"
   resources :sessions, only: [:create, :destroy]
   resource :home, only: [:show]
   resources :relationships,       only: [:create, :destroy]

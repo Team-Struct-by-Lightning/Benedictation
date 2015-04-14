@@ -2,6 +2,28 @@ class GroupsController < ApplicationController
 
   include GroupsHelper
 
+  skip_before_filter  :verify_authenticity_token
+
+  def updateChatHistory
+    #append to end of chat history (key = groupname:groupid:chathistory)
+    puts params[:redis_key].to_s + ":" + params[:message].to_s
+    $redis.rpush(params[:redis_key], params[:message])  
+    render nothing: true
+  end
+
+  def get_chat_history
+      # returns chat history string from redis as array of strings
+      chat_history = $redis.lrange(params[:redis_key],0,-1)
+      # chat_history.each{|message| puts "message=#{message}" }
+      # render nothing: true
+      render :json => chat_history
+  end
+
+  def clear_chat_history
+    $redis.del(params[:redis_key])
+    render nothing: true
+  end
+
 	def show
     @group = Group.find(params[:id])
   end
@@ -23,7 +45,6 @@ class GroupsController < ApplicationController
       new_group
     end
   end
-
 
   def popupadduser
     if current_user.nil?
