@@ -6,6 +6,9 @@ module SessionsHelper
 
 	def log_in(user)
     	session[:user_id] = user.id
+      user_update = User.find_by_id(user.id)
+      user_update.logged_in = 1
+      user_update.save
   end
 
   def create_state
@@ -14,8 +17,11 @@ module SessionsHelper
   end
 
   def log_out
-		session.delete(:user_id)
-		@current_user = nil
+    user_update = User.find_by_id(@current_user.id)
+    user_update.logged_in = 0
+    user_update.save
+    session.delete(:user_id)
+    @current_user = nil
 	end
 
 	def current_user?(user)
