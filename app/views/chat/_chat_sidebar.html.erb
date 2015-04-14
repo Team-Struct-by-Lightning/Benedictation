@@ -3,7 +3,7 @@
    <ul class="sidebar-nav sidebar-title">
       <li class="sidebar-brand" id="first-group-row"><a id="menu-toggle" href="#">Groups<span id="main_icon" class="glyphicon glyphicon-align-justify" value="0"></span></a></li>
    </ul>
-   <ul class="sidebar-nav group-sidebar-list">
+   <ul class="sidebar-nav group-sidebar-list" id="group-sidebar-list">
        <% Relationship.where(user_id: current_user.id).pluck(:id).each do |relationship_id| %>
       <li class="dropdown-toggle" id="group-row" data-toggle="dropdown" unique=<%= relationship_id %> value="0" >
          <% group = Relationship.find_by(id: relationship_id).group %>
@@ -21,7 +21,7 @@
          <% end %>
          <a class="popup-with-form glyphicon glyphicon-plus" id="add-user" href=<%= '#add-user' + group_id.to_s %> aria-hidden="true">
          </a>
-         <a class="glyphicon glyphicon-step-forward" id="go-to-room" href=<%= group_name_url_string %> aria-hidden="true">
+         <a class="glyphicon glyphicon-facetime-video" id="go-to-room" href=<%= group_name_url_string %> aria-hidden="true">
          </a>
          <% end %>
          <div id=<%= 'add-user' + group_id.to_s %> class="white-popup-block mfp-hide">
@@ -44,7 +44,7 @@
       </li>
       <% end %>
    </ul>
-   <ul class="sidebar-nav create-group-list">
+   <ul class="sidebar-nav create-group-list" id="create-group-list">
       <li>
          <a class="popup-with-form" id="create-group-button" href="#create-group" >[ create new group + ]</a>
       </li>
