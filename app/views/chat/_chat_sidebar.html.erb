@@ -1,9 +1,9 @@
         <!-- Sidebar -->
         <div id="sidebar-wrapper">
             <ul class="sidebar-nav">
-               <li class="sidebar-brand"><a id="menu-toggle" href="#">Groups<span id="main_icon" class="glyphicon glyphicon-align-justify" value="0"></span></a></li>
+               <li class="sidebar-brand" id="first-group-row"><a id="menu-toggle" href="#">Groups<span id="main_icon" class="glyphicon glyphicon-align-justify" value="0"></span></a></li>
                 <% Relationship.where(user_id: current_user.id).pluck(:id).each do |relationship_id| %>
-                    <li class="dropdown-toggle" data-toggle="dropdown" unique=<%= relationship_id %> value="0" >
+                    <li class="dropdown-toggle" id="group-row" data-toggle="dropdown" unique=<%= relationship_id %> value="0" >
                         <% group = Relationship.find_by(id: relationship_id).group %>
                         <% group_id = group.id %>
                         <% group_name = group.group_name %>
@@ -13,37 +13,23 @@
                                          html: { method: :delete }) do |f| %>
 
 
-
-                            <tr>
-                                <th colspan = "4" >
-
-                                    <abbr title="Delete User"><span class="glyph-remove">
-                                        <a class="popup-with-form glyphicon glyphicon-remove" href=<%= '#delete-user' + relationship_id.to_s %> aria-hidden="true">
+                                        <a class="popup-with-form glyphicon glyphicon-remove" id="delete-group" href=<%= '#delete-user' + relationship_id.to_s %> aria-hidden="true">
 
                                         </a>
-                                    </span></abbr>
 
-                                    <span class="glyph-name">
-                                        <% if group_name_url_string.length < 8 %>
-                                        <a class="menu-group" id=<%= "menu-group" + group_id.to_s%>><%= "#" + group_name%></a>
-                                        <% else %>
-                                        <a class="menu-group" id=<%= "menu-group" + group_id.to_s%>><%= "#" + truncate(group_name, length: 9 )%></a>
-                                        <% end %>
-                                    </span>
+                                    <% if group_name_url_string.length < 8 %>
+                                    <a class="menu-group" id=<%= "menu-group" + group_id.to_s%>><%= "#" + group_name%></a>
+                                    <% else %>
+                                    <a class="menu-group group-name" id=<%= "menu-group" + group_id.to_s%>><%= "#" + truncate(group_name, length: 9 )%></a>
+                                    <% end %>
 
-                                     <abbr title="Add User"><span class="glyph-plus">
-                                        <a class="popup-with-form glyphicon glyphicon-plus" href=<%= '#add-user' + group_id.to_s %> aria-hidden="true">
+
+                                        <a class="popup-with-form glyphicon glyphicon-plus" id="add-user" href=<%= '#add-user' + group_id.to_s %> aria-hidden="true">
                                         </a>
 
-                                    </span></abbr>
-                                     <abbr title="Go to Chat Room"><span class="glyph-step-forward">
-                                        <a class="glyphicon glyphicon-step-forward" href=<%= group_name_url_string %> aria-hidden="true">
+                                        <a class="glyphicon glyphicon-step-forward" id="go-to-room" href=<%= group_name_url_string %> aria-hidden="true">
                                         </a>
-                                    </span></abbr>
 
-
-                                </th>
-                            </tr>
 
                             <% end %>
 

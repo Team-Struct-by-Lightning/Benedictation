@@ -10,3 +10,44 @@
 .circle-jerk {
   height:12px;
 }
+
+#delete-group {
+	position: relative;
+  width: 40px;
+  left: 0px;
+  top: 14px;
+}
+
+.group-name {
+	position: relative;
+  margin: 0px;
+  top: -13px;
+  left: 10px;
+  width: 140px;
+}
+
+#add-user {
+	position: relative;
+  top: -41px;
+  left: 160px;
+  width: 40px;
+}
+
+#go-to-room {
+	position: relative;
+  top: -55px;
+  left: 195px;
+  width: 40px;
+}
+
+#group-row {
+	height: 40px;
+}
+
+#first-group-row {
+	height: 50px;
+}
+
+.edit_relationship {
+	height: 40px;
+}
