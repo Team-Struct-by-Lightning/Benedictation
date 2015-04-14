@@ -1,75 +1,63 @@
-        <!-- Sidebar -->
-        <div id="sidebar-wrapper">
-            <ul class="sidebar-nav">
-               <li class="sidebar-brand" id="first-group-row"><a id="menu-toggle" href="#">Groups<span id="main_icon" class="glyphicon glyphicon-align-justify" value="0"></span></a></li>
-                <% Relationship.where(user_id: current_user.id).pluck(:id).each do |relationship_id| %>
-                    <li class="dropdown-toggle" id="group-row" data-toggle="dropdown" unique=<%= relationship_id %> value="0" >
-                        <% group = Relationship.find_by(id: relationship_id).group %>
-                        <% group_id = group.id %>
-                        <% group_name = group.group_name %>
-                        <% group_name_url_string = "/room/" + "#{group_id}" + "/" + group_name %>
-
-                           <%= form_for(current_user.active_relationships.find_by(id: relationship_id),
-                                         html: { method: :delete }) do |f| %>
-
-
-                                        <a class="popup-with-form glyphicon glyphicon-remove" id="delete-group" href=<%= '#delete-user' + relationship_id.to_s %> aria-hidden="true">
-
-                                        </a>
-
-                                    <% if group_name_url_string.length < 8 %>
-                                    <a class="menu-group" id=<%= "menu-group" + group_id.to_s%>><%= "#" + group_name%></a>
-                                    <% else %>
-                                    <a class="menu-group group-name" id=<%= "menu-group" + group_id.to_s%>><%= "#" + truncate(group_name, length: 9 )%></a>
-                                    <% end %>
-
-
-                                        <a class="popup-with-form glyphicon glyphicon-plus" id="add-user" href=<%= '#add-user' + group_id.to_s %> aria-hidden="true">
-                                        </a>
-
-                                        <a class="glyphicon glyphicon-step-forward" id="go-to-room" href=<%= group_name_url_string %> aria-hidden="true">
-                                        </a>
-
-
-                            <% end %>
-
-                             <div id=<%= 'add-user' + group_id.to_s %> class="white-popup-block mfp-hide">
-
-                                <h1>Add a user to the group:  <%= group_name %></h1>
-                                <%= form_tag(controller: "groups", action: "popupadduser", method: "post") do |f| %>
-                                  <%= label_tag "New Member Email:" %>
-                                  <%= text_field_tag :newmemberemail, params[:newmemberemail] %>
-                                  <%= hidden_field_tag :groupid, group_id%>
-                                  <%= submit_tag "Add new user to group", class: "btn btn-primary" %>
-                                <% end %>
-                            </div>
-
-                            <div id=<%= 'delete-user' + relationship_id.to_s %> class="white-popup-block mfp-hide">
-
-                                <h1> Are you sure you want to leave the group <%= group_name %> ?</h1>
-                                <br>
-                                  <%= form_for(current_user.active_relationships.find_by(id: relationship_id),
-                                         html: { method: :delete }) do |f| %>
-                                  <%= f.submit "Leave group" , class: "btn btn-primary" %>
-                                <% end %>
-                            </div>
-
-                    </li>
-                <% end %>
-                <li>
-
-                   <a class="popup-with-form" id="create-group-button" href="#create-group" >[ create new group + ]</a>
-                </li>
-                <div id="create-group" class="white-popup-block mfp-hide">
-                    <h1>Create a Group!</h1>
-                        <%= form_tag(controller: "groups", action: "create", method: "post") do |f| %>
-                          <%= label_tag  "Group Name" %>
-                          <%= text_field_tag :group_name, params[:group_name.downcase] %>
-                          <%= submit_tag "Create new group", class: "btn btn-primary" %>
-                        <% end %>
-                </div>
-            </ul>
-        </div>
+<!-- Sidebar -->
+<div id="sidebar-wrapper">
+   <ul class="sidebar-nav sidebar-title">
+      <li class="sidebar-brand" id="first-group-row"><a id="menu-toggle" href="#">Groups<span id="main_icon" class="glyphicon glyphicon-align-justify" value="0"></span></a></li>
+   </ul>
+   <ul class="sidebar-nav group-sidebar-list">
+       <% Relationship.where(user_id: current_user.id).pluck(:id).each do |relationship_id| %>
+      <li class="dropdown-toggle" id="group-row" data-toggle="dropdown" unique=<%= relationship_id %> value="0" >
+         <% group = Relationship.find_by(id: relationship_id).group %>
+         <% group_id = group.id %>
+         <% group_name = group.group_name %>
+         <% group_name_url_string = "/room/" + "#{group_id}" + "/" + group_name %>
+         <%= form_for(current_user.active_relationships.find_by(id: relationship_id),
+            html: { method: :delete }) do |f| %>
+         <a class="popup-with-form glyphicon glyphicon-remove" id="delete-group" href=<%= '#delete-user' + relationship_id.to_s %> aria-hidden="true">
+         </a>
+         <% if group_name_url_string.length < 8 %>
+         <a class="menu-group" id=<%= "menu-group" + group_id.to_s%>><%= "#" + group_name%></a>
+         <% else %>
+         <a class="menu-group group-name" id=<%= "menu-group" + group_id.to_s%>><%= "#" + truncate(group_name, length: 9 )%></a>
+         <% end %>
+         <a class="popup-with-form glyphicon glyphicon-plus" id="add-user" href=<%= '#add-user' + group_id.to_s %> aria-hidden="true">
+         </a>
+         <a class="glyphicon glyphicon-step-forward" id="go-to-room" href=<%= group_name_url_string %> aria-hidden="true">
+         </a>
+         <% end %>
+         <div id=<%= 'add-user' + group_id.to_s %> class="white-popup-block mfp-hide">
+            <h1>Add a user to the group:  <%= group_name %></h1>
+            <%= form_tag(controller: "groups", action: "popupadduser", method: "post") do |f| %>
+            <%= label_tag "New Member Email:" %>
+            <%= text_field_tag :newmemberemail, params[:newmemberemail] %>
+            <%= hidden_field_tag :groupid, group_id%>
+            <%= submit_tag "Add new user to group", class: "btn btn-primary" %>
+            <% end %>
+         </div>
+         <div id=<%= 'delete-user' + relationship_id.to_s %> class="white-popup-block mfp-hide">
+            <h1> Are you sure you want to leave the group <%= group_name %> ?</h1>
+            <br>
+            <%= form_for(current_user.active_relationships.find_by(id: relationship_id),
+               html: { method: :delete }) do |f| %>
+            <%= f.submit "Leave group" , class: "btn btn-primary" %>
+            <% end %>
+         </div>
+      </li>
+      <% end %>
+   </ul>
+   <ul class="sidebar-nav create-group-list">
+      <li>
+         <a class="popup-with-form" id="create-group-button" href="#create-group" >[ create new group + ]</a>
+      </li>
+   </ul>
+   <div id="create-group" class="white-popup-block mfp-hide">
+      <h1>Create a Group!</h1>
+      <%= form_tag(controller: "groups", action: "create", method: "post") do |f| %>
+      <%= label_tag  "Group Name" %>
+      <%= text_field_tag :group_name, params[:group_name.downcase] %>
+      <%= submit_tag "Create new group", class: "btn btn-primary" %>
+      <% end %>
+   </div>
+</div>
         <!-- /#sidebar-wrapper -->
 
 
