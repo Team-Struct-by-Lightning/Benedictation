@@ -41,7 +41,7 @@ nltk_test.pyc
 #environment variables
 *.env
 
-#because the database.yml is user idependent we add it here
+#our secrets
 /config/database.yml
 /config/secrets.yml
 /config/google.yml

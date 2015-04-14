@@ -11,7 +11,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150222195807) do
+ActiveRecord::Schema.define(version: 20150401065329) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
 
   create_table "groups", force: :cascade do |t|
     t.string   "group_name"
@@ -27,9 +30,9 @@ ActiveRecord::Schema.define(version: 20150222195807) do
     t.datetime "updated_at", null: false
   end
 
-  add_index "relationships", ["group_id"], name: "index_relationships_on_group_id"
-  add_index "relationships", ["user_id", "group_id"], name: "index_relationships_on_user_id_and_group_id", unique: true
-  add_index "relationships", ["user_id"], name: "index_relationships_on_user_id"
+  add_index "relationships", ["group_id"], name: "index_relationships_on_group_id", using: :btree
+  add_index "relationships", ["user_id", "group_id"], name: "index_relationships_on_user_id_and_group_id", unique: true, using: :btree
+  add_index "relationships", ["user_id"], name: "index_relationships_on_user_id", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "provider"
@@ -41,6 +44,7 @@ ActiveRecord::Schema.define(version: 20150222195807) do
     t.datetime "updated_at",       null: false
     t.string   "email"
     t.string   "refresh_token"
+    t.integer  "logged_in"
   end
 
 end
