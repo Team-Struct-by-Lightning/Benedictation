@@ -17,6 +17,26 @@ html {
 }
 
 
+#chatroom-header-text {
+  position: relative;
+  top: -24px;
+  left: 20px;
+}
+
+#log-out-header-text {
+  position: relative;
+  top: -24px;
+  left: 20px;
+}
+
+#home-header-text {
+  position: relative;
+  top: -24px;
+  left: 20px;
+}
+
+
+
 #header-nav-bar {
   height: 50px !important;
 }
@@ -62,7 +82,7 @@ html {
 #user-icon {
   position: fixed;
   word-spacing: -10px;
-  left: 652px;
+  left: 640px;
   padding: 0px;
   top: 13px;
   white-space: nowrap;
