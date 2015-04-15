@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem 'redis', '~> 3.2.1'
 gem 'passenger',          '~> 4.0.59'
 gem 'rails',                '4.2.0'
 gem 'bootstrap-sass',       '3.2.0.0'
@@ -13,7 +14,7 @@ gem 'rest-client',          '~> 1.7.3'
 gem 'google-api-client', :require => 'google/api_client'
 gem 'omniauth'
 gem "omniauth-google-oauth2", "~> 0.2.1"
-gem 'magnific-popup-rails'
+gem 'magnific-popup-rails', '~> 0.9.9.1'
 gem 'pg',                   '0.17.1'
 gem 'sdoc',                 '0.4.0', group: :doc
 gem 'wikipedia-client'
