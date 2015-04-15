@@ -1,9 +1,33 @@
 <script>
+    var toggled = 0;
     $("#menu-toggle").click(function(e) {
+        toggled = (toggled + 1) % 2;
         e.preventDefault();
         $("#wrapper").toggleClass("active");
+        if (toggled == 1) {
+            $('.fixed-header-div').animate({
+                left: "-=200px",
+                width: "+=200px"
+            }, 380 , function() {});
+        }
+        else {
+            $('.fixed-header-div').animate({
+                left: "+=200px",
+                width: "-=200px"
+            }, 380 , function() {});
+        }
     });
 
+    window.onresize = function() {
+        var w = $('#header-nav-bar').width();
+        var p = $('#header-nav-bar').position();
+        if (toggled) {
+            $('.chat-div-header').css('width', "1000%");
+        }
+        else{
+            $('.chat-div-header').css('width', "800%");
+        }
+    }
 
      $("").hover(
         function() {

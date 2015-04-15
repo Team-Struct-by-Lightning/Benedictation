@@ -17,13 +17,23 @@
                         <% group = Relationship.find_by(id: relationship_id).group %>
                         <% group_id = group.id %>
                         <% group_name = group.group_name %>
+                        <% delete_href = '#delete-user' + relationship_id.to_s %>
+                        <% group_name_url_string = "/room/" + "#{group_id}" + "/" + group_name %>
                         <div class='center-div-group' id=<%="center-div" + group_id.to_s %> >
-                            <h1><%= group_name %></h1>
-
-                            <div>
-                            <h3>Users in this group:</h3>
+                            <div class="chat-div-header">
+                                <div class="fixed-header-div">
+                                <%= image_tag("glyphicons-44-group.png", id: "group-image") %>
+                                <a id="group-name-in-chat-header"> <%= '#' + group_name %></a>
+                                <%= link_to "<a class='glyphicon glyphicon-facetime-video' id='go-to-room-in-chat-header' href=#{group_name_url_string}> <p id='go-to-room-text'>Go to chat room</p></a>".html_safe %>
+                                <%= link_to "<a class='glyphicon glyphicon-remove' id='leave-group-chat-header' href=#{delete_href}> <p id='leave-group-text'>Leave group</p></a>".html_safe %>
+                            </div>
+                            </div>
+                            <div "users-online-list-border">
+                            <div id="users-online-list">
+                            <a id="members-online">Members online:</a>
                             <% Relationship.where(group_id: group_id).pluck(:user_id).each do |uid| %>
                                     <div>
+
                                         <span>
                                             <% if user_logged_in(uid) %>
                                                 <%= image_tag("green_circle.png", :class => "circle-jerk") %>
@@ -35,6 +45,7 @@
                                     </div>
                             <% end %>
                             </div>
+                        </div>
 
                         </div>
                         <% end %>

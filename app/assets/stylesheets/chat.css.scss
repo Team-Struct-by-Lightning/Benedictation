@@ -7,10 +7,121 @@
   box-sizing:         border-box;
 }
 
+
+.fixed-header-div {
+	position: fixed;
+  width: 800px;
+  left: 250px;
+  height: 50px;
+  top: 50px;
+}
+
+#users-online-list {
+  background-color: #CCCCCC;
+  padding: 0px;
+  margin: 5%;
+  width: 90%;
+  height: 94%;
+  top: 3%;
+  border-radius: 5px;
+}
+
+#users-online-list-border {
+	position: relative;
+  background-color: #777777;
+  left: 550px;
+  width: 180px;
+  height: 300px;
+  border-radius: 5px;
+}
+
+#members-online {
+	text-decoration: none !important;
+	color: #000000;
+}
+
+#members-online:hover {
+	text-decoration: none !important;
+	color: #000000;
+}
+
+#members-online:visited {
+	text-decoration: none !important;
+	color: #000000;
+}
+
+
 .circle-jerk {
   height:12px;
 }
 
+.chat-div-header {
+  background-color: #777777;
+  position: fixed;
+  top: 50px !important;
+  height: 50px !important;
+  width: 200%;
+  left: -47%;
+}
+
+#group-name-in-chat-header{
+	position: relative;
+  left: 5%;
+  top: -4px;
+  font-size: large;
+  color: #000000;
+  text-decoration: none !important;
+}
+
+#go-to-room-in-chat-header {
+	position: relative;
+  left: 35%;
+  font-size: smal;
+  top: 16px;
+  text-decoration: none !important;
+  height: 20px !important;
+  color: #000000;
+}
+
+
+#go-to-room-in-chat-header:hover {
+	color: #CCCCCC;
+}
+
+#leave-group-chat-header {
+	position: relative;
+  left: 39%;
+  top: 14px;
+  font-size: small;
+  text-decoration: none !important;
+  height: 20px !important;
+	color: #000000;
+}
+
+#leave-group-chat-header:hover {
+	color: #CCCCCC;
+}
+
+#leave-group-text {
+	position: relative;
+  top: -20px;
+  left: 20px;
+  word-spacing: -12px;
+}
+
+#go-to-room-text {
+	position: relative;
+  top: -22px;
+  left: 20px;
+  word-spacing: -12px;
+}
+
+#group-image {
+	position: relative;
+  left: 3%;
+  height: 30%;
+  top: -7px;
+}
 
 .glyphicon-align-justify:hover {
     color: $gray-lighter;

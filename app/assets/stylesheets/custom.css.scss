@@ -7,27 +7,61 @@
   box-sizing:         border-box;
 }
 
-#home-icon {
+html {
+  min-width: 1050px;
+  overflow-x: scroll;
+}
+
+
+#header-nav-bar {
+  height: 50px !important;
+}
+
+
+#home-path-glyph {
   position: relative;
-  left: 0px;
-  top: -17px;
+  left: -12px;
+  top: 8px;
+}
+
+#chat-path-glyph {
+  position: relative;
+  left: -40px;
+  top: 8px;
+}
+
+#sign-out {
+  position: relative;
+  left: 10px;
+  top: 8px;
+}
+
+
+#home-icon {
+  position: fixed;
+  left: 875px;
+  top: 13px;
   padding: 0;
   word-spacing: -10px;
+  white-space: nowrap;
 }
 
 #log-out-icon {
-  position: relative;
-  left: 10px;
-  top: -17px;
+  position: fixed;
+  left: 950px;
+  top: 13px;
   padding: 0px;
-  word-spacing: -10px
+  word-spacing: -10px;
+  white-space: nowrap;
 }
 
 #user-icon {
+  position: fixed;
   word-spacing: -10px;
-  left: -8px;
+  left: 652px;
   padding: 0px;
-  top: -17px;
+  top: 13px;
+  white-space: nowrap;
 }
 
 
@@ -180,6 +214,8 @@ p {
 }
 
 #logo {
+  position: fixed;
+  left: 113px;
   float: left;
   margin-right: 10px;
   font-size: 1.7em;
@@ -194,6 +230,8 @@ p {
   }
 }
 #red_logo {
+  position: fixed;
+  left: 51px;
   float: left;
   font-size: 1.7em;
   color: #fff;

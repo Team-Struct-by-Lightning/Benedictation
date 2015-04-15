@@ -4,9 +4,9 @@
     <nav>
       <ul class="nav navbar-nav navbar-right">
         <% if current_user %>
-        	<li><%= link_to "<a class='glyphicon glyphicon-user' id='user-icon'> #{current_user.name}\'s Chatrooms</a>".html_safe, chat_path %></li>
-        	<li><%= link_to '<a class="glyphicon glyphicon-home" id="home-icon"> Home</a>'.html_safe, root_path %></li>
-          <li><%= link_to '<a class="glyphicon glyphicon-log-out" id="log-out-icon"> Log out</a>'.html_safe, signout_path, id: "sign_out" %></li>
+        	<li><%= link_to "<a class='glyphicon glyphicon-user' id='user-icon' href='/chat'> #{current_user.name}\'s Chatrooms</a>".html_safe, id: "chat-path-glyph" %></li>
+        	<li><%= link_to '<a class="glyphicon glyphicon-home" id="home-icon" href="/"> Home</a>'.html_safe, id: "home-path-glyph" %></li>
+          <li><%= link_to '<a class="glyphicon glyphicon-log-out" id="log-out-icon" href="/signout"> Log out</a>'.html_safe, id: "sign_out" %></li>
       	<% else %>
       		<li><%= link_to "Home",   root_path %></li>
         	<li><%= link_to "Log in", "/auth/google_oauth2", id: "sign_in" %></li>
