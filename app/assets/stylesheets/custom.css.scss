@@ -7,9 +7,28 @@
   box-sizing:         border-box;
 }
 
+#home-path-glyph {
+  position: relative;
+  left: -12px;
+  top: 8px;
+}
+
+#chat-path-glyph {
+  position: relative;
+  left: -40px;
+  top: 8px;
+}
+
+#sign-out {
+  position: relative;
+  left: 10px;
+  top: 8px;
+}
+
+
 #home-icon {
   position: relative;
-  left: 0px;
+  left: -13px;
   top: -17px;
   padding: 0;
   word-spacing: -10px;
@@ -25,7 +44,7 @@
 
 #user-icon {
   word-spacing: -10px;
-  left: -8px;
+  left: -40px;
   padding: 0px;
   top: -17px;
 }

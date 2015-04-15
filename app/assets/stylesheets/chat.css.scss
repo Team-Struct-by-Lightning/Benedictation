@@ -11,6 +11,51 @@
   height:12px;
 }
 
+.chat-div-header {
+  background-color: #777777;
+  position: relative;
+  top: -70px;
+  height: 50px;
+  width: 200%;
+  left: -200px;
+}
+
+#group-name-in-chat-header{
+	position: relative;
+  left: 200px;
+  top: -12px;
+  font-size: large;
+  color: #000000;
+  text-decoration: none !important;
+}
+
+#go-to-room-in-chat-header {
+	position: relative;
+  left: 250px;
+  font-size: large;
+  top: 16px;
+  text-decoration: none !important;
+  height: 20px !important;
+  color: #000000;
+}
+
+#go-to-room-in-chat-header:hover {
+	color: #CCCCCC;
+}
+
+#go-to-room-text {
+	position: relative;
+  top: -28px;
+  left: 30px;
+  word-spacing: -12px;
+}
+
+#group-image {
+	position: relative;
+  left: 193px;
+  height: 30%;
+  top: -16px;
+}
 
 .glyphicon-align-justify:hover {
     color: $gray-lighter;
