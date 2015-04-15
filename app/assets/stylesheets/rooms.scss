@@ -3,6 +3,7 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 @import "bootstrap-sprockets";
 @import "bootstrap";
+
 .room-layout-table {
   position: fixed;
   left:160px;
@@ -10,6 +11,7 @@
 	width: auto;
   height:100%;
 }
+
 .active-spot{
 
   width: 500px;
@@ -175,6 +177,7 @@
   left:75%;
   top: 5px;
 }
+
 #minimize-chat:hover{
   color: #FFFFFF
 }
@@ -204,11 +207,13 @@
   background-color: $gray-dark;
   border-color: $gray-dark;
 }
+
 #chat-body > div.panel.panel-primary{
   border-color: $gray-dark;
 }
 
 /* Benedict List*/
+
 #benedict-list{
   width: 278px;
 }
@@ -222,7 +227,6 @@
   background: #CCCCCC;
   color: #CCCCCC;
 }
-
 
 .benny-item{
   width: 100%;
@@ -279,8 +283,6 @@
     text-decoration: none !important;
     color: #428bca !important;
 }
-
-
 
 #prof-pic {
   top: 2px;

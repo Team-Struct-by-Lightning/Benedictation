@@ -17,12 +17,13 @@
 }
 
 #users-online-list {
-  background-color: #CCCCCC;
-  padding: 0px;
-  margin: 5%;
-  width: 90%;
-  height: 94%;
-  top: 3%;
+  background-color: #777777;
+  position: fixed;
+  width: 160px;
+  left: 80%;
+  height: 300px;
+  top: 130px;
+  padding: 15px;
   border-radius: 5px;
 }
 
@@ -35,9 +36,52 @@
   border-radius: 5px;
 }
 
+#list-of-users-online {
+  position: relative;
+  top: 10px;
+  max-height: 200px;
+  overflow-y: scroll;
+}
+
+#add-user-text {
+  position: relative;
+  left: 19px;
+  top: -20px;
+}
+
+#add-user-in-member-box {
+  position: relative;
+  width: 180px;
+  left: -2px;
+  top: 215px;
+  color: #000000;
+  text-decoration: none;
+  word-spacing: -10px;
+  font-size: small;
+}
+
+#add-user-in-member-box:hover {
+  color: #CCCCCC;
+}
+
+.user-in-list {
+  font-size:smaller;
+  color: #000000;
+}
+
+#user-name-in-list {
+  color: #000000;
+  position: relative;
+  left: 5px;
+  font-size: small;
+}
+
+
 #members-online {
 	text-decoration: none !important;
 	color: #000000;
+  position: relative;
+  font-size: larger;
 }
 
 #members-online:hover {
@@ -53,6 +97,8 @@
 
 .circle-jerk {
   height:12px;
+  position: relative;
+  top: -2px;
 }
 
 .chat-div-header {
@@ -65,17 +111,17 @@
 }
 
 #group-name-in-chat-header{
-	position: relative;
-  left: 5%;
-  top: -4px;
+	position: absolute;
+  left: 8%;
+  top: 10px;
   font-size: large;
   color: #000000;
   text-decoration: none !important;
 }
 
 #go-to-room-in-chat-header {
-	position: relative;
-  left: 35%;
+	position: absolute;
+  left: 62%;
   font-size: smal;
   top: 16px;
   text-decoration: none !important;
@@ -89,9 +135,9 @@
 }
 
 #leave-group-chat-header {
-	position: relative;
-  left: 39%;
-  top: 14px;
+	position: absolute;
+  left: 80%;
+  top: 16px;
   font-size: small;
   text-decoration: none !important;
   height: 20px !important;
@@ -117,10 +163,10 @@
 }
 
 #group-image {
-	position: relative;
+	position: absolute;
   left: 3%;
   height: 30%;
-  top: -7px;
+  top: 15px;
 }
 
 .glyphicon-align-justify:hover {

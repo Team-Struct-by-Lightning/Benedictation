@@ -18,6 +18,7 @@
                         <% group_id = group.id %>
                         <% group_name = group.group_name %>
                         <% delete_href = '#delete-user' + relationship_id.to_s %>
+                        <% add_href = '#add-user' + group_id.to_s %>
                         <% group_name_url_string = "/room/" + "#{group_id}" + "/" + group_name %>
                         <div class='center-div-group' id=<%="center-div" + group_id.to_s %> >
                             <div class="chat-div-header">
@@ -32,16 +33,19 @@
                             <div id="users-online-list">
                             <a id="members-online">Members online:</a>
                             <% Relationship.where(group_id: group_id).pluck(:user_id).each do |uid| %>
-                                    <div>
+                                    <div id="list-of-users-online">
 
-                                        <span>
+                                        <span class="user-in-list">
                                             <% if user_logged_in(uid) %>
                                                 <%= image_tag("green_circle.png", :class => "circle-jerk") %>
                                             <% else %>
                                                 <%= image_tag("gray_circle.png", :class => "circle-jerk") %>
                                             <% end %>
                                         </span>
-                                        <span><%= User.find_by_id(uid).name %></span>
+                                        <span id="user-name-in-list"><%= User.find_by_id(uid).name %></span>
+                                    </div>
+                                    <div id="add-user-to-list">
+                                        <%= link_to "<a class='glyphicon glyphicon-plus' id='add-user-in-member-box' href=#{add_href}> <p id='add-user-text'>Add user to group</p></a>".html_safe %>
                                     </div>
                             <% end %>
                             </div>
