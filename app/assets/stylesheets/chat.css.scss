@@ -7,6 +7,45 @@
   box-sizing:         border-box;
 }
 
+html {
+  background-color: #777777;
+  position: fixed;
+  top: -10px;
+}
+
+#chat-alerts {
+  width: 50%;
+  position: fixed;
+  top: 70px;
+  left: 26%;
+}
+
+.center-div {
+  position: fixed;
+  top: 30%;
+  width: 49%;
+  left: 27%;
+  color: #CCCCCC;
+}
+
+.random-button {
+  position: fixed;
+  background-color: #333333 !important;
+  border-color: #333333 !important;
+  top: 315px;
+  left: 44%;
+}
+
+#center-div-header {
+  position: fixed;
+  top: 115px;
+}
+
+#center-div-body {
+  position: fixed;
+  width: 49%;
+  top: 215px;
+}
 
 .fixed-header-div {
 	position: fixed;
@@ -17,7 +56,7 @@
 }
 
 #users-online-list {
-  background-color: #777777;
+  background-color: #CCCCCC;
   position: fixed;
   width: 160px;
   left: 80%;
@@ -53,7 +92,7 @@
   position: relative;
   width: 180px;
   left: -2px;
-  top: 215px;
+  top: 185px;
   color: #000000;
   text-decoration: none;
   word-spacing: -10px;
@@ -61,19 +100,29 @@
 }
 
 #add-user-in-member-box:hover {
-  color: #CCCCCC;
+  color: #777777;
 }
 
 .user-in-list {
   font-size:smaller;
+  position: relative;
+  top: 10px;
   color: #000000;
 }
 
 #user-name-in-list {
   color: #000000;
   position: relative;
-  left: 5px;
   font-size: small;
+  top: -10px;
+  left: -15px;
+
+}
+
+#user-in-list-li {
+  position: relative;
+  left: -20px;
+  width: 120px;
 }
 
 
@@ -98,11 +147,12 @@
 .circle-jerk {
   height:12px;
   position: relative;
-  top: -2px;
+  top: -11px;
+  left: -18px;
 }
 
 .chat-div-header {
-  background-color: #777777;
+  background-color: #CCCCCC;
   position: fixed;
   top: 50px !important;
   height: 50px !important;
@@ -131,7 +181,7 @@
 
 
 #go-to-room-in-chat-header:hover {
-	color: #CCCCCC;
+	color: #777777;
 }
 
 #leave-group-chat-header {
@@ -145,7 +195,7 @@
 }
 
 #leave-group-chat-header:hover {
-	color: #CCCCCC;
+	color: #777777;
 }
 
 #leave-group-text {

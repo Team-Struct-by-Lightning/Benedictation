@@ -1,83 +1,90 @@
         <!-- Page Content -->
         <div id="page-content-wrapper">
             <% flash.each do |message_type, message| %>
-                <div class="alert alert-<%= message_type %>"><%= message %></div>
+            <div class="alert alert-<%= message_type %>" id="chat-alerts"><%= message %></div>
             <% end %>
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-12">
                         <div class='center-div'>
-                        <h1>Hello <%= current_user.name %>, begin chatting!</h1>
+                            <h1 id='center-div-header'>Hello <%= current_user.name %>, begin chatting!</h1>
 
-                        <p>Use the sidebar on the left to create a new group or to enter a group that has already been created. Click below to start a chat without a group.
-                        During a video chat, hold down <b>Ctrl-B</b> to address Benedict.
+                            <p id="center-div-body">Use the sidebar on the left to create a new group or to enter a group that has already been created. Click below to start a chat without a group.
+                                During a video chat, hold down <b>Ctrl-B</b> to address Benedict.
 
-                        </div>
-                        <% Relationship.where(user_id: current_user.id).pluck(:id).each do |relationship_id| %>
-                        <% group = Relationship.find_by(id: relationship_id).group %>
-                        <% group_id = group.id %>
-                        <% group_name = group.group_name %>
-                        <% delete_href = '#delete-user' + relationship_id.to_s %>
-                        <% add_href = '#add-user' + group_id.to_s %>
-                        <% group_name_url_string = "/room/" + "#{group_id}" + "/" + group_name %>
-                        <div class='center-div-group' id=<%="center-div" + group_id.to_s %> >
-                            <div class="chat-div-header">
-                                <div class="fixed-header-div">
-                                <%= image_tag("glyphicons-44-group.png", id: "group-image") %>
-                                <a id="group-name-in-chat-header"> <%= '#' + group_name %></a>
-                                <%= link_to "<a class='glyphicon glyphicon-facetime-video' id='go-to-room-in-chat-header' href=#{group_name_url_string}> <p id='go-to-room-text'>Go to chat room</p></a>".html_safe %>
-                                <%= link_to "<a class='glyphicon glyphicon-remove' id='leave-group-chat-header' href=#{delete_href}> <p id='leave-group-text'>Leave group</p></a>".html_safe %>
                             </div>
-                            </div>
-                            <div "users-online-list-border">
-                            <div id="users-online-list">
-                            <a id="members-online">Members online:</a>
-                            <% Relationship.where(group_id: group_id).pluck(:user_id).each do |uid| %>
-                                    <div id="list-of-users-online">
-
-                                        <span class="user-in-list">
-                                            <% if user_logged_in(uid) %>
+                            <% Relationship.where(user_id: current_user.id).pluck(:id).each do |relationship_id| %>
+                            <% group = Relationship.find_by(id: relationship_id).group %>
+                            <% group_id = group.id %>
+                            <% group_name = group.group_name %>
+                            <% delete_href = '#delete-user' + relationship_id.to_s %>
+                            <% add_href = '#add-user' + group_id.to_s %>
+                            <% group_name_url_string = "/room/" + "#{group_id}" + "/" + group_name %>
+                            <div class='center-div-group' id=<%="center-div" + group_id.to_s %> >
+                                <div class="chat-div-header">
+                                    <div class="fixed-header-div">
+                                        <%= image_tag("glyphicons-44-group.png", id: "group-image") %>
+                                        <a id="group-name-in-chat-header"> <%= '#' + group_name %></a>
+                                        <%= link_to "<a class='glyphicon glyphicon-facetime-video' id='go-to-room-in-chat-header' href=#{group_name_url_string}> <p id='go-to-room-text'>Go to chat room</p></a>".html_safe %>
+                                        <%= link_to "<a class='popup-with-form glyphicon glyphicon-remove' id='leave-group-chat-header' href=#{delete_href} aria-hidden='true'> <p id='leave-group-text'>Leave group</p></a>".html_safe %>
+                                    </div>
+                                </div>
+                                <div "users-online-list-border">
+                                    <div id="users-online-list">
+                                        <a id="members-online">Members online:</a>
+                                        <div id="list-of-users-online">
+                                            <ul id="users-online-ul">
+                                            <% Relationship.where(group_id: group_id).pluck(:user_id).each do |uid| %>
+                                            <li id="user-in-list-li"><span class="user-in-list">
+                                                <% if user_logged_in(uid) %>
                                                 <%= image_tag("green_circle.png", :class => "circle-jerk") %>
-                                            <% else %>
+                                                <% else %>
                                                 <%= image_tag("gray_circle.png", :class => "circle-jerk") %>
+                                                <% end %>
+                                            <span id="user-name-in-list"><%= User.find_by_id(uid).name %></span>
+                                                                                        </span></li>
                                             <% end %>
-                                        </span>
-                                        <span id="user-name-in-list"><%= User.find_by_id(uid).name %></span>
+                                            </ul>
+                                        </div>
+                                        <div id="add-user-to-list">
+                                            <%= link_to "<a class='popup-with-form glyphicon glyphicon-plus' id='add-user-in-member-box' href=#{add_href} aria-hidden='true'> <p id='add-user-text'>Add user to group</p></a>".html_safe %>
+                                        </div>
                                     </div>
-                                    <div id="add-user-to-list">
-                                        <%= link_to "<a class='glyphicon glyphicon-plus' id='add-user-in-member-box' href=#{add_href}> <p id='add-user-text'>Add user to group</p></a>".html_safe %>
-                                    </div>
-                            <% end %>
+                                </div>
+
                             </div>
+                            <% end %>
+
+                            <div id="placeholder-div"></div>
+                            <%= link_to  "Join temporary room",  "/room/" + get_random_string + "/" +
+                            get_random_string, class: 'btn btn-primary random-button' %>
+                            <div id="participantsDiv"></div>
+
+
+                            <!--<p>Make sure to keep all page content within the <code>#page-content-wrapper</code>.</p>-->
                         </div>
-
-                        </div>
-                        <% end %>
-
-                        <div id="placeholder-div"></div>
-                          <%= link_to  "Start chatting",  "/room/" + get_random_string + "/" +
-                          get_random_string, class: 'btn btn-primary random-button' %>
-                        <div id="participantsDiv"></div>
-
-
-                        <!--<p>Make sure to keep all page content within the <code>#page-content-wrapper</code>.</p>-->
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- /#page-content-wrapper -->
+            <!-- /#page-content-wrapper -->
 
-        <script>
+            <script>
 
-        $('.menu-group').click(function(e){
-            var id = this.id;
-            var id_array = id.split("menu-group");
+            $(".alert" ).fadeOut(5000);
 
-            $('.center-div').hide();
-            $('.center-div-group').hide();
-            $('.random-button').hide();
-            $('#center-div' + id_array[1]).show();
-        });
+            $(".alert-success" ).fadeOut(5000);
+
+            $(".alert-danger" ).fadeOut(5000);
+
+            $('.menu-group').click(function(e){
+                var id = this.id;
+                var id_array = id.split("menu-group");
+
+                $('.center-div').hide();
+                $('.center-div-group').hide();
+                $('.random-button').hide();
+                $('#center-div' + id_array[1]).show();
+            });
 
         // $('.delete-button').click(function(e){
         //     var id = this.id;
