@@ -1,5 +1,10 @@
 module GroupsHelper
 
+
+  def set_current_group
+    @group = Group.find(params[:id])
+  end
+
   def new_group
     downcase_params = popup_group_params
     downcase_params[:group_name] = downcase_params[:group_name].downcase

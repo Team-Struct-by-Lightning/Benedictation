@@ -1,59 +1,83 @@
-
-
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////====CHAT====////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-  var $sendButton = $("#js-send-button-im");
-  var $inputIM    = $("#js-input-im");
-  var $chatBody   = $("#js-chat-body");
-  var $speechRecBody = $("#speech-rec-body");
-  var localId = comm.getLocalID();
-
-  $sendButton.on('click', sendIM);
-  $inputIM.on('keypress', checkEnterKey);
-
-  // With Turbolinks pages will change without a full reload, so you can't rely on the usual window.beforepageunload event. Instead Turbolinks fires events on document to provide hooks into the lifecycle of the page.
-  $(document).on("page:fetch", function(){
-  console.log('turbolinks page fetch event');
-  });
-
-
-  // send a message
-  function sendIM() {
-      "<% current_user.refresh_token_if_expired %>"
-      var content = "<%= current_user.name %>" + "@@@" + "<%= current_user.uid %>" + "@@@" +
-    "<%= current_user.oauth_token %>" + "@@@" + $inputIM.val() ;
+var $sendButton = $("#js-send-button-im");
+var $inputIM = $("#js-input-im");
+var $chatBody = $("#js-chat-body");
+var $speechRecBody = $("#speech-rec-body");
+var localId = comm.getLocalID();
+$sendButton.on('click', sendIM);
+$inputIM.on('keypress', checkEnterKey);
+// With Turbolinks pages will change without a full reload, so you can't rely on the usual window.beforepageunload event. Instead Turbolinks fires events on document to provide hooks into the lifecycle of the page.
+$(document).on("page:fetch", function() {
+    console.log('turbolinks page fetch event');
+});
+// send a message
+function sendIM() {
+    "<% current_user.refresh_token_if_expired %>"
+    var message = $inputIM.val();
+    var content = "<%= current_user.name %>" + "@@@" + "<%= current_user.uid %>" + "@@@" + "<%= current_user.oauth_token %>" + "@@@" + message;
+    comm.send(content)
+    // send to redis if you are the user that originally created this message
+    var url_string = "https://www.googleapis.com/plus/v1/people/" + "<%= current_user.uid %>" + "?access_token=" + "<%= current_user.oauth_token %>";
+    $.getJSON(url_string, function(user_object) {
+        var message_string = "  <div class='media' id='chatty'>" + "    <div class='media-body' id='div-chat-message', style='text-align: " + "left" + "'>" + "      <h4 class='media-heading' id='h4-chat-message'>" + "<span class='chat-message'>" + "      <img class='media-object' id='prof-pic' align='left' src=" + user_object.image.url + ">" + "<a class='chat-user-name' href='#'>" + "<%= current_user.name %>" + "</a>: " + message + "</span></h4>" + "" + "    </div>" + "  </div>";
+        var url = (window.location.pathname).split("/");
+        var id = String(url[url.length - 2]);
+        var name = String(url[url.length - 1]);
+        var key = name + ":" + id + ":chathistory";
+        $.ajax({
+            type: "POST",
+            url: "/update_redis",
+            data: {
+                redis_key: key,
+                message: message_string
+            }
+        });
+        // append what you send to your own page
+        appendNewIM({
+            data: content,
+            callerID: "<%= current_user.name %>",
+        });
+    });
     $inputIM.val("");
-    comm.send(content)
-    // append what you send to your own page
-    appendNewIM({
-        data: content,
-        callerID: "<%= current_user.name %>"
-    })
-  }
-
-  // send your benedict query result to everyone else in the chat
-  function sendBennyReply(reply){
-        "<% current_user.refresh_token_if_expired %>"
-      var content = "benny" + "@@@" + "<%= current_user.name %>" + "@@@" + "<%= current_user.uid %>" + "@@@" +
-    "<%= current_user.oauth_token %>" + "@@@" + reply;
-    comm.send(content)
-    // append what you send to your own page
-    appendNewBennyReply({
-        data: content,
-        callerID: "<%= current_user.name %>"
-    })
-  }
-
-  // click the send button when enter key is pressed
-  function checkEnterKey(event) {
-    if ( event.keyCode == 13 ) {
-      $sendButton.click();
+}
+// send your benedict query result to everyone else in the chat
+function sendBennyReply(json_api_reply) {
+    // "<% current_user.refresh_token_if_expired %>"
+    // var content = "benny" + "@@@" + "<%= current_user.name %>" + "@@@" + "<%= current_user.uid %>" + "@@@" + "<%= current_user.oauth_token %>" + "@@@" + reply;
+    // comm.send(content);
+    // append what you send to your own page WE WILL GENERATE DIVS INSTEAD
+    // appendNewBennyReply({
+    //     data: content,
+    //     callerID: "<%= current_user.name %>"
+    // });
+    var url = (window.location.pathname).split("/");
+    var id = String(url[url.length - 2]);
+    var name = String(url[url.length - 1]);
+    var key = name + ":" + id + ":bennyhistory";
+    $.ajax({
+        type: "POST",
+        url: "/update_redis",
+        data: {
+            redis_key: key,
+            message: json_api_reply
+        }
+    });
+    console.log("saving this json to redis: ", json_api_reply)
+}
+// click the send button when enter key is pressed
+function checkEnterKey(event) {
+    if (event.keyCode == 13) {
+        $sendButton.click();
     }
-  }
+}
 
-  // stick new instant message onto the chat body
-  function appendNewIM(options) {
+function appendNewIM_text_only(message_string) {
+    $chatBody.append(message_string);
+}
+// stick new instant message onto the chat body
+function appendNewIM(options) {
     var message_data = options.data.split("@@@");
     var caller_name = message_data[0];
     var caller_uid = message_data[1];
@@ -65,10 +89,9 @@
     message_data.reverse();
     message_data.join("@@@");
     mediaObjectIM(caller_name, caller_uid, caller_token, message_data);
-  }
-
-  // stick new reply from benny onto the speechrec body
-  function appendNewBennyReply(options) {
+}
+// stick new reply from benny onto the speechrec body
+function appendNewBennyReply(options) {
     var message_data = options.data.split("@@@");
     var caller_name = message_data[1];
     var caller_uid = message_data[2];
@@ -80,58 +103,36 @@
     message_data.pop();
     message_data.reverse();
     message_data.join("@@@");
-
     mediaObjectSpeechrec(caller_name, caller_uid, caller_token, message_data);
-  }
-
-  // media object to append to the page each time there's a new chat
-  function mediaObjectIM(user, uid, token, message) {
-
+}
+// media object to append to the page each time there's a new chat
+function mediaObjectIM(user, uid, token, message) {
     var url_string = "https://www.googleapis.com/plus/v1/people/" + uid + "?access_token=" + token;
-
     $.getJSON(url_string, function(user_object) {
-
-
-          $chatBody.append( "  <div class='media' id='chatty'>"+
-          "    <div class='media-body' id='div-chat-message', style='text-align: "+ "left" +"'>"+
-           "      <h4 class='media-heading' id='h4-chat-message'>" + "<span class='chat-message'>"+
-           "      <img class='media-object' id='prof-pic' align='left' src=" +
-            user_object.image.url +
-           ">" + "<a class='chat-user-name' href='#'>" + user + "</a>: " + message + "</span></h4>"+""+
-           "    </div>"+
-           "  </div>" )
-           var height = 0;
-           $('div, #chatty').each(function(i, value) {
+        var message_string = "  <div class='media' id='chatty'>" + "    <div class='media-body' id='div-chat-message', style='text-align: " + "left" + "'>" + "      <h4 class='media-heading' id='h4-chat-message'>" + "<span class='chat-message'>" + "      <img class='media-object' id='prof-pic' align='left' src=" + user_object.image.url + ">" + "<a class='chat-user-name' href='#'>" + user + "</a>: " + message + "</span></h4>" + "" + "    </div>" + "  </div>";
+        $chatBody.append(message_string);
+        var height = 0;
+        $('div, #chatty').each(function(i, value) {
             height += parseInt($(this).height());
-           });
-           //var d = $('#chat-box');
-           //d.scrollTop(d.prop("scrollHeight"));
-           $('#js-chat-body').animate({scrollTop: height}, 'fast');
-
+        });
+        //var d = $('#chat-box');
+        //d.scrollTop(d.prop("scrollHeight"));
+        $('#js-chat-body').animate({
+            scrollTop: height
+        }, 'fast');
     });
-  }
-
-  // media object to append to the page each time there's a new chat
-  function mediaObjectSpeechrec(user, uid, token, message) {
-
-         var url_string = "https://www.googleapis.com/plus/v1/people/" + uid + "?access_token=" + token;
-
-          $.getJSON(url_string, function(user_object) {
-
-          $speechRecBody.append( "  <div class='media' id='benny'>"+
-           "    <div class='media-body', style='text-align: "+ "left" +"'>"+
-           "      <h4 class='media-heading'>" + "<span class='chat-message'>"+
-           "      <img class='media-object' id='prof-pic' src=" +
-            user_object.image.url +
-           ">" + user + ": " + message + "</span></h4>"+""+
-           "    </div>"+
-           "  </div>" )
-           var height = 0;
-           $('div, #benny').each(function(i, value) {
+}
+// media object to append to the page each time there's a new chat
+function mediaObjectSpeechrec(user, uid, token, message) {
+    var url_string = "https://www.googleapis.com/plus/v1/people/" + uid + "?access_token=" + token;
+    $.getJSON(url_string, function(user_object) {
+        $speechRecBody.append("  <div class='media' id='benny'>" + "    <div class='media-body', style='text-align: " + "left" + "'>" + "      <h4 class='media-heading'>" + "<span class='chat-message'>" + "      <img class='media-object' id='prof-pic' src=" + user_object.image.url + ">" + user + ": " + message + "</span></h4>" + "" + "    </div>" + "  </div>")
+        var height = 0;
+        $('div, #benny').each(function(i, value) {
             height += parseInt($(this).height());
-           });
-
-           $('div, #benny').animate({scrollTop: height}, 'fast');
-
+        });
+        $('div, #benny').animate({
+            scrollTop: height
+        }, 'fast');
     });
-  }
+}
