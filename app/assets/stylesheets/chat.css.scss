@@ -22,8 +22,8 @@
 
 #group-name-in-chat-header{
 	position: relative;
-  left: 200px;
-  top: -12px;
+  left: 150px;
+  top: -4px;
   font-size: large;
   color: #000000;
   text-decoration: none !important;
@@ -31,30 +31,52 @@
 
 #go-to-room-in-chat-header {
 	position: relative;
-  left: 250px;
-  font-size: large;
+  left: 410px;
+  font-size: smal;
   top: 16px;
   text-decoration: none !important;
   height: 20px !important;
   color: #000000;
 }
 
+
 #go-to-room-in-chat-header:hover {
 	color: #CCCCCC;
 }
 
+#leave-group-chat-header {
+	position: relative;
+  left: 450px;
+  top: 14px;
+  font-size: small;
+  text-decoration: none !important;
+  height: 20px !important;
+	color: #000000;
+}
+
+#leave-group-chat-header:hover {
+	color: #CCCCCC;
+}
+
+#leave-group-text {
+	position: relative;
+  top: -20px;
+  left: 20px;
+  word-spacing: -12px;
+}
+
 #go-to-room-text {
 	position: relative;
-  top: -28px;
-  left: 30px;
+  top: -22px;
+  left: 20px;
   word-spacing: -12px;
 }
 
 #group-image {
 	position: relative;
-  left: 193px;
+  left: 140px;
   height: 30%;
-  top: -16px;
+  top: -7px;
 }
 
 .glyphicon-align-justify:hover {
