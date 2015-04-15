@@ -4,14 +4,15 @@ class GroupsController < ApplicationController
 
   skip_before_filter  :verify_authenticity_token
 
-  def updateChatHistory
+  # redis chat history stuff
+  def update_redis
     #append to end of chat history (key = groupname:groupid:chathistory)
     puts params[:redis_key].to_s + ":" + params[:message].to_s
     $redis.rpush(params[:redis_key], params[:message])  
     render nothing: true
   end
 
-  def get_chat_history
+  def get_redis
       # returns chat history string from redis as array of strings
       chat_history = $redis.lrange(params[:redis_key],0,-1)
       # chat_history.each{|message| puts "message=#{message}" }
@@ -19,7 +20,7 @@ class GroupsController < ApplicationController
       render :json => chat_history
   end
 
-  def clear_chat_history
+  def clear_redis
     $redis.del(params[:redis_key])
     render nothing: true
   end

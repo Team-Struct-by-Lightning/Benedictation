@@ -28,7 +28,7 @@ function sendIM() {
         var key = name + ":" + id + ":chathistory";
         $.ajax({
             type: "POST",
-            url: "/updateChatHistory",
+            url: "/update_redis",
             data: {
                 redis_key: key,
                 message: message_string
@@ -43,15 +43,28 @@ function sendIM() {
     $inputIM.val("");
 }
 // send your benedict query result to everyone else in the chat
-function sendBennyReply(reply) {
-    "<% current_user.refresh_token_if_expired %>"
-    var content = "benny" + "@@@" + "<%= current_user.name %>" + "@@@" + "<%= current_user.uid %>" + "@@@" + "<%= current_user.oauth_token %>" + "@@@" + reply;
-    comm.send(content);
-    // append what you send to your own page
-    appendNewBennyReply({
-        data: content,
-        callerID: "<%= current_user.name %>"
+function sendBennyReply(json_api_reply) {
+    // "<% current_user.refresh_token_if_expired %>"
+    // var content = "benny" + "@@@" + "<%= current_user.name %>" + "@@@" + "<%= current_user.uid %>" + "@@@" + "<%= current_user.oauth_token %>" + "@@@" + reply;
+    // comm.send(content);
+    // append what you send to your own page WE WILL GENERATE DIVS INSTEAD
+    // appendNewBennyReply({
+    //     data: content,
+    //     callerID: "<%= current_user.name %>"
+    // });
+    var url = (window.location.pathname).split("/");
+    var id = String(url[url.length - 2]);
+    var name = String(url[url.length - 1]);
+    var key = name + ":" + id + ":bennyhistory";
+    $.ajax({
+        type: "POST",
+        url: "/update_redis",
+        data: {
+            redis_key: key,
+            message: json_api_reply
+        }
     });
+    console.log("saving this json to redis: ", json_api_reply)
 }
 // click the send button when enter key is pressed
 function checkEnterKey(event) {

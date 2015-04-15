@@ -52,28 +52,45 @@ comm.on('local', function(options) {
     var url = (window.location.pathname).split("/");
     var id = String(url[url.length - 2]);
     var name = String(url[url.length - 1]);
-    var key = name + ":" + id + ":chathistory";
-    
+    var chat_history_key = name + ":" + id + ":chathistory";
+    var benny_history_key = name + ":" + id + ":bennyhistory";
     // this will work later when icecomm's comm.getRoomSize() is functional
     //if (comm.getHost()) {
-        $.ajax({
-            type: "GET",
-            url: "/get_chat_history",
-            dataType: "json",
-            data: {
-                'redis_key': key
-            },
-            success: function(messages) {
-                console.log("messages: ", messages);
-                if (messages.length != 0) {
-                    // append what you send to your own page
-                    for (var i = 0; i < messages.length; i++) {
-                        appendNewIM_text_only(messages[i]);
-                        //Do something
-                    }
+    // get chat history
+    $.ajax({
+        type: "GET",
+        url: "/get_redis",
+        dataType: "json",
+        data: {
+            'redis_key': chat_history_key
+        },
+        success: function(messages) {
+            if (messages.length != 0) {
+                // append what you send to your own page
+                for (var i = 0; i < messages.length; i++) {
+                    appendNewIM_text_only(messages[i]);
                 }
             }
-        });
+        }
+    });
+    // get benny history
+    $.ajax({
+        type: "GET",
+        url: "/get_redis",
+        dataType: "json",
+        data: {
+            'redis_key': benny_history_key
+        },
+        success: function(messages) {
+            if (messages.length != 0) {
+                // append what you send to your own page
+                for (var i = 0; i < messages.length; i++) {
+                    //append new benny divs
+                    console.log("getting this json from redis: ", messages[i]);
+                }
+            }
+        }
+    });
     //}
     // Initialize our new recorder with its own copy of the local media stream
     var input = audioContext.createMediaStreamSource(localAudioStream);
@@ -112,12 +129,11 @@ comm.on('disconnect', function(options) {
     var id = String(url[url.length - 2]);
     var name = String(url[url.length - 1]);
     var key = name + ":" + id + ":chathistory";
-
     // this will work later when icecomm's comm.getRoomSize() is functional
     // if (comm.getRoomSize() == 1 && id.to_i.to_s == id) {
     //     $.ajax({
     //         type: "POST",
-    //         url: "/clear_chat_history",
+    //         url: "/clear_redis",
     //         data: {
     //             redis_key: key,
     //             message: message_string
