@@ -7,6 +7,11 @@
   box-sizing:         border-box;
 }
 
+#header-nav-bar {
+  height: 50px !important;
+}
+
+
 #home-path-glyph {
   position: relative;
   left: -12px;
@@ -27,26 +32,30 @@
 
 
 #home-icon {
-  position: relative;
-  left: -13px;
-  top: -17px;
+  position: fixed;
+  left: 875px;
+  top: 13px;
   padding: 0;
   word-spacing: -10px;
+  white-space: nowrap;
 }
 
 #log-out-icon {
-  position: relative;
-  left: 10px;
-  top: -17px;
+  position: fixed;
+  left: 950px;
+  top: 13px;
   padding: 0px;
-  word-spacing: -10px
+  word-spacing: -10px;
+  white-space: nowrap;
 }
 
 #user-icon {
+  position: fixed;
   word-spacing: -10px;
-  left: -40px;
+  left: 652px;
   padding: 0px;
-  top: -17px;
+  top: 13px;
+  white-space: nowrap;
 }
 
 
@@ -199,6 +208,8 @@ p {
 }
 
 #logo {
+  position: fixed;
+  left: 113px;
   float: left;
   margin-right: 10px;
   font-size: 1.7em;
@@ -213,6 +224,8 @@ p {
   }
 }
 #red_logo {
+  position: fixed;
+  left: 51px;
   float: left;
   font-size: 1.7em;
   color: #fff;
