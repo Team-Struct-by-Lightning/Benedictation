@@ -7,6 +7,29 @@
   box-sizing:         border-box;
 }
 
+#home-icon {
+  position: relative;
+  left: 0px;
+  top: -17px;
+  padding: 0;
+  word-spacing: -10px;
+}
+
+#log-out-icon {
+  position: relative;
+  left: 10px;
+  top: -17px;
+  padding: 0px;
+  word-spacing: -10px
+}
+
+#user-icon {
+  word-spacing: -10px;
+  left: -8px;
+  padding: 0px;
+  top: -17px;
+}
+
 
 .navbar-fixed-top.navbar-inverse{
   z-index: 1000;
