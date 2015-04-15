@@ -45,6 +45,7 @@ nltk_test.pyc
 /config/database.yml
 /config/secrets.yml
 /config/google.yml
+passwords.yml
 
 # redis
 *.rdb
