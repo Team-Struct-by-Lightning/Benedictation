@@ -46,6 +46,8 @@ nltk_test.pyc
 /config/secrets.yml
 /config/google.yml
 passwords.yml
+python_api.yml
+tornado_rsa_key.pem
 
 # redis
 *.rdb

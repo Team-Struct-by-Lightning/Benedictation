@@ -6,6 +6,11 @@ import audiotools
 import httplib
 import json
 import os
+import yaml
+
+f = open('python_api.yml')
+yml_dict_speech = yaml.safe_load(f)
+f.close()
 
 class SpeechRecognizer():
     def __init__(self):
@@ -13,23 +18,23 @@ class SpeechRecognizer():
         self.port = 80
         self.connection = httplib.HTTPConnection("www.google.com:80")        # self.connection.connect()
         self.jdecode = json.JSONDecoder()
-    
+
     # Recognize a piece of audio.
     # Input: a .wav filename, string
     # Return: recognition output, string
     def recognize(self, input):
         return self._rec_googleapi(input)
 
-        
+
     def _rec_googleapi(self, input):
         print "in googleapi func @@@@@@@@"
-        APIKEY = "AIzaSyD9JtT_kVZ0S0vKsskgxrK_WtIE1G7FAjY"
+        APIKEY = yml_dict_speech['google_speech']['api_key']
         audiotools.open(input).convert("output.flac", audiotools.FlacAudio)
         headers = {"Content-Type": "audio/x-flac;rate=44100"}
         speechfile = open("output.flac","r")
         target = "/speech-api/v2/recognize?output=json&lang=en-us&key=" + APIKEY
         request = self.connection.request("POST",target,speechfile,headers)
-        
+
         hyp = ""
         json_result = ""
         response = self.connection.getresponse()
@@ -47,7 +52,7 @@ class SpeechRecognizer():
                     print "speech rec result: ", hyp
                 except (ValueError, KeyError, TypeError):
                     print "JSON format error"
-        
+
         speechfile.close()
         os.remove("output.flac")
         return hyp
@@ -56,4 +61,4 @@ class SpeechRecognizer():
 if __name__ == "__main__":
     sr = SpeechRecognizer()
     text = sr.recognize("output219.wav")
-    print text        
+    print text
