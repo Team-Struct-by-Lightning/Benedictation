@@ -23,22 +23,17 @@ class email_sender():
 
   team_email = "team.struct.by.lightning@gmail.com"
 
-  def __init__(self, sender_name, sender_email, group_join, recipient_email, email_type):
-    self.sender_name = sender_name
-    self.sender_email = sender_email
-    self.recipient_email = recipient_email
-    self.group_join = group_join
-    self.email_type = email_type
+  def __init__(self):
 
   def personalize_message(self, send_name, send_email, join_group, recip_email, email_type):
 
     if email_type == "invite":
-      ret_string = ("Hello! \n \n You have been invited into the"
+      ret_string = ("Hello!\n\nYou have been invited into the"
                     "Benedictation system.  Benedictation is a video conferencing web application"
                     "with a smart assistant for your meeting needs.  " + send_name + " invited "
                     "you to join the chat group " + join_group + ".  Follow this link to join the "
-                    "group: \n\n https://benedictation.io \n\n"
-                    "Thank you and enjoy! \n\n Team Struct"
+                    "group:\n\nhttps://benedictation.io\n\n"
+                    "Thank you and enjoy!\n\nTeam Struct"
                     " by Lightning")
       return ret_string
 
@@ -71,5 +66,5 @@ class email_sender():
 
 if __name__ == "__main__":
   se = email_sender("Kevin Malta", "team.struct.by.lightning@gmail.com", "Scrum", "iamburitto@gmail.com", "invite")
-  se.send_email(se.sender_name, se.sender_email, se.recipient_email, se.group_join, se.email_type)
+  se.send_email(se.sender_name, se.sender_email, se.group_join, se.recipient_email, se.email_type)
 

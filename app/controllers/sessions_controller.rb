@@ -8,8 +8,6 @@ class SessionsController < ApplicationController
     new_group_list = $redis.lrange(created_user.email,0,-1)
     # for each new group, add a new relationship
     new_group_list.each do |group|
-        # redirect_to url_for(:controller => :groups, :action => :add_user_to_group, :newmemberemail => created_user.email, :groupid => group.id)
-
         @new_group_relationship = Relationship.new(user_id:created_user.id, group_id:Group.find_by_id(group).id)
         @new_group_relationship.save
     end

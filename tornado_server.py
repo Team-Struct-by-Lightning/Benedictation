@@ -6,6 +6,7 @@ from json import loads
 from urllib2 import urlopen
 # from nltk_test import find_nouns
 import speechrec    # Put speechrec.py in the same folder
+import email_class
 import wave
 import os
 from random import randint
@@ -21,9 +22,9 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 
     def on_message(self, message):
         print 'message received %s' % message
-        nouns_list = find_nouns(message)
-        for noun in nouns_list:
-            self.write_message(noun)
+        # nouns_list = find_nouns(message)
+        # for noun in nouns_list:
+        #     self.write_message(noun)
 
     def on_close(self):
         print 'connection closed'
@@ -32,6 +33,26 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         #print parsed_origin
         return True
 
+
+class EmailWSHandler():
+    def open(self):
+        print "new connection to email recognizer opened"
+        self.email = email_class.email_sender()
+
+    def on_message(self, message):
+        json_email = json.loads(message)
+        # pretty printing of json-formatted string
+        print json.dumps(message, sort_keys=True, indent=4)
+        # hyp = decoded['result'][0]['alternative'][0]['transcript']
+        self.email.send_email(json_email['send_name'], json_email['send_email'], json_email['join_group'], json_email['recipient_email'], json_email['email_type'])
+
+    def on_close(self):
+        print "Connection closed."
+
+    def check_origin(self,origin):
+        return True
+
+
 # Handle audio data sent to /recognize.
 class SpeechWSHandler(tornado.websocket.WebSocketHandler):
 
@@ -39,14 +60,15 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
         print "New connection to speech recognizer opened"
         self.recognizer = speechrec.SpeechRecognizer()
         print self.recognizer
+        print self.email
         self.recording = False
         self.text = ""
 
     def on_message(self, message):
-        #print "speech-rec received message: %s" % message
-        if self.recording == False and message == "start":
-            self.recording = True
-            return
+        print "speech-rec received message: %s" % message
+        # if self.recording == False and message == "start":
+        #     self.recording = True
+        #     return
 
         if self.recording == True:
             # print "in recording true @@@@@"
@@ -85,6 +107,7 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
 application = tornado.web.Application([
     (r"/hello", WSHandler),
     (r"/recognize", SpeechWSHandler)
+    (r"/email", SpeechWSHandler)
 ])
 
 if __name__ == "__main__":
