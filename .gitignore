@@ -48,6 +48,8 @@ nltk_test.pyc
 passwords.yml
 python_api.yml
 tornado_rsa_key.pem
+/config/icecomm.yml
 
 # redis
 *.rdb
+*.DS_store

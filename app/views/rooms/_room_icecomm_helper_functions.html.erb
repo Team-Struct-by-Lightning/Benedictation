@@ -1,4 +1,5 @@
-var comm = new Icecomm('9gv3ODZorBS2kVuNwnugBeV432PcNX3Qn0HmW33ofxK/u5Xolu', {
+<% icecomm = YAML.load_file("#{::Rails.root}/config/google.yml")[::Rails.env] %>
+var comm = new Icecomm("<%= icecomm['app_id'] %>", {
     debug: true
 });
 comm.connect(window.location.pathname);
