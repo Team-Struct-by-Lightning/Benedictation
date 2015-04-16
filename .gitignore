@@ -34,6 +34,7 @@
 speechrec.pyc
 tornado_server.pyc
 nltk_test.pyc
+*.pyc
 
 #ignores rubymine IDE files
 .idea/*
@@ -53,3 +54,4 @@ tornado_rsa_key.pem
 # redis
 *.rdb
 *.DS_store
+
