@@ -33,12 +33,12 @@ class email_sender():
   def personalize_message(self, send_name, send_email, join_group, recip_email, email_type):
 
     if email_type == "invite":
-      ret_string = ("Hello! \n \n You have been invited into the"
-                    "Benedictation system.  Benedictation is a video conferencing web application"
-                    "with a smart assistant for your meeting needs.  " + send_name + " invited "
-                    "you to join the chat group " + join_group + ".  Follow this link to join the "
-                    "group: \n\n https://benedictation.io \n\n"
-                    "Thank you and enjoy! \n\n Team Struct"
+      ret_string = ("Hello!\n\n\tYou have been invited to join "
+                    "Benedict and the Benedictation system.  Benedictation is a video conferencing web application "
+                    "with a smart assistant (named Benedict!) for your meeting needs.  " + send_name + " added "
+                    "you to the chat group " + join_group + ".  Follow this link to chat with the group " + join_group +
+                    " on a Benedict call:\n\n\t\t\t\t\t\t\thttps://benedictation.io\n\n"
+                    "Thank you and enjoy!\n\nTeam Struct"
                     " by Lightning")
       return ret_string
 
@@ -55,6 +55,7 @@ class email_sender():
     text = MIMEText(self.personalize_message(send_name, send_email, join_group, recip_email, email_type))
     msg.attach(text)
 
+    print text
     msg['Subject'] = send_name + ' invited you to join Benedictation'
     msg['From'] = send_email #usually the team email
     msg['To'] = recip_email
@@ -70,6 +71,6 @@ class email_sender():
     server.quit()
 
 if __name__ == "__main__":
-  se = email_sender("Kevin Malta", "team.struct.by.lightning@gmail.com", "Scrum", "iamburitto@gmail.com", "invite")
-  se.send_email(se.sender_name, se.sender_email, se.recipient_email, se.group_join, se.email_type)
+  se = email_sender("Kevin Malta", "team.struct.by.lightning@gmail.com", "#scrum", "trevor.frese@gmail.com", "invite")
+  se.send_email(se.sender_name, se.sender_email, se.group_join, se.recipient_email, se.email_type)
 
