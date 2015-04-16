@@ -31,14 +31,15 @@
             <%= text_field_tag :newmemberemail, params[:newmemberemail] %>
             <%= hidden_field_tag :groupid, group_id%>
             <%= submit_tag "Add new user to group", class: "btn btn-primary" %>
-            <% javascript_tag do %>
+            <% end %>
+            <%= javascript_tag do %>
                // tell python server to send email to the user if the user does not yet exist
-               var email = "<% get_most_recent_email %>"
+               var email = "<%= get_most_recent_email %>"
                console.log("email: ",email);
                if(email != ""){
                   // Set up the WebSocket
                   var myLocation = location.host;
-                  var port = "8889";
+                  var port = "8888";
                   var websocketprotocol = "wss://";
                   if (location.protocol !== "https:") {
                       websocketprotocol = "ws://";
@@ -47,18 +48,38 @@
                   var uri = "/email";
                   console.log("connecting to this websocket: " + websocketprotocol + myLocation + ":" + port + uri);
                   var w = new WebSocket(websocketprotocol + myLocation + ":" + port + uri);
-                  json_email = '{
-                                "send_name": "' + '<%= current_user.name %>' +'",
-                                "send_email": "team.struct.by.lightning@gmail.com",
-                                "join_group": "' + '<%= Group.find(group_id).group_name %>' + '",
-                                "recipient_email": "' + email +'",
-                                "email_type": "invite"
-                                }'
+                  json_email = String('{"send_name": "' + '<%= current_user.name %>' +'",' +
+                                '"send_email": "team.struct.by.lightning@gmail.com",' +
+                                '"join_group": "' + '<%= Group.find(group_id).group_name %>' + '",' +
+                                '"recipient_email": "' + email +'",' +
+                                '"email_type": "invite"' +
+                                '}')
+                  console.log(json_email);
 
-                  w.send(json_email);
-                  w.close();
+                  function sendMessage(msg) {
+                      waitForSocketConnection(w, function() {
+                          w.send(msg);
+                          w.close();
+                      });
+                  };
+
+
+                  function waitForSocketConnection(socket, callback){
+                      setTimeout(
+                          function(){
+                              if (socket.readyState === 1) {
+                                  if(callback !== undefined){
+                                      callback();
+                                  }
+                                  return;
+                              } else {
+                                  waitForSocketConnection(socket,callback);
+                              }
+                          }, 5);
+                  };
+
+                  sendMessage(json_email);
                }
-            <% end %>
             <% end %>
          </div>
          <div id=<%= 'delete-user' + relationship_id.to_s %> class="white-popup-block mfp-hide">

@@ -14,24 +14,20 @@ from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 
-
-f = open('passwords.yml')
-yml_dict_email = yaml.safe_load(f)
-f.close()
-
 class email_sender():
 
   team_email = "team.struct.by.lightning@gmail.com"
 
   def __init__(self):
+    print "initialize"
 
   def personalize_message(self, send_name, send_email, join_group, recip_email, email_type):
 
     if email_type == "invite":
-      ret_string = ("Hello!\n\nYou have been invited into the"
-                    "Benedictation system.  Benedictation is a video conferencing web application"
+      ret_string = ("Hello!\n\nYou have been invited into the "
+                    "Benedictation system.  Benedictation is a video conferencing web application "
                     "with a smart assistant for your meeting needs.  " + send_name + " invited "
-                    "you to join the chat group " + join_group + ".  Follow this link to join the "
+                    "you to join the chat group #" + join_group + ".  Follow this link to join the "
                     "group:\n\nhttps://benedictation.io\n\n"
                     "Thank you and enjoy!\n\nTeam Struct"
                     " by Lightning")
@@ -43,6 +39,11 @@ class email_sender():
   def send_email(self, send_name, send_email, join_group, recip_email, email_type):
     # Open a plain text file for reading.  For this example, assume that
     # the text file contains only ASCII characters.
+
+    f = open('passwords.yml')
+    yml_dict_email = yaml.safe_load(f)
+    f.close()
+
 
     msg = MIMEMultipart()
 

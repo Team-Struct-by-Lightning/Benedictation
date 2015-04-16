@@ -14,7 +14,13 @@ module ApplicationHelper
     end
 
     def get_most_recent_email
-      $redis.get("most_recent_email").to_s
+      email = $redis.get("most_recent_email").to_s
+      list = $redis.lrange(email, 0, -1)
+      if list.length > 1
+        return ""
+      else
+        return email
+      end
     end
 
   def user_logged_in(user_id)
