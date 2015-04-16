@@ -1,10 +1,6 @@
 module GroupsHelper
 
 
-  def set_current_group
-    @group = Group.find(params[:id])
-  end
-
   def new_group
     downcase_params = popup_group_params
     downcase_params[:group_name] = downcase_params[:group_name].downcase
@@ -26,6 +22,7 @@ module GroupsHelper
     end
   end
 
+
 	def add_user_to_group
 		@useremail = params[:newmemberemail]
     @curgroupid = params[:groupid]
@@ -37,6 +34,10 @@ module GroupsHelper
       @user = User.find_by(email: @useremail);
       if @user.nil?
          flash[:danger] = 'This user has not joined Benedictation yet.'
+         # add their email to redis list with email -> [newgroup1, newgroup2...newgroupn]
+         $redis.rpush(@useremail.to_s, @curgroupid.to_s)
+         # store most recent new email
+         $redis.set("most_recent_email", @useremail.to_s)
          redirect_to chat_path
       else
         @userid = @user.id

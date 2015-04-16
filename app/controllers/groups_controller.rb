@@ -15,8 +15,6 @@ class GroupsController < ApplicationController
   def get_redis
       # returns chat history string from redis as array of strings
       chat_history = $redis.lrange(params[:redis_key],0,-1)
-      # chat_history.each{|message| puts "message=#{message}" }
-      # render nothing: true
       render :json => chat_history
   end
 
