@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   post '/update_redis' => "groups#update_redis"
   get '/get_redis' => "groups#get_redis"
   get '/clear_redis' => "groups#clear_redis"
+  get '/get_most_recent_email' => "groups#get_most_recent_email"
   resources :sessions, only: [:create, :destroy]
   resource :home, only: [:show]
   resources :relationships,       only: [:create, :destroy]

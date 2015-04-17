@@ -14,30 +14,21 @@ from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 
-
-f = open('passwords.yml')
-yml_dict_email = yaml.safe_load(f)
-f.close()
-
 class email_sender():
 
   team_email = "team.struct.by.lightning@gmail.com"
 
-  def __init__(self, sender_name, sender_email, group_join, recipient_email, email_type):
-    self.sender_name = sender_name
-    self.sender_email = sender_email
-    self.recipient_email = recipient_email
-    self.group_join = group_join
-    self.email_type = email_type
+  def __init__(self):
+    print "initialize"
 
   def personalize_message(self, send_name, send_email, join_group, recip_email, email_type):
 
     if email_type == "invite":
-      ret_string = ("Hello!\n\n\tYou have been invited to join "
-                    "Benedict and the Benedictation system.  Benedictation is a video conferencing web application "
-                    "with a smart assistant (named Benedict!) for your meeting needs.  " + send_name + " added "
-                    "you to the chat group " + join_group + ".  Follow this link to chat with the group " + join_group +
-                    " on a Benedict call:\n\n\t\t\t\t\t\t\thttps://benedictation.io\n\n"
+      ret_string = ("Hello!\n\nYou have been invited into the "
+                    "Benedictation system.  Benedictation is a video conferencing web application "
+                    "with a smart assistant for your meeting needs.  " + send_name + " invited "
+                    "you to join the chat group #" + join_group + ".  Follow this link to join the "
+                    "group:\n\nhttps://benedictation.io\n\n"
                     "Thank you and enjoy!\n\nTeam Struct"
                     " by Lightning")
       return ret_string
@@ -48,6 +39,11 @@ class email_sender():
   def send_email(self, send_name, send_email, join_group, recip_email, email_type):
     # Open a plain text file for reading.  For this example, assume that
     # the text file contains only ASCII characters.
+
+    f = open('passwords.yml')
+    yml_dict_email = yaml.safe_load(f)
+    f.close()
+
 
     msg = MIMEMultipart()
 

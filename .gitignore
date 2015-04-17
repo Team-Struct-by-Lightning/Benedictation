@@ -31,9 +31,6 @@
 *.flac
 
 #Ignores the compiled python files
-speechrec.pyc
-tornado_server.pyc
-nltk_test.pyc
 *.pyc
 
 #ignores rubymine IDE files

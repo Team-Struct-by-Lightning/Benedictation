@@ -6,10 +6,11 @@ from json import loads
 from urllib2 import urlopen
 # from nltk_test import find_nouns
 import speechrec    # Put speechrec.py in the same folder
+import email_class
 import wave
 import os
 from random import randint
-from nltk_test import schedule_meeting
+#from nltk_test import schedule_meeting
 import speechrec
 import socket
 import json
@@ -21,9 +22,9 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 
     def on_message(self, message):
         print 'message received %s' % message
-        nouns_list = find_nouns(message)
-        for noun in nouns_list:
-            self.write_message(noun)
+        # nouns_list = find_nouns(message)
+        # for noun in nouns_list:
+        #     self.write_message(noun)
 
     def on_close(self):
         print 'connection closed'
@@ -31,6 +32,26 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         #parsed_origin = urllib.parse.urlparse(origin)
         #print parsed_origin
         return True
+
+
+class EmailWSHandler(tornado.websocket.WebSocketHandler):
+    def open(self):
+        print "new connection to email recognizer opened"
+        self.email = email_class.email_sender()
+
+    def on_message(self, message):
+        json_email = json.loads(message)
+        # pretty printing of json-formatted string
+        print json.dumps(message, sort_keys=True, indent=4)
+        # hyp = decoded['result'][0]['alternative'][0]['transcript']
+        self.email.send_email(json_email['send_name'], json_email['send_email'], json_email['join_group'], json_email['recipient_email'], json_email['email_type'])
+
+    def on_close(self):
+        print "Connection closed."
+
+    def check_origin(self,origin):
+        return True
+
 
 # Handle audio data sent to /recognize.
 class SpeechWSHandler(tornado.websocket.WebSocketHandler):
@@ -43,10 +64,10 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
         self.text = ""
 
     def on_message(self, message):
-        #print "speech-rec received message: %s" % message
-        if self.recording == False and message == "start":
-            self.recording = True
-            return
+        print "speech-rec received message: %s" % message
+        # if self.recording == False and message == "start":
+        #     self.recording = True
+        #     return
 
         if self.recording == True:
             # print "in recording true @@@@@"
@@ -62,14 +83,14 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
 
                 print "wrote to file"
                 text = self.recognizer.recognize(outfilename).lower()
-                
+
                 if schedule_meeting(text):
                     print 'adding to the calender'
                     text = '{"attendees": [{"email": "trevor.frese@gmail.com"},{"email": "britt.k.christy@gmail.com"},{"email": "jtmurphy@gmail.com"}],"api_type": "calendar","start": {"datetime": "2015-04-13T10:00:00","timezone": "America/Los_Angeles"},"end": {"datetime": "2015-04-15T11:00:00","timezone": "America/Los_Angeles"},"location": "House de Gus","summary": "Epic Circle Jerk"}'
                 if "search" in text:
                     text = '{"api_type": "wikipedia", "query": "peanut butter"}'
                 if "wolfram" in text:
-                    text = '{"api_type": "wolfram", "query": "isla vista weather"}' 
+                    text = '{"api_type": "wolfram", "query": "isla vista weather"}'
                 self.write_message(text)
                 os.remove(outfilename)
                 print "we have finished writing @@@@@"
@@ -84,7 +105,8 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
 
 application = tornado.web.Application([
     (r"/hello", WSHandler),
-    (r"/recognize", SpeechWSHandler)
+    (r"/recognize", SpeechWSHandler),
+    (r"/email", EmailWSHandler)
 ])
 
 if __name__ == "__main__":
