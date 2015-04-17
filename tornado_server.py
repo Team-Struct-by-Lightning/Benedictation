@@ -64,10 +64,10 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
         self.text = ""
 
     def on_message(self, message):
-        print "speech-rec received message: %s" % message
-        # if self.recording == False and message == "start":
-        #     self.recording = True
-        #     return
+        #print "speech-rec received message: %s" % message
+        if self.recording == False and message == "start":
+            self.recording = True
+            return
 
         if self.recording == True:
             # print "in recording true @@@@@"
@@ -84,7 +84,8 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
                 print "wrote to file"
                 text = self.recognizer.recognize(outfilename).lower()
 
-                if schedule_meeting(text):
+                #if schedule_meeting(text):
+                if "schedule" in text:
                     print 'adding to the calender'
                     text = '{"attendees": [{"email": "trevor.frese@gmail.com"},{"email": "britt.k.christy@gmail.com"},{"email": "jtmurphy@gmail.com"}],"api_type": "calendar","start": {"datetime": "2015-04-13T10:00:00","timezone": "America/Los_Angeles"},"end": {"datetime": "2015-04-15T11:00:00","timezone": "America/Los_Angeles"},"location": "House de Gus","summary": "Epic Circle Jerk"}'
                 if "search" in text:
