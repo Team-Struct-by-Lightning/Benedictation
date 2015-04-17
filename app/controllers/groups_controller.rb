@@ -8,7 +8,7 @@ class GroupsController < ApplicationController
   def update_redis
     #append to end of chat history (key = groupname:groupid:chathistory)
     puts params[:redis_key].to_s + ":" + params[:message].to_s
-    $redis.rpush(params[:redis_key], params[:message])  
+    $redis.rpush(params[:redis_key], params[:message])
     render nothing: true
   end
 

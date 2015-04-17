@@ -51,6 +51,7 @@ class email_sender():
     text = MIMEText(self.personalize_message(send_name, send_email, join_group, recip_email, email_type))
     msg.attach(text)
 
+    print text
     msg['Subject'] = send_name + ' invited you to join Benedictation'
     msg['From'] = send_email #usually the team email
     msg['To'] = recip_email
@@ -66,6 +67,6 @@ class email_sender():
     server.quit()
 
 if __name__ == "__main__":
-  se = email_sender("Kevin Malta", "team.struct.by.lightning@gmail.com", "Scrum", "iamburitto@gmail.com", "invite")
+  se = email_sender("Kevin Malta", "team.struct.by.lightning@gmail.com", "#scrum", "trevor.frese@gmail.com", "invite")
   se.send_email(se.sender_name, se.sender_email, se.group_join, se.recipient_email, se.email_type)
 
