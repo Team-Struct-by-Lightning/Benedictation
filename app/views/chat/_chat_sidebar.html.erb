@@ -25,13 +25,14 @@
          </a>
          <% end %>
          <div id=<%= 'add-user' + group_id.to_s %> class="white-popup-block mfp-hide">
+            <!-- form gets the new user email -->
             <h1>Add a user to the group:  <%= group_name %></h1>
             <%= form_tag(controller: "groups", action: "popupadduser", method: "post") do |f| %>
             <%= label_tag "New Member Email:" %>
             <%= text_field_tag :newmemberemail, params[:newmemberemail] %>
             <%= hidden_field_tag :groupid, group_id%>
             <%= submit_tag "Add new user to group", class: "btn btn-primary" %>
-            <% end %>
+            
             <%= javascript_tag do %>
                // tell python server to send email to the user if the user does not yet exist
                var email = "<%= get_most_recent_email %>"
@@ -80,6 +81,7 @@
 
                   sendMessage(json_email);
                }
+            <% end %>
             <% end %>
          </div>
          <div id=<%= 'delete-user' + relationship_id.to_s %> class="white-popup-block mfp-hide">
