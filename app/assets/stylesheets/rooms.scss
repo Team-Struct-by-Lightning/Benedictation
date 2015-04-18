@@ -12,6 +12,17 @@
   height:100%;
 }
 
+.render-spot {
+  position: fixed;
+  top: 70px;
+  z-index: 50;
+}
+
+.calendar-frame {
+  position: relative;
+  transform: scale(.9);
+}
+
 
 
 .active-spot{

@@ -18,6 +18,10 @@ class GroupsController < ApplicationController
       render :json => chat_history
   end
 
+  def get_redis_item
+    render :json => $redis.lrange(params[:redis_key],0,-1)[params[:index].to_i]
+  end
+
   def clear_redis
     $redis.del(params[:redis_key])
     render nothing: true
