@@ -86,16 +86,16 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
 
                 if text != "":
                     if schedule_meeting(text):
-                        starttime, endtime = schedule_meeting(text)
-
+                        starttime, endtime, schedule_word = schedule_meeting(text)
+                        print 'Scheduling a meeting'
                         text = '{"attendees": [{"email": "trevor.frese@gmail.com"},{"email": "britt.k.christy@gmail.com"},{"email": "jtmurphy@gmail.com"}], \
                         "api_type": "calendar", \
                         "start": {"datetime": "' + str(starttime) + '", \
                         "timezone": "America/Los_Angeles"}, \
                         "end": {"datetime": "' + str(endtime) + '",\
                         "timezone": "America/Los_Angeles"}, \
-                        "location": "House de Gus", \
-                        "summary": "Epic Circle Jerk"}'
+                        "location": "", \
+                        "summary": "'+ str(schedule_word).capitalize() +' scheduled by Benedict"}'
                     elif "search" in text:
                         text = '{"api_type": "wikipedia", "query": "peanut butter"}'
                     elif "wolfram" in text:
