@@ -106,12 +106,12 @@ function appendNewBennyReply(options) {
 
         var name = options.name + ":"
         var benny_item_id = "benny" + options.key;
-        var benny_item_link_id = "benny-link benny_query" + options.key;
+        var benny_item_link_id = "benny_query" + options.key;
         $('.benny-list-body').addClass('benny-list-body-func');
         $('.benny-list-body').append('<div class="benny-item benny-calendar" id=' + benny_item_id +'>' +
                         '<%= image_tag("#{image_name}", class: "favicon") %>' +
                         '<p class="name-and-summary">' + name +
-                        '<a class=' + benny_item_link_id + '> ' + summary + '</a></p>' +
+                        '<a class="benny-link" id=' + benny_item_link_id + '> ' + summary + '</a></p>' +
                         '</div>');
     }
     var height = 0;

@@ -107,6 +107,7 @@ comm.on('connected', function(options) {
     new_video.style.height = "100%";
     new_video.style.margin = "0px";
     new_video.style.cursor = "move";
+    new_video.className = "video-center";
     $(new_video).draggable({
         revert: "invalid",
         opacity: .7,

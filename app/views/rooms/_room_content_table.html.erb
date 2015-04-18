@@ -1,5 +1,5 @@
 <div class='room-layout-table'>
-      
+
      <div id = "drop-spot"></div>
 
 
@@ -12,7 +12,7 @@ $(function() {
       activeClass: "active-spot",
       hoverClass: "hover-spot",
       drop: function( event, ui ) {
-       
+
         //$("#benedict-sidebar-wrapper").append($("#chat-body"));
         //$("#chat-body").animate({left:"+= 50"});
         take_spot(5, $("#" + ui.draggable.prop('id')), $("#drop-spot"));
@@ -25,4 +25,22 @@ $(function() {
       }
     });
  });
+
+
+  $('.benny-link').click(function(e){
+      var id = this.id;
+      var key = id.substr(11, id.length - 1);
+      var children = $("#drop-spot").children();
+
+      children.each(function(i, value) {
+        if ($(this).hasClass("video-center")){
+          document.getElementById(get_free_spot()).appendChild($(this));
+        }
+      });
+
+      // $('.center-div-room').hide();
+      // $('.center-div-group').hide();
+      // $('.random-button').hide();
+      // $('#center-div' + id_array[1]).show();
+  });
   </script>
