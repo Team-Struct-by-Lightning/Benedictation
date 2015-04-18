@@ -6,6 +6,7 @@ var $inputIM = $("#js-input-im");
 var $chatBody = $("#js-chat-body");
 var $speechRecBody = $("#speech-rec-body");
 var localId = comm.getLocalID();
+
 $sendButton.on('click', sendIM);
 $inputIM.on('keypress', checkEnterKey);
 // With Turbolinks pages will change without a full reload, so you can't rely on the usual window.beforepageunload event. Instead Turbolinks fires events on document to provide hooks into the lifecycle of the page.
@@ -44,18 +45,15 @@ function sendIM() {
 }
 // send your benedict query result to everyone else in the chat
 function sendBennyReply(json_api_reply) {
-    // "<% current_user.refresh_token_if_expired %>"
-    // var content = "benny" + "@@@" + "<%= current_user.name %>" + "@@@" + "<%= current_user.uid %>" + "@@@" + "<%= current_user.oauth_token %>" + "@@@" + reply;
-    // comm.send(content);
-    // append what you send to your own page WE WILL GENERATE DIVS INSTEAD
-    // appendNewBennyReply({
-    //     data: content,
-    //     callerID: "<%= current_user.name %>"
-    // });
     var url = (window.location.pathname).split("/");
     var id = String(url[url.length - 2]);
     var name = String(url[url.length - 1]);
+    var len = '<%= $redis.lrange(params[:redis_key],0,-1).length %>'
+
     var key = name + ":" + id + ":bennyhistory";
+
+    var key_and_index = String(len) + ":" + name + ":" + id + ":bennyhistory";
+
     $.ajax({
         type: "POST",
         url: "/update_redis",
@@ -65,6 +63,12 @@ function sendBennyReply(json_api_reply) {
         }
     });
     console.log("saving this json to redis: ", json_api_reply)
+    appendNewBennyReply({
+        name: "<%= current_user.name %>",
+        data: json_api_reply,
+        key: key_and_index,
+        callerID: "<%= current_user.name %>"
+     });
 }
 // click the send button when enter key is pressed
 function checkEnterKey(event) {
@@ -92,19 +96,51 @@ function appendNewIM(options) {
 }
 // stick new reply from benny onto the speechrec body
 function appendNewBennyReply(options) {
-    var message_data = options.data.split("@@@");
-    var caller_name = message_data[1];
-    var caller_uid = message_data[2];
-    var caller_token = message_data[3];
-    message_data.reverse();
-    message_data.pop();
-    message_data.pop();
-    message_data.pop();
-    message_data.pop();
-    message_data.reverse();
-    message_data.join("@@@");
-    mediaObjectSpeechrec(caller_name, caller_uid, caller_token, message_data);
+    <% image_name = "" %>
+    json_murph = JSON.parse(options.data);
+    console.log(json_murph.api_type);
+    if (json_murph.api_type == 'calendar'){
+        <% image_name = "googz.ico" %>
+        var summary = ""
+        if (json_murph.summary == ""){
+            summary = "No summary."
+        }
+        else {
+            summary = truncation(json_murph.summary, 40);
+
+        }
+        var name = options.name + ":"
+        var benny_item_id = "benny" + options.key;
+        var benny_item_link_id = "benny_query" + options.key;
+        var parameter = 'clickable("' + options.key + '")'
+        $('.benny-list-body').addClass('benny-list-body-func');
+        $('.benny-list-body').append('<div class="benny-item benny-calendar" id=' + benny_item_id +'>' +
+                        '<%= image_tag("#{image_name}", class: "favicon") %>' +
+                        '<p class="name-and-summary">' + name +
+                        '<a class="benny-link" onclick=' + parameter + ' id=' + benny_item_link_id + '> ' + summary + '</a></p>' +
+                        '</div>');
+
+        // var email = '<%= email = current_user.email %>';
+        // var email_name = email.split('@')[0];
+        // var user_timezone = '<%= user_timezone = "America/Los_Angeles" %>';
+        // var email_url = "https://www.google.com/calendar/embed?src=" + email_name + "%40gmail.com&ctz=" + user_timezone;
+        // var render_item_id = "render" + options.key;
+        // $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id +'>' +
+        //                 '<iframe src=' + email_url + 'style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>' +
+        //                 '</div>');
+
+
+    }
+    var height = 0;
+    $('.benny-item').each(function(i, value) {
+        height += parseInt($(this).height());
+    });
+    $('.benny-item').animate({
+        scrollTop: height
+    }, 'fast');
+
 }
+
 // media object to append to the page each time there's a new chat
 function mediaObjectIM(user, uid, token, message) {
     var url_string = "https://www.googleapis.com/plus/v1/people/" + uid + "?access_token=" + token;
@@ -122,17 +158,20 @@ function mediaObjectIM(user, uid, token, message) {
         }, 'fast');
     });
 }
-// media object to append to the page each time there's a new chat
-function mediaObjectSpeechrec(user, uid, token, message) {
-    var url_string = "https://www.googleapis.com/plus/v1/people/" + uid + "?access_token=" + token;
-    $.getJSON(url_string, function(user_object) {
-        $speechRecBody.append("  <div class='media' id='benny'>" + "    <div class='media-body', style='text-align: " + "left" + "'>" + "      <h4 class='media-heading'>" + "<span class='chat-message'>" + "      <img class='media-object' id='prof-pic' src=" + user_object.image.url + ">" + user + ": " + message + "</span></h4>" + "" + "    </div>" + "  </div>")
-        var height = 0;
-        $('div, #benny').each(function(i, value) {
-            height += parseInt($(this).height());
-        });
-        $('div, #benny').animate({
-            scrollTop: height
-        }, 'fast');
-    });
+
+
+function truncation(string, len){
+    if (string.length > len + 3){
+        var new_string;
+        if (string.charAt(len - 1) == ' ') {
+            new_string = string.substr(0, len-2) + "...";
+        }
+        else {
+            new_string = string.substr(0, len-1) + "...";
+        }
+        return new_string;
+    }
+    else {
+        return string;
+    }
 }

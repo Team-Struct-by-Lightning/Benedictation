@@ -10,7 +10,7 @@ import email_class
 import wave
 import os
 from random import randint
-#from nltk_test import schedule_meeting
+from nltk_brain import schedule_meeting
 import speechrec
 import socket
 import json
@@ -64,10 +64,10 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
         self.text = ""
 
     def on_message(self, message):
-        print "speech-rec received message: %s" % message
-        # if self.recording == False and message == "start":
-        #     self.recording = True
-        #     return
+        #print "speech-rec received message: %s" % message
+        if self.recording == False and message == "start":
+            self.recording = True
+            return
 
         if self.recording == True:
             # print "in recording true @@@@@"
@@ -84,21 +84,27 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
                 print "wrote to file"
                 text = self.recognizer.recognize(outfilename).lower()
 
-                if schedule_meeting(text):
-                    starttime, endtime = schedule_meeting(text)
-                    
-                    text = '{"attendees": [{"email": "trevor.frese@gmail.com"},{"email": "britt.k.christy@gmail.com"},{"email": "jtmurphy@gmail.com"}], \
-                    "api_type": "calendar", \
-                    "start": {"datetime": ' + str(starttime) + ', \
-                    "timezone": "America/Los_Angeles"}, \
-                    "end": {"datetime": ' + str(endtime) + ',\
-                    "timezone": "America/Los_Angeles"}, \
-                    "location": "House de Gus", \
-                    "summary": "Epic Circle Jerk"}'
-                if "search" in text:
-                    text = '{"api_type": "wikipedia", "query": "peanut butter"}'
-                if "wolfram" in text:
-                    text = '{"api_type": "wolfram", "query": "isla vista weather"}'
+                if text != "":
+                    if schedule_meeting(text):
+                        starttime, endtime = schedule_meeting(text)
+                        
+                        text = '{"attendees": [{"email": "trevor.frese@gmail.com"},{"email": "britt.k.christy@gmail.com"},{"email": "jtmurphy@gmail.com"}], \
+                        "api_type": "calendar", \
+                        "start": {"datetime": ' + str(starttime) + ', \
+                        "timezone": "America/Los_Angeles"}, \
+                        "end": {"datetime": ' + str(endtime) + ',\
+                        "timezone": "America/Los_Angeles"}, \
+                        "location": "House de Gus", \
+                        "summary": "Epic Circle Jerk"}'
+                    elif "search" in text:
+                        text = '{"api_type": "wikipedia", "query": "peanut butter"}'
+                    elif "wolfram" in text:
+                        text = '{"api_type": "wolfram", "query": "isla vista weather"}'
+                    else:
+                        text = '{"api_type": "No Result"}'   
+                else:
+                    text = '{"api_type": "No Result"}'
+
                 self.write_message(text)
                 os.remove(outfilename)
                 print "we have finished writing @@@@@"

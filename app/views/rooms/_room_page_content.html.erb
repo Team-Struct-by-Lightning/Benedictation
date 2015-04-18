@@ -1,184 +1,202 @@
 <!-- Page Content -->
- <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
- <script src="//code.jquery.com/jquery-1.10.2.js"></script>
-  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-        <div class="room-page-div-wrapper" id="page-wrapper">
-            <% flash.each do |message_type, message| %>
-                <div class="alert alert-<%= message_type %>"><%= message %></div>
-            <% end %>
-
-
-             <div id = 'video-sidebar'>
-              <div class="small-vids" id = "video-spot-1"> <video id="localVideo" autoplay></video> </div>
-              <div class="small-vids" id = "video-spot-2"> </div>
-              <div class="small-vids" id = "video-spot-3"> </div>
-              <div class="small-vids" id = "video-spot-4"> </div>
-              <div class="small-vids" id = "video-spot-5"> </div>
-
-             </div>
-
-
-
-
-
-
-              <div class = "benedict-zone">
-                  <%= render 'rooms/room_content_table' %>
-              </div>
-
-              <div id="benedict-sidebar-wrapper">
-                <ul class="benedict-sidebar-nav">
-                  <li class="sidebar-brand">
-                    <!--<a style="color:red;font-size:20px; font-weight: bold;" id="loading"></a>-->
-                  </li>
-
-                </ul>
-                <div id='chat-body' valign='top'>
-                  <div class='panel panel-primary' id="chat-box">
-                    <div class='panel-heading'>
-                      <a class="chat-header">Chat</a>
-                      <a class ="glyphicon glyphicon-chevron-down" id = "minimize-chat" href = "javascript:minimize('#js-chat-body');"> </a>
-                    </div>
-                    <div class='panel-body' id='js-chat-body'></div>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<div class="room-page-div-wrapper" id="page-wrapper">
+   <% flash.each do |message_type, message| %>
+   <div class="alert alert-<%= message_type %>"><%= message %></div>
+   <% end %>
+   <div id = 'video-sidebar'>
+      <div class="small-vids" id = "video-spot-1">
+         <video class="video-center" id="localVideo" autoplay></video>
+      </div>
+      <div class="small-vids" id = "video-spot-2"> </div>
+      <div class="small-vids" id = "video-spot-3"> </div>
+      <div class="small-vids" id = "video-spot-4"> </div>
+      <div class="small-vids" id = "video-spot-5"> </div>
+   </div>
+   <div class = "benedict-zone">
+      <%= render 'rooms/room_content_table' %>
+   </div>
+   <div id="benedict-sidebar-wrapper">
+      <ul class="benedict-sidebar-nav">
+         <li class="sidebar-brand">
+            <!--<a style="color:red;font-size:20px; font-weight: bold;" id="loading"></a>-->
+         </li>
+      </ul>
+      <div id='chat-body' valign='top'>
+         <div class='panel panel-primary' id="chat-box">
+            <div class='panel-heading'>
+               <a class="chat-header">Chat</a>
+               <a class ="glyphicon glyphicon-chevron-down" id = "minimize-chat" href = "javascript:minimize('#js-chat-body');"> </a>
+            </div>
+            <div class='panel-body' id='js-chat-body'></div>
+         </div>
+         <div class='input-group' id="chat-location">
+            <input class='form-control' id='js-input-im' placeholder="Send a message">
+            <span class='input-group-btn'>
+            <button class='btn btn-primary' id='js-send-button-im'>
+            </button>
+            </span>
+         </div>
+         <div id = "benedict-list">
+            <div class='panel-heading' id="benedict-query-header">
+               <a class="benedict-query-header-text"> Benedict Queries </a>
+               <a class ="glyphicon glyphicon-chevron-down" id = "minimize-query" href = "javascript:minimize('.benny-list-body');"> </a>
+            </div>
+            <div class="benny-list-body">
+               <!-- <div class="benny-item">
+                  <%= image_tag("googz.ico", class: "favicon") %>
+                  <a class="benny-query">Schedule me a meeting benedict.</a>
                   </div>
-                  <div class='input-group' id="chat-location">
-                    <input class='form-control' id='js-input-im' placeholder="Send a message">
-                    <span class='input-group-btn'>
-                      <button class='btn btn-primary' id='js-send-button-im'>
-                      </button>
-                    </span>
+                  <div class= "benny-item">
+                  <%= image_tag("wolfram.jpg", class: "favicon") %>
+                  <a class="benny-query">What is the square root of 100?</a>
                   </div>
+                  <div class= "benny-item">
+                  <%= image_tag("wikipedia.ico", class: "favicon") %>
+                  <a class="benny-query">What's a dog?</a>
+                  </div> -->
+               <%= javascript_tag do %>
+                  function clickable(me) {
+                          console.log("hola fuckers");
+                          var id = "#render-spot" + me;
+                          var children = $("#drop-spot").children();
+                          console.log(children);
+                          for(i = 0; i < children.length; i++){
+                                  if ($(children[i]).hasClass("video-center")){
+                                  var video = children[i];
+                                  document.getElementById(get_free_spot()).appendChild(children[i]);
+                                  $(video).get(0).play();
+                                  }
+                          }
+                          $('.render-spot').remove();
+                          var arr = me.split(':');
+                          var index = arr[0];
+                          arr.reverse();
+                          arr.pop();
+                          arr.reverse();
+                          var key = arr.join(":");
+                          var api_type = "";
+                          console.log(key);
+                          console.log(index);
+                          $.ajax({
+                               type: "GET",
+                               url: "/get_redis_item",
+                               dataType: "json",
+                               data: {
+                                   'redis_key': key,
+                                   'index' : index
+                               },
+                               success: function(item) {
+                                  api_type = item['api_type'];
+                                   if (api_type == 'calendar') {
+                                      var email = '<%= email = current_user.email %>';
+                                      var email_name = email.split('@')[0];
+                                      var user_timezone = '<%= user_timezone = "America/Los_Angeles" %>';
+                                      var email_url = "https://www.google.com/calendar/embed?showPrint=0&amp;showTz=0&amp;mode=WEEK&amp;height=600&amp;wkst=1&amp;bgcolor=%23ffffff&amp;src=" + email_name + "%40gmail.com&amp;color=%23711616&amp;ctz=" + user_timezone;
+                                      var render_item_id = "render" + me;
+                                      $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id +'>' +
+                                                      '  <iframe class="calendar-frame" src=' + email_url +' style=" border-width:0 " width="800" height="600" frameborder="0" scrolling="no"></iframe>' +
+                                                      '</div>');
 
-                    <div id = "benedict-list">
-                    <div class='panel-heading' id="benedict-query-header">
-                    <a class="benedict-query-header-text"> Benedict Queries </a>
-                    <a class ="glyphicon glyphicon-chevron-down" id = "minimize-query" href = "javascript:minimize('.benny-list-body');"> </a>
-                    </div>
-                    <div class="benny-list-body">
-                      <div class="benny-item">
-                        <%= image_tag("googz.ico", class: "favicon") %>
-                        <a class="benny-query">Schedule me a meeting benedict.</a>
 
-                      </div>
-                      <div class= "benny-item">
-                        <%= image_tag("wolfram.jpg", class: "favicon") %>
-                        <a class="benny-query">What is the square root of 100?</a>
-                      </div>
-                      <div class= "benny-item">
-                        <%= image_tag("wikipedia.ico", class: "favicon") %>
-                        <a class="benny-query">What's a dog?</a>
-                      </div>
-                    </div>
-                  </div>
+                                  }
+                               }
+                           });
 
-                  <!--<div id='speech-rec' >
-                    <div class='panel panel-primary'>
-                      <div class='panel-heading'>
-                        Speech Recognition
-                      </div>
-                      <div class='panel-body' id='speech-rec-body'></div>
-                    </div>
-                  </div>
-                  -->
-                </div>
-              </div>
+                  }
 
 
-            <!-- Page Content -->
-        </div>
-
-        <script>
-          var video_spots = [0,0,0,0,0,0];
-
-          $(function() {
-
-            $( "#localVideo" ).draggable({
-
-              revert: "invalid" , opacity: .7,
-
-              create: function(event, ui) {
-                $(this).draggable("option", "cursorAt", {
-                      left: Math.floor(80),
-                      top: Math.floor(60)
-                  });
-              },
-              start: function(event, ui){
-
-                if($(this).width() > 160){
-                  $(this).css("width", "160px" );
-                  $(this).css("height", "120px");
-                }
-
-              }
-
-            });
-            take_spot(0, $( "#localVideo" ));
-            $( "#video-spot-1" ).droppable({
-
-                activeClass: "active-video-spot",
-                drop: function( event, ui ) {
-                  take_spot(0, $("#" + ui.draggable.prop('id')), $("#video-spot-1"));
-                  $("#video-spot-1").append( $("#" + ui.draggable.prop('id')) ) ;
-                  $("#" + ui.draggable.prop('id')).css("top", "0%");
-                  $("#" + ui.draggable.prop('id')).css("left", "0%");
-                  $("#" + ui.draggable.prop('id')).css("width", "100%");
-                  $("#" + ui.draggable.prop('id')).get(0).play();
-
-                }
-              });
-
-             $( "#video-spot-2" ).droppable({
-
-                activeClass: "active-video-spot",
-                drop: function( event, ui ) {
-                  take_spot(1, $("#" + ui.draggable.prop('id')));
-                  $("#video-spot-2").append( $("#" + ui.draggable.prop('id')) );
-                  $("#" + ui.draggable.prop('id')).css("top", "0%");
-                  $("#" + ui.draggable.prop('id')).css("left", "0%");
-                  $("#" + ui.draggable.prop('id')).css("width", "100%");
-                  $("#" + ui.draggable.prop('id')).get(0).play();
-
-                }
-              });
-              $( "#video-spot-3" ).droppable({
-
-                activeClass: "active-video-spot",
-                drop: function( event, ui ) {
-                  take_spot(2, $("#" + ui.draggable.prop('id')));
-                  $("#video-spot-3").append( $("#" + ui.draggable.prop('id')));
-                  $("#" + ui.draggable.prop('id')).css("top", "0%");
-                  $("#" + ui.draggable.prop('id')).css("left", "0%");
-                  $("#" + ui.draggable.prop('id')).css("width", "100%");
-                  $("#" + ui.draggable.prop('id')).get(0).play();
-
-                }
-              });
-              $( "#video-spot-4" ).droppable({
-
-                activeClass: "active-video-spot",
-                drop: function( event, ui ) {
-                  take_spot(3, $("#" + ui.draggable.prop('id')));
-                  $("#video-spot-4").append( $("#" + ui.draggable.prop('id')));
-                  $("#" + ui.draggable.prop('id')).css("top", "0%");
-                  $("#" + ui.draggable.prop('id')).css("left", "0%");
-                  $("#" + ui.draggable.prop('id')).css("width", "100%");
-                  $("#" + ui.draggable.prop('id')).get(0).play();
-
-                }
-              });
-              $( "#video-spot-5" ).droppable({
-
-                activeClass: "active-video-spot",
-                drop: function( event, ui ) {
-                  take_spot(4, $("#" + ui.draggable.prop('id')));
-                  $("#video-spot-5").append( $("#" + ui.draggable.prop('id')));
-                  $("#" + ui.draggable.prop('id')).css("top", "0%");
-                  $("#" + ui.draggable.prop('id')).css("left", "0%");
-                  $("#" + ui.draggable.prop('id')).css("width", "100%");
-                  $("#" + ui.draggable.prop('id')).get(0).play();
-
-                }
-              });
-
-          });
-        </script>
+               <% end %>
+            </div>
+         </div>
+         <!--<div id='speech-rec' >
+            <div class='panel panel-primary'>
+                                    <div class='panel-heading'>
+                                                                Speech Recognition
+                                    </div>
+                                    <div class='panel-body' id='speech-rec-body'></div>
+            </div>
+            </div>
+            -->
+      </div>
+   </div>
+   <!-- Page Content -->
+</div>
+<script>
+   var video_spots = [0,0,0,0,0,0];
+   $(function() {
+       $( "#localVideo" ).draggable({
+       revert: "invalid" , opacity: .7,
+       create: function(event, ui) {
+           $(this).draggable("option", "cursorAt", {
+               left: Math.floor(80),
+               top: Math.floor(60)
+           });
+       },
+       start: function(event, ui){
+           if($(this).width() > 160){
+           $(this).css("width", "160px" );
+           $(this).css("height", "120px");
+           }
+       }
+       });
+       take_spot(0, $( "#localVideo" ));
+       $( "#video-spot-1" ).droppable({
+           activeClass: "active-video-spot",
+           drop: function( event, ui ) {
+           take_spot(0, $("#" + ui.draggable.prop('id')), $("#video-spot-1"));
+           $("#video-spot-1").append( $("#" + ui.draggable.prop('id')) ) ;
+           $("#" + ui.draggable.prop('id')).css("top", "0%");
+           $("#" + ui.draggable.prop('id')).css("left", "0%");
+           $("#" + ui.draggable.prop('id')).css("width", "100%");
+           $("#" + ui.draggable.prop('id')).get(0).play();
+           }
+       });
+       $( "#video-spot-2" ).droppable({
+           activeClass: "active-video-spot",
+           drop: function( event, ui ) {
+           take_spot(1, $("#" + ui.draggable.prop('id')));
+           $("#video-spot-2").append( $("#" + ui.draggable.prop('id')) );
+           $("#" + ui.draggable.prop('id')).css("top", "0%");
+           $("#" + ui.draggable.prop('id')).css("left", "0%");
+           $("#" + ui.draggable.prop('id')).css("width", "100%");
+           $("#" + ui.draggable.prop('id')).get(0).play();
+           }
+       });
+       $( "#video-spot-3" ).droppable({
+           activeClass: "active-video-spot",
+           drop: function( event, ui ) {
+           take_spot(2, $("#" + ui.draggable.prop('id')));
+           $("#video-spot-3").append( $("#" + ui.draggable.prop('id')));
+           $("#" + ui.draggable.prop('id')).css("top", "0%");
+           $("#" + ui.draggable.prop('id')).css("left", "0%");
+           $("#" + ui.draggable.prop('id')).css("width", "100%");
+           $("#" + ui.draggable.prop('id')).get(0).play();
+           }
+       });
+       $( "#video-spot-4" ).droppable({
+           activeClass: "active-video-spot",
+           drop: function( event, ui ) {
+           take_spot(3, $("#" + ui.draggable.prop('id')));
+           $("#video-spot-4").append( $("#" + ui.draggable.prop('id')));
+           $("#" + ui.draggable.prop('id')).css("top", "0%");
+           $("#" + ui.draggable.prop('id')).css("left", "0%");
+           $("#" + ui.draggable.prop('id')).css("width", "100%");
+           $("#" + ui.draggable.prop('id')).get(0).play();
+           }
+       });
+       $( "#video-spot-5" ).droppable({
+           activeClass: "active-video-spot",
+           drop: function( event, ui ) {
+           take_spot(4, $("#" + ui.draggable.prop('id')));
+           $("#video-spot-5").append( $("#" + ui.draggable.prop('id')));
+           $("#" + ui.draggable.prop('id')).css("top", "0%");
+           $("#" + ui.draggable.prop('id')).css("left", "0%");
+           $("#" + ui.draggable.prop('id')).css("width", "100%");
+           $("#" + ui.draggable.prop('id')).get(0).play();
+           }
+       });
+   });
+</script>

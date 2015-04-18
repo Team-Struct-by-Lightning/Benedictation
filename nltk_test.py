@@ -4,6 +4,7 @@ from nltk.tag import pos_tag, map_tag
 from stat_parser import Parser, display_tree
 from timex import time_tag
 
+
 parser = Parser()	# Build this outside the fn. so it doesn't rebuild each time
 cal = parsedatetime.Calendar()
 
@@ -15,11 +16,13 @@ def test(sentence):
 # Output: a date-time, or False if none was found.
 def schedule_meeting(sentence):
 
+
 	schedule_verbs = ['set', 'make', 'create', 'get', 'schedule', 'appoint', 
 					 'slate', 'arrange', 'organize', 'construct', 'coordinate',
 					 'establish', 'form', 'formulate', 'run', 'compose', 'have', 'meet']
 	schedule_nouns = ['appointment', 'meeting','meetup', 'reservation', 'session'
 					 'talk', 'call', 'powwow', 'meet', 'rendezvous', 'event', 'conference']
+
 
 	tree = parser.parse(sentence)
 	
@@ -61,3 +64,4 @@ if __name__ == "__main__":
 	#run_tests('example_sentences.txt')
 	test("Schedule a meeting tomorrow.")
 	print schedule_meeting("Schedule a meeting tomorrow.")
+

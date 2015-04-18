@@ -8,9 +8,6 @@ import json
 import os
 import yaml
 
-f = open('python_api.yml')
-yml_dict_speech = yaml.safe_load(f)
-f.close()
 
 class SpeechRecognizer():
     def __init__(self):
@@ -28,11 +25,14 @@ class SpeechRecognizer():
 
     def _rec_googleapi(self, input):
         print "in googleapi func @@@@@@@@"
+        f = open('python_api.yml')
+        yml_dict_speech = yaml.safe_load(f)
+        f.close()
         APIKEY = yml_dict_speech['google_speech']['api_key']
         audiotools.open(input).convert("output.flac", audiotools.FlacAudio)
         headers = {"Content-Type": "audio/x-flac;rate=44100"}
         speechfile = open("output.flac","r")
-        target = "/speech-api/v2/recognize?output=json&lang=en-us&key=" + APIKEY
+        target = "/speech-api/v2/recognize?output=json&lang=en-us&key=" + str(APIKEY)
         request = self.connection.request("POST",target,speechfile,headers)
 
         hyp = ""
@@ -40,21 +40,22 @@ class SpeechRecognizer():
         response = self.connection.getresponse()
         if response.status == 200:
             jdata = response.read()
-
+            print jdata
             lines = str(jdata).splitlines()
             if(len(lines) > 1):
                 json_result = lines[1]
+
                 try:
                     decoded = json.loads(json_result)
                     # pretty printing of json-formatted string
-                    # print json.dumps(decoded, sort_keys=True, indent=4)
+                    print json.dumps(decoded, sort_keys=True, indent=4)
                     hyp = decoded['result'][0]['alternative'][0]['transcript']
                     print "speech rec result: ", hyp
                 except (ValueError, KeyError, TypeError):
                     print "JSON format error"
 
         speechfile.close()
-        os.remove("output.flac")
+        #os.remove("output.flac")
         return hyp
 
 

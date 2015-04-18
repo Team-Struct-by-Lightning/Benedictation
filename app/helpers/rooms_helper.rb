@@ -80,7 +80,6 @@ module RoomsHelper
 	end
 
 	def calendar_json(json_hash)
-		puts 'COMING IN HERE'
 		attendee_array = []
 		json_hash['attendees'].each do |email|
 			attendee_array << email['email']
@@ -160,7 +159,6 @@ module RoomsHelper
 																						'application/json'})
 
 		print result.data.id
-		puts 'HIII FINISHED ADDING IT'
 	end
 
 	def undo_calendar_event(id)

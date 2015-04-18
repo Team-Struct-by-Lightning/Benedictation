@@ -1,5 +1,5 @@
 <div class='room-layout-table'>
-      
+
      <div id = "drop-spot"></div>
 
 
@@ -12,9 +12,15 @@ $(function() {
       activeClass: "active-spot",
       hoverClass: "hover-spot",
       drop: function( event, ui ) {
-       
+        $('.render-spot').remove();
         //$("#benedict-sidebar-wrapper").append($("#chat-body"));
         //$("#chat-body").animate({left:"+= 50"});
+        var children = $('#drop-spot').children();
+        if (children.size() > 0) {
+                    var video = children[0];
+                    document.getElementById(get_free_spot()).appendChild(video);
+                    $(video).get(0).play();
+        }
         take_spot(5, $("#" + ui.draggable.prop('id')), $("#drop-spot"));
         $("#drop-spot").append( $("#" + ui.draggable.prop('id')));
         $("#" + ui.draggable.prop('id')).css("top", "0%");
@@ -22,7 +28,10 @@ $(function() {
         $("#" + ui.draggable.prop('id')).animate({ width: "100%", height: "100%" });
         $("#" + ui.draggable.prop('id')).get(0).play();
 
+
       }
     });
  });
+
+
   </script>
