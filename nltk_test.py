@@ -3,8 +3,7 @@ from nltk.tag import pos_tag, map_tag
 from stat_parser import Parser, display_tree
 
 from timex import time_tag
-#nltk.download()
-
+nltk.download('all')
 
 #sentence = """ We should schedule a meeting for January 28th, 2015"""
 
@@ -23,9 +22,10 @@ def find_nouns(sentence):
 	return return_list
 
 def schedule_meeting(sentence):
+	print "we are checking if we can schedule a meeting!"
 	tokens = nltk.word_tokenize(sentence)
 	tagged = nltk.pos_tag(tokens)
-	schedule_verbs = ['set', 'make', 'create', 'get', 'schedule', 'appoint', 
+	schedule_verbs = ['set', 'make', 'create', 'get', 'schedule', 'appoint',
 					 'slate', 'arrange', 'organize', 'construct', 'coordinate',
 					 'establish', 'form', 'formulate', 'run', 'compose', 'have', 'meet']
 	schedule_nouns = ['appointment', 'meeting','meetup', 'reservation', 'session'
@@ -52,7 +52,7 @@ def schedule_meeting(sentence):
 		if(index + 2 < len(simplifiedTags)):
 			next_word, next_tag = simplifiedTags[index + 1]
 			next_next_word, next_next_tag = simplifiedTags[index + 2]
-			#the idea is capture case of verb -> determinate article -> noun 
+			#the idea is capture case of verb -> determinate article -> noun
 			if word in schedule_verbs and tag == 'VERB' and \
 			next_tag == 'DET' and \
 			next_next_word in schedule_nouns and next_next_tag == 'NOUN':
