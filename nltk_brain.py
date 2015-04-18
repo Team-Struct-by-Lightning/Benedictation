@@ -2,7 +2,6 @@ import nltk
 import parsedatetime
 from nltk.tag import pos_tag, map_tag
 from stat_parser import Parser, display_tree
-from timex import time_tag
 from time import mktime
 from datetime import datetime , timedelta
 
@@ -17,14 +16,14 @@ def test(sentence):
 # Output: a date-time, or False if none was found.
 def schedule_meeting(sentence):
 
-	schedule_verbs = ['set', 'make', 'create', 'get', 'schedule', 'appoint', 
+	schedule_verbs = ['set', 'make', 'create', 'get', 'schedule', 'appoint',
 					 'slate', 'arrange', 'organize', 'construct', 'coordinate',
 					 'establish', 'form', 'formulate', 'run', 'compose', 'have', 'meet']
 	schedule_nouns = ['appointment', 'meeting','meetup', 'reservation', 'session'
 					 'talk', 'call', 'powwow', 'meet', 'rendezvous', 'event', 'conference']
 
 	tree = parser.parse(sentence)
-	
+
 	for element in [tree] + [e for e in tree]: # Include the root element in the for loop
 		if 'VP' in element.label() or 'SQ' in element.label():
 			#print element
@@ -54,7 +53,7 @@ def time_converter(time_struct):
 	starttime = datetime.fromtimestamp(mktime(time_struct[0]))
 	endtime = starttime + timedelta(hours = 1)
 	return starttime.strftime('%Y-%m-%dT%H:%M:%S'), endtime.strftime('%Y-%m-%dT%H:%M:%S')
-	
+
 
 
 def run_tests(filename):
@@ -65,7 +64,7 @@ def run_tests(filename):
 		print schedule_meeting(line)
 		print
 		i += 1
-	testfile.close()	
+	testfile.close()
 
 if __name__ == "__main__":
 	run_tests('example_sentences.txt')

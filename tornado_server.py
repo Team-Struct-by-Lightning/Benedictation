@@ -87,12 +87,12 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
                 if text != "":
                     if schedule_meeting(text):
                         starttime, endtime = schedule_meeting(text)
-                        
+
                         text = '{"attendees": [{"email": "trevor.frese@gmail.com"},{"email": "britt.k.christy@gmail.com"},{"email": "jtmurphy@gmail.com"}], \
                         "api_type": "calendar", \
-                        "start": {"datetime": ' + str(starttime) + ', \
+                        "start": {"datetime": "' + str(starttime) + '", \
                         "timezone": "America/Los_Angeles"}, \
-                        "end": {"datetime": ' + str(endtime) + ',\
+                        "end": {"datetime": "' + str(endtime) + '",\
                         "timezone": "America/Los_Angeles"}, \
                         "location": "House de Gus", \
                         "summary": "Epic Circle Jerk"}'
@@ -101,7 +101,7 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
                     elif "wolfram" in text:
                         text = '{"api_type": "wolfram", "query": "isla vista weather"}'
                     else:
-                        text = '{"api_type": "No Result"}'   
+                        text = '{"api_type": "No Result"}'
                 else:
                     text = '{"api_type": "No Result"}'
 
