@@ -10,7 +10,7 @@ import email_class
 import wave
 import os
 from random import randint
-from nltk_test import schedule_meeting
+from nltk_brain import schedule_meeting
 import speechrec
 import socket
 import json
@@ -83,19 +83,28 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
 
                 print "wrote to file"
                 text = self.recognizer.recognize(outfilename).lower()
+
                 if text != "":
                     if schedule_meeting(text):
-                    #if "schedule" in text:
-                        print 'adding to the calender'
-                        text = '{"attendees": [{"email": "trevor.frese@gmail.com"},{"email": "britt.k.christy@gmail.com"},{"email": "kevin.malta@gmail.com"}, {"email": "evannc@gmail.com"}],"api_type": "calendar","start": {"datetime": "2015-04-18T14:00:00","timezone": "America/Los_Angeles"},"end": {"datetime": "2015-04-18T15:00:00","timezone": "America/Los_Angeles"},"location": "Bagel Cafe","summary": "Team Struct by Lightning scrum meeting"}'
+                        starttime, endtime = schedule_meeting(text)
+                        
+                        text = '{"attendees": [{"email": "trevor.frese@gmail.com"},{"email": "britt.k.christy@gmail.com"},{"email": "jtmurphy@gmail.com"}], \
+                        "api_type": "calendar", \
+                        "start": {"datetime": ' + str(starttime) + ', \
+                        "timezone": "America/Los_Angeles"}, \
+                        "end": {"datetime": ' + str(endtime) + ',\
+                        "timezone": "America/Los_Angeles"}, \
+                        "location": "House de Gus", \
+                        "summary": "Epic Circle Jerk"}'
                     elif "search" in text:
                         text = '{"api_type": "wikipedia", "query": "peanut butter"}'
                     elif "wolfram" in text:
                         text = '{"api_type": "wolfram", "query": "isla vista weather"}'
                     else:
-                        text = '{"api_type": "No Result"}'
+                        text = '{"api_type": "No Result"}'   
                 else:
                     text = '{"api_type": "No Result"}'
+
                 self.write_message(text)
                 os.remove(outfilename)
                 print "we have finished writing @@@@@"
