@@ -85,8 +85,16 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
                 text = self.recognizer.recognize(outfilename).lower()
 
                 if schedule_meeting(text):
-                    print 'adding to the calender'
-                    text = '{"attendees": [{"email": "trevor.frese@gmail.com"},{"email": "britt.k.christy@gmail.com"},{"email": "jtmurphy@gmail.com"}],"api_type": "calendar","start": {"datetime": "2015-04-13T10:00:00","timezone": "America/Los_Angeles"},"end": {"datetime": "2015-04-15T11:00:00","timezone": "America/Los_Angeles"},"location": "House de Gus","summary": "Epic Circle Jerk"}'
+                    starttime, endtime = schedule_meeting(text)
+                    
+                    text = '{"attendees": [{"email": "trevor.frese@gmail.com"},{"email": "britt.k.christy@gmail.com"},{"email": "jtmurphy@gmail.com"}], \
+                    "api_type": "calendar", \
+                    "start": {"datetime": ' + str(starttime) + ', \
+                    "timezone": "America/Los_Angeles"}, \
+                    "end": {"datetime": ' + str(endtime) + ',\
+                    "timezone": "America/Los_Angeles"}, \
+                    "location": "House de Gus", \
+                    "summary": "Epic Circle Jerk"}'
                 if "search" in text:
                     text = '{"api_type": "wikipedia", "query": "peanut butter"}'
                 if "wolfram" in text:
