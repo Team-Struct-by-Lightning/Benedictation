@@ -1,4 +1,5 @@
 import nltk
+import parsedatetime
 from nltk.tag import pos_tag, map_tag
 from stat_parser import Parser, display_tree
 
@@ -34,17 +35,22 @@ def schedule_meeting(sentence):
 	retval = False
 	parser = Parser()
 	tree = parser.parse(sentence)
-	#print tree
+	cal = parsedatetime.Calendar()
 
-	for element in tree:
-		if element.label() == 'VP':
+	#print cal.parse("tomorrow")
+	
+	print tree
+
+	for element in [tree] + [e for e in tree]: #needed to include root
+		if 'VP' in element.label():
 			for verb_subtrees in element.subtrees():
-				if verb_subtrees.label() == 'VB' or verb_subtrees.label() == 'VBZ' \
-				or verb_subtrees.label() == 'VBP'or verb_subtrees.label() == 'VBG' \
+				if 'VB' in verb_subtrees.label() \
 				and any(x in verb_subtrees.leaves() for x in schedule_verbs):
+
 					for noun_subtrees in element.subtrees():
 						if noun_subtrees.label() == 'NP' and any(x in noun_subtrees.leaves() for x in schedule_nouns):
 							print "True"
+
 
 
 	for index, word_and_tag in enumerate(simplifiedTags):
@@ -62,5 +68,10 @@ def schedule_meeting(sentence):
 
 	return retval
 
+#def tree_parser(tree):
+#	if 'VP' in tree.label():
 
-schedule_meeting("Can you set up a powwow for me")
+
+
+schedule_meeting("Schedule a meeting for tomorrow at 11")
+#schedule_meeting("can you schedule a meeting for tomorrow")
