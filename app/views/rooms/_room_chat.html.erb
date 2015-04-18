@@ -50,7 +50,9 @@ function sendBennyReply(json_api_reply) {
     var name = String(url[url.length - 1]);
     var len = '<%= $redis.lrange(params[:redis_key],0,-1).length %>'
 
-    var key = String(len) + ":" + name + ":" + id + ":bennyhistory";
+    var key = name + ":" + id + ":bennyhistory";
+
+    var key_and_index = String(len) + ":" + name + ":" + id + ":bennyhistory";
 
     $.ajax({
         type: "POST",
@@ -64,7 +66,7 @@ function sendBennyReply(json_api_reply) {
     appendNewBennyReply({
         name: "<%= current_user.name %>",
         data: json_api_reply,
-        key: key,
+        key: key_and_index,
         callerID: "<%= current_user.name %>"
      });
 }
