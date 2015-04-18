@@ -87,7 +87,7 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
                 #if schedule_meeting(text):
                 if "schedule" in text:
                     print 'adding to the calender'
-                    text = '{"attendees": [{"email": "trevor.frese@gmail.com"},{"email": "britt.k.christy@gmail.com"},{"email": "jtmurphy@gmail.com"}],"api_type": "calendar","start": {"datetime": "2015-04-13T10:00:00","timezone": "America/Los_Angeles"},"end": {"datetime": "2015-04-15T11:00:00","timezone": "America/Los_Angeles"},"location": "House de Gus","summary": "Epic Circle Jerk"}'
+                    text = '{"attendees": [{"email": "trevor.frese@gmail.com"},{"email": "britt.k.christy@gmail.com"},{"email": "jtmurphy@gmail.com"}],"api_type": "calendar","start": {"datetime": "2015-04-13T10:00:00","timezone": "America/Los_Angeles"},"end": {"datetime": "2015-04-15T11:00:00","timezone": "America/Los_Angeles"},"location": "House de Gus","summary": "Epic Circle Jerk is gonna be the death of all of us"}'
                 if "search" in text:
                     text = '{"api_type": "wikipedia", "query": "peanut butter"}'
                 if "wolfram" in text:
