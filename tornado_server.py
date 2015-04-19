@@ -60,6 +60,10 @@ class EmailWSHandler(tornado.websocket.WebSocketHandler):
 # Handle audio data sent to /recognize.
 class SpeechWSHandler(tornado.websocket.WebSocketHandler):
 
+    def __init__(self):
+        self.attendees = ""
+        super(SpeechWSHandler, self).__init__()
+
     def open(self):
         print "New connection to speech recognizer opened"
         self.recognizer = speechrec.SpeechRecognizer()
@@ -71,8 +75,7 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
         if "@^__^@" in str(message):
             user_email = str(message)
             user_email = user_email[6:]
-            attendees[self] = user_email 
-            #print attendees
+            self.attendees = user_email
             return
         
         outfilename = 'output' + str(randint(0,500)) + '.wav'
@@ -87,8 +90,8 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
             if schedule_meeting(text):
                 starttime, endtime, schedule_word = schedule_meeting(text)
                 print 'Scheduling a meeting'
-                print str(attendees[self])
-                text = '{"attendees": [{"email": "' + str(attendees[self]) + '" }], \
+                print self.attendees
+                text = '{"attendees": [{"email": "' + self.attendees + '" }], \
                 "api_type": "calendar", \
                 "start": {"datetime": "' + str(starttime) + '", \
                 "timezone": "America/Los_Angeles"}, \
