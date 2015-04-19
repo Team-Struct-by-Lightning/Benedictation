@@ -17,7 +17,6 @@ import speechrec
 import socket
 import json
 
-attendees = {}
 
 class WSHandler(tornado.websocket.WebSocketHandler):
     def open(self):
@@ -61,9 +60,6 @@ class EmailWSHandler(tornado.websocket.WebSocketHandler):
 # Handle audio data sent to /recognize.
 class SpeechWSHandler(tornado.websocket.WebSocketHandler):
 
-    def __init__(self):
-        self.attendees = ""
-        super(SpeechWSHandler, self).__init__()
 
     def open(self):
         print "New connection to speech recognizer opened"
@@ -73,11 +69,6 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
         self.text = ""
 
     def on_message(self, message):
-        if "@^__^@" in str(message):
-            user_email = str(message)
-            user_email = user_email[6:]
-            self.attendees = user_email
-            return
 
         outfilename = 'output' + hex(random.getrandbits(128))[2:-1] + '.wav'
         f = open(outfilename , 'w')
@@ -91,8 +82,7 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
             if schedule_meeting(text):
                 starttime, endtime, schedule_word = schedule_meeting(text)
                 print 'Scheduling a meeting'
-                print self.attendees
-                text = '{"attendees": [{"email": "' + self.attendees + '" }], \
+                text = '{"attendees": [{"email": "trevor.frese@gmail.com" }], \
                 "api_type": "calendar", \
                 "start": {"datetime": "' + str(starttime) + '", \
                 "timezone": "America/Los_Angeles"}, \
@@ -114,7 +104,6 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
         print "we have finished writing @@@@@"
 
     def on_close(self):
-        #del attendees[self]
         print "Connection closed."
 
     def check_origin(self,origin):
@@ -124,7 +113,6 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
 application = tornado.web.Application([
     (r"/hello", WSHandler),
     (r"/recognize", SpeechWSHandler),
-    #(r"/groups", GroupsWSHandler),
     (r"/email", EmailWSHandler)
 ])
 
