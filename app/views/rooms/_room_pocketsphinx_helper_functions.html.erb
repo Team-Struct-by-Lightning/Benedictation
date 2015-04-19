@@ -2,41 +2,31 @@
 ////////////////////////////====POCKETSPHINX====///////////////////////////////
 //////////////////////////////Helper Functions/////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-
 // This file and _room_icecomm_helper_functions are dependent on each other.
 // They both get rendered into the final, anyway, so it shouldn't matter, but it's messy.
 // TODO: wrap them in self-executing functions as modules do?
-
 var recognizer, recorder, speechRegRec, callbackManager, audioContext;
 var recorderReady = recognizerReady = false;
-var ws;
-
-
 var ready_to_record = 0;
 var bdown = 0;
 var count_trigger = 0;
 var count_b = 0;
-
 onLoadText = "Please wait";
-
 append_wait = "";
 append_record = "";
 append_analyzing = "";
-
-temp_wait  = 0;
+temp_wait = 0;
 temp_record = 0;
 temp_analyzing = 0;
-
 first_ready_to_record = true;
-
 intervalWait = setInterval(function() {
-    switch(ready_to_record){
+    switch (ready_to_record) {
         case 0:
             $("#loading").html("Please wait" + append_wait);
             append_wait = append_wait + ".";
             temp_wait++;
-            if(temp_wait == 4) {
-               append_wait = "";
+            if (temp_wait == 4) {
+                append_wait = "";
                 temp_wait = 0;
             }
             break;
@@ -44,8 +34,8 @@ intervalWait = setInterval(function() {
             $("#loading").html("Recording" + append_record);
             append_record = append_record + ".";
             temp_record++;
-            if(temp_record == 4) {
-               append_record = "";
+            if (temp_record == 4) {
+                append_record = "";
                 temp_record = 0;
             }
             break;
@@ -54,8 +44,8 @@ intervalWait = setInterval(function() {
             $("#loading").html("Analyzing" + append_analyzing);
             append_analyzing = append_analyzing + ".";
             temp_analyzing++;
-            if(temp_analyzing == 4) {
-               append_analyzing = "";
+            if (temp_analyzing == 4) {
+                append_analyzing = "";
                 temp_analyzing = 0;
             }
             break;
@@ -66,27 +56,19 @@ intervalWait = setInterval(function() {
             temp_record = 0;
             temp_analyzing = 0;
             break;
-        }
-
+    }
 }, 500);
-
-
-
 // Record speech for 10s and export it as .wav to a server every 1s.
 function recordSpeech() {
-
     // Some JavaScript trickery: functions are objects, so they can have variables.
     // In this case we simulate a "private static" variable indicating whether recording is already started or not;
     // if it is, we don't do anything.
-    if( typeof recordSpeech.recording === 'undefined' ) {   // If it's not yet initialized:
-        recordSpeech.recording = 0;                        // Initialize it.
+    if (typeof recordSpeech.recording === 'undefined') { // If it's not yet initialized:
+        recordSpeech.recording = 0; // Initialize it.
     }
-    if( recordSpeech.recording == 1 ) {
+    if (recordSpeech.recording == 1) {
         return; // Don't start recording if we are already.
     }
-
     speechRegRec.record(); //start speechrec recorder
-
     recordSpeech.recording = 1; // Set the flag indicating we're recording.
 }
-
