@@ -141,7 +141,7 @@ function appendNewBennyReply(options) {
     $('.benny-item').each(function(i, value) {
         height += parseInt($(this).height());
     });
-    $('.benny-item').animate({
+    $('.benny-list-body').animate({
         scrollTop: height
     }, 'fast');
 
