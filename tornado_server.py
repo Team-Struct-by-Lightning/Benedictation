@@ -10,6 +10,7 @@ import speechrec    # Put speechrec.py in the same folder
 import email_class
 import wave
 import os
+import random
 from random import randint
 from nltk_brain import schedule_meeting
 import speechrec
@@ -77,8 +78,8 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
             user_email = user_email[6:]
             self.attendees = user_email
             return
-        
-        outfilename = 'output' + str(randint(0,500)) + '.wav'
+
+        outfilename = 'output' + hex(random.getrandbits(128))[2:-1] + '.wav'
         f = open(outfilename , 'w')
         f.write(message)
         f.close()
