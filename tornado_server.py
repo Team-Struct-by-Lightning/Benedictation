@@ -64,50 +64,38 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
         self.text = ""
 
     def on_message(self, message):
-        #print "speech-rec received message: %s" % message
-        if self.recording == False and message == "start":
-            self.recording = True
-            return
+        outfilename = 'output' + str(randint(0,500)) + '.wav'
+        f = open(outfilename , 'w')
+        f.write(message)
+        f.close()
 
-        if self.recording == True:
-            # print "in recording true @@@@@"
-            if message == "stop":
-                # print "we are about to stop @@@@@"
-                self.recording = False
-            elif message != "start":
-                # print "we are about to write @@@@@"
-                outfilename = 'output' + str(randint(0,500)) + '.wav'
-                f = open(outfilename , 'w')
-                f.write(message)
-                f.close()
+        print "wrote to file"
+        text = self.recognizer.recognize(outfilename).lower()
 
-                print "wrote to file"
-                text = self.recognizer.recognize(outfilename).lower()
+        if text != "":
+            if schedule_meeting(text):
+                starttime, endtime, schedule_word = schedule_meeting(text)
+                print 'Scheduling a meeting'
+                text = '{"attendees": [{"email": "trevor.frese@gmail.com"},{"email": "britt.k.christy@gmail.com"},{"email": "jtmurphy@gmail.com"}], \
+                "api_type": "calendar", \
+                "start": {"datetime": "' + str(starttime) + '", \
+                "timezone": "America/Los_Angeles"}, \
+                "end": {"datetime": "' + str(endtime) + '",\
+                "timezone": "America/Los_Angeles"}, \
+                "location": "", \
+                "summary": "'+ str(schedule_word).capitalize() +' scheduled by Benedict"}'
+            elif "search" in text:
+                text = '{"api_type": "wikipedia", "query": "peanut butter"}'
+            elif "wolfram" in text:
+                text = '{"api_type": "wolfram", "query": "isla vista weather"}'
+            else:
+                text = '{"api_type": "No Result"}'
+        else:
+            text = '{"api_type": "No Result"}'
 
-                if text != "":
-                    if schedule_meeting(text):
-                        starttime, endtime, schedule_word = schedule_meeting(text)
-                        print 'Scheduling a meeting'
-                        text = '{"attendees": [{"email": "trevor.frese@gmail.com"},{"email": "britt.k.christy@gmail.com"},{"email": "jtmurphy@gmail.com"}], \
-                        "api_type": "calendar", \
-                        "start": {"datetime": "' + str(starttime) + '", \
-                        "timezone": "America/Los_Angeles"}, \
-                        "end": {"datetime": "' + str(endtime) + '",\
-                        "timezone": "America/Los_Angeles"}, \
-                        "location": "", \
-                        "summary": "'+ str(schedule_word).capitalize() +' scheduled by Benedict"}'
-                    elif "search" in text:
-                        text = '{"api_type": "wikipedia", "query": "peanut butter"}'
-                    elif "wolfram" in text:
-                        text = '{"api_type": "wolfram", "query": "isla vista weather"}'
-                    else:
-                        text = '{"api_type": "No Result"}'
-                else:
-                    text = '{"api_type": "No Result"}'
-
-                self.write_message(text)
-                os.remove(outfilename)
-                print "we have finished writing @@@@@"
+        self.write_message(text)
+        os.remove(outfilename)
+        print "we have finished writing @@@@@"
 
 
     def on_close(self):

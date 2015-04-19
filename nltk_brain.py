@@ -102,7 +102,6 @@ def run_tests(filename):
 	testfile.close()
 
 if __name__ == "__main__":
-	run_tests('example_sentences.txt')
+	#run_tests('example_sentences.txt')
 	#print schedule_meeting("Set up a meeting at 8 for tomorrow ")
-	#print cal.nlp("tomorrow at 5 pm ")
-	#print schedule_meeting("Schedule a meeting tomorrow at 4 pm")
+	print parser.parse("Can you schedule a meeting for tomorrow at 3 pm?")

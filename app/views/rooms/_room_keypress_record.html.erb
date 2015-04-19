@@ -40,7 +40,6 @@ function tell(evt) {
                 speechRegRec.clear();
                 ws.send(blob);
                 console.log("sending blob: ",blob);
-                ws.send("stop");    // Tells the server to stop listening and start analyzing
             });
         }
     }
