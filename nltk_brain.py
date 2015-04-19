@@ -40,48 +40,34 @@ def schedule_meeting(sentence):
 					 'establish', 'form', 'formulate', 'run', 'compose', 'have', 'meet']
 	schedule_nouns = ['appointment', 'meeting','meetup', 'reservation', 'session'
 					 'talk', 'call', 'powwow', 'meet', 'rendezvous', 'event', 'conference']
-
-
-
 	
 	sentence = oclock_remover(sentence)
 
 	tree = parser.parse(sentence)
 	schedule_word = "Meeting"
-	#print tree
+
 	for element in [tree] + [e for e in tree]: # Include the root element in the for loop
 		
 		if 'VP' in element.label() or 'SQ' in element.label():
-			#print element
 			for verb_subtree in element.subtrees():
 				# Check if the VP contains a VB that is in the schedule_verbs.
 				# If it does, check if the VP contains a PP with a datetime,
 				# or a NP with a datetime.
 				if 'VB' in verb_subtree.label() \
 				and any(x in verb_subtree.leaves() for x in schedule_verbs):
-					for subtree in element.subtrees():
-						#print subtree
-						if 'NP' in subtree.label() and any(x in subtree.leaves() for x in schedule_nouns):
-							# This section should ALWAYS return something. If it can't
-							# figure out a time on its own, we should default to "right now"
 
+					# Find the "schedule word" in a NP, if one exists
+					for subtree in element.subtrees():
+						if 'NP' in subtree.label() and any(x in subtree.leaves() for x in schedule_nouns):
 							for x in subtree.leaves():
 								if x in schedule_nouns:
 									schedule_word = x
-							
-							words = ' '.join(subtree.leaves())
-							words = am_pm_adder(words)
 
-							#print words
-							if cal.parse(words)[1] != 0:
-								return time_converter(cal.parse(words), schedule_word)
-						else:
-							if subtree.label() == 'PP' or subtree.label() == 'QP':
-								words = ' '.join(subtree.leaves())
-								#print words
-								if cal.parse(words)[1] != 0:
-									#print cal.parse(words)[1]
-									return time_converter(cal.parse(words), schedule_word)
+					# Run the datetime parser on the entire sentence
+					words = ' '.join(element.leaves())	# Operate on the whole VP
+					words = am_pm_adder(words)
+					if cal.parse(words)[1] != 0:
+						return time_converter(cal.parse(words), schedule_word)
 
 	return None
 
@@ -102,6 +88,4 @@ def run_tests(filename):
 	testfile.close()
 
 if __name__ == "__main__":
-	#run_tests('example_sentences.txt')
-	#print schedule_meeting("Set up a meeting at 8 for tomorrow ")
-	print parser.parse("Can you schedule a meeting for tomorrow at 3 pm?")
+	run_tests('example_sentences.txt')
