@@ -4,6 +4,7 @@ import tornado.websocket
 import tornado.httpserver
 from json import loads
 from urllib2 import urlopen
+import httplib
 # from nltk_test import find_nouns
 import speechrec    # Put speechrec.py in the same folder
 import email_class
@@ -96,7 +97,6 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
         self.write_message(text)
         os.remove(outfilename)
         print "we have finished writing @@@@@"
-
 
     def on_close(self):
         print "Connection closed."

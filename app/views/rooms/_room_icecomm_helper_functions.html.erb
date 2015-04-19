@@ -3,7 +3,7 @@ var app_id = "<%= icecomm['app_id'] %>";
 var comm = new Icecomm(app_id, {
     debug: true
 });
-comm.connect(window.location.pathname);
+var websocket; // our speech recognition websocket
 // Set up the WebSocket
 var myLocation = location.host;
 var port = "8888";
@@ -13,10 +13,20 @@ if (location.protocol !== "https:") {
     myLocation = myLocation.split(":")[0];
 }
 var uri = "/recognize";
-console.log("connecting to this websocket: " + websocketprotocol + myLocation + ":" + port + uri);
-ws = new WebSocket(websocketprotocol + myLocation + ":" + port + uri);
+websocket = new WebSocket(websocketprotocol + myLocation + ":" + port + uri); // initialize for first time
+// WEBSOCKET FUNCTIONS
+$(document).ready(function() {
+    setInterval(openWebSocket, 5000);
+});
+
+function openWebSocket() {
+    if (websocket.readyState === undefined || websocket.readyState > 1) {
+        websocket = new WebSocket(websocketprotocol + myLocation + ":" + port + uri);
+        console.log("connecting to the speech recognition websocket: " + websocketprotocol + myLocation + ":" + port + uri);
+    }
+}
 // get benedict's reply from the python server
-ws.onmessage = function(e) {
+websocket.onmessage = function(e) {
     console.log("data from server: ", e.data);
     if (e.data != "") {
         try {
@@ -37,8 +47,19 @@ ws.onmessage = function(e) {
     recordSpeech.recording = 0;
     count_b = 0;
 }
+websocket.onopen = function() {
+    console.log("websocket speech recognition connection opened.");
+};
+websocket.onclose = function() {
+    console.log("websocket speech recognition connection closed. Attempting to reopen...");
+};
+websocket.onerror = function(error) {
+    console.log("websocket speech recognition error: " + error);
+};
 // Initialize Icecomm
+comm.connect(window.location.pathname);
 console.log("Initialized Icecomm, waiting for user media permissions...");
+//ICECOMM FUNCTIONS
 comm.on('local', function(options) {
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
     audioContext = new AudioContext();
