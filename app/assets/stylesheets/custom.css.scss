@@ -14,6 +14,69 @@ html {
   z-index: -1;
 }
 
+.navbar-right {
+  width: 343px;
+}
+
+#chat-list-head {
+  position: relative;
+  left: 0px;
+}
+
+
+#home-list-head {
+  position: relative;
+  left: 16px;
+}
+
+#out-home-list-head {
+  position: relative;
+  left: 183px;
+}
+
+#log-in-list-head {
+  position: relative;
+  left: 202px;
+  height: 50px;
+  width: 67px;
+}
+
+#sign_in {
+  position: relative;
+  top: 8px;
+}
+
+#log-in-icon {
+  position: relative;
+  top: -17px;
+  left: 1px;
+  word-spacing: -10px;
+  white-space: nowrap;
+  padding: 0px;
+  height: 23px;
+}
+
+#log-in-header-text {
+  position: relative;
+  top: -24px;
+  left: 21px;
+}
+
+#help-list-head {
+  position: relative;
+  left: 33px;
+}
+
+#out-help-list-head {
+  position: relative;
+  left: 33px;
+}
+
+#log-out-list-head {
+  position: relative;
+  left: 50px;
+}
+
 #background-div{
   background-color: #777777;
 }
@@ -44,6 +107,13 @@ div#room-background {
   left: 20px;
 }
 
+#out-home-header-text {
+  position: relative;
+  top: -24px;
+  left: 20px;
+}
+
+
 #help-header-text {
   position: relative;
   top: -25px;
@@ -61,26 +131,49 @@ div#room-background {
 
 #home-path-glyph {
   position: relative;
-  left: -12px;
+  left: 0px;
   top: 8px;
+}
+
+#out-home-path-glyph {
+  position: relative;
+  left: 0px;
+  top: 8px;
+}
+
+#help-path-glyph {
+  position: relative;
+  left: 0px;
+  top: 10px
 }
 
 #chat-path-glyph {
   position: relative;
-  left: -40px;
+  left: -2px;
   top: 8px;
 }
 
-#sign-out {
+#sign_out {
   position: relative;
-  left: 10px;
-  top: 8px;
+  left: 0px;
+  top: 10px;
 }
 
 
 #home-icon {
   position: relative;
-  left: 17px;
+  left: 0px;
+  top: -17px;
+  padding: 0;
+  word-spacing: -10px;
+  white-space: nowrap;
+  width: 62px;
+  height: 20px;
+}
+
+#out-home-icon {
+  position: relative;
+  left: 0px;
   top: -17px;
   padding: 0;
   word-spacing: -10px;
@@ -93,9 +186,13 @@ div#room-background {
   color: #FFFFFF;
 }
 
+#out-home-icon:hover {
+  color: #FFFFFF;
+}
+
 #log-out-icon {
   position: relative;
-  left: 50px;
+  left: 0px;
   top: -17px;
   padding: 0px;
   word-spacing: -10px;
@@ -128,9 +225,9 @@ div#room-background {
 #help-icon {
   position: relative;
   word-spacing: -10px;
-  left: 34px;
+  left: 1px;
   padding: 0px;
-  top: -16px;
+  top: -17px;
   white-space: nowrap;
   width: 53px;
   height: 20px;

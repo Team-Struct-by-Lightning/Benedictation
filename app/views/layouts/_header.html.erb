@@ -4,17 +4,15 @@
     <nav>
       <ul class="nav navbar-nav navbar-right">
         <% if current_user %>
-        	<li><%= link_to "<a class='glyphicon glyphicon-user' id='user-icon' href='/chat'><p id='chatroom-header-text'> Chatrooms</p></a>".html_safe, id: "chat-path-glyph" %></li>
-        	<li><%= link_to '<a class="glyphicon glyphicon-home" id="home-icon" href="/"><p id="home-header-text">Home</p></a>'.html_safe, id: "home-path-glyph" %></li>
-          <li><%= link_to "<a class='glyphicon glyphicon-question-sign blink_me2' id='help-icon' ><p id='help-header-text'> Help</p></a>".html_safe, id: "help-path-glyph" %></li>
-          <li><%= link_to '<a class="glyphicon glyphicon-log-out" id="log-out-icon" href="/signout"> <p id="log-out-header-text">Log out</p></a>'.html_safe, id: "sign_out" %></li>
+        	<li id="chat-list-head"><%= link_to "<a class='glyphicon glyphicon-user' id='user-icon' href='/chat'><p id='chatroom-header-text'> Chatrooms</p></a>".html_safe, "/chat", id: "chat-path-glyph" %></li>
+        	<li id="home-list-head"><%= link_to '<a class="glyphicon glyphicon-home" id="home-icon" href="/"><p id="home-header-text">Home</p></a>'.html_safe, "/", id: "home-path-glyph" %></li>
+          <li id="help-list-head"><%= link_to "<a class='glyphicon glyphicon-question-sign blink_me2' id='help-icon' ><p id='help-header-text'> Help</p></a>".html_safe, "#",id: "help-path-glyph" %></li>
+          <li id="log-out-list-head"><%= link_to '<a class="glyphicon glyphicon-log-out" id="log-out-icon" href="/signout"> <p id="log-out-header-text">Log out</p></a>'.html_safe, "/signout", id: "sign_out" %></li>
       	<% else %>
-      		<li><%= link_to "Home",   root_path %></li>
-        	<li><%= link_to "Log in", "/auth/google_oauth2", id: "sign_in" %></li>
+          <li id="out-home-list-head"><%= link_to '<a class="glyphicon glyphicon-home" id="out-home-icon" href="/"><p id="out-home-header-text">Home</p></a>'.html_safe, "/", id: "out-home-path-glyph" %></li>
+          <li id="log-in-list-head"><%= link_to '<a class="glyphicon glyphicon-log-in" id="log-in-icon" href="/auth/google_oauth2"> <p id="log-in-header-text">Log in</p></a>'.html_safe, "/auth/google_oauth2", id: "sign_in" %></li>
       	<% end %>
       </ul>
     </nav>
   </div>
 </header>
-
-glyphicon glyphicon-question-sign
