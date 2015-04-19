@@ -8,6 +8,7 @@
 <script>
 var count = 0;
 var count2 = 0;
+var hidden = 0;
 
 function blinker() {
 
@@ -20,8 +21,8 @@ function blinker() {
     if (count2 == 1) {
       $('.blink_me').fadeOut(1000);
     }
-    if (count2 > 1) {
-      if (count2 == 2) {
+    if (count2 > 1 && hidden == 0) {
+      if (count2 == 2 && hidden == 0) {
         $('.room-layout-table').append('<div class="drop-video-here"><h1 class="fade_me blink_me2">' +
                                      'Click help in the header to learn how to query ' +
                                      'Benedict</h1></div>');
@@ -36,16 +37,19 @@ function blinker() {
   }
 }
 
-setInterval(blinker, 1500);
+var inter = setInterval(blinker, 1500);
 
 
 $(function() {
   $( "#drop-spot" ).droppable({
-
       activeClass: "active-spot",
       hoverClass: "hover-spot",
       drop: function( event, ui ) {
         $('.render-spot').remove();
+        $('.blink_me').remove();
+        $('.fade_me').remove();
+        window.clearInterval(id);
+        hidden = 1;
         //$("#benedict-sidebar-wrapper").append($("#chat-body"));
         //$("#chat-body").animate({left:"+= 50"});
         var children = $('#drop-spot').children();
