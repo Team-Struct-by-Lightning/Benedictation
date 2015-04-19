@@ -1,5 +1,5 @@
 <div class='room-layout-table'>
-     <div class="drop-video-here"><h1 class="blink_me">Drag and drop a video here!</h1></div>
+     <div class="drop-video-here"><h1 class="blink_me">You can drag a video here!</h1></div>
      <div id = "drop-spot"></div>
 
 
@@ -7,6 +7,7 @@
 </div>
 <script>
 var count = 0;
+var count2 = 0;
 
 function blinker() {
 
@@ -15,8 +16,23 @@ function blinker() {
     $('.blink_me').fadeTo( 850 , 1.0, function() {});
     count++;
   }
-  else{
-    $('.blink_me').fadeOut(1000);
+  else if (count2 < 6) {
+    if (count2 == 1) {
+      $('.blink_me').fadeOut(1000);
+    }
+    if (count2 > 1) {
+      if (count2 == 2) {
+        $('.room-layout-table').append('<div class="drop-video-here"><h1 class="fade_me blink_me2">' +
+                                     'Click help in the header to learn how to query ' +
+                                     'Benedict</h1></div>');
+      }
+      $('.blink_me2').fadeTo( 850 , .1, function() {});
+      $('.blink_me2').fadeTo( 850 , 1.0, function() {});
+    }
+    count2++;
+  }
+  else {
+    $('.fade_me').fadeOut(1000);
   }
 }
 

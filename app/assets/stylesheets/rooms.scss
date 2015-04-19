@@ -18,6 +18,7 @@
   z-index: 50;
 }
 
+
 .calendar-frame {
   position: relative;
   transform: scale(0.78);
@@ -55,8 +56,15 @@ div.calendar-frame body{
   position: fixed;
   left: 330px;
   top: 200px;
+  z-index: 20;
 }
 
+.fade_me {
+  position: fixed;
+  left: 223px;
+  top: 200px;
+  width: 47%;
+}
 
 .active-spot{
 
@@ -128,6 +136,24 @@ div.calendar-frame body{
   height: 100%;
   top: 25px;
   left: 200px;
+  background-color: #CCCCCC;
+}
+
+.color-div {
+  background-color: #CCCCCC;
+  position: fixed;
+  height: 200px;
+  width: 200px;
+  top: -142px;
+}
+
+.color-div2 {
+  position: fixed;
+  height: 12px;
+  width: 40px;
+  top: 58px;
+  left: 160px;
+  background-color: #CCCCCC;
 }
 
 #page-wrapper{
@@ -428,7 +454,7 @@ div.calendar-frame body{
   float: left;
 }
 .active-video-spot{
-
+  z-index: 22;
   border: 2px dashed black;
 }
 
