@@ -33,7 +33,15 @@ html {
   left: 20px;
 }
 
+#help-header-text {
+  position: relative;
+  top: -25px;
+  left: 21px;
+}
 
+#help-header-text:hover {
+  color: #FFFFFF;
+}
 
 #header-nav-bar {
   height: 50px !important;
@@ -60,30 +68,65 @@ html {
 
 
 #home-icon {
-  position: fixed;
-  left: 875px;
-  top: 13px;
+  position: relative;
+  left: 17px;
+  top: -17px;
   padding: 0;
   word-spacing: -10px;
   white-space: nowrap;
+  width: 62px;
+  height: 20px;
+}
+
+#home-icon:hover {
+  color: #FFFFFF;
 }
 
 #log-out-icon {
-  position: fixed;
-  left: 950px;
-  top: 13px;
+  position: relative;
+  left: 50px;
+  top: -17px;
   padding: 0px;
   word-spacing: -10px;
   white-space: nowrap;
+  width: 73px;
+  height: 20px;
 }
 
+#log-out-icon:hover {
+  color: #FFFFFF;
+}
+
+
 #user-icon {
-  position: fixed;
+  position: relative;
   word-spacing: -10px;
-  left: 640px;
+  left: -2px;
   padding: 0px;
-  top: 13px;
+  top: -17px;
   white-space: nowrap;
+  height: 20px;
+  width: 223px;
+}
+
+#user-icon:hover {
+  color: #FFFFFF;
+}
+
+
+#help-icon {
+  position: relative;
+  word-spacing: -10px;
+  left: 34px;
+  padding: 0px;
+  top: -16px;
+  white-space: nowrap;
+  width: 53px;
+  height: 20px;
+}
+
+#user-icon:hover {
+  color: #FFFFFF;
 }
 
 

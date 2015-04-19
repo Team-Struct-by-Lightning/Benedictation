@@ -11,8 +11,8 @@ var count = 0;
 function blinker() {
 
   if (count < 4){
-    $('.blink_me').fadeOut(750);
-    $('.blink_me').fadeIn(750);
+    $('.blink_me').fadeTo( 850 , .1, function() {});
+    $('.blink_me').fadeTo( 850 , 1.0, function() {});
     count++;
   }
   else{
