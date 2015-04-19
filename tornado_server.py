@@ -117,14 +117,14 @@ if __name__ == "__main__":
     # and parse the JSON output
 
     data = loads(urlopen("http://httpbin.org/ip").read())
-    '''if "local" or "ubuntu" not in str(socket.gethostname()):
+    if "local" not in str(socket.gethostname()) and "ubuntu" not in str(socket.gethostname()) and str(data["origin"]) != "52.11.213.209":
 
         benny_ssl_options = {
             "certfile": os.path.join("/etc/nginx/ssl/benedictation_io/ssl-bundle.crt"),
             "keyfile": os.path.join("/etc/nginx/ssl/benedictation_io/benedictation-private-key-file.pem")
         }
         http_server = tornado.httpserver.HTTPServer(application,xheaders=True,ssl_options=benny_ssl_options)
-    else:'''
-    http_server = tornado.httpserver.HTTPServer(application)
+    else:
+        http_server = tornado.httpserver.HTTPServer(application)
     http_server.listen(8888)
     tornado.ioloop.IOLoop.instance().start()
