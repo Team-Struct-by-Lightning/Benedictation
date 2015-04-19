@@ -20,7 +20,33 @@
 
 .calendar-frame {
   position: relative;
-  transform: scale(.9);
+  transform: scale(0.78);
+  top: -63px;
+  left: -82px;
+}
+
+.calendar-border {
+  border-width: 3px !important;
+  border-style: solid;
+  border-color: black;
+  position: fixed;
+  top: 100px;
+  height: 500px;
+  width: 661px;
+  left: 190px;
+  padding: 10px;
+  background-color: white;
+}
+
+div.calendar-frame body{
+  transform: scale(.95);
+}
+
+.calendar-title{
+  position: relative;
+  font-size: 25px;
+  left: 180px;
+  top: -27px;
 }
 
 
