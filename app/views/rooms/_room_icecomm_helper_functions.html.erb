@@ -70,8 +70,6 @@ comm.on('local', function(options) {
     console.log(localAudioStream.getAudioTracks());
     console.log("Obtained user camera/microphone approval");
 
-    var user_email = "@^__^@" + "<%= @current_user.email %>";
-    websocket.send(user_email);
 
 
     // fill in chat history from redis

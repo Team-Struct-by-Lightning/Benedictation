@@ -37,7 +37,8 @@ def schedule_meeting(sentence):
 
 	schedule_verbs = ['set', 'make', 'create', 'get', 'schedule', 'appoint',
 					 'slate', 'arrange', 'organize', 'construct', 'coordinate',
-					 'establish', 'form', 'formulate', 'run', 'compose', 'have', 'meet']
+					 'establish', 'form', 'formulate', 'run', 'compose', 'have', 'meet',
+					 'reschedule']
 	schedule_nouns = ['appointment', 'meeting','meetup', 'reservation', 'session'
 					 'talk', 'call', 'powwow', 'meet', 'rendezvous', 'event', 'conference']
 	
