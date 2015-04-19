@@ -45,10 +45,17 @@ div.calendar-frame body{
 .calendar-title{
   position: relative;
   font-size: 25px;
-  left: 180px;
+  width: 661px;
+  left: 30px;
   top: -27px;
+  text-align: center;
 }
 
+.blink_me {
+  position: fixed;
+  left: 330px;
+  top: 200px;
+}
 
 
 .active-spot{
@@ -116,8 +123,11 @@ div.calendar-frame body{
   height:500px;
 }
 #drop-spot{
-  width:100%;
-  height:92%;
+  position: fixed;
+  width: 660px;
+  height: 100%;
+  top: 25px;
+  left: 200px;
 }
 
 #page-wrapper{

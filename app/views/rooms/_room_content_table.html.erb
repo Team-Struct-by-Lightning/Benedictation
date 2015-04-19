@@ -1,11 +1,28 @@
 <div class='room-layout-table'>
-
+     <div class="drop-video-here"><h1 class="blink_me">Drag and drop a video here!</h1></div>
      <div id = "drop-spot"></div>
 
 
 
 </div>
 <script>
+var count = 0;
+
+function blinker() {
+
+  if (count < 4){
+    $('.blink_me').fadeOut(750);
+    $('.blink_me').fadeIn(750);
+    count++;
+  }
+  else{
+    $('.blink_me').fadeOut(1000);
+  }
+}
+
+setInterval(blinker, 1500);
+
+
 $(function() {
   $( "#drop-spot" ).droppable({
 
