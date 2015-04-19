@@ -285,17 +285,6 @@ div.calendar-frame body{
   border-top: 0px;
 }
 
-.benny-item a {
-  color: #CCCCCC
-}
-
-.benny-item:hover a{
-  color: #FFFFFF;
-}
-
-.benny-item:visited a{
-  color: #CCCCCC;
-}
 
 .benny-query {
   float: right;
@@ -303,30 +292,55 @@ div.calendar-frame body{
   position: relative;
   left: 10px;
   top: 6px;
+  font-size: 14px;
 }
+
+.benny-query:hover {
+  color: #FFFFFF;
+}
+
+
 
 .favicon{
   width: 11%;
   float: left;
   position: relative;
-  top: 4px;
-  left: 2px;
+  top: 15px;
+  left: -2px;
 }
 
 .name-and-summary {
   position: relative;
   line-height: 15px;
-  top: 4px;
-  left: 13px;
+  top: -2px;
   width: 200px;
   word-wrap: break-word;
   float: left;
+  left: 0px;
   font-size: 14px;
+  text-align: center;
+  text-decoration: none !important;
+  color: #CCCCCC;
+}
+
+.name-and-summary:hover {
+  color: #FFFFFF;
 }
 
 .benny-link {
   position: relative;
-  width: 100%;
+  float: left;
+  word-wrap: break-word;
+  width: 214px;
+  left: 11px;
+  top: 1px;
+  line-height: 14px;
+  font-size: 12px;
+  color: #CCCCCC;
+}
+
+.benny-link:hover {
+  color: #FFFFFF;
 }
 
 .chat-user-name {

@@ -121,7 +121,7 @@ function appendNewBennyReply(options) {
             summary = truncation(json_murph.summary, 40);
 
         }
-        var name = options.name + ":"
+        var name = options.name;
         var key_array = options.key.split(":");
         var key_array_slice = key_array.slice(0, 4);
         var key = key_array_slice.join(":");
@@ -131,8 +131,9 @@ function appendNewBennyReply(options) {
         $('.benny-list-body').addClass('benny-list-body-func');
         $('.benny-list-body').append('<div class="benny-item benny-calendar" id=' + benny_item_id +'>' +
                         '<%= image_tag("#{image_name}", class: "favicon") %>' +
-                        '<p class="name-and-summary">' + name +
-                        '<a class="benny-link" onclick=' + parameter + ' id=' + benny_item_link_id + '> ' + summary + '</a></p>' +
+                        '<a class="name-and-summary">' + name + '</a>' +
+                        '<a class="benny-link" onclick=' + parameter + ' id=' +
+                        benny_item_link_id + '> Summary: ' + summary + '</a>' +
                         '</div>');
 
     }
