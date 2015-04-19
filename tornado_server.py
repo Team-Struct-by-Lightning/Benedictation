@@ -16,6 +16,8 @@ import speechrec
 import socket
 import json
 
+attendees = {}
+
 class WSHandler(tornado.websocket.WebSocketHandler):
     def open(self):
         print 'new connection'
@@ -33,6 +35,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         #parsed_origin = urllib.parse.urlparse(origin)
         #print parsed_origin
         return True
+
 
 
 class EmailWSHandler(tornado.websocket.WebSocketHandler):
@@ -65,6 +68,13 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
         self.text = ""
 
     def on_message(self, message):
+        if "@^__^@" in str(message):
+            user_email = str(message)
+            user_email = user_email[6:]
+            attendees[self] = user_email 
+            #print attendees
+            return
+        
         outfilename = 'output' + str(randint(0,500)) + '.wav'
         f = open(outfilename , 'w')
         f.write(message)
@@ -77,7 +87,8 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
             if schedule_meeting(text):
                 starttime, endtime, schedule_word = schedule_meeting(text)
                 print 'Scheduling a meeting'
-                text = '{"attendees": [{"email": "trevor.frese@gmail.com"},{"email": "britt.k.christy@gmail.com"},{"email": "jtmurphy@gmail.com"}], \
+                print str(attendees[self])
+                text = '{"attendees": [{"email": "' + str(attendees[self]) + '" }], \
                 "api_type": "calendar", \
                 "start": {"datetime": "' + str(starttime) + '", \
                 "timezone": "America/Los_Angeles"}, \
@@ -99,6 +110,7 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
         print "we have finished writing @@@@@"
 
     def on_close(self):
+        #del attendees[self]
         print "Connection closed."
 
     def check_origin(self,origin):
@@ -108,6 +120,7 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
 application = tornado.web.Application([
     (r"/hello", WSHandler),
     (r"/recognize", SpeechWSHandler),
+    #(r"/groups", GroupsWSHandler),
     (r"/email", EmailWSHandler)
 ])
 
@@ -117,14 +130,14 @@ if __name__ == "__main__":
     # and parse the JSON output
 
     data = loads(urlopen("http://httpbin.org/ip").read())
-    '''if "local" or "ubuntu" not in str(socket.gethostname()):
+    if "local" not in str(socket.gethostname()) and "ubuntu" not in str(socket.gethostname()) and str(data["origin"]) != "52.11.213.209":
 
         benny_ssl_options = {
             "certfile": os.path.join("/etc/nginx/ssl/benedictation_io/ssl-bundle.crt"),
             "keyfile": os.path.join("/etc/nginx/ssl/benedictation_io/benedictation-private-key-file.pem")
         }
         http_server = tornado.httpserver.HTTPServer(application,xheaders=True,ssl_options=benny_ssl_options)
-    else:'''
-    http_server = tornado.httpserver.HTTPServer(application)
+    else:
+        http_server = tornado.httpserver.HTTPServer(application)
     http_server.listen(8888)
     tornado.ioloop.IOLoop.instance().start()
