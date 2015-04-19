@@ -22,6 +22,12 @@ class GroupsController < ApplicationController
     render :json => $redis.lrange(params[:redis_key],0,-1)[params[:index].to_i]
   end
 
+  def get_redis_length
+    hash = {}
+    hash['result'] = $redis.lrange(params[:redis_key],0,-1).length
+    render :json => hash
+  end
+
   def clear_redis
     $redis.del(params[:redis_key])
     render nothing: true
