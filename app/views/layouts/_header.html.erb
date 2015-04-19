@@ -4,9 +4,9 @@
     <nav>
       <ul class="nav navbar-nav navbar-right">
         <% if current_user %>
-        	<li><%= link_to "<a class='glyphicon glyphicon-user' id='user-icon' href='/chat'><p id='chatroom-header-text'> #{current_user.name}\'s Chatrooms</p></a>".html_safe, id: "chat-path-glyph" %></li>
+        	<li><%= link_to "<a class='glyphicon glyphicon-user' id='user-icon' href='/chat'><p id='chatroom-header-text'> Chatrooms</p></a>".html_safe, id: "chat-path-glyph" %></li>
         	<li><%= link_to '<a class="glyphicon glyphicon-home" id="home-icon" href="/"><p id="home-header-text">Home</p></a>'.html_safe, id: "home-path-glyph" %></li>
-          <li><%= link_to "<a class='glyphicon glyphicon-question-sign' id='help-icon' ><p id='help-header-text'> Help</p></a>".html_safe, id: "help-path-glyph" %></li>
+          <li><%= link_to "<a class='glyphicon glyphicon-question-sign blink_me2' id='help-icon' ><p id='help-header-text'> Help</p></a>".html_safe, id: "help-path-glyph" %></li>
           <li><%= link_to '<a class="glyphicon glyphicon-log-out" id="log-out-icon" href="/signout"> <p id="log-out-header-text">Log out</p></a>'.html_safe, id: "sign_out" %></li>
       	<% else %>
       		<li><%= link_to "Home",   root_path %></li>

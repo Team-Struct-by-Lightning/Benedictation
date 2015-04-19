@@ -14,6 +14,17 @@ html {
   z-index: -1;
 }
 
+#background-div{
+  background-color: #777777;
+}
+
+div#room-background {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background-color: #CCCCCC;
+  top: -300px;
+}
 
 #chatroom-header-text {
   position: relative;
@@ -101,12 +112,12 @@ html {
 #user-icon {
   position: relative;
   word-spacing: -10px;
-  left: -2px;
+  left: 1px;
   padding: 0px;
   top: -17px;
   white-space: nowrap;
   height: 20px;
-  width: 223px;
+  width: 100px;
 }
 
 #user-icon:hover {
