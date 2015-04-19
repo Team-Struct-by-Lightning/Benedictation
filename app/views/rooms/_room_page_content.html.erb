@@ -59,8 +59,6 @@
                   </div> -->
                <%= javascript_tag do %>
                   function clickable(me) {
-                          console.log("hola fuckers");
-                          var id = "#render-spot" + me;
                           var children = $("#drop-spot").children();
                           console.log(children);
                           for(i = 0; i < children.length; i++){
@@ -71,15 +69,29 @@
                                   }
                           }
                           $('.render-spot').remove();
+
                           var arr = me.split(':');
                           var index = arr[0];
-                          arr.reverse();
-                          arr.pop();
-                          arr.reverse();
-                          var key = arr.join(":");
+                          var user_email = arr[4];
+
+                          var name_array = arr.slice(5, arr.length);
+                          var user_name = name_array.join(" ");
+
+                          var key_arr = arr.slice(1, 4);
+                          var key = key_arr.join(":");
+
+                          var div_id_arr = arr.slice(0, 4);
+                          var div_id = div_id_arr.join(":");
+
                           var api_type = "";
-                          console.log(key);
-                          console.log(index);
+
+
+                          console.log("key ", key);
+                          console.log("div_id ", div_id);
+                          console.log("key arr ", key_arr);
+                          console.log("div arr ", div_id_arr);
+                          console.log(user_name);
+                          console.log(user_email);
                           $.ajax({
                                type: "GET",
                                url: "/get_redis_item",
@@ -91,13 +103,15 @@
                                success: function(item) {
                                   api_type = item['api_type'];
                                    if (api_type == 'calendar') {
-                                      var email = '<%= email = current_user.email %>';
-                                      var email_name = email.split('@')[0];
+                                      console.log(user_name);
+                                      var user_name_title = user_name + "\'s Google Calendar";
+                                      console.log(user_name_title);
+                                      var email_name = user_email.split('@')[0];
                                       var user_timezone = '<%= user_timezone = "America/Los_Angeles" %>';
-                                      var email_url = "https://www.google.com/calendar/embed?showPrint=0&amp;showTz=0&amp;mode=WEEK&amp;height=600&amp;wkst=1&amp;bgcolor=%23ffffff&amp;src=" + email_name + "%40gmail.com&amp;color=%23711616&amp;ctz=" + user_timezone;
-                                      var render_item_id = "render" + me;
+                                      var email_url = "https://www.google.com/calendar/embed?showPrint=0&amp;showTz=0&amp;mode=WEEK&amp;height=600&amp;wkst=1&amp;bgcolor=%23ffffff&amp;src=" + email_name + "%40gmail.com&amp;color=%234E5D6C&amp;ctz=" + user_timezone;
+                                      var render_item_id = "render" + div_id;
                                       $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id +'>' +
-                                                      '  <iframe class="calendar-frame" src=' + email_url +' style=" border-width:0 " width="800" height="600" frameborder="0" scrolling="no"></iframe>' +
+                              ' <h1 class="calendar-title">' + user_name_title + '</h1> <div class="calendar-border"><iframe class="calendar-frame" src=' + email_url +' style=" border-width:0 " width="800" height="600" frameborder="0" scrolling="no"></iframe></div>' +
                                                       '</div>');
 
 

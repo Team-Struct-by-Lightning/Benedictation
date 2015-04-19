@@ -47,28 +47,40 @@ function sendIM() {
 function sendBennyReply(json_api_reply) {
     var url = (window.location.pathname).split("/");
     var id = String(url[url.length - 2]);
-    var name = String(url[url.length - 1]);
-    var len = '<%= $redis.lrange(params[:redis_key],0,-1).length %>'
-
+    var name = String(url[url.length - 1])
     var key = name + ":" + id + ":bennyhistory";
+     $.ajax({
+           type: "GET",
+           url: "/get_redis_length",
+           dataType: "json",
+           data: {
+               'redis_key': key
+           },
+           success: function(item) {
+                var len = parseInt(item['result'], 10);
+                var user_name =  "<%= current_user.name %>";
+                var name_arr = user_name.split(" ");
+                var new_name = name_arr.join(":");
+                var key_user_id_and_index =  String(len) + ":" + name + ":" + id + ":bennyhistory:" +"<%= current_user.email %>" + ":" + new_name;
+                $.ajax({
+                    type: "POST",
+                    url: "/update_redis",
+                    data: {
+                        redis_key: key,
+                        message: json_api_reply
+                    }
+                });
 
-    var key_and_index = String(len) + ":" + name + ":" + id + ":bennyhistory";
-
-    $.ajax({
-        type: "POST",
-        url: "/update_redis",
-        data: {
-            redis_key: key,
-            message: json_api_reply
-        }
-    });
-    console.log("saving this json to redis: ", json_api_reply)
-    appendNewBennyReply({
-        name: "<%= current_user.name %>",
-        data: json_api_reply,
-        key: key_and_index,
-        callerID: "<%= current_user.name %>"
+                console.log("saving this json to redis: ", json_api_reply)
+                appendNewBennyReply({
+                    name: "<%= current_user.name %>",
+                    data: json_api_reply,
+                    key: key_user_id_and_index,
+                    callerID: "<%= current_user.name %>"
      });
+            }
+    });
+
 }
 // click the send button when enter key is pressed
 function checkEnterKey(event) {
@@ -110,8 +122,11 @@ function appendNewBennyReply(options) {
 
         }
         var name = options.name + ":"
-        var benny_item_id = "benny" + options.key;
-        var benny_item_link_id = "benny_query" + options.key;
+        var key_array = options.key.split(":");
+        var key_array_slice = key_array.slice(0, 4);
+        var key = key_array_slice.join(":");
+        var benny_item_id = "benny" + key;
+        var benny_item_link_id = "benny_query" + key;
         var parameter = 'clickable("' + options.key + '")'
         $('.benny-list-body').addClass('benny-list-body-func');
         $('.benny-list-body').append('<div class="benny-item benny-calendar" id=' + benny_item_id +'>' +
@@ -119,16 +134,6 @@ function appendNewBennyReply(options) {
                         '<p class="name-and-summary">' + name +
                         '<a class="benny-link" onclick=' + parameter + ' id=' + benny_item_link_id + '> ' + summary + '</a></p>' +
                         '</div>');
-
-        // var email = '<%= email = current_user.email %>';
-        // var email_name = email.split('@')[0];
-        // var user_timezone = '<%= user_timezone = "America/Los_Angeles" %>';
-        // var email_url = "https://www.google.com/calendar/embed?src=" + email_name + "%40gmail.com&ctz=" + user_timezone;
-        // var render_item_id = "render" + options.key;
-        // $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id +'>' +
-        //                 '<iframe src=' + email_url + 'style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>' +
-        //                 '</div>');
-
 
     }
     var height = 0;
