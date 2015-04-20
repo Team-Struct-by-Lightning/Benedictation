@@ -9,7 +9,39 @@
 </div>
 
 <div id="help-room-popup" class="white-popup-block mfp-hide">
-	<%= image_tag("benedict_examples_360.png", class: "room-pic") %>
+    <table style="width:100%" >
+        <tr>
+           <td><h1>Hold Ctrl-B to speak to Benedict.</h1> </td>
+           <td>
+                <h3>
+                
+                <ul><b>Example Queries</b>
+                    <li>Schedule a meeting on...</li>
+                    <li>Can you schedule a powwow for... </li>
+                    <li>Let's meet up on... </li>
+                </ul>
+                </h3>
+            </td>
+        </tr>
+        <tr>
+	       <td><%= image_tag("benedict_examples.png", class: "benedict_examples") %> </td>
+           <td>
+                <h3 id = "tutorial-explanation">
+                Click on one of these queries and it will expand to fill up the center
+                of the screen!
+                </h3>
+            </td>
+        </tr>
+        <tr>
+           <td><%= image_tag("drag_example.png", class: "") %> </td>
+           <td>
+                <h3 id = "tutorial-explanation">
+                Drag a webcam video into the center spotlight of the page to get a better view
+                of that special someone!
+                </h3>
+            </td>
+        </tr>
+    </table>
 </div>
 
 <%= render 'rooms/room_toggle_menu_script' %>
