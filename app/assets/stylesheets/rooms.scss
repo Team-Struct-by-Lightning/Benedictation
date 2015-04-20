@@ -29,8 +29,8 @@
 .calendar-frame {
   position: relative;
   transform: scale(0.78);
-  top: -63px;
-  left: -82px;
+  top: -131px;
+  left: -80px;
 }
 
 .calendar-border {
@@ -95,12 +95,27 @@ div.calendar-frame body{
   margin-bottom: 5px;
 }
 
+#remove_item_id {
+  position: relative;
+  top: -53px;
+  color: black;
+  z-index: 20;
+  left: 619px;
+}
+
+#remove_item_id:hover {
+  text-decoration: none;
+  color: #777777;
+}
+
 .calendar-title{
   position: relative;
-  font-size: 25px;
+  z-index: 10;
+  letter-spacing: -.5px !important;
+  font-size: 22px;
   width: 661px;
-  left: 30px;
-  top: -27px;
+  left: -10px;
+  top: -21px;
   text-align: center;
 }
 

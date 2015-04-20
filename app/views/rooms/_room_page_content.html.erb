@@ -116,7 +116,8 @@
                                       var email_url = "https://www.google.com/calendar/embed?showPrint=0&amp;showTz=0&amp;mode=WEEK&amp;height=600&amp;wkst=1&amp;bgcolor=%23ffffff&amp;src=" + email_name + "%40gmail.com&amp;color=%234E5D6C&amp;ctz=" + user_timezone;
                                       var render_item_id = "render" + div_id;
                                       $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id +'>' +
-                              ' <h1 class="calendar-title">' + user_name_title + '</h1> <div class="calendar-border"><iframe class="calendar-frame" src=' + email_url +' style=" border-width:0 " width="800" height="600" frameborder="0" scrolling="no"></iframe></div>' +
+                              '  <div class="calendar-border"> <h1 class="calendar-title">' + user_name_title + '</h1> <a class="glyphicon glyphicon-remove" id="remove_item_id"></a>' +
+                              '<iframe class="calendar-frame" src=' + email_url +' style=" border-width:0 " width="800" height="600" frameborder="0" scrolling="no"></iframe></div>' +
                                                       '</div>');
 
 
@@ -144,6 +145,13 @@
    <!-- Page Content -->
 </div>
 <script>
+
+  $(document).on('click','#remove_item_id',function(){
+    $('.render_spot').remove();
+    $('.calendar-border').fadeOut(1000);
+    inter = setInterval(blinker, 1500);
+  });
+
 
    var video_spots = [0,0,0,0,0,0];
    $(function() {
