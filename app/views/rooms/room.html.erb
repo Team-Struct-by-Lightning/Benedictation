@@ -8,7 +8,9 @@
          <%= render 'rooms/room_page_content' %>
 </div>
 
-
+<div id="help-room-popup" class="white-popup-block mfp-hide">
+	<%= image_tag("benedict_examples_360.png", class: "room-pic") %>
+</div>
 
 <%= render 'rooms/room_toggle_menu_script' %>
 
@@ -20,3 +22,28 @@
 	<%= render 'rooms/room_chat' %>
 
 <% end %>
+
+<script>
+ $(document).ready(function() {
+
+ 				$.noConflict( true );
+
+        $('.popup-link').magnificPopup({
+            type: 'inline',
+            preloader: false,
+            focus: '#name',
+
+            // When elemened is focused, some mobile browsers in some cases zoom in
+            // It looks not nice, so we disable it:
+            callbacks: {
+                beforeOpen: function() {
+                    if($(window).width() < 700) {
+                        this.st.focus = false;
+                    } else {
+                        this.st.focus = '#name';
+                    }
+                }
+            }
+        });
+    });
+</script>

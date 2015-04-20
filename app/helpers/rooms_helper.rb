@@ -81,9 +81,11 @@ module RoomsHelper
 
 	def calendar_json(json_hash)
 		attendee_array = []
-		json_hash['attendees'].each do |email|
-			attendee_array << email['email']
-		end
+		#ADD ATTENDEES IN LATER
+		# json_hash['attendees'].each do |email|
+		# attendee_array << email['email']
+		# end
+		attendee_array << current_user.email
 		json_event = {
 				'summary' => json_hash['summary'],
 				'location' => json_hash['location'],

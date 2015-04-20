@@ -4,6 +4,7 @@ class User < ActiveRecord::Base
                                   dependent:   :destroy
 
 
+
   def self.from_omniauth(auth)
     where(provider: auth.provider, uid: auth.uid).first_or_initialize.tap do |user|
       user.provider = auth.provider
@@ -16,6 +17,8 @@ class User < ActiveRecord::Base
       user.save!
     end
   end
+
+
 
 
   def remove_relationship(group)

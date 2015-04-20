@@ -9,7 +9,7 @@ class SessionsController < ApplicationController
     # for each new group, add a new relationship
     new_group_list.each do |group|
         unless Group.where(id: group).empty?
-            @new_group_relationship = Relationship.new(user_id:created_user.id, group_id:Group.find_by_id(group).id)
+            @new_group_relationship = Relationship.new(user_id:created_user.id, group_id: Group.find_by_id(group).id)
             @new_group_relationship.save
         end
     end
