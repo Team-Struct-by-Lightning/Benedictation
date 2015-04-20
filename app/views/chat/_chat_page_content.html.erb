@@ -7,11 +7,10 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class='center-div'>
-                            <h1 id='center-div-header'>Hello <%= current_user.name %>, begin chatting!</h1>
+                            <h1 id='center-div-header'>Hello <%= current_user.name %>!</h1>
 
-                            <p id="center-div-body">Use the sidebar on the left to create a new group or to enter a group that has already been created. Click below to start a chat without a group.
-                                During a video chat, hold down <b>Ctrl-B</b> to address Benedict.
-
+                            <p id="center-div-body">Use the sidebar on the left to create a new group or to enter a group
+                                that has already been created. Click below to start a chat without a group.
                             </div>
                             <% Relationship.where(user_id: current_user.id).pluck(:id).each do |relationship_id| %>
                             <% group = Relationship.find_by(id: relationship_id).group %>
@@ -70,11 +69,11 @@
 
             <script>
 
-            $(".alert" ).fadeOut(4000);
+            // $(".alert" ).fadeOut(4000);
 
-            $(".alert-success" ).fadeOut(4000);
+            // $(".alert-success" ).fadeOut(4000);
 
-            $(".alert-danger" ).fadeOut(4000);
+            // $(".alert-danger" ).fadeOut(4000);
 
             $('.menu-group').click(function(e){
                 console.log("chcking");

@@ -27,23 +27,23 @@
   position: fixed;
   background-color: #333333 !important;
   border-color: #333333 !important;
-  top: 315px;
-  left: 507px;
+  top: 300px;
+  left: 532px;
 }
 
 #center-div-header {
   position: fixed;
   letter-spacing: normal !important;
   top: 115px;
-  width: 560px;
-  left: 297px;
+  width: 633px;
+  left: 301px;
 }
 
 #center-div-body {
   position: fixed;
-  width: 600px;
+  width: 633px;
   top: 215px;
-  left: 286px;
+  left: 301px;
 }
 
 .fixed-header-div {
@@ -55,6 +55,7 @@
 }
 
 #users-online-list {
+  box-shadow: 0px 0px 20px #222222;
   background-color: #CCCCCC;
   position: fixed;
   width: 160px;
@@ -166,7 +167,7 @@
 #group-name-in-chat-header{
 	position: absolute;
   left: 9%;
-  top: 10px;
+  top: 8px;
   font-size: 25px;
   color: #000000;
   text-decoration: none !important;
