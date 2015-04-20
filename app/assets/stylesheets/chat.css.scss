@@ -7,6 +7,17 @@
   box-sizing:         border-box;
 }
 
+.btn.btn-primary {
+  border-color: #333333;
+  background-color: #333333;
+  color: #CCCCCC;
+}
+
+.btn.btn-primary:hover {
+  border-color: #333333;
+  background-color: #333333;
+  color: #FFFFFF;
+}
 
 #chat-alerts {
   width: 50%;
@@ -27,8 +38,13 @@
   position: fixed;
   background-color: #333333 !important;
   border-color: #333333 !important;
+  color: #CCCCCC !important;
   top: 300px;
   left: 532px;
+}
+
+.random-button:hover {
+  color: #FFFFFF !important;
 }
 
 #center-div-header {

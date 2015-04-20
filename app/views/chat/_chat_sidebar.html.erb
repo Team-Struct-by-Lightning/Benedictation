@@ -29,10 +29,10 @@
             <h1>Add a user to the group:  <%= group_name %></h1>
             <%= form_tag(controller: "groups", action: "popupadduser", method: "post") do |f| %>
             <%= label_tag "New Member Email:" %>
-            <%= text_field_tag :newmemberemail, params[:newmemberemail] %>
+            <%= text_field_tag :newmemberemail, params[:newmemberemail], class: "email-selector" %>
             <%= hidden_field_tag :groupid, group_id%>
             <%= submit_tag "Add new user to group", class: "btn btn-primary" %>
-            
+
             <%= javascript_tag do %>
                // tell python server to send email to the user if the user does not yet exist
                var email = "<%= get_most_recent_email %>"
@@ -104,7 +104,7 @@
       <h1>Create a Group!</h1>
       <%= form_tag(controller: "groups", action: "create", method: "post") do |f| %>
       <%= label_tag  "Group Name" %>
-      <%= text_field_tag :group_name, params[:group_name.downcase] %>
+      <%= text_field_tag :group_name, params[:group_name.downcase], placeholder: " Only alpha-numeric and underscore characters accepted" %>
       <%= submit_tag "Create new group", class: "btn btn-primary" %>
       <% end %>
    </div>

@@ -9,11 +9,11 @@
           <% if url_array[-1] == "chat" %>
           <li id="chat-list-head"><%= link_to "<a class='glyphicon glyphicon-user in-chatroom' id='user-icon' href='/chat'><p id='chatroom-header-text'> Chatrooms</p></a>".html_safe, "/chat", id: "chat-path-glyph" %></li>
           <li id="home-list-head"><%= link_to '<a class="glyphicon glyphicon-home" id="home-icon" href="/"><p id="home-header-text">Home</p></a>'.html_safe, "/", id: "home-path-glyph" %></li>
-          <li id="help-list-head"><%= link_to "<a class='glyphicon glyphicon-question-sign blink_me2 popup-link' id='help-icon'  href='#help-chat-popup'><p id='help-header-text'> Help</p></a>".html_safe, "#help-chat-popup",id: "help-path-glyph" %></li>
+          <li id="help-list-head"><%= link_to "<a class='glyphicon glyphicon-question-sign blink_me2 popup-link' id='help-icon1'  href='#help-chat-popup'><p id='help-header-text'> Help</p></a>".html_safe, "#help-chat-popup",id: "help-path-glyph" %></li>
           <% elsif url_array[-3] == "room" %>
           <li id="chat-list-head"><%= link_to "<a class='glyphicon glyphicon-user' id='user-icon' href='/chat'><p id='chatroom-header-text'> Chatrooms</p></a>".html_safe, "/chat", id: "chat-path-glyph" %></li>
           <li id="home-list-head"><%= link_to '<a class="glyphicon glyphicon-home" id="home-icon" href="/"><p id="home-header-text">Home</p></a>'.html_safe, "/", id: "home-path-glyph" %></li>
-            <li id="help-list-head"><%= link_to "<a class='glyphicon glyphicon-question-sign blink_me2 popup-link' id='help-icon' href='#help-room-popup'><p id='help-header-text'> Help</p></a>".html_safe, "#help-room-popup",id: "help-path-glyph"%></li>
+            <li id="help-list-head"><%= link_to "<a class='glyphicon glyphicon-question-sign blink_me2 popup-link' id='help-icon2' href='#help-room-popup'><p id='help-header-text'> Help</p></a>".html_safe, "#help-room-popup",id: "help-path-glyph"%></li>
           <% else %>
            <li class="chat-home-page-head" id="chat-list-head"><%= link_to "<a class='glyphicon glyphicon-user' id='user-icon' href='/chat'><p id='chatroom-header-text'> Chatrooms</p></a>".html_safe, "/chat", id: "chat-path-glyph" %></li>
           <li class="home-home-page-head" id="home-list-head"><%= link_to '<a class="glyphicon glyphicon-home" id="home-icon" href="/"><p id="home-header-text">Home</p></a>'.html_safe, "/", id: "home-path-glyph" %></li>
@@ -27,3 +27,35 @@
     </nav>
   </div>
 </header>
+
+<%= javascript_tag do %>
+$(window).resize(function() {
+  if ($(document).width() < 800) {
+    $('#chat-list-head').hide();
+    $('#home-list-head').hide();
+    $('#help-list-head').hide();
+    $('#help-icon1').hide();
+    $('#help-icon2').hide();
+    $('#log-out-list-head').hide();
+    $('#log-in-list-head').hide();
+  }
+  else{
+      <% url_string = request.original_url %>
+      <% url_array = url_string.split('/') %>
+      $('#home-list-head').show();
+      <% if url_array[-1] == "chat" %>
+        $('#chat-list-head').show();
+        $('#help-list-head').show();
+        $('#help-icon1').show();
+        $('#log-out-list-head').show();
+      <% elsif url_array[-3] == "room" %>
+        $('#chat-list-head').show();
+        $('#help-list-head').show();
+        $('#help-icon2').show();
+        $('#log-out-list-head').show();
+      <% else %>
+        $('#log-in-list-head').show();
+      <% end %>
+  }
+});
+<% end %>

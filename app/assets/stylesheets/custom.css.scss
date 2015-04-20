@@ -223,7 +223,18 @@ div#room-background {
 }
 
 
-#help-icon {
+#help-icon1 {
+  position: relative;
+  word-spacing: -10px;
+  left: 1px;
+  padding: 0px;
+  top: -17px;
+  white-space: nowrap;
+  width: 53px;
+  height: 20px;
+}
+
+#help-icon2 {
   position: relative;
   word-spacing: -10px;
   left: 1px;
