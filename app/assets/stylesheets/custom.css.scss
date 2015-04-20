@@ -7,8 +7,9 @@
   box-sizing:         border-box;
 }
 
+
 html {
-  background-color: #777777;
+  background-color: #555555;
   position:relative;
   top: -12px;
   z-index: -1;
@@ -103,7 +104,7 @@ div#room-background {
 
 #home-header-text {
   position: relative;
-  top: -24px;
+  top: -23px;
   left: 20px;
 }
 
@@ -116,7 +117,7 @@ div#room-background {
 
 #help-header-text {
   position: relative;
-  top: -25px;
+  top: -24px;
   left: 21px;
 }
 
@@ -163,7 +164,7 @@ div#room-background {
 #home-icon {
   position: relative;
   left: 0px;
-  top: -17px;
+  top: -18px;
   padding: 0;
   word-spacing: -10px;
   white-space: nowrap;
@@ -392,7 +393,7 @@ p {
   float: left;
   margin-right: 10px;
   font-size: 1.7em;
-  color: red;
+  color: #CC1111;
   text-transform: uppercase;
   letter-spacing: -1px;
   padding-top: 9px;
@@ -407,7 +408,7 @@ p {
   left: 51px;
   float: left;
   font-size: 1.7em;
-  color: #fff;
+  color: #DDDDDD;
   text-transform: uppercase;
   letter-spacing: -1px;
   padding-top: 9px;

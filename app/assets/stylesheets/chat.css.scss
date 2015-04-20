@@ -33,6 +33,7 @@
 
 #center-div-header {
   position: fixed;
+  letter-spacing: normal !important;
   top: 115px;
   width: 560px;
   left: 297px;
@@ -164,18 +165,18 @@
 
 #group-name-in-chat-header{
 	position: absolute;
-  left: 8%;
+  left: 9%;
   top: 10px;
-  font-size: large;
+  font-size: 25px;
   color: #000000;
   text-decoration: none !important;
 }
 
 #go-to-room-in-chat-header {
 	position: absolute;
-  left: 62%;
+  left: 61%;
   font-size: smal;
-  top: 16px;
+  top: 18px;
   text-decoration: none !important;
   height: 20px !important;
   color: #000000;
@@ -188,8 +189,8 @@
 
 #leave-group-chat-header {
 	position: absolute;
-  left: 80%;
-  top: 16px;
+  left: 85%;
+  top: 18px;
   font-size: small;
   text-decoration: none !important;
   height: 20px !important;
@@ -207,6 +208,14 @@
   word-spacing: -12px;
 }
 
+.in-chatroom {
+  color: #CCCCCC !important;
+}
+
+.in-chatroom:hover {
+  color: #FFFFFF !important;
+}
+
 #go-to-room-text {
 	position: relative;
   top: -22px;
@@ -217,7 +226,7 @@
 #group-image {
 	position: absolute;
   left: 3%;
-  height: 30%;
+  height: 39%;
   top: 15px;
 }
 

@@ -29,14 +29,13 @@
 .calendar-frame {
   position: relative;
   transform: scale(0.78);
-  top: -63px;
-  left: -82px;
+  top: -131px;
+  left: -80px;
 }
 
 .calendar-border {
-  border-width: 3px !important;
-  border-style: solid;
-  border-color: black;
+  box-shadow: 0px 0px 10px #777777;
+  border-radius: 4px;
   position: fixed;
   top: 100px;
   height: 500px;
@@ -50,12 +49,73 @@ div.calendar-frame body{
   transform: scale(.95);
 }
 
+
+#benny-temp-message {
+  position: relative;
+  height: 72px;
+  width: 212px;
+  color: black;
+  text-decoration: none;
+  left: 1px;
+  top: -3px;
+  font-size: 14px;
+}
+
+#benny-help-temp {
+  margin: 5px;
+  background-color: #CCCCCC;
+  height: 94px !important;
+  /* margin-top: 2px; */
+  font-size: 15px;
+  border: 0px;
+  word-wrap: break-word;
+  line-height: 16px;
+  padding-right: 17px;
+  width: 96%;
+  padding: 10px;
+  color: #CCCCCC;
+  overflow: hidden;
+}
+
+#help-in-query {
+  position: relative;
+  left: 1px;
+  top: -3px;
+  font-size: 14px;
+}
+
+
+#lightning-favicon {
+  width: 11%;
+  float: left !important;
+  position: relative;
+  top: 3px;
+  left: 4px;
+  margin-right: 16px;
+  margin-bottom: 5px;
+}
+
+#remove_item_id {
+  position: relative;
+  top: -53px;
+  color: black;
+  z-index: 20;
+  left: 619px;
+}
+
+#remove_item_id:hover {
+  text-decoration: none;
+  color: #777777;
+}
+
 .calendar-title{
   position: relative;
-  font-size: 25px;
+  z-index: 10;
+  letter-spacing: -.5px !important;
+  font-size: 22px;
   width: 661px;
-  left: 30px;
-  top: -27px;
+  left: -10px;
+  top: -21px;
   text-align: center;
 }
 
@@ -95,10 +155,12 @@ div.calendar-frame body{
 .benedict-query-header-text{
   color: #CCCCCC;
   text-decoration: none !important;
+  position: absolute;
+  left: 155px;
 }
 
 .benedict-query-header-text:hover {
-  color: #FFFFFF;
+  color: #CCCCCC;
   text-decoration: none !important;
 }
 
@@ -110,10 +172,12 @@ div.calendar-frame body{
 .chat-header{
   color: #CCCCCC;
   text-decoration: none !important;
+  position: absolute;
+  left: 234px;
 }
 
 .chat-header:hover {
-  color: #FFFFFF;
+  color: #CCCCCC;
   text-decoration: none !important;
 }
 
@@ -253,26 +317,68 @@ div.calendar-frame body{
   height: 75%;
 }
 
-#minimize-chat{
+#minimize-chat-down{
+  text-decoration: none !important;
   color: #CCCCCC;
   position: relative;
-  left:75%;
-  top: 5px;
+  left: 0px;
+  top: 4px;
 }
 
-#minimize-chat:hover{
+#minimize-chat-right{
+  text-decoration: none !important;
+  display: none;
+  color: #CCCCCC;
+  position: relative;
+  left: 0px;
+  top: 4px;
+}
+
+#minimize-chat-down:hover{
+  text-decoration: none !important;
   color: #FFFFFF
 }
 
-#minimize-query{
+#minimize-chat-right:hover{
+  text-decoration: none !important;
+  color: #FFFFFF
+}
+
+
+#minimize-query-down{
+  text-decoration: none !important;
   position: relative;
-  left: 120px;
+  left: 0px;
   top: 4px;
   color: #CCCCCC;
 }
 
-#minimize-query:hover{
+#minimize-query-right{
+  display: none;
+  text-decoration: none !important;
+  position: relative;
+  left: 0px;
+  top: 4px;
+  color: #CCCCCC;
+}
+
+#minimize-query-down:hover{
+  text-decoration: none !important;
   color: #FFFFFF;
+}
+
+#minimize-query-right:hover{
+  text-decoration: none !important;
+  color: #FFFFFF;
+}
+
+
+#chat-heading {
+  height: 31px;
+}
+
+.glyphicon-chevron-right {
+  display: none;
 }
 
 #chat-body > div.panel.panel-primary > div.panel-heading{
@@ -315,14 +421,15 @@ div.calendar-frame body{
 }
 
 .benny-item{
-  width: 100%;
+  margin: 5px;
+  box-shadow: 0px 0px 10px #777777;
+  width: 96%;
   height: 60px;
   padding: 10px;
-  color: #CCCCCC;
   border-style: solid;
   border-width: 2px;
   overflow: hidden;
-  background-color: #333333;
+  background-color: #CCCCCC;
   border-radius: 7px;
   word-wrap: break-word;
   border-top: 0px;
@@ -330,7 +437,7 @@ div.calendar-frame body{
 
 
 .benny-query {
-  float: right;
+
   width: 89%;
   position: relative;
   left: 10px;
@@ -348,26 +455,69 @@ div.calendar-frame body{
   width: 11%;
   float: left;
   position: relative;
-  top: 15px;
+  top: 6px;
   left: -2px;
 }
 
-.name-and-summary {
+.name-and-summary-calendar {
   position: relative;
   line-height: 15px;
-  top: -2px;
-  width: 200px;
+  top: 28px;
+  width: 120px;
   word-wrap: break-word;
-  float: left;
-  left: 0px;
-  font-size: 14px;
+  padding-left: 0px;
+  left: 150px;
+  font-size: 12px;
   text-align: center;
   text-decoration: none !important;
-  color: #CCCCCC;
+  color: black;
 }
 
-.name-and-summary:hover {
-  color: #FFFFFF;
+.benny-no-result {
+  line-height: 15px;
+  font-size: 14px;
+}
+
+#warning-sign {
+  top: 10px;
+}
+
+.no-result-benny-link {
+  position: relative;
+  top: -1px;
+  left: 10px;
+  text-decoration: none;
+  color: black;
+}
+
+.no-result-benny-link:hover {
+  color: black;
+  text-decoration: none !important;
+}
+
+
+#help-here {
+  position: relative;
+  left: 37px;
+  top: 1px;
+}
+
+.name-and-summary-no-result {
+  position: relative;
+  left: 149px;
+  top: 5px;
+  font-size: 12px;
+  color: black;
+  text-decoration: none;
+}
+
+.name-and-summary-no-result:hover {
+  color: black;
+  text-decoration: none !important;
+}
+
+.name-and-summary-calendar:hover {
+  color: black;
 }
 
 .benny-link {
@@ -375,16 +525,13 @@ div.calendar-frame body{
   float: left;
   word-wrap: break-word;
   width: 214px;
-  left: 11px;
-  top: 1px;
+  left: 9px;
+  top: -12px;
   line-height: 14px;
-  font-size: 12px;
-  color: #CCCCCC;
+  font-size: 14px;
+  /* color: #CCCCCC; */
 }
 
-.benny-link:hover {
-  color: #FFFFFF;
-}
 
 .chat-user-name {
   text-decoration: none !important;

@@ -1,4 +1,5 @@
   <script>
+
     $("#menu-toggle").click(function(e) {
         e.preventDefault();
         $("#wrapper").toggleClass("active");
@@ -13,9 +14,10 @@
     $( this ).find( "span:last" ).remove();
     });
 
-    function minimize(string){
-
-      $(string).slideToggle();
+    function minimize(string1, string2, string3){
+      $(string1).slideToggle();
+      $(string2).hide();
+      $(string3).show();
     }
 
     function take_spot(spot_num, video, spot_to_take){
@@ -47,6 +49,7 @@
         return "video-spot-5";
       }
     }
+
    </script>
 
 

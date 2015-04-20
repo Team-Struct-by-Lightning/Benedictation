@@ -29,9 +29,10 @@
       </ul>
       <div id='chat-body' valign='top'>
          <div class='panel panel-primary' id="chat-box">
-            <div class='panel-heading'>
+            <div class='panel-heading' id="chat-heading">
                <a class="chat-header">Chat</a>
-               <a class ="glyphicon glyphicon-chevron-down" id = "minimize-chat" href = "javascript:minimize('#js-chat-body');"> </a>
+               <a class ="glyphicon glyphicon-chevron-down" id = "minimize-chat-down" href = "javascript:minimize('#js-chat-body','#minimize-chat-down', '#minimize-chat-right');"></a>
+               <a class ="glyphicon glyphicon-chevron-right" id = "minimize-chat-right" href = "javascript:minimize('#js-chat-body','#minimize-chat-right', '#minimize-chat-down');"></a>
             </div>
             <div class='panel-body' id='js-chat-body'></div>
          </div>
@@ -45,14 +46,15 @@
          <div id = "benedict-list">
             <div class='panel-heading' id="benedict-query-header">
                <a class="benedict-query-header-text"> Benedict Queries </a>
-               <a class ="glyphicon glyphicon-chevron-down" id = "minimize-query" href = "javascript:minimize('.benny-list-body');"> </a>
+               <a class ="glyphicon glyphicon-chevron-down" id = "minimize-query-down" href = "javascript:minimize('.benny-list-body', '#minimize-query-down', '#minimize-query-right');"> </a>
+               <a class ="glyphicon glyphicon-chevron-right" id = "minimize-query-right" href = "javascript:minimize('.benny-list-body', '#minimize-query-right', '#minimize-query-down');"> </a>
             </div>
             <div class="benny-list-body">
-               <!-- <div class="benny-item">
-                  <%= image_tag("googz.ico", class: "favicon") %>
-                  <a class="benny-query">Schedule me a meeting benedict.</a>
+               <div class="benny-item" id="benny-help-temp">
+                  <%= image_tag("favicon.ico", class: "favicon", id: "lightning-favicon", align: "left") %>
+                  <a class="benny-query" id="benny-temp-message">To query Benedict, hold down the 'control' key and the 'B' key at the same time and try to speak clearly.  To learn how to optimize your results, click <a class="popup-link" id="help-in-query" href="#help-room-popup">here</a></a>
                   </div>
-                  <div class= "benny-item">
+                  <!--<div class= "benny-item">
                   <%= image_tag("wolfram.jpg", class: "favicon") %>
                   <a class="benny-query">What is the square root of 100?</a>
                   </div>
@@ -114,7 +116,8 @@
                                       var email_url = "https://www.google.com/calendar/embed?showPrint=0&amp;showTz=0&amp;mode=WEEK&amp;height=600&amp;wkst=1&amp;bgcolor=%23ffffff&amp;src=" + email_name + "%40gmail.com&amp;color=%234E5D6C&amp;ctz=" + user_timezone;
                                       var render_item_id = "render" + div_id;
                                       $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id +'>' +
-                              ' <h1 class="calendar-title">' + user_name_title + '</h1> <div class="calendar-border"><iframe class="calendar-frame" src=' + email_url +' style=" border-width:0 " width="800" height="600" frameborder="0" scrolling="no"></iframe></div>' +
+                              '  <div class="calendar-border"> <h1 class="calendar-title">' + user_name_title + '</h1> <a class="glyphicon glyphicon-remove" id="remove_item_id"></a>' +
+                              '<iframe class="calendar-frame" src=' + email_url +' style=" border-width:0 " width="800" height="600" frameborder="0" scrolling="no"></iframe></div>' +
                                                       '</div>');
 
 
@@ -142,6 +145,14 @@
    <!-- Page Content -->
 </div>
 <script>
+
+  $(document).on('click','#remove_item_id',function(){
+    $('.render_spot').remove();
+    $('.calendar-border').fadeOut(1000);
+    inter = setInterval(blinker, 1500);
+  });
+
+
    var video_spots = [0,0,0,0,0,0];
    $(function() {
        $( "#localVideo" ).draggable({

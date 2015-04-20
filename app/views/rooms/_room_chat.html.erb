@@ -70,14 +70,15 @@ function sendBennyReply(json_api_reply) {
                         message: json_api_reply
                     }
                 });
-
-                console.log("saving this json to redis: ", json_api_reply)
-                appendNewBennyReply({
-                    name: "<%= current_user.name %>",
-                    data: json_api_reply,
-                    key: key_user_id_and_index,
-                    callerID: "<%= current_user.name %>"
-     });
+                if (json_api_reply['api_type'] != "No Result") {
+                    console.log("saving this json to redis: ", json_api_reply)
+                    appendNewBennyReply({
+                        name: "<%= current_user.name %>",
+                        data: json_api_reply,
+                        key: key_user_id_and_index,
+                        callerID: "<%= current_user.name %>"
+                    });
+                }
             }
     });
 
@@ -108,9 +109,11 @@ function appendNewIM(options) {
 }
 // stick new reply from benny onto the speechrec body
 function appendNewBennyReply(options) {
+    $('#benny-help-temp').remove();
     <% image_name = "" %>
     json_murph = JSON.parse(options.data);
     console.log(json_murph.api_type);
+    var name = truncation(options.name, 20);
     if (json_murph.api_type == 'calendar'){
         <% image_name = "googz.ico" %>
         var summary = ""
@@ -121,21 +124,31 @@ function appendNewBennyReply(options) {
             summary = truncation(json_murph.summary, 40);
 
         }
-        var name = options.name;
         var key_array = options.key.split(":");
         var key_array_slice = key_array.slice(0, 4);
         var key = key_array_slice.join(":");
         var benny_item_id = "benny" + key;
         var benny_item_link_id = "benny_query" + key;
-        var parameter = 'clickable("' + options.key + '")'
+        var parameter = 'clickable("' + options.key + '")';
         $('.benny-list-body').addClass('benny-list-body-func');
         $('.benny-list-body').append('<div class="benny-item benny-calendar" id=' + benny_item_id +'>' +
                         '<%= image_tag("#{image_name}", class: "favicon") %>' +
-                        '<a class="name-and-summary">' + name + '</a>' +
+                        '<a class="name-and-summary-calendar">' + name + '</a>' +
                         '<a class="benny-link" onclick=' + parameter + ' id=' +
                         benny_item_link_id + '> Summary: ' + summary + '</a>' +
                         '</div>');
 
+    }
+    else if (json_murph.api_type == 'No Result') {
+        var parameter = 'clickMe()';
+         $('.benny-list-body').append('<div class="benny-item benny-no-result" id=' + benny_item_id +'>' +
+                        '<%= image_tag("warning-sign.jpg", class: "favicon", id: "warning-sign") %>' +
+                        '<a class="no-result-benny-link"> Sorry we could not match your request. ' +
+                        'For suggestions, click <a class="popup-link" id="help-here" onclick=' + parameter + '>here</a></a>' +
+                        '<a class="name-and-summary-no-result">' + name + '</a>' +
+                        '</div>');
+
+        $('.benny-no-result').fadeOut(10000);
     }
     var height = 0;
     $('.benny-item').each(function(i, value) {
@@ -157,6 +170,7 @@ function mediaObjectIM(user, uid, token, message) {
         $('div, #chatty').each(function(i, value) {
             height += parseInt($(this).height());
         });
+        height = height + 2;
         //var d = $('#chat-box');
         //d.scrollTop(d.prop("scrollHeight"));
         $('#js-chat-body').animate({
@@ -180,6 +194,27 @@ function truncation(string, len){
     else {
         return string;
     }
+}
+
+function clickMe() {
+    js('.popup-link').magnificPopup({
+    type: 'inline',
+    preloader: false,
+    focus: '#name',
+
+    // When elemened is focused, some mobile browsers in some cases zoom in
+    // It looks not nice, so we disable it:
+    callbacks: {
+        beforeOpen: function() {
+            if($(window).width() < 700) {
+                this.st.focus = false;
+            } else {
+                this.st.focus = '#name';
+            }
+
+        }
+    }
+    });
 }
 
 

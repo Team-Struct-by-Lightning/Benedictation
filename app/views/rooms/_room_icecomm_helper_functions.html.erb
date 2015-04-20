@@ -99,24 +99,35 @@ comm.on('local', function(options) {
             }
         }
     });
-    // get benny history
-    $.ajax({
-        type: "GET",
-        url: "/get_redis",
-        dataType: "json",
-        data: {
-            'redis_key': benny_history_key
-        },
-        success: function(messages) {
-            if (messages.length != 0) {
-                // append what you send to your own page
-                for (var i = 0; i < messages.length; i++) {
-                    //append new benny divs
-                    console.log("getting this json from redis: ", messages[i]);
-                }
-            }
-        }
-    });
+
+    var height = 0;
+    $('div, #chatty').each(function(i, value) {
+            height += parseInt($(this).height());
+        });
+        height = height + 2;
+        //var d = $('#chat-box');
+        //d.scrollTop(d.prop("scrollHeight"));
+        $('#js-chat-body').animate({
+            scrollTop: height
+        }, 'fast');
+    // // get benny history
+    // $.ajax({
+    //     type: "GET",
+    //     url: "/get_redis",
+    //     dataType: "json",
+    //     data: {
+    //         'redis_key': benny_history_key
+    //     },
+    //     success: function(messages) {
+    //         if (messages.length != 0) {
+    //             // append what you send to your own page
+    //             for (var i = 0; i < messages.length; i++) {
+    //                 //append new benny divs
+    //                 //console.log("getting this json from redis: ", messages[i]);
+    //             }
+    //         }
+    //     }
+    // });
     //}
     // Initialize our new recorder with its own copy of the local media stream
     var input = audioContext.createMediaStreamSource(localAudioStream);
