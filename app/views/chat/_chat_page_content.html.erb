@@ -10,7 +10,7 @@
                             <h1 id='center-div-header'>Hello <%= current_user.name %>!</h1>
 
                             <p id="center-div-body">Use the sidebar on the left to create a new group or to enter a group
-                                that has already been created. Click below to start a chat without a group.
+                                that has already been created. Click below to enter a temporary video chat room.
                             </div>
                             <% Relationship.where(user_id: current_user.id).pluck(:id).each do |relationship_id| %>
                             <% group = Relationship.find_by(id: relationship_id).group %>
@@ -24,7 +24,7 @@
                                     <div class="fixed-header-div">
                                         <%= image_tag("glyphicons-44-group.png", id: "group-image") %>
                                         <a id="group-name-in-chat-header"> <%= '#' + group_name %></a>
-                                        <%= link_to "<a class='glyphicon glyphicon-facetime-video' id='go-to-room-in-chat-header' href=#{group_name_url_string}> <p id='go-to-room-text'>Go to conference room</p></a>".html_safe %>
+                                        <%= link_to "<a class='glyphicon glyphicon-facetime-video' id='go-to-room-in-chat-header' href=#{group_name_url_string}> <p id='go-to-room-text'>Go to video chat</p></a>".html_safe %>
                                         <%= link_to "<a class='popup-with-form glyphicon glyphicon-remove' id='leave-group-chat-header' href=#{delete_href} aria-hidden='true'> <p id='leave-group-text'>Leave group</p></a>".html_safe %>
                                     </div>
                                 </div>
@@ -55,7 +55,7 @@
                             <% end %>
 
                             <div id="placeholder-div"></div>
-                            <%= link_to  "Join temporary room",  "/room/" + get_random_string + "/" +
+                            <%= link_to  "Join a temporary room",  "/room/" + get_random_string + "/" +
                             get_random_string, class: 'btn btn-primary random-button' %>
                             <div id="participantsDiv"></div>
 

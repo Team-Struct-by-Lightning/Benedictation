@@ -147,6 +147,65 @@
 }
 
 
+#sidebar-create-group-list-item {
+  position: relative;
+  height: 40px;
+  top: 5px;
+}
+
+#create-group-button {
+  height: 40px;
+  position: relative;
+  left: 0px;
+  top: 0px;
+}
+
+#sidebar-create-group {
+  position: relative;
+  width: 214px;
+  top: -6px;
+  left: 36px;
+  letter-spacing: -.5px;
+  word-spacing: -10px;
+  font-size: 1.05em;
+}
+
+#create-group-button.glyphicon-plus:before {
+  position: relative;
+  top: 14px;
+}
+
+
+
+#sidebar-temp-room-list-item {
+  position: relative;
+  height: 40px;
+  top: 5px;
+}
+
+#create-conference-room-button {
+  height: 40px;
+  position: relative;
+  left: 0px;
+  top: 0px;
+}
+
+#sidebar-temp-room-text{
+  position: relative;
+  width: 214px;
+  top: -6px;
+  left: 36px;
+  letter-spacing: -.5px;
+  word-spacing: -10px;
+  font-size: 1.05em;
+}
+
+#create-conference-room-button.glyphicon-facetime-video:before {
+  position: relative;
+  top: 14px;
+}
+
+
 #members-online {
 	text-decoration: none !important;
 	color: #000000;
@@ -192,8 +251,8 @@
 
 #go-to-room-in-chat-header {
 	position: absolute;
-  left: 61%;
-  font-size: smal;
+  left: 66%;
+  font-size: small;
   top: 18px;
   text-decoration: none !important;
   height: 20px !important;
@@ -221,7 +280,7 @@
 
 #leave-group-text {
 	position: relative;
-  top: -20px;
+  top: -21px;
   left: 20px;
   word-spacing: -12px;
 }
@@ -236,7 +295,7 @@
 
 #go-to-room-text {
 	position: relative;
-  top: -22px;
+  top: -21px;
   left: 20px;
   word-spacing: -12px;
 }

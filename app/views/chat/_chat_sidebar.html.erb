@@ -96,8 +96,12 @@
       <% end %>
    </ul>
    <ul class="sidebar-nav create-group-list" id="create-group-list">
-      <li>
-         <a class="popup-with-form sidebar-item" id="create-group-button" href="#create-group" >[ create new group + ]</a>
+      <li id="sidebar-create-group-list-item">
+         <a class="popup-with-form sidebar-item glyphicon glyphicon-plus" id="create-group-button" href="#create-group" ><p id="sidebar-create-group">Create new group</p></a>
+      </li>
+      <li id="sidebar-temp-room-list-item">
+        <% random_url = "/room/" + get_random_string + "/" + get_random_string %>
+        <a class="sidebar-item glyphicon glyphicon-facetime-video" id="create-conference-room-button" href=<%= random_url %> ><p id="sidebar-temp-room-text">Join a temporary room </p></a>
       </li>
    </ul>
    <div id="create-group" class="white-popup-block mfp-hide">
