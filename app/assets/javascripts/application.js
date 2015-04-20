@@ -12,5 +12,5 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require magnific-popup
 //= require_tree .
+//= require magnific-popup
