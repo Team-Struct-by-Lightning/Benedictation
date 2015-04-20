@@ -145,7 +145,18 @@
    var video_spots = [0,0,0,0,0,0];
    $(function() {
        $( "#localVideo" ).draggable({
-       revert: "invalid" , opacity: .7,
+      revert: function(socketObj) {
+        if (socketObj === false) {
+            // Drop was rejected, revert the helper.
+            var $helper = $("#localVideo");
+            $helper.animate($helper.originalPosition);
+            $helper.animate({ width: "100%", height: "100%" });
+            return true;
+        } else {
+            // Drop was accepted, don't revert.
+            return false;
+        }},
+      opacity: .7,
        create: function(event, ui) {
            $(this).draggable("option", "cursorAt", {
                left: Math.floor(80),

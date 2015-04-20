@@ -58,6 +58,7 @@ $(function() {
                     document.getElementById(get_free_spot()).appendChild(video);
                     $(video).get(0).play();
         }
+        
         take_spot(5, $("#" + ui.draggable.prop('id')), $("#drop-spot"));
         $("#drop-spot").append( $("#" + ui.draggable.prop('id')));
         $("#" + ui.draggable.prop('id')).css("top", "0%");

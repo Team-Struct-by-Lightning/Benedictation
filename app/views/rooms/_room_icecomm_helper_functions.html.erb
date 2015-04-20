@@ -133,7 +133,17 @@ comm.on('connected', function(options) {
     new_video.style.cursor = "move";
     new_video.className = "video-center";
     $(new_video).draggable({
-        revert: "invalid",
+        revert: function(socketObj) {
+        if (socketObj === false) {
+            // Drop was rejected, revert the helper.
+            var $helper = $("#localVideo");
+            $helper.animate($helper.originalPosition);
+            $helper.animate({ width: "100%", height: "100%" });
+            return true;
+        } else {
+            // Drop was accepted, don't revert.
+            return false;
+        }},
         opacity: .7,
         create: function(event, ui) {
             $(this).draggable("option", "cursorAt", {
