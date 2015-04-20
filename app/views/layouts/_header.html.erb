@@ -7,7 +7,7 @@
           <% url_string = request.original_url %>
           <% url_array = url_string.split('/') %>
           <% if url_array[-1] == "chat" %>
-          <li id="chat-list-head"><%= link_to "<a class='glyphicon glyphicon-user' id='user-icon' href='/chat'><p id='chatroom-header-text'> Chatrooms</p></a>".html_safe, "/chat", id: "chat-path-glyph" %></li>
+          <li id="chat-list-head"><%= link_to "<a class='glyphicon glyphicon-user in-chatroom' id='user-icon' href='/chat'><p id='chatroom-header-text'> Chatrooms</p></a>".html_safe, "/chat", id: "chat-path-glyph" %></li>
           <li id="home-list-head"><%= link_to '<a class="glyphicon glyphicon-home" id="home-icon" href="/"><p id="home-header-text">Home</p></a>'.html_safe, "/", id: "home-path-glyph" %></li>
           <li id="help-list-head"><%= link_to "<a class='glyphicon glyphicon-question-sign blink_me2 popup-link' id='help-icon'  href='#help-chat-popup'><p id='help-header-text'> Help</p></a>".html_safe, "#help-chat-popup",id: "help-path-glyph" %></li>
           <% elsif url_array[-3] == "room" %>
