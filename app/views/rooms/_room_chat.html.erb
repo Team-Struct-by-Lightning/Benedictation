@@ -108,12 +108,15 @@ function appendNewIM(options) {
     mediaObjectIM(caller_name, caller_uid, caller_token, message_data);
 }
 // stick new reply from benny onto the speechrec body
+
 function appendNewBennyReply(options) {
-    $('#benny-help-temp').remove();
+    $('#benny-help-temp').slideToggle( function() {
+        $('#benny-help-temp').remove();
+    });
     <% image_name = "" %>
     json_murph = JSON.parse(options.data);
     console.log(json_murph.api_type);
-    var name = truncation(options.name, 20);
+    var name = truncation(options.name, 15);
     if (json_murph.api_type == 'calendar'){
         <% image_name = "googz.ico" %>
         var summary = ""
@@ -140,15 +143,21 @@ function appendNewBennyReply(options) {
 
     }
     else if (json_murph.api_type == 'No Result') {
-        var parameter = 'clickMe()';
-         $('.benny-list-body').append('<div class="benny-item benny-no-result" id=' + benny_item_id +'>' +
+
+        $('.benny-list-body').append('<div class="benny-item benny-no-result" id=' + benny_item_id +'>' +
                         '<%= image_tag("warning-sign.jpg", class: "favicon", id: "warning-sign") %>' +
                         '<a class="no-result-benny-link"> Sorry we could not match your request. ' +
-                        'For suggestions, click <a class="popup-link" id="help-here" onclick=' + parameter + '>here</a></a>' +
+                        'For suggestions, click <a class="popup-link" id="help-here">here</a></a>' +
                         '<a class="name-and-summary-no-result">' + name + '</a>' +
                         '</div>');
+        var benny_childs = $('.benny-list-body').children()
+        var item_to_toggle = benny_childs[benny_childs.length - 1];
+        $(item_to_toggle).delay(10000).slideToggle( function() {
+            item_to_toggle.remove();
+        });
 
-        $('.benny-no-result').fadeOut(10000);
+
+
     }
     var height = 0;
     $('.benny-item').each(function(i, value) {
@@ -216,5 +225,33 @@ function clickMe() {
     }
     });
 }
+
+$(document).ready(function() {
+    $("#help-here").on( "click", function() {
+        console.log("this blows");
+        js('.benny-list-body .popup-link').magnificPopup({
+        delegate: 'a.popup-link',
+        type: 'inline',
+        preloader: false,
+        focus: '#name',
+
+        // When elemened is focused, some mobile browsers in some cases zoom in
+        // It looks not nice, so we disable it:
+        callbacks: {
+            beforeOpen: function() {
+                if($(window).width() < 700) {
+                    this.st.focus = false;
+                } else {
+                    this.st.focus = '#name';
+                }
+
+            }
+        }
+        });
+
+});
+});
+
+
 
 
