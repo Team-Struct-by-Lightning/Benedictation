@@ -29,9 +29,10 @@
       </ul>
       <div id='chat-body' valign='top'>
          <div class='panel panel-primary' id="chat-box">
-            <div class='panel-heading'>
+            <div class='panel-heading' id="chat-heading">
                <a class="chat-header">Chat</a>
-               <a class ="glyphicon glyphicon-chevron-down" id = "minimize-chat" href = "javascript:minimize('#js-chat-body');"> </a>
+               <a class ="glyphicon glyphicon-chevron-down" id = "minimize-chat-down" href = "javascript:minimize('#js-chat-body','#minimize-chat-down', '#minimize-chat-right');"></a>
+               <a class ="glyphicon glyphicon-chevron-right" id = "minimize-chat-right" href = "javascript:minimize('#js-chat-body','#minimize-chat-right', '#minimize-chat-down');"></a>
             </div>
             <div class='panel-body' id='js-chat-body'></div>
          </div>
@@ -45,7 +46,8 @@
          <div id = "benedict-list">
             <div class='panel-heading' id="benedict-query-header">
                <a class="benedict-query-header-text"> Benedict Queries </a>
-               <a class ="glyphicon glyphicon-chevron-down" id = "minimize-query" href = "javascript:minimize('.benny-list-body');"> </a>
+               <a class ="glyphicon glyphicon-chevron-down" id = "minimize-query-down" href = "javascript:minimize('.benny-list-body', '#minimize-query-down', '#minimize-query-right');"> </a>
+               <a class ="glyphicon glyphicon-chevron-right" id = "minimize-query-right" href = "javascript:minimize('.benny-list-body', '#minimize-query-right', '#minimize-query-down');"> </a>
             </div>
             <div class="benny-list-body">
                <!-- <div class="benny-item">

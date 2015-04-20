@@ -14,9 +14,14 @@
     $( this ).find( "span:last" ).remove();
     });
 
-    function minimize(string){
+    function minimize(string1, string2, string3){
 
-      $(string).slideToggle();
+      $(string1).slideToggle();
+      console.log(string2);
+      console.log(string1);
+      console.log(string3);
+      $(string2).hide();
+      $(string3).show();
     }
 
     function take_spot(spot_num, video, spot_to_take){
