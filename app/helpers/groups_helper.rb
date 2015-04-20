@@ -33,7 +33,7 @@ module GroupsHelper
     else
       @user = User.find_by(email: @useremail);
       if @user.nil?
-         flash[:danger] = 'This user has not joined Benedictation yet.  An email has been sent to the user on your behalf.'
+         flash[:danger] = 'This user has not joined Benedictation yet.  An email has been sent on your behalf.'
          # add their email to redis list with email -> [newgroup1, newgroup2...newgroupn]
          $redis.rpush(@useremail.to_s, @curgroupid.to_s)
          # store most recent new email
