@@ -70,7 +70,7 @@ function sendBennyReply(json_api_reply) {
                         message: json_api_reply
                     }
                 });
-                if (json_api_reply['api_type'] != "No Result") {
+                if (json_api_reply['api_type'] != "No Result" && json_api_reply['api_type'] != "Blank Query") {
                     console.log("saving this json to redis: ", json_api_reply)
                     appendNewBennyReply({
                         name: "<%= current_user.name %>",
@@ -110,14 +110,15 @@ function appendNewIM(options) {
 // stick new reply from benny onto the speechrec body
 
 function appendNewBennyReply(options) {
-    $('#benny-help-temp').slideToggle( function() {
-        $('#benny-help-temp').remove();
-    });
     <% image_name = "" %>
     json_murph = JSON.parse(options.data);
     console.log(json_murph.api_type);
     var name = truncation(options.name, 15);
+    if (json_murph.api_type != 'Blank Query') {
+        $('#benny-help-temp').remove();
+    }
     if (json_murph.api_type == 'calendar'){
+
         <% image_name = "googz.ico" %>
         var summary = ""
         if (json_murph.summary == ""){

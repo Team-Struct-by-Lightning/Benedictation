@@ -97,7 +97,7 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
             else:
                 text = '{"api_type": "No Result"}'
         else:
-            text = '{"api_type": "No Result"}'
+            text = '{"api_type": "Blank Query"}'
 
         self.write_message(text)
         os.remove(outfilename)
