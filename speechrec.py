@@ -16,11 +16,15 @@ class SpeechRecognizer():
         self.jdecode = json.JSONDecoder()
 
     # Recognize a piece of audio.
-    # Input: a .wav filename, string
-    # Return: recognition output, string
+    # Input:  name of a .wav file: string
+    # Return: hypotheses: list of strings
     def recognize(self, input):
-        self.connection = httplib.HTTPConnection("www.google.com:80")        # self.connection.connect()
-        return self._rec_googleapi(input)
+        try:
+            self.connection = httplib.HTTPConnection("www.google.com:80")        # self.connection.connect()
+            return self._rec_googleapi(input)
+        except Exception as e:  # Catch any errors not caught in the recognize function
+            print "Error in speech recognizer: ", e.message
+            return [""]         # Return an empty hypothesis list
 
 
     def _rec_googleapi(self, input):
@@ -41,31 +45,29 @@ class SpeechRecognizer():
         try:
             response = self.connection.getresponse()
             if response.status == 200:
-                jdata = response.read()
-                lines = str(jdata).splitlines()
+                lines = str(response.read()).splitlines()
                 if(len(lines) > 1):
                     json_result = lines[1]
 
-                    try:
-                        decoded = json.loads(json_result)
-                        # pretty printing of json-formatted string
-                        print json.dumps(decoded, sort_keys=True, indent=4)
-                        hyp = decoded['result'][0]['alternative'] # [0]['transcript']
-                        hyp = [str(x["transcript"]) for x in decoded['result'][0]['alternative']]
-                        print "speech rec result: ", hyp
-                    except (ValueError, KeyError, TypeError):
-                        print "JSON format error"
+                    decoded = json.loads(json_result)
+                    # pretty printing of json-formatted string
+                    print json.dumps(decoded, sort_keys=True, indent=4)
+                    # hyp = decoded['result'][0]['alternative'] # [0]['transcript']
+                    hyp = [str(x["transcript"]) for x in decoded['result'][0]['alternative']]
+                    print "speech rec result: ", hyp
+
             else:
                 print "got this response status from google: ",response.status
-                hyp = "error, got this response status from google: " + response.status
+                hyp = ["error, got this response status from google: " + response.status]
 
-            speechfile.close()
-            os.remove("output.flac")
-            self.connection.close()
             return hyp
         except httplib.BadStatusLine:
             print "got bad status line error, trying to make google request again";
             self.recognize(input) # call again
+        finally:
+            speechfile.close()
+            os.remove("output.flac")
+            self.connection.close()
 
 
 if __name__ == "__main__":
