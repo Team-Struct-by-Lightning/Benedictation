@@ -400,10 +400,11 @@ p {
 
 #logo {
   position: fixed;
-  left: 113px;
+  left: 137px;
+  top: -4px;
   float: left;
   margin-right: 10px;
-  font-size: 1.7em;
+  font-size: 2.0em;
   color: #CC1111;
   text-transform: uppercase;
   letter-spacing: -1px;
@@ -416,9 +417,10 @@ p {
 }
 #red_logo {
   position: fixed;
-  left: 51px;
+  left: 64px;
   float: left;
-  font-size: 1.7em;
+  top: -4px;
+  font-size: 2.0em;
   color: #DDDDDD;
   text-transform: uppercase;
   letter-spacing: -1px;

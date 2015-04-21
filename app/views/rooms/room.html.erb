@@ -58,7 +58,7 @@
 
 <script>
 
- $(document).ready(function() {
+ $(document).ready(function(event) {
 
         js('.popup-link').magnificPopup({
             type: 'inline',
@@ -69,6 +69,7 @@
             // It looks not nice, so we disable it:
             callbacks: {
                 beforeOpen: function() {
+
                     if($(window).width() < 700) {
                         this.st.focus = false;
                     } else {
