@@ -19,6 +19,11 @@
   color: #FFFFFF;
 }
 
+#sidebar-temp-room-list-item:hover {
+  background-color: #333333 !important;
+}
+
+
 #chat-alerts {
   text-align: center;
   width: 626px;
@@ -169,8 +174,8 @@
 #sidebar-create-group {
   position: relative;
   width: 214px;
-  top: -6px;
-  left: 36px;
+  top: -8px;
+  left: 34px;
   letter-spacing: -.5px;
   word-spacing: -10px;
   font-size: 1.05em;
@@ -178,7 +183,8 @@
 
 #create-group-button.glyphicon-plus:before {
   position: relative;
-  top: 14px;
+  left: 1px;
+  top: 12px;
 }
 
 
@@ -198,8 +204,8 @@
 #sidebar-temp-room-text{
   position: relative;
   width: 214px;
-  top: -6px;
-  left: 36px;
+  top: -8px;
+  left: 34px;
   letter-spacing: -.5px;
   word-spacing: -10px;
   font-size: 1.05em;
@@ -207,7 +213,8 @@
 
 #create-conference-room-button.glyphicon-facetime-video:before {
   position: relative;
-  top: 14px;
+  top: 12px;
+  left: 1px;
 }
 
 
@@ -396,12 +403,12 @@
 
 .create-group-list {
 	position: relative !important;
-	top: 65px;
+	top: 50px;
 }
 
 
 #create-group-list {
-	top: 75px;
+	top: 50px;
 }
 
 .group-sidebar-list {
