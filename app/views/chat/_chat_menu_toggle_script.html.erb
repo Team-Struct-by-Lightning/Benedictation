@@ -5,12 +5,14 @@
         e.preventDefault();
         $("#wrapper").toggleClass("active");
         if (toggled == 1) {
+            $('#sidebar-temp-room-list-item').hide();
             $('.fixed-header-div').animate({
                 left: "-=200px",
                 width: "+=200px"
             }, 380 , function() {});
         }
         else {
+            $('#sidebar-temp-room-list-item').show();
             $('.fixed-header-div').animate({
                 left: "+=200px",
                 width: "-=200px"
