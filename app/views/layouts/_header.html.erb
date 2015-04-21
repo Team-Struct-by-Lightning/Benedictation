@@ -43,20 +43,26 @@ $(window).resize(function() {
   else{
       <% url_string = request.original_url %>
       <% url_array = url_string.split('/') %>
-      $('#home-list-head').show();
       <% if url_array[-1] == "chat" %>
+        $('#home-list-head').show();
         $('#chat-list-head').show();
         $('#help-list-head').show();
         $('#help-icon1').show();
         $('#log-out-list-head').show();
       <% elsif url_array[-3] == "room" %>
+        $('#home-list-head').show();
         $('#chat-list-head').show();
         $('#help-list-head').show();
         $('#help-icon2').show();
-        $('#log-out-list-head').show();
       <% else %>
-        $('#out-home-list-head').show();
-        $('#log-in-list-head').show();
+        <% if current_user %>
+          $('#home-list-head').show();
+          $('#chat-list-head').show();
+          $('#log-out-list-head').show();
+        <% else %>
+          $('#out-home-list-head').show();
+          $('#log-in-list-head').show();
+        <% end %>
       <% end %>
   }
 });
