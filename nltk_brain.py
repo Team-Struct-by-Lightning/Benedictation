@@ -47,7 +47,9 @@ def schedule_meeting(sentences):
 					 'talk', 'call', 'powwow', 'meet', 'rendezvous', 'event', 'conference']
 	
 	for sentence in sentences:
-
+		
+		if(len(sentence.split()) <= 1):
+			return None
 		sentence = oclock_remover(sentence)
 
 		tree = parser.parse(sentence)
@@ -98,5 +100,5 @@ def run_tests(filename):
 
 if __name__ == "__main__":
 	#run_tests('example_sentences.txt')
-	schedule_JJ("schedule meeting for tomorrow at 4 pm")
-	#print schedule_meeting(["schedule meeting for tomorrow at 3 pm", "schedule a meeting for tomorrow at 5 pm","schedule a meeting for tomorrow at 7 pm"])
+	#schedule_JJ("schedule meeting for tomorrow at 4 pm")
+	print schedule_meeting(["weight "])
