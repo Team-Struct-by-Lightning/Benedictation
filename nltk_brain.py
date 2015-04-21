@@ -60,7 +60,7 @@ def schedule_meeting(sentences):
 						# Check if the VP contains a VB that is in the schedule_verbs.
 						if 'VB' in verb_subtree.label() \
 						and any(x in verb_subtree.leaves() for x in schedule_verbs):
-						
+
 							return accept(element)
 
 		except Exception as e:
@@ -68,6 +68,26 @@ def schedule_meeting(sentences):
 			return None
 
 	return None
+
+def question_checker(sentences):
+	for sentence in sentences:
+		try:
+			if(len(sentence.split()) <= 1):
+				return None
+
+			tree = parser.parse(sentence)
+			print tree
+
+			for element in [tree] + [e for e in tree]:
+				if "SBAR" in element.label():
+					for subtree in element.subtrees():
+						if "W" in subtree.label():
+							return True
+			return False
+
+		except Exception as e:
+			print e.message
+			return False
 
 # Pass a top-level element to this once we've determined that it likely contains a scheduling request.
 # Input:  an NLTK Tree element
@@ -86,12 +106,12 @@ def accept(element):
 	if cal.parse(words)[1] != 0:
 		return time_converter(cal.parse(words), schedule_word)
 
-def run_tests(filename):
+def run_tests(filename, fn):
 	testfile = open(filename, 'r')
 	i = 0
 	for line in testfile:
 		print "Test ", i, ": ", line
-		print schedule_meeting(line)
+		print fn([line])
 		print
 		i += 1
 	testfile.close()
@@ -99,4 +119,5 @@ def run_tests(filename):
 if __name__ == "__main__":
 	#run_tests('example_sentences.txt')
 	#schedule_JJ("schedule meeting for tomorrow at 4 pm")
-	print schedule_meeting(["schedule a meeting for tomorrow at 3 pm"])
+	#print schedule_meeting(["schedule a meeting for tomorrow at 3 pm"])
+	run_tests('example_questions.txt', question_checker)
