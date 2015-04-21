@@ -13,15 +13,6 @@ module ApplicationHelper
       ( User.find_by_email(user_email).nil? == true ) ? false : true
     end
 
-    def get_most_recent_email
-      email = $redis.get("most_recent_email").to_s
-      list = $redis.lrange(email, 0, -1)
-      if list.length > 1
-        return ""
-      else
-        return email
-      end
-    end
 
   def user_logged_in(user_id)
   	@user = User.find_by_id(user_id)

@@ -189,6 +189,7 @@ comm.on('disconnect', function(options) {
     //     });
     // }
 });
+
 comm.on('data', function(options) {
     console.log("data: ", options.data);
     var message_data = options.data.split("@@@");

@@ -37,7 +37,6 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         return True
 
 
-
 class EmailWSHandler(tornado.websocket.WebSocketHandler):
     def open(self):
         print "new connection to email recognizer opened"
@@ -48,7 +47,7 @@ class EmailWSHandler(tornado.websocket.WebSocketHandler):
         # pretty printing of json-formatted string
         print json.dumps(message, sort_keys=True, indent=4)
         # hyp = decoded['result'][0]['alternative'][0]['transcript']
-        self.email.send_email(json_email['send_name'], json_email['send_email'], json_email['join_group'], json_email['recipient_email'], json_email['email_type'])
+        self.email.send_email(json_email['send_name'], json_email['send_email'], json_email['recipient_email'], json_email['email_type'])
 
     def on_close(self):
         print "Connection closed."
