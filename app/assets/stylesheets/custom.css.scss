@@ -20,12 +20,14 @@ html {
 }
 
 .navbar-right {
-  width: 343px;
+  width: 500px;
+  position: relative;
+  left: 72px;
 }
 
 #chat-list-head {
   position: relative;
-  left: 0px;
+  left: 50px;
 }
 
 
@@ -42,25 +44,25 @@ html {
 
 .header-list {
   background-color: black;
-  padding-left: 5px;
-  padding-right: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 #home-list-head {
   position: relative;
-  left: 16px;
+  left: 50px;
 }
 
 #out-home-list-head {
   position: relative;
-  left: 183px;
+  left: 250px;
 }
 
 #log-in-list-head {
   position: relative;
-  left: 202px;
+  left: 250px;
   height: 50px;
-  width: 67px;
+  width: 87px;
 }
 
 #sign_in {
@@ -86,12 +88,12 @@ html {
 
 #help-list-head {
   position: relative;
-  left: 33px;
+  left: 50px;
 }
 
 #out-help-list-head {
   position: relative;
-  left: 33px;
+  left: 50px;
 }
 
 #log-out-list-head {

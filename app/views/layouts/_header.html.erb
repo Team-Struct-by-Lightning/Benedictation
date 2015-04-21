@@ -30,7 +30,7 @@
 
 <%= javascript_tag do %>
 $(window).resize(function() {
-  if ($(document).width() < 800) {
+  if ($(document).width() < 900) {
     $('#chat-list-head').hide();
     $('#home-list-head').hide();
     $('#help-list-head').hide();
@@ -38,6 +38,7 @@ $(window).resize(function() {
     $('#help-icon2').hide();
     $('#log-out-list-head').hide();
     $('#log-in-list-head').hide();
+    $('#out-home-list-head').hide();
   }
   else{
       <% url_string = request.original_url %>
@@ -54,6 +55,7 @@ $(window).resize(function() {
         $('#help-icon2').show();
         $('#log-out-list-head').show();
       <% else %>
+        $('#out-home-list-head').show();
         $('#log-in-list-head').show();
       <% end %>
   }
