@@ -7,21 +7,21 @@
           <% url_string = request.original_url %>
           <% url_array = url_string.split('/') %>
           <% if url_array[-1] == "chat" %>
-          <li id="chat-list-head"><%= link_to "<a class='glyphicon glyphicon-user in-chatroom' id='user-icon' href='/chat'><p id='chatroom-header-text'> Chatrooms</p></a>".html_safe, "/chat", id: "chat-path-glyph" %></li>
-          <li id="home-list-head"><%= link_to '<a class="glyphicon glyphicon-home" id="home-icon" href="/"><p id="home-header-text">Home</p></a>'.html_safe, "/", id: "home-path-glyph" %></li>
-          <li id="help-list-head"><%= link_to "<a class='glyphicon glyphicon-question-sign blink_me2 popup-link' id='help-icon1'  href='#help-chat-popup'><p id='help-header-text'> Help</p></a>".html_safe, "#help-chat-popup",id: "help-path-glyph" %></li>
+          <li class="header-list header-in-chatroom" id="chat-list-head"><%= link_to "<a class='glyphicon glyphicon-user in-chatroom' id='user-icon' href='/chat'><p id='chatroom-header-text'> Chatrooms</p></a>".html_safe, "/chat", id: "chat-path-glyph" %></li>
+          <li class="header-list" id="home-list-head"><%= link_to '<a class="glyphicon glyphicon-home" id="home-icon" href="/"><p id="home-header-text">Home</p></a>'.html_safe, "/", id: "home-path-glyph" %></li>
+          <li class="header-list" id="help-list-head"><%= link_to "<a class='glyphicon glyphicon-question-sign blink_me2 popup-link' id='help-icon1'  href='#help-chat-popup'><p id='help-header-text'> Help</p></a>".html_safe, "#help-chat-popup",id: "help-path-glyph" %></li>
           <% elsif url_array[-3] == "room" %>
-          <li id="chat-list-head"><%= link_to "<a class='glyphicon glyphicon-user' id='user-icon' href='/chat'><p id='chatroom-header-text'> Chatrooms</p></a>".html_safe, "/chat", id: "chat-path-glyph" %></li>
-          <li id="home-list-head"><%= link_to '<a class="glyphicon glyphicon-home" id="home-icon" href="/"><p id="home-header-text">Home</p></a>'.html_safe, "/", id: "home-path-glyph" %></li>
-            <li id="help-list-head"><%= link_to "<a class='glyphicon glyphicon-question-sign blink_me2 popup-link' id='help-icon2' href='#help-room-popup'><p id='help-header-text'> Help</p></a>".html_safe, "#help-room-popup",id: "help-path-glyph"%></li>
+          <li class="header-list" id="chat-list-head"><%= link_to "<a class='glyphicon glyphicon-user' id='user-icon' href='/chat'><p id='chatroom-header-text'> Chatrooms</p></a>".html_safe, "/chat", id: "chat-path-glyph" %></li>
+          <li class="header-list" id="home-list-head"><%= link_to '<a class="glyphicon glyphicon-home" id="home-icon" href="/"><p id="home-header-text">Home</p></a>'.html_safe, "/", id: "home-path-glyph" %></li>
+            <li class="header-list" id="help-list-head"><%= link_to "<a class='glyphicon glyphicon-question-sign blink_me2 popup-link' id='help-icon2' href='#help-room-popup'><p id='help-header-text'> Help</p></a>".html_safe, "#help-room-popup",id: "help-path-glyph"%></li>
           <% else %>
-           <li class="chat-home-page-head" id="chat-list-head"><%= link_to "<a class='glyphicon glyphicon-user' id='user-icon' href='/chat'><p id='chatroom-header-text'> Chatrooms</p></a>".html_safe, "/chat", id: "chat-path-glyph" %></li>
-          <li class="home-home-page-head" id="home-list-head"><%= link_to '<a class="glyphicon glyphicon-home" id="home-icon" href="/"><p id="home-header-text">Home</p></a>'.html_safe, "/", id: "home-path-glyph" %></li>
+           <li class="header-list" class="chat-home-page-head" id="chat-list-head"><%= link_to "<a class='glyphicon glyphicon-user' id='user-icon' href='/chat'><p id='chatroom-header-text'> Chatrooms</p></a>".html_safe, "/chat", id: "chat-path-glyph" %></li>
+          <li class="header-list" class="home-home-page-head" id="home-list-head"><%= link_to '<a class="glyphicon glyphicon-home" id="home-icon" href="/"><p id="home-header-text">Home</p></a>'.html_safe, "/", id: "home-path-glyph" %></li>
           <% end %>
-          <li id="log-out-list-head"><%= link_to '<a class="glyphicon glyphicon-log-out" id="log-out-icon" href="/signout"> <p id="log-out-header-text">Log out</p></a>'.html_safe, "/signout", id: "sign_out" %></li>
+          <li class="header-list" id="log-out-list-head"><%= link_to '<a class="glyphicon glyphicon-log-out" id="log-out-icon" href="/signout"> <p id="log-out-header-text">Log out</p></a>'.html_safe, "/signout", id: "sign_out" %></li>
       	<% else %>
-          <li id="out-home-list-head"><%= link_to '<a class="glyphicon glyphicon-home" id="out-home-icon" href="/"><p id="out-home-header-text">Home</p></a>'.html_safe, "/", id: "out-home-path-glyph" %></li>
-          <li id="log-in-list-head"><%= link_to '<a class="glyphicon glyphicon-log-in" id="log-in-icon" href="/auth/google_oauth2"> <p id="log-in-header-text">Log in</p></a>'.html_safe, "/auth/google_oauth2", id: "sign_in" %></li>
+          <li class="header-list" id="out-home-list-head"><%= link_to '<a class="glyphicon glyphicon-home" id="out-home-icon" href="/"><p id="out-home-header-text">Home</p></a>'.html_safe, "/", id: "out-home-path-glyph" %></li>
+          <li class="header-list" id="log-in-list-head"><%= link_to '<a class="glyphicon glyphicon-log-in" id="log-in-icon" href="/auth/google_oauth2"> <p id="log-in-header-text">Log in</p></a>'.html_safe, "/auth/google_oauth2", id: "sign_in" %></li>
       	<% end %>
       </ul>
     </nav>

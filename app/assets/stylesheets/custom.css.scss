@@ -29,6 +29,23 @@ html {
 }
 
 
+.header-list:hover {
+  background-color: #333333 !important;
+  a {
+    color: #FFFFFF !important;
+  }
+}
+
+.header-in-chatroom {
+  background-color: #222222 !important;
+}
+
+.header-list {
+  background-color: black;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
 #home-list-head {
   position: relative;
   left: 16px;
