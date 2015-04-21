@@ -1,4 +1,17 @@
 <!-- Sidebar -->
+<script>
+  // Set up the WebSocket
+var myLocation = location.host;
+var port = "8888";
+var websocketprotocol = "wss://";
+if (location.protocol !== "https:") {
+    websocketprotocol = "ws://";
+    myLocation = myLocation.split(":")[0];
+}
+var uri = "/email";
+console.log("connecting to this websocket: " + websocketprotocol + myLocation + ":" + port + uri);
+var w = new WebSocket(websocketprotocol + myLocation + ":" + port + uri);
+</script>
 <div id="sidebar-wrapper">
    <ul class="sidebar-nav sidebar-title">
       <li class="sidebar-brand" id="first-group-row"><a id="menu-toggle" href="#">Groups<span id="main_icon" class="glyphicon glyphicon-align-justify" value="0"></span></a></li>
@@ -35,32 +48,36 @@
 
             <%= javascript_tag do %>
                // tell python server to send email to the user if the user does not yet exist
-               var email = "<%= get_most_recent_email %>"
-               console.log("email: ",email);
-               if(email != ""){
-                  // Set up the WebSocket
-                  var myLocation = location.host;
-                  var port = "8888";
-                  var websocketprotocol = "wss://";
-                  if (location.protocol !== "https:") {
-                      websocketprotocol = "ws://";
-                      myLocation = myLocation.split(":")[0];
-                  }
-                  var uri = "/email";
-                  console.log("connecting to this websocket: " + websocketprotocol + myLocation + ":" + port + uri);
-                  var w = new WebSocket(websocketprotocol + myLocation + ":" + port + uri);
+               var email_num = parseInt('<%= $redis.lrange("#{current_user.id}:#{group_id}:newusersadded",0,-1).length %>', 10);
+               var count = 0;
+
+               <% $redis.lrange("#{current_user.id}:newusersadded",0,-1).each do |emailandgroup| %>
+                  var email_groupid = "<%= emailandgroup %>";
+                  var email = email_groupid.split(":")[0];
+                  var groupid = email_groupid.split(":")[1];
+                  var emailed = "<%= $redis.lrange("#{current_user.id}:alreadyinvited",0,-1).include?("#{emailandgroup.split(":")[0]}") %>";
+
+                  count++;
+                  // check to see if we need to send email
+                  if((parseInt(groupid,10) == parseInt("<%= group_id %>",10)) && emailed == "true"){
+
                   json_email = String('{"send_name": "' + '<%= current_user.name %>' +'",' +
                                 '"send_email": "team.struct.by.lightning@gmail.com",' +
-                                '"join_group": "' + '<%= Group.find(group_id).group_name %>' + '",' +
                                 '"recipient_email": "' + email +'",' +
                                 '"email_type": "invite"' +
-                                '}')
-                  console.log(json_email);
+                                '}');
+
+                    console.log("sending: " + json_email);
+                    sendMessage(json_email);
+                    <% $redis.lrem("#{current_user.id}:newusersadded",0, emailandgroup)%>
+                  }
 
                   function sendMessage(msg) {
                       waitForSocketConnection(w, function() {
                           w.send(msg);
-                          w.close();
+                          if (count == email_num) {
+                            w.close();
+                          }
                       });
                   };
 
@@ -78,9 +95,8 @@
                               }
                           }, 5);
                   };
-
-                  sendMessage(json_email);
-               }
+                  
+            <% end %>
             <% end %>
             <% end %>
          </div>

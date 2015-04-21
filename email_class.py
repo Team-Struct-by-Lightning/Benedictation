@@ -21,14 +21,12 @@ class email_sender():
   def __init__(self):
     print "initialize"
 
-  def personalize_message(self, send_name, send_email, join_group, recip_email, email_type):
+  def personalize_message(self, send_name, send_email, recip_email, email_type):
 
     if email_type == "invite":
-      ret_string = ("Hello!\n\nYou have been invited into the "
-                    "Benedictation system.  Benedictation is a video conferencing web application "
-                    "with a smart assistant for your meeting needs.  " + send_name + " invited "
-                    "you to join the chat group #" + join_group + ".  Follow this link to join the "
-                    "group:\n\nhttps://benedictation.io\n\n"
+      ret_string = ("Hello!\n\n" + send_name + " has invited you to join Benedictation. "
+                    "Benedictation is a video conferencing web application "
+                    "with a smart assistant named Benedict to help your during your meeting. Follow this link to join:\n\nhttps://benedictation.io\n\n"
                     "Thank you and enjoy!\n\nTeam Struct"
                     " by Lightning")
       return ret_string
@@ -36,7 +34,7 @@ class email_sender():
     return ""
 
 
-  def send_email(self, send_name, send_email, join_group, recip_email, email_type):
+  def send_email(self, send_name, send_email, recip_email, email_type):
     # Open a plain text file for reading.  For this example, assume that
     # the text file contains only ASCII characters.
 
@@ -48,7 +46,7 @@ class email_sender():
     msg = MIMEMultipart()
 
     # Create a text/plain message
-    text = MIMEText(self.personalize_message(send_name, send_email, join_group, recip_email, email_type))
+    text = MIMEText(self.personalize_message(send_name, send_email, recip_email, email_type))
     msg.attach(text)
 
     print text
@@ -68,5 +66,5 @@ class email_sender():
 
 if __name__ == "__main__":
   se = email_sender("Kevin Malta", "team.struct.by.lightning@gmail.com", "#scrum", "trevor.frese@gmail.com", "invite")
-  se.send_email(se.sender_name, se.sender_email, se.group_join, se.recipient_email, se.email_type)
+  se.send_email(se.sender_name, se.sender_email, se.recipient_email, se.email_type)
 
