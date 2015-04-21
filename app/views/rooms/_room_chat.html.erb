@@ -113,7 +113,7 @@ function appendNewBennyReply(options) {
     <% image_name = "" %>
     json_murph = JSON.parse(options.data);
     console.log(json_murph.api_type);
-    var name = truncation(options.name, 15);
+    var name = truncation(options.name, 18);
     if (json_murph.api_type != 'Blank Query') {
         $('#benny-help-temp').remove();
     }
@@ -146,9 +146,9 @@ function appendNewBennyReply(options) {
     else if (json_murph.api_type == 'No Result') {
 
         $('.benny-list-body').append('<div class="benny-item benny-no-result" id=' + benny_item_id +'>' +
-                        '<%= image_tag("warning-sign.jpg", class: "favicon", id: "warning-sign") %>' +
+                        '<a class="glyphicon glyphicon-question-sign" id="benny-query-question-mark" onmouseover="hoverHelp()"></a>' +
                         '<a class="no-result-benny-link"> Sorry we could not match your request. ' +
-                        'For suggestions, click <a class="popup-link" id="help-here">here</a></a>' +
+                        'For suggestions, click "Help" above.</a>' +
                         '<a class="name-and-summary-no-result">' + name + '</a>' +
                         '</div>');
         var benny_childs = $('.benny-list-body').children()
@@ -206,50 +206,21 @@ function truncation(string, len){
     }
 }
 
-function clickMe() {
-    js('.popup-link').magnificPopup({
-    type: 'inline',
-    preloader: false,
-    focus: '#name',
-
-    // When elemened is focused, some mobile browsers in some cases zoom in
-    // It looks not nice, so we disable it:
-    callbacks: {
-        beforeOpen: function() {
-            if($(window).width() < 700) {
-                this.st.focus = false;
-            } else {
-                this.st.focus = '#name';
-            }
-
-        }
-    }
-    });
+function hoverHelp(){
+    $('#help-icon2').css('color', '#FFFFFF');
+    $("#benny-query-question-mark").hover( function(){
+            $('#help-icon2').css('color', '#FFFFFF');
+        }, function(){
+            $('#help-icon2').css('color', '#777777');
+        });
 }
 
 
 
-function clickMe() {
-    js('body').magnificPopup({
-    delegate: 'a.benny-no-result',
-    type: 'inline',
-    preloader: false,
-    focus: '#name',
 
-    // When elemened is focused, some mobile browsers in some cases zoom in
-    // It looks not nice, so we disable it:
-    callbacks: {
-        beforeOpen: function() {
-            if($(window).width() < 700) {
-                this.st.focus = false;
-            } else {
-                this.st.focus = '#name';
-            }
 
-        }
-    }
-    });
-}
+
+
 
 
 
