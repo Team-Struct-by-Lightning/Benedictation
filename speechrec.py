@@ -50,7 +50,8 @@ class SpeechRecognizer():
                         decoded = json.loads(json_result)
                         # pretty printing of json-formatted string
                         print json.dumps(decoded, sort_keys=True, indent=4)
-                        hyp = decoded['result'][0]['alternative'][0]['transcript']
+                        hyp = decoded['result'][0]['alternative'] # [0]['transcript']
+                        hyp = [str(x["transcript"]) for x in decoded['result'][0]['alternative']]
                         print "speech rec result: ", hyp
                     except (ValueError, KeyError, TypeError):
                         print "JSON format error"

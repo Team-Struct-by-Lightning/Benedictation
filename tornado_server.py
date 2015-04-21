@@ -75,8 +75,8 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
         f.close()
 
         print "wrote to file"
-        text = self.recognizer.recognize(outfilename).lower()
-
+        text = self.recognizer.recognize(outfilename)
+        print text
         if text != "":
             if schedule_meeting(text):
                 starttime, endtime, schedule_word = schedule_meeting(text)

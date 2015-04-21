@@ -31,9 +31,13 @@ def am_pm_adder(words):
 				words = words.replace(word, word + " p.m.")
 
 	return words 
+
+
+	
+
 # Input:  a sentence containing a request to schedule a meeting.
 # Output: a date-time, or False if none was found.
-def schedule_meeting(sentence):
+def schedule_meeting(sentences):
 
 	schedule_verbs = ['set', 'make', 'create', 'get', 'schedule', 'appoint',
 					 'slate', 'arrange', 'organize', 'construct', 'coordinate',
@@ -42,33 +46,37 @@ def schedule_meeting(sentence):
 	schedule_nouns = ['appointment', 'meeting','meetup', 'reservation', 'session'
 					 'talk', 'call', 'powwow', 'meet', 'rendezvous', 'event', 'conference']
 	
-	sentence = oclock_remover(sentence)
+	for sentence in sentences:
 
-	tree = parser.parse(sentence)
-	schedule_word = "Meeting"
+		sentence = oclock_remover(sentence)
 
-	for element in [tree] + [e for e in tree]: # Include the root element in the for loop
-		
-		if 'VP' in element.label() or 'SQ' in element.label():
-			for verb_subtree in element.subtrees():
-				# Check if the VP contains a VB that is in the schedule_verbs.
-				# If it does, check if the VP contains a PP with a datetime,
-				# or a NP with a datetime.
-				if 'VB' in verb_subtree.label() \
-				and any(x in verb_subtree.leaves() for x in schedule_verbs):
+		tree = parser.parse(sentence)
+		schedule_word = "Meeting"
+		print tree
 
-					# Find the "schedule word" in a NP, if one exists
-					for subtree in element.subtrees():
-						if 'NP' in subtree.label() and any(x in subtree.leaves() for x in schedule_nouns):
-							for x in subtree.leaves():
-								if x in schedule_nouns:
-									schedule_word = x
+		for element in [tree] + [e for e in tree]: # Include the root element in the for loop
+			
+			if 'VP' in element.label() or 'SQ' in element.label():
+				for verb_subtree in element.subtrees():
+					# Check if the VP contains a VB that is in the schedule_verbs.
+					# If it does, check if the VP contains a PP with a datetime,
+					# or a NP with a datetime.
+					if 'VB' in verb_subtree.label() \
+					and any(x in verb_subtree.leaves() for x in schedule_verbs):
 
-					# Run the datetime parser on the entire sentence
-					words = ' '.join(element.leaves())	# Operate on the whole VP
-					words = am_pm_adder(words)
-					if cal.parse(words)[1] != 0:
-						return time_converter(cal.parse(words), schedule_word)
+						# Find the "schedule word" in a NP, if one exists
+						for subtree in element.subtrees():
+							if 'NP' in subtree.label() and any(x in subtree.leaves() for x in schedule_nouns):
+								for x in subtree.leaves():
+									if x in schedule_nouns:
+										schedule_word = x
+
+						# Run the datetime parser on the entire sentence
+						words = ' '.join(element.leaves())	# Operate on the whole VP
+						words = am_pm_adder(words)
+						if cal.parse(words)[1] != 0:
+							return time_converter(cal.parse(words), schedule_word)
+
 
 	return None
 
@@ -89,4 +97,6 @@ def run_tests(filename):
 	testfile.close()
 
 if __name__ == "__main__":
-	run_tests('example_sentences.txt')
+	#run_tests('example_sentences.txt')
+	schedule_JJ("schedule meeting for tomorrow at 4 pm")
+	#print schedule_meeting(["schedule meeting for tomorrow at 3 pm", "schedule a meeting for tomorrow at 5 pm","schedule a meeting for tomorrow at 7 pm"])
