@@ -43,6 +43,10 @@
             </button>
             </span>
          </div>
+         <div id="microphone-spot">
+          <a class="glyphicon glyphicon-volume-up" id="mic-glyph"> </a>
+          <button class="btn btn-primary" id="record-query-button">Click and Hold</button>
+        </div>
          <div id = "benedict-list">
             <div class='panel-heading' id="benedict-query-header">
                <a class="benedict-query-header-text"> Benedict Queries </a>
@@ -52,7 +56,7 @@
             <div class="benny-list-body">
                <div class="benny-item" id="benny-help-temp">
                   <%= image_tag("favicon.ico", class: "favicon", id: "lightning-favicon", align: "left") %>
-                  <a class="benny-query" id="benny-temp-message">To query Benedict, hold down the 'control' key and the 'B' key at the same time and try to speak clearly.  To learn how to optimize your results, click <a class="popup-link" id="help-in-query" href="#help-room-popup">here</a></a>
+                  <a class="benny-query" id="benny-temp-message">To query Benedict, click and hold the button above, and ask Benedict your question. For suggested queries, click  <a class="popup-link" id="help-in-query" href="#help-room-popup">here</a></a>
                   </div>
                   <!--<div class= "benny-item">
                   <%= image_tag("wolfram.jpg", class: "favicon") %>
@@ -145,6 +149,28 @@
    <!-- Page Content -->
 </div>
 <script>
+
+
+// function blinker2() {
+//   $('.glyphicon-volume-up').fadeTo( 850 , .1, function() {});
+//   $('.glyphicon-volume-up').fadeTo( 850 , 1.0, function() {});
+// }
+
+$('#record-query-button').mousedown(function() {
+    $('#mic-glyph').css('color', '#FFFFFF');
+    //mic_inter = setInterval(blinker2, 1500);
+    var e1 = jQuery.Event("keydown");
+    e1.which = 2;
+    $("input").trigger(e1);
+}).bind('mouseup mouseleave', function() {
+    $('#mic-glyph').css('color', '#777777');
+    var e2 = jQuery.Event("keyup");
+    e2.which = 17;
+    console.log("hello!")
+    $("input").trigger(e2);
+    //clearInterval(mic_inter);
+});
+
 
   $(document).on('click','#remove_item_id',function(){
     $('.render_spot').remove();
