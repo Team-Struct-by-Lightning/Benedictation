@@ -44,6 +44,12 @@
   left: 532px;
 }
 
+.btn.btn-primary:focus {
+  border: 0px;
+  border-width: 0px;
+  outline: 0px;
+}
+
 .random-button:hover {
   color: #FFFFFF !important;
 }
@@ -174,7 +180,6 @@
   position: relative;
   top: 14px;
 }
-
 
 
 #sidebar-temp-room-list-item {
