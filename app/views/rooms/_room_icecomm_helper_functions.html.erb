@@ -14,20 +14,12 @@ if (location.protocol !== "https:") {
 }
 var uri = "/recognize";
 websocket = new WebSocket(websocketprotocol + myLocation + ":" + port + uri); // initialize for first time
-// WEBSOCKET FUNCTIONS
-$(document).ready(function() {
-    setInterval(openWebSocket, 5000);
-});
-
-function openWebSocket() {
-    if (websocket.readyState === undefined || websocket.readyState > 1) {
-        websocket = new WebSocket(websocketprotocol + myLocation + ":" + port + uri);
-        console.log("connecting to the speech recognition websocket: " + websocketprotocol + myLocation + ":" + port + uri);
-    }
-}
-// get benedict's reply from the python server
 websocket.onmessage = function(e) {
     console.log("data from server: ", e.data);
+    // reset flags so that ctrl-b will work again
+    ready_to_record = 1;
+    recordSpeech.recording = 0;
+    count_b = 0;
     if (e.data != "") {
         try {
             var myData = JSON.parse(e.data);
@@ -43,19 +35,8 @@ websocket.onmessage = function(e) {
         }
         sendBennyReply(e.data);
     }
-    ready_to_record = 1;
-    recordSpeech.recording = 0;
-    count_b = 0;
 }
-websocket.onopen = function() {
-    console.log("websocket speech recognition connection opened.");
-};
-websocket.onclose = function() {
-    console.log("websocket speech recognition connection closed. Attempting to reopen...");
-};
-websocket.onerror = function(error) {
-    console.log("websocket speech recognition error: " + error);
-};
+
 // Initialize Icecomm
 comm.connect(window.location.pathname);
 console.log("Initialized Icecomm, waiting for user media permissions...");
@@ -69,9 +50,6 @@ comm.on('local', function(options) {
     localVideo.muted = true;
     console.log(localAudioStream.getAudioTracks());
     console.log("Obtained user camera/microphone approval");
-
-
-
     // fill in chat history from redis
     var chat_history;
     // send to redis
@@ -99,17 +77,16 @@ comm.on('local', function(options) {
             }
         }
     });
-
     var height = 0;
     $('div, #chatty').each(function(i, value) {
-            height += parseInt($(this).height());
-        });
-        height = height + 2;
-        //var d = $('#chat-box');
-        //d.scrollTop(d.prop("scrollHeight"));
-        $('#js-chat-body').animate({
-            scrollTop: height
-        }, 'fast');
+        height += parseInt($(this).height());
+    });
+    height = height + 2;
+    //var d = $('#chat-box');
+    //d.scrollTop(d.prop("scrollHeight"));
+    $('#js-chat-body').animate({
+        scrollTop: height
+    }, 'fast');
     // // get benny history
     // $.ajax({
     //     type: "GET",
@@ -145,16 +122,20 @@ comm.on('connected', function(options) {
     new_video.className = "video-center";
     $(new_video).draggable({
         revert: function(socketObj) {
-        if (socketObj === false) {
-            // Drop was rejected, revert the helper.
-            var $helper = $("#localVideo");
-            $helper.animate($helper.originalPosition);
-            $helper.animate({ width: "100%", height: "100%" });
-            return true;
-        } else {
-            // Drop was accepted, don't revert.
-            return false;
-        }},
+            if (socketObj === false) {
+                // Drop was rejected, revert the helper.
+                var $helper = $("#localVideo");
+                $helper.animate($helper.originalPosition);
+                $helper.animate({
+                    width: "100%",
+                    height: "100%"
+                });
+                return true;
+            } else {
+                // Drop was accepted, don't revert.
+                return false;
+            }
+        },
         opacity: .7,
         create: function(event, ui) {
             $(this).draggable("option", "cursorAt", {
@@ -189,7 +170,6 @@ comm.on('disconnect', function(options) {
     //     });
     // }
 });
-
 comm.on('data', function(options) {
     console.log("data: ", options.data);
     var message_data = options.data.split("@@@");
