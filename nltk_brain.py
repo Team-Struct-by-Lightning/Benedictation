@@ -8,6 +8,13 @@ from datetime import datetime , timedelta
 parser = Parser()	# Build this outside the fn. so it doesn't rebuild each time
 cal = parsedatetime.Calendar()
 
+schedule_verbs = ['set', 'make', 'create', 'get', 'schedule', 'appoint',
+				 'slate', 'arrange', 'organize', 'construct', 'coordinate',
+				 'establish', 'form', 'formulate', 'run', 'compose', 'have', 'meet',
+				 'reschedule']
+schedule_nouns = ['appointment', 'meeting','meetup', 'reservation', 'session'
+				 'talk', 'call', 'powwow', 'meet', 'rendezvous', 'event', 'conference']
+
 def oclock_remover(sentence):
 	if "o'clock" in sentence:
 		potential_time = (sentence.split()).index("o'clock") - 1
@@ -36,14 +43,6 @@ def time_converter(time_struct, schedule_word):
 # Input:  a list of sentences, each possibly containing a request to schedule a meeting.
 # Output: a tuple of (start_time, end_time, description) for the first successful sentence.
 def schedule_meeting(sentences):
-
-	schedule_verbs = ['set', 'make', 'create', 'get', 'schedule', 'appoint',
-					 'slate', 'arrange', 'organize', 'construct', 'coordinate',
-					 'establish', 'form', 'formulate', 'run', 'compose', 'have', 'meet',
-					 'reschedule']
-	schedule_nouns = ['appointment', 'meeting','meetup', 'reservation', 'session'
-					 'talk', 'call', 'powwow', 'meet', 'rendezvous', 'event', 'conference']
-	
 	for sentence in sentences:
 		try:
 			if(len(sentence.split()) <= 1):
@@ -61,7 +60,9 @@ def schedule_meeting(sentences):
 						# Check if the VP contains a VB that is in the schedule_verbs.
 						if 'VB' in verb_subtree.label() \
 						and any(x in verb_subtree.leaves() for x in schedule_verbs):
-							accept(element)
+						
+							return accept(element)
+
 		except Exception as e:
 			print "Error in NLTK Brain: ", e.message
 			return None

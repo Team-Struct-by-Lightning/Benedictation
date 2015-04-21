@@ -57,7 +57,7 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
             os.remove(outfilename)                          # an empty hyp [""] if nothing found 
 
             print text
-            if text != "":
+            if text and x != "" for x in text:
                 if schedule_meeting(text):
                     starttime, endtime, schedule_word = schedule_meeting(text)
                     print 'Scheduling a meeting'
