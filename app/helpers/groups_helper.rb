@@ -33,11 +33,15 @@ module GroupsHelper
     else
       @user = User.find_by(email: @useremail);
       if @user.nil?
-         flash[:danger] = 'This user has not joined Benedictation yet.  An email has been sent on your behalf.'
-         # add their email to redis list with email -> [newgroup1, newgroup2...newgroupn]
-         $redis.rpush(@useremail.to_s, @curgroupid.to_s)
-         # store most recent new email
-         $redis.set("most_recent_email", @useremail.to_s)
+         flash[:danger] = 'This user has not joined Benedictation yet.  An email has been sent to the user on your behalf.'
+         newusersadded = $redis.lrange("#{current_user.id}:newusersadded",0,-1)
+         usersinvited = $redis.lrange("#{current_user.id}:alreadyinvited",0,-1)
+         if !newusersadded.include?("#{@useremail}:#{@curgroupid}:")
+            $redis.rpush("#{current_user.id}:newusersadded", "#{@useremail}:#{@curgroupid}")
+         end
+         if !usersinvited.include?("#{@useremail}")
+            $redis.rpush("#{current_user.id}:alreadyinvited", "#{@useremail}")
+         end
          redirect_to chat_path
       else
         @userid = @user.id

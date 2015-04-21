@@ -18,7 +18,6 @@ Rails.application.routes.draw do
   post '/update_redis' => "groups#update_redis"
   get '/get_redis' => "groups#get_redis"
   get '/clear_redis' => "groups#clear_redis"
-  get '/get_most_recent_email' => "groups#get_most_recent_email"
   get '/get_redis_item' => "groups#get_redis_item"
   get '/get_redis_length' => "groups#get_redis_length"
   resources :sessions, only: [:create, :destroy]
