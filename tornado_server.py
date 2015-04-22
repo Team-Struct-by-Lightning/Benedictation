@@ -11,7 +11,7 @@ import email_class
 import wave
 import os
 import random
-from nltk_brain import schedule_meeting
+from nltk_brain import interpret
 import speechrec
 import socket
 import json
@@ -45,7 +45,7 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
         self.recognizer = speechrec.SpeechRecognizer()
 
     def on_message(self, message):
-        text = ""
+        text = None
         try:
             outfilename = 'output' + hex(random.getrandbits(128))[2:-1] + '.wav'
             f = open(outfilename , 'w')
@@ -57,24 +57,8 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
             os.remove(outfilename)                          # an empty hyp [""] if nothing found 
 
             print text
-            if text and x != "" for x in text:
-                if schedule_meeting(text):
-                    starttime, endtime, schedule_word = schedule_meeting(text)
-                    print 'Scheduling a meeting'
-                    text = '{"attendees": [{"email": "trevor.frese@gmail.com" }], \
-                    "api_type": "calendar", \
-                    "start": {"datetime": "' + str(starttime) + '", \
-                    "timezone": "America/Los_Angeles"}, \
-                    "end": {"datetime": "' + str(endtime) + '",\
-                    "timezone": "America/Los_Angeles"}, \
-                    "location": "", \
-                    "summary": "'+ str(schedule_word).capitalize() +' scheduled by Benedict"}'
-                elif "search" in text:
-                    text = '{"api_type": "wikipedia", "query": "peanut butter"}'
-                elif "wolfram" in text:
-                    text = '{"api_type": "wolfram", "query": "isla vista weather"}'
-                else:
-                    text = '{"api_type": "No Result"}'
+            if text and (x != "" for x in text):
+                text = interpret(text)
             else:
                 text = '{"api_type": "Blank Query"}'
 
@@ -82,6 +66,8 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
             print e.message
             text = '{"api_type": "Blank Query"}'
 
+        if not text:
+            text = '{"api_type": "Blank Query"}'
         self.write_message(text)
         print "we have finished writing @@@@@"
 

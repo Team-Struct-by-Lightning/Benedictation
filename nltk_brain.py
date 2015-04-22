@@ -35,22 +35,19 @@ def am_pm_adder(words):
 
 	return words 
 
-def time_converter(time_struct, schedule_word):
+def time_converter(time_struct):
 	starttime = datetime.fromtimestamp(mktime(time_struct[0]))
 	endtime = starttime + timedelta(hours = 1)
-	return starttime.strftime('%Y-%m-%dT%H:%M:%S'), endtime.strftime('%Y-%m-%dT%H:%M:%S') , schedule_word
+	return starttime.strftime('%Y-%m-%dT%H:%M:%S'), endtime.strftime('%Y-%m-%dT%H:%M:%S')
 
-# Input:  a list of sentences, each possibly containing a request to schedule a meeting.
-# Output: a tuple of (start_time, end_time, description) for the first successful sentence.
-def schedule_meeting(sentences):
-	for sentence in sentences:
-		try:
+def interpret(sentences):
+	try:
+		for sentence in sentences:
 			if(len(sentence.split()) <= 1):
 				return None
 			sentence = oclock_remover(sentence)
 
 			tree = parser.parse(sentence)
-			schedule_word = "Meeting"
 			print tree
 
 			for element in [tree] + [e for e in tree]: # Include the root element in the for loop
@@ -61,57 +58,72 @@ def schedule_meeting(sentences):
 						if 'VB' in verb_subtree.label() \
 						and any(x in verb_subtree.leaves() for x in schedule_verbs):
 
-							return accept(element)
+							print "Interpreting as schedule request"
+							return schedule(element)
 
-		except Exception as e:
-			print "Error in NLTK Brain: ", e.message
-			return None
-
-	return None
-
-def question_checker(sentences):
-	for sentence in sentences:
-		try:
-			if(len(sentence.split()) <= 1):
-				return None
-
-			tree = parser.parse(sentence)
-			print tree
-
-			for element in [tree] + [e for e in tree]:
 				if "SBAR" in element.label():
 					for subtree in element.subtrees():
 						if "W" in subtree.label():
-							return True
-			return False
+							
+							print "Interpreting as Wolfram query"
+							return wolfram(element)
 
-		except Exception as e:
-			print e.message
-			return False
+		# If we hit here and haven't returned, then the query didn't match any of our patterns,
+		# so default to Google Search.
+		words = sentences[0]
+		text = '{"api_type": "google", \
+			 "query": ' + words + '}'
+		return text
+
+	except Exception as e:
+		print "Error in NLTK Brain: ", e.message
+
+	return None
 
 # Pass a top-level element to this once we've determined that it likely contains a scheduling request.
 # Input:  an NLTK Tree element
 # Return: a tuple containing (start_time, end_time, description)
-def accept(element):
+def schedule(element):
 	# Find the "schedule word" in a NP, if one exists
+	schedule_word = "Meeting"
 	for subtree in element.subtrees():
 		if 'NP' in subtree.label() and any(x in subtree.leaves() for x in schedule_nouns):
 			for x in subtree.leaves():
 				if x in schedule_nouns:
 					schedule_word = x
 
-	# Run the datetime parser on the entire sentence
-	words = ' '.join(element.leaves())	# Operate on the whole VP
+	words = ' '.join(element.leaves())
 	words = am_pm_adder(words)
-	if cal.parse(words)[1] != 0:
-		return time_converter(cal.parse(words), schedule_word)
+	if cal.parse(words)[1] == 0:
+		return '{"api_type": "Blank Query"}'
 
-def run_tests(filename, fn):
+	starttime, endtime = time_converter(cal.parse(words))
+
+	text = '{"attendees": [{"email": "trevor.frese@gmail.com" }], \
+    		"api_type": "calendar", \
+    		"start": {"datetime": "' + str(starttime) + '", \
+    		"timezone": "America/Los_Angeles"}, \
+    		"end": {"datetime": "' + str(endtime) + '",\
+    		"timezone": "America/Los_Angeles"}, \
+    		"location": "", \
+    		"summary": "' + str(schedule_word).capitalize() +' scheduled by Benedict"}'
+
+	return text
+
+def wolfram(element):
+	words = ' '.join(element.leaves())
+
+	text = '{"api_type": "wolfram", \
+			 "query": ' + words + '}'
+
+	return text
+
+def run_tests(filename):
 	testfile = open(filename, 'r')
 	i = 0
 	for line in testfile:
 		print "Test ", i, ": ", line
-		print fn([line])
+		print interpret([line])
 		print
 		i += 1
 	testfile.close()
@@ -120,4 +132,4 @@ if __name__ == "__main__":
 	#run_tests('example_sentences.txt')
 	#schedule_JJ("schedule meeting for tomorrow at 4 pm")
 	#print schedule_meeting(["schedule a meeting for tomorrow at 3 pm"])
-	run_tests('example_questions.txt', question_checker)
+	run_tests('example_sentences.txt')
