@@ -425,6 +425,7 @@ div.calendar-frame body{
 #microphone-spot {
   height: 50px;
   position: relative;
+  width: 278px;
   top: 10px;
   background-color: #333333 !important;
   border-radius: 3px;
@@ -432,11 +433,13 @@ div.calendar-frame body{
 .ui-progressbar {
     position: relative;
     display: none;
-    margin: 5%;
+    margin-left: 10px;
+    margin-right: 10px;
     top: 19%;
   }
 .progress-label {
   position: absolute;
+  display: none;
   left: 37%;
   top: 4px;
   font-weight: bold;

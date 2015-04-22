@@ -172,23 +172,22 @@ $('#record-query-button').click(function() {
   if(toggle_mic_color === 1){
     $('#record-query-button').html("Click to stop");
     $('#mic-glyph').css('color', '#FFFFFF');
-    //mic_inter = setInterval(blinker2, 1500);
     var e1 = jQuery.Event("keydown");
     e1.which = 2;
     $("input").trigger(e1);
-} 
+}
 else
   {
     $('#record-query-button').hide();
-    $('#progressbar').show();
     $('#mic-glyph').hide();
+    $('#progressbar').show();
+    $('.progress-label').show();
     toggle_mic_color = 0;
     $('#mic-glyph').css('color', '#777777');
     var e2 = jQuery.Event("keyup");
     e2.which = 17;
     console.log("hello!")
     $("input").trigger(e2);
-    //clearInterval(mic_inter);
   }
 });
 
