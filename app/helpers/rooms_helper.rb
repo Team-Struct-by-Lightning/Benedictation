@@ -64,6 +64,9 @@ module RoomsHelper
 			puts "We will access the calendar api!"
 			json_event = calendar_json(json_hash)
 			create_calendar_event(json_event)
+		when 'calendar_show'
+			puts "We will show the calendar"
+			json_event = calendar_json(json_hash)
 		when 'docs'
 			puts "We will access the google docs api!"
 		when 'wolfram'

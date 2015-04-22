@@ -123,7 +123,7 @@ function appendNewBennyReply(options) {
     if (json_murph.api_type != 'Blank Query') {
         $('#benny-help-temp').remove();
     }
-    if (json_murph.api_type == 'calendar'){
+    if (json_murph.api_type == 'calendar' || json_murph.api_type == 'calendar_show'){
 
         <% image_name = "googz.ico" %>
         var summary = ""
@@ -141,13 +141,22 @@ function appendNewBennyReply(options) {
         var benny_item_link_id = "benny_query" + key;
         var parameter = 'clickable("' + options.key + '")';
         $('.benny-list-body').addClass('benny-list-body-func');
-        $('.benny-list-body').append('<div class="benny-item benny-calendar" id=' + benny_item_id +'>' +
-                        '<%= image_tag("#{image_name}", class: "favicon") %>' +
-                        '<a class="name-and-summary-calendar">' + name + '</a>' +
-                        '<a class="benny-link" onclick=' + parameter + ' id=' +
-                        benny_item_link_id + '> Summary: ' + summary + '</a>' +
-                        '</div>');
-
+        if (json_murph.api_type == 'calendar') {
+            $('.benny-list-body').append('<div class="benny-item benny-calendar" id=' + benny_item_id +'>' +
+                            '<%= image_tag("#{image_name}", class: "favicon") %>' +
+                            '<a class="name-and-summary-calendar">' + name + '</a>' +
+                            '<a class="benny-link" onclick=' + parameter + ' id=' +
+                            benny_item_link_id + '> Summary: ' + summary + '</a>' +
+                            '</div>');
+        }
+        else {
+            $('.benny-list-body').append('<div class="benny-item benny-calendar" id=' + benny_item_id +'>' +
+                '<%= image_tag("#{image_name}", class: "favicon") %>' +
+                '<a class="name-and-summary-calendar">' + name + '</a>' +
+                '<a class="benny-link" onclick=' + parameter + ' id=' +
+                benny_item_link_id + '> Summary: ' + summary + '</a>' +
+                '</div>');
+        }
     }
     else if (json_murph.api_type == 'No Result') {
 
