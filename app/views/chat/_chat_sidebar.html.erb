@@ -40,7 +40,7 @@ var w = new WebSocket(websocketprotocol + myLocation + ":" + port + uri);
          <div id=<%= 'add-user' + group_id.to_s %> class="white-popup-block mfp-hide">
             <!-- form gets the new user email -->
             <h1>Add a user to the group:  <%= group_name %></h1>
-            <%= form_tag(controller: "groups", action: "popupadduser", method: "post") do |f| %>
+            <%= form_tag(controller: "groups", action: "popupadduser", method: "post", :onSubmit => 'email()' ) do |f| %>
             <%= label_tag "New Member Email:" %>
             <%= text_field_tag :newmemberemail, params[:newmemberemail], class: "email-selector" %>
             <%= hidden_field_tag :groupid, group_id%>
@@ -50,13 +50,12 @@ var w = new WebSocket(websocketprotocol + myLocation + ":" + port + uri);
                // tell python server to send email to the user if the user does not yet exist
                var email_num = parseInt('<%= $redis.lrange("#{current_user.id}:#{group_id}:newusersadded",0,-1).length %>', 10);
                var count = 0;
-
                <% $redis.lrange("#{current_user.id}:newusersadded",0,-1).each do |emailandgroup| %>
+                  console.log("running code for this email and group: ", "<%="#{emailandgroup}" %>");
                   var email_groupid = "<%= emailandgroup %>";
                   var email = email_groupid.split(":")[0];
                   var groupid = email_groupid.split(":")[1];
                   var emailed = "<%= $redis.lrange("#{current_user.id}:alreadyinvited",0,-1).include?("#{emailandgroup.split(":")[0]}") %>";
-
                   count++;
                   // check to see if we need to send email
                   if((parseInt(groupid,10) == parseInt("<%= group_id %>",10)) && emailed == "true"){
@@ -70,6 +69,7 @@ var w = new WebSocket(websocketprotocol + myLocation + ":" + port + uri);
                     console.log("sending: " + json_email);
                     sendMessage(json_email);
                     <% $redis.lrem("#{current_user.id}:newusersadded",0, emailandgroup)%>
+                    <% %>
                   }
 
                   function sendMessage(msg) {

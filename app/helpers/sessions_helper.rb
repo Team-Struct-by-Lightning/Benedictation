@@ -18,9 +18,12 @@ module SessionsHelper
 
   def log_out
     user_update = User.find_by_id(@current_user.id)
+    $redis.del("#{user_update.id}:newusersadded")
+    $redis.del("#{user_update.id}:alreadyinvited")
     user_update.logged_in = 0
     user_update.save
     session.delete(:user_id)
+    # clear redis for the current user
     @current_user = nil
 	end
 
