@@ -47,6 +47,7 @@
           <a class="glyphicon glyphicon-volume-up" id="mic-glyph"> </a>
           <button class="btn btn-primary" id="record-query-button">Click to record</button>
           <div id = "progressbar"><div class = "progress-label">Loading...</div></div>
+          <%= image_tag("red-record-button.png", class: "record-button", id: "red-flash-button", align: "left") %>
         </div>
          <div id = "benedict-list">
             <div class='panel-heading' id="benedict-query-header">
@@ -166,11 +167,21 @@ $(function() {
   });
 });
 
+function blink_red() {
+  $('.record-button').fadeTo(600, .1, function(){});
+  $('.record-button').fadeTo(600, 1, function() {});
+}
+
 var toggle_mic_color = 0;
+var red_record_interval;
 $('#record-query-button').click(function() {
   toggle_mic_color++;
   if(toggle_mic_color === 1){
     $('#record-query-button').html("Click to stop");
+    $('#mic-glyph').hide();
+    $('.record-button').show();
+    blink_red();
+    red_record_interval = setInterval(blink_red, 1200);
     $('#mic-glyph').css('color', '#FFFFFF');
     var e1 = jQuery.Event("keydown");
     e1.which = 2;
@@ -179,7 +190,8 @@ $('#record-query-button').click(function() {
 else
   {
     $('#record-query-button').hide();
-    $('#mic-glyph').hide();
+    $('.record-button').hide();
+    clearInterval(red_record_interval);
     $('#progressbar').show();
     $('.progress-label').show();
     toggle_mic_color = 0;

@@ -111,10 +111,15 @@ function appendNewIM(options) {
 
 function appendNewBennyReply(options) {
     <% image_name = "" %>
+
     json_murph = JSON.parse(options.data);
     console.log(json_murph.api_type);
     var name = truncation(options.name, 14);
-    
+    $('#progressbar').hide();
+    $('.progress-label').hide();
+    $('#record-query-button').show();
+    $('#mic-glyph').show();
+
     if (json_murph.api_type != 'Blank Query') {
         $('#benny-help-temp').remove();
     }

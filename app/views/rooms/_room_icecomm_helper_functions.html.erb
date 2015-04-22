@@ -44,10 +44,6 @@ websocket.onmessage = function(e) {
         sendBennyReply(e.data);
     }
 
-    $('#progressbar').hide();
-    $('.progress-label').hide();
-    $('#record-query-button').show();
-    $('#mic-glyph').show();
     $('#record-query-button').html("Click to record");
     ready_to_record = 1;
     recordSpeech.recording = 0;

@@ -422,6 +422,14 @@ div.calendar-frame body{
   padding-top: 2px;
 }
 
+.record-button {
+  transform: scale(.07);
+  position: absolute;
+  left: -261px;
+  top: -264px;
+  display: none;
+}
+
 #microphone-spot {
   height: 50px;
   position: relative;
