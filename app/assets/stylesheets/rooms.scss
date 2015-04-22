@@ -563,8 +563,9 @@ div.calendar-frame body{
 
 .name-and-summary-no-result {
   position: relative;
-  left: 155px;;
-  top: -12px;
+  float: right;
+  left: -27px;
+  top: -10px;
   font-size: 12px;
   color: black;
   text-decoration: none;

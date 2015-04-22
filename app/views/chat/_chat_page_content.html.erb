@@ -40,7 +40,7 @@
                                                 <% else %>
                                                 <%= image_tag("gray_circle.png", :class => "circle-jerk") %>
                                                 <% end %>
-                                            <span id="user-name-in-list"><%= User.find_by_id(uid).name %></span>
+                                            <span id="user-name-in-list"><%= truncate(User.find_by_id(uid).name, length: 14) %></span>
                                                                                         </span></li>
                                             <% end %>
                                             </ul>
@@ -69,11 +69,11 @@
 
             <script>
 
-            $(".alert" ).fadeOut(5000);
+            $(".alert" ).fadeOut(10000);
 
-            $(".alert-success" ).fadeOut(5000);
+            $(".alert-success" ).fadeOut(10000);
 
-            $(".alert-danger" ).fadeOut(5000);
+            $(".alert-danger" ).fadeOut(10000);
 
             $('.menu-group').click(function(e){
                 console.log("chcking");
