@@ -64,7 +64,7 @@ div.calendar-frame body{
 #benny-help-temp {
   margin: 5px;
   background-color: #CCCCCC;
-  height: 94px !important;
+  height: 78px !important;
   width: 267px !important;
   /* margin-top: 2px; */
   font-size: 15px;
@@ -422,6 +422,55 @@ div.calendar-frame body{
   padding-top: 2px;
 }
 
+#microphone-spot {
+  height: 50px;
+  position: relative;
+  width: 278px;
+  top: 10px;
+  background-color: #333333 !important;
+  border-radius: 3px;
+}
+.ui-progressbar {
+    position: relative;
+    display: none;
+    margin-left: 10px;
+    margin-right: 10px;
+    top: 19%;
+  }
+.progress-label {
+  position: absolute;
+  display: none;
+  left: 37%;
+  top: 4px;
+  font-weight: bold;
+  text-shadow: 1px 1px 0 #fff;
+}
+
+#mic-glyph {
+  position: absolute;
+  transform: scale(2.0) !important;
+  left: 52px !important;
+  top: 17px !important;
+  color: #777777;
+}
+
+#mic-glyph:hover {
+  text-decoration: none !important;
+}
+
+
+#record-query-button {
+  background-color: #777777 !important;
+  border-color: black;
+  box-shadow: 0px 0px 10px #333333;
+  position: relative;
+  left: 119px !important;
+  top: -7px !important;
+  border-color: #333333;
+  border-width: 1px;
+}
+
+
 .benny-item{
   margin: 5px;
   box-shadow: 0px 0px 10px #777777;
@@ -529,8 +578,9 @@ div.calendar-frame body{
 
 .name-and-summary-no-result {
   position: relative;
-  left: 155px;;
-  top: -12px;
+  float: right;
+  left: -27px;
+  top: -10px;
   font-size: 12px;
   color: black;
   text-decoration: none;

@@ -7,6 +7,10 @@
   box-sizing:         border-box;
 }
 
+* {
+  outline: none !important;
+}
+
 
 html {
   background-color: #555555;
@@ -16,35 +20,61 @@ html {
 }
 
 .navbar-right {
-  width: 343px;
+  width: 500px;
+  position: relative;
+  left: 72px;
 }
 
 #chat-list-head {
   position: relative;
-  left: 0px;
+  left: 50px;
 }
 
 
+.header-list:hover {
+  background-color: #333333 !important;
+  a {
+    color: #FFFFFF !important;
+  }
+}
+
+.header-in-chatroom {
+  background-color: #222222 !important;
+}
+
+.header-list {
+  background-color: black;
+  padding-left: 10px;
+  padding-right: 10px;
+  left: 175px !important;
+}
+
 #home-list-head {
   position: relative;
-  left: 16px;
+  left: 50px;
 }
 
 #out-home-list-head {
   position: relative;
-  left: 183px;
+  left: 250px;
 }
 
 #log-in-list-head {
   position: relative;
-  left: 202px;
+  left: 353px !important;
   height: 50px;
-  width: 67px;
+  width: 87px;
 }
 
 #sign_in {
   position: relative;
   top: 8px;
+}
+
+.log-in-button {
+  color: #fff !important;
+  background-color: #428bca !important;
+  border-color: #357ebd !important;
 }
 
 #log-in-icon {
@@ -65,12 +95,12 @@ html {
 
 #help-list-head {
   position: relative;
-  left: 33px;
+  left: 50px;
 }
 
 #out-help-list-head {
   position: relative;
-  left: 33px;
+  left: 50px;
 }
 
 #log-out-list-head {
@@ -106,6 +136,15 @@ div#room-background {
   position: relative;
   top: -23px;
   left: 20px;
+}
+
+.home-page-color {
+  color: #cccccc !important;
+}
+
+.home-page-head {
+  background-color: #222222;
+  color: #cccccc;
 }
 
 #out-home-header-text {

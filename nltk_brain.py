@@ -8,9 +8,12 @@ from datetime import datetime , timedelta
 parser = Parser()	# Build this outside the fn. so it doesn't rebuild each time
 cal = parsedatetime.Calendar()
 
-# A way to investigate how the test cases are parsed, for curiosity.
-def test(sentence):
-	print parser.parse(sentence)
+schedule_verbs = ['set', 'make', 'create', 'get', 'schedule', 'appoint',
+				 'slate', 'arrange', 'organize', 'construct', 'coordinate',
+				 'establish', 'form', 'formulate', 'run', 'compose', 'have', 'meet',
+				 'reschedule']
+schedule_nouns = ['appointment', 'meeting','meetup', 'reservation', 'session'
+				 'talk', 'call', 'powwow', 'meet', 'rendezvous', 'event', 'conference']
 
 def oclock_remover(sentence):
 	if "o'clock" in sentence:
@@ -32,68 +35,95 @@ def am_pm_adder(words):
 
 	return words 
 
+def time_converter(time_struct):
+	starttime = datetime.fromtimestamp(mktime(time_struct[0]))
+	endtime = starttime + timedelta(hours = 1)
+	return starttime.strftime('%Y-%m-%dT%H:%M:%S'), endtime.strftime('%Y-%m-%dT%H:%M:%S')
 
-	
+def interpret(sentences):
+	try:
+		for sentence in sentences:
+			if(len(sentence.split()) <= 1):
+				return None
+			sentence = oclock_remover(sentence)
 
-# Input:  a sentence containing a request to schedule a meeting.
-# Output: a date-time, or False if none was found.
-def schedule_meeting(sentences):
+			tree = parser.parse(sentence)
+			print tree
 
-	schedule_verbs = ['set', 'make', 'create', 'get', 'schedule', 'appoint',
-					 'slate', 'arrange', 'organize', 'construct', 'coordinate',
-					 'establish', 'form', 'formulate', 'run', 'compose', 'have', 'meet',
-					 'reschedule']
-	schedule_nouns = ['appointment', 'meeting','meetup', 'reservation', 'session'
-					 'talk', 'call', 'powwow', 'meet', 'rendezvous', 'event', 'conference']
-	
-	for sentence in sentences:
-		
-		if(len(sentence.split()) <= 1):
-			return None
-		sentence = oclock_remover(sentence)
+			for element in [tree] + [e for e in tree]: # Include the root element in the for loop
 
-		tree = parser.parse(sentence)
-		schedule_word = "Meeting"
-		print tree
+				if 'VP' in element.label() or 'SQ' in element.label():
+					for verb_subtree in element.subtrees():
+						# Check if the VP contains a VB that is in the schedule_verbs.
+						if 'VB' in verb_subtree.label() \
+						and any(x in verb_subtree.leaves() for x in schedule_verbs):
 
-		for element in [tree] + [e for e in tree]: # Include the root element in the for loop
-			
-			if 'VP' in element.label() or 'SQ' in element.label():
-				for verb_subtree in element.subtrees():
-					# Check if the VP contains a VB that is in the schedule_verbs.
-					# If it does, check if the VP contains a PP with a datetime,
-					# or a NP with a datetime.
-					if 'VB' in verb_subtree.label() \
-					and any(x in verb_subtree.leaves() for x in schedule_verbs):
+							print "Interpreting as schedule request"
+							return schedule(element)
 
-						# Find the "schedule word" in a NP, if one exists
-						for subtree in element.subtrees():
-							if 'NP' in subtree.label() and any(x in subtree.leaves() for x in schedule_nouns):
-								for x in subtree.leaves():
-									if x in schedule_nouns:
-										schedule_word = x
+				if "SBAR" in element.label():
+					for subtree in element.subtrees():
+						if "W" in subtree.label():
+							
+							print "Interpreting as Wolfram query"
+							return wolfram(element)
 
-						# Run the datetime parser on the entire sentence
-						words = ' '.join(element.leaves())	# Operate on the whole VP
-						words = am_pm_adder(words)
-						if cal.parse(words)[1] != 0:
-							return time_converter(cal.parse(words), schedule_word)
+		# If we hit here and haven't returned, then the query didn't match any of our patterns,
+		# so default to Google Search.
+		words = sentences[0]
+		text = '{"api_type": "google", \
+			 "query": ' + words + '}'
+		return text
 
+	except Exception as e:
+		print "Error in NLTK Brain: ", e.message
 
 	return None
 
-def time_converter(time_struct, schedule_word):
-	starttime = datetime.fromtimestamp(mktime(time_struct[0]))
-	endtime = starttime + timedelta(hours = 1)
-	return starttime.strftime('%Y-%m-%dT%H:%M:%S'), endtime.strftime('%Y-%m-%dT%H:%M:%S') , schedule_word
+# Pass a top-level element to this once we've determined that it likely contains a scheduling request.
+# Input:  an NLTK Tree element
+# Return: a tuple containing (start_time, end_time, description)
+def schedule(element):
+	# Find the "schedule word" in a NP, if one exists
+	schedule_word = "Meeting"
+	for subtree in element.subtrees():
+		if 'NP' in subtree.label() and any(x in subtree.leaves() for x in schedule_nouns):
+			for x in subtree.leaves():
+				if x in schedule_nouns:
+					schedule_word = x
 
+	words = ' '.join(element.leaves())
+	words = am_pm_adder(words)
+	if cal.parse(words)[1] == 0:
+		return '{"api_type": "Blank Query"}'
+
+	starttime, endtime = time_converter(cal.parse(words))
+
+	text = '{"attendees": [{"email": "trevor.frese@gmail.com" }], \
+    		"api_type": "calendar", \
+    		"start": {"datetime": "' + str(starttime) + '", \
+    		"timezone": "America/Los_Angeles"}, \
+    		"end": {"datetime": "' + str(endtime) + '",\
+    		"timezone": "America/Los_Angeles"}, \
+    		"location": "", \
+    		"summary": "' + str(schedule_word).capitalize() +' scheduled by Benedict"}'
+
+	return text
+
+def wolfram(element):
+	words = ' '.join(element.leaves())
+
+	text = '{"api_type": "wolfram", \
+			 "query": ' + words + '}'
+
+	return text
 
 def run_tests(filename):
 	testfile = open(filename, 'r')
 	i = 0
 	for line in testfile:
 		print "Test ", i, ": ", line
-		print schedule_meeting(line)
+		print interpret([line])
 		print
 		i += 1
 	testfile.close()
@@ -101,4 +131,5 @@ def run_tests(filename):
 if __name__ == "__main__":
 	#run_tests('example_sentences.txt')
 	#schedule_JJ("schedule meeting for tomorrow at 4 pm")
-	print schedule_meeting(["weight "])
+	#print schedule_meeting(["schedule a meeting for tomorrow at 3 pm"])
+	run_tests('example_sentences.txt')
