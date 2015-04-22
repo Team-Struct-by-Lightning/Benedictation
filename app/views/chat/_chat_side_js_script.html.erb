@@ -5,17 +5,13 @@ $('.sidebar-brand').click(function(e){
     if (this.value % 2 == 1) {
         this.value += 1;
         console.log("why isn't it showing up!?")
-        //var id = this.getAttribute("unique");
-        //var str_id = id.toString();
-        //$('#' + str_id).show();
+    $('#sidebar-temp-room-list-item').fadeIn("fast");
     $('.dropdown-toggle').fadeIn("fast");
     $('.sidebar-item').fadeIn("fast");
     }
     else {
         this.value += 1;
-        //var id = this.getAttribute("unique");
-        //var str_id = id.toString();
-        //$('#' + str_id).hide();
+        $('#sidebar-temp-room-list-item').fadeOut("fast");
         $('.dropdown-toggle').fadeOut("fast");
         $('.sidebar-item').fadeOut("fast");
 
