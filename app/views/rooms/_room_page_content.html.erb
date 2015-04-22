@@ -44,10 +44,10 @@
             </span>
          </div>
          <div id="microphone-spot">
-          <a class="glyphicon glyphicon-volume-up" id="mic-glyph"> </a>
+          <%= image_tag("black-mic.svg", id: "mic-glyph") %>
           <button class="btn btn-primary" id="record-query-button">Click to record</button>
           <div id = "progressbar"><div class = "progress-label">Loading...</div></div>
-          <%= image_tag("red-record-button.png", class: "record-button", id: "red-flash-button", align: "left") %>
+          <%= image_tag("red-mic-pic.png", class: "record-button", id: "red-flash-button", align: "left") %>
         </div>
          <div id = "benedict-list">
             <div class='panel-heading' id="benedict-query-header">
@@ -168,9 +168,11 @@ $(function() {
 });
 
 function blink_red() {
-  $('.record-button').fadeTo(600, .1, function(){});
-  $('.record-button').fadeTo(600, 1, function() {});
+  $('.record-button').fadeTo(800, .1, function(){});
+  $('.record-button').fadeTo(800, 1, function() {});
 }
+
+
 
 var toggle_mic_color = 0;
 var red_record_interval;
@@ -181,8 +183,7 @@ $('#record-query-button').click(function() {
     $('#mic-glyph').hide();
     $('.record-button').show();
     blink_red();
-    red_record_interval = setInterval(blink_red, 1200);
-    $('#mic-glyph').css('color', '#FFFFFF');
+    red_record_interval = setInterval(blink_red, 1600);
     var e1 = jQuery.Event("keydown");
     e1.which = 2;
     $("input").trigger(e1);
@@ -195,7 +196,6 @@ else
     $('#progressbar').show();
     $('.progress-label').show();
     toggle_mic_color = 0;
-    $('#mic-glyph').css('color', '#777777');
     var e2 = jQuery.Event("keyup");
     e2.which = 17;
     console.log("hello!")

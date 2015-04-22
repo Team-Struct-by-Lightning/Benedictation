@@ -18,8 +18,8 @@ schedule_nouns = ['appointment', 'meeting','meetup', 'reservation', 'session'
 def oclock_remover(sentence):
 	if "o'clock" in sentence:
 		potential_time = (sentence.split()).index("o'clock") - 1
-		if int(sentence.split()[potential_time]) > 7 and int(sentence.split()[potential_time]) < 12: 
-			sentence = sentence.replace("o'clock", "a.m.") 
+		if int(sentence.split()[potential_time]) > 7 and int(sentence.split()[potential_time]) < 12:
+			sentence = sentence.replace("o'clock", "a.m.")
 		else:
 			sentence = sentence.replace("o'clock", "p.m.")
 	return sentence
@@ -28,12 +28,12 @@ def am_pm_adder(words):
 	for word in words.split():
 		if word.isdigit() and not('pm' in words or 'p.m.' in words \
 		or 'am' in words or 'a.m.' in words):
-			if int(word) > 7 and int(word) < 12:	
+			if int(word) > 7 and int(word) < 12:
 				words = words.replace(word, word + " a.m.")
-			else: 
+			else:
 				words = words.replace(word, word + " p.m.")
 
-	return words 
+	return words
 
 def time_converter(time_struct):
 	starttime = datetime.fromtimestamp(mktime(time_struct[0]))
@@ -64,7 +64,7 @@ def interpret(sentences):
 				if "SBAR" in element.label():
 					for subtree in element.subtrees():
 						if "W" in subtree.label():
-							
+
 							print "Interpreting as Wolfram query"
 							return wolfram(element)
 
