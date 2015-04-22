@@ -17,12 +17,12 @@ function blinker() {
   }
 
   if (count < 3){
-    $('.blink_me').fadeTo( 850 , .1, function() {});
-    $('.blink_me').fadeTo( 850 , 1.0, function() {});
+    $('.blink_me').fadeTo( 1500 , .1, function() {});
+    $('.blink_me').fadeTo( 1500 , 1.0, function() {});
     count++;
   }
   else {
-    $('.blink_me').fadeOut(1000);
+    $('.blink_me').fadeOut(1500);
     clearInterval(inter);
     count = 0;
   }
@@ -47,7 +47,7 @@ function blinker() {
 }
 
 $( window ).load(function() {
-  inter = setInterval(blinker, 1500);
+  inter = setInterval(blinker, 3000);
 });
 
 
@@ -70,7 +70,7 @@ $(function() {
                     document.getElementById(get_free_spot()).appendChild(video);
                     $(video).get(0).play();
         }
-        
+
         take_spot(5, $("#" + ui.draggable.prop('id')), $("#drop-spot"));
         $("#drop-spot").append( $("#" + ui.draggable.prop('id')));
         $("#" + ui.draggable.prop('id')).css("top", "0%");
