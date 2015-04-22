@@ -429,13 +429,26 @@ div.calendar-frame body{
   background-color: #333333 !important;
   border-radius: 3px;
 }
+.ui-progressbar {
+    position: relative;
+    display: none;
+    margin: 5%;
+    top: 19%;
+  }
+.progress-label {
+  position: absolute;
+  left: 37%;
+  top: 4px;
+  font-weight: bold;
+  text-shadow: 1px 1px 0 #fff;
+}
 
 #mic-glyph {
   position: absolute;
   transform: scale(2.0) !important;
   left: 52px !important;
   top: 17px !important;
-  color: #777777 !important;
+  color: #777777;
 }
 
 #mic-glyph:hover {

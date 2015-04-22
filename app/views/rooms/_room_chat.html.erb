@@ -114,6 +114,7 @@ function appendNewBennyReply(options) {
     json_murph = JSON.parse(options.data);
     console.log(json_murph.api_type);
     var name = truncation(options.name, 14);
+    
     if (json_murph.api_type != 'Blank Query') {
         $('#benny-help-temp').remove();
     }
@@ -153,9 +154,9 @@ function appendNewBennyReply(options) {
                         '</div>');
         var benny_childs = $('.benny-list-body').children()
         var item_to_toggle = benny_childs[benny_childs.length - 1];
-        // $(item_to_toggle).delay(20000).slideToggle( function() {
-        //     item_to_toggle.remove();
-        // });
+        $(item_to_toggle).delay(20000).slideToggle( function() {
+             item_to_toggle.remove();
+         });
 
 
 

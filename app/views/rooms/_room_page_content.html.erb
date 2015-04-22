@@ -45,7 +45,8 @@
          </div>
          <div id="microphone-spot">
           <a class="glyphicon glyphicon-volume-up" id="mic-glyph"> </a>
-          <button class="btn btn-primary" id="record-query-button">Click and Hold</button>
+          <button class="btn btn-primary" id="record-query-button">Click to record</button>
+          <div id = "progressbar"><div class = "progress-label">Loading...</div></div>
         </div>
          <div id = "benedict-list">
             <div class='panel-heading' id="benedict-query-header">
@@ -156,19 +157,39 @@
 //   $('.glyphicon-volume-up').fadeTo( 850 , 1.0, function() {});
 // }
 
-$('#record-query-button').mousedown(function() {
-    $('#mic-glyph').css('color', '#FFFFFF !important');
+$(function() {
+  var progressbar = $( "#progressbar" ),
+    progressLabel = $( ".progress-label" );
+
+  progressbar.progressbar({
+    value: false
+  });
+});
+
+var toggle_mic_color = 0;
+$('#record-query-button').click(function() {
+  toggle_mic_color++;
+  if(toggle_mic_color === 1){
+    $('#record-query-button').html("Click to stop");
+    $('#mic-glyph').css('color', '#FFFFFF');
     //mic_inter = setInterval(blinker2, 1500);
     var e1 = jQuery.Event("keydown");
     e1.which = 2;
     $("input").trigger(e1);
-}).bind('mouseup mouseleave', function() {
+} 
+else
+  {
+    $('#record-query-button').hide();
+    $('#progressbar').show();
+    $('#mic-glyph').hide();
+    toggle_mic_color = 0;
     $('#mic-glyph').css('color', '#777777');
     var e2 = jQuery.Event("keyup");
     e2.which = 17;
     console.log("hello!")
     $("input").trigger(e2);
     //clearInterval(mic_inter);
+  }
 });
 
 

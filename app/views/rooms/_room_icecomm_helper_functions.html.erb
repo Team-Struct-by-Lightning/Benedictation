@@ -43,6 +43,11 @@ websocket.onmessage = function(e) {
         }
         sendBennyReply(e.data);
     }
+
+    $('#record-query-button').show();
+    $('#progressbar').hide();
+    $('#mic-glyph').show();
+    $('#record-query-button').html("Click to record");
     ready_to_record = 1;
     recordSpeech.recording = 0;
     count_b = 0;
