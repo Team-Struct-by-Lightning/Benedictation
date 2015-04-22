@@ -107,7 +107,8 @@
   position: relative;
   top: 10px;
   max-height: 200px;
-  overflow-y: scroll;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 #add-user-text {
