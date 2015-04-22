@@ -41,8 +41,8 @@ def time_converter(time_struct):
 	return starttime.strftime('%Y-%m-%dT%H:%M:%S'), endtime.strftime('%Y-%m-%dT%H:%M:%S')
 
 def interpret(sentences):
-	for sentence in sentences:
-		try:
+	try:
+		for sentence in sentences:
 			if(len(sentence.split()) <= 1):
 				return None
 			sentence = oclock_remover(sentence)
@@ -68,9 +68,15 @@ def interpret(sentences):
 							print "Interpreting as Wolfram query"
 							return wolfram(element)
 
-		except Exception as e:
-			print "Error in NLTK Brain: ", e.message
-			return None
+		# If we hit here and haven't returned, then the query didn't match any of our patterns,
+		# so default to Google Search.
+		words = sentences[0]
+		text = '{"api_type": "google", \
+			 "query": ' + words + '}'
+		return text
+
+	except Exception as e:
+		print "Error in NLTK Brain: ", e.message
 
 	return None
 
