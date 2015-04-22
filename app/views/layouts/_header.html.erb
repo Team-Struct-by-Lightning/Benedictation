@@ -1,8 +1,8 @@
 <header class="navbar navbar-fixed-top navbar-inverse" id="header-nav-bar" data-no-turbolink>
   <div class="container">
     <%= link_to "bene", root_path, id: "red_logo" %><%= link_to "dictation", root_path, id: "logo" %>
-    <nav>
-      <ul class="nav navbar-nav navbar-right">
+    <nav class="navbar navbar-default navbar-fixed-top" id="header-align">
+      <ul class="nav navbar-nav navbar-right" id="ul-header">
         <% if current_user %>
           <% url_string = request.original_url %>
           <% url_array = url_string.split('/') %>
@@ -28,7 +28,7 @@
 $('#home-list-head').hide();
 $('#out-home-list-head').hide();
 $(window).resize(function() {
-  if ($(document).width() < 900) {
+  if ($(document).width() < 700) {
     $('#chat-list-head').hide();
     $('#home-list-head').hide();
     $('#help-list-head').hide();

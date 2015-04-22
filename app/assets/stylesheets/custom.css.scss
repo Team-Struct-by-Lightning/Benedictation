@@ -27,7 +27,8 @@ html {
 
 #chat-list-head {
   position: relative;
-  left: 50px;
+  left: 0px !important;
+  display: block;
 }
 
 
@@ -61,7 +62,7 @@ html {
 
 #log-in-list-head {
   position: relative;
-  left: 353px !important;
+  left: 199px !important;
   height: 50px;
   width: 87px;
 }
@@ -75,6 +76,20 @@ html {
   color: #fff !important;
   background-color: #428bca !important;
   border-color: #357ebd !important;
+}
+
+#header-align {
+  z-index: -1;
+  background-color: black !important;
+  height: 50px !important;
+  top: -3px;
+  border-color: black !important;
+}
+
+#ul-header {
+  left: -15px;
+  top: 7%;
+  width: 286px;
 }
 
 #log-in-icon {
@@ -94,8 +109,8 @@ html {
 }
 
 #help-list-head {
-  position: relative;
-  left: 50px;
+  left: 0px !important;
+  display: block;
 }
 
 #out-help-list-head {
@@ -104,8 +119,8 @@ html {
 }
 
 #log-out-list-head {
-  position: relative;
-  left: 50px;
+  left: 0px !important;
+  display: block;
 }
 
 #background-div{
