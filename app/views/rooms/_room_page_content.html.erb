@@ -53,6 +53,7 @@
           <%= image_tag("black-mic-svg.svg", id: "mic-glyph") %>
         </div>
           <button class="btn btn-primary" id="record-query-button">Click to record</button>
+          <button class="btn btn-primary" id="stop-query-button">Click to stop</button>
           <div id = "progressbar"><div class = "progress-label">Loading...</div></div>
           <%= image_tag("red-mic-pic.png", class: "record-button", id: "red-flash-button", align: "left") %>
         </div>
@@ -185,33 +186,58 @@ function blink_red() {
 
 
 
-var toggle_mic_color = 0;
+//var toggle_mic_color = 0;
 var red_record_interval;
+// $('#record-query-button').click(function() {
+//   toggle_mic_color++;
+//   if(toggle_mic_color === 1){
+//     $('#record-query-button').html("Click to stop");
+//     $('.svg-box').hide();
+//     $('.record-button').show();
+//     blink_red();
+//     red_record_interval = setInterval(blink_red, 1600);
+//     var e1 = jQuery.Event("keydown");
+//     e1.which = 2;
+//     $("input").trigger(e1);
+// }
+// else
+//   {
+//     $('#record-query-button').hide();
+//     $('.record-button').hide();
+//     clearInterval(red_record_interval);
+//     $('#progressbar').show();
+//     $('.progress-label').show();
+//     toggle_mic_color = 0;
+//     var e2 = jQuery.Event("keyup");
+//     e2.which = 17;
+//     console.log("hello!")
+//     $("input").trigger(e2);
+//   }
+// });
+
+
 $('#record-query-button').click(function() {
-  toggle_mic_color++;
-  if(toggle_mic_color === 1){
-    $('#record-query-button').html("Click to stop");
-    $('.svg-box').hide();
-    $('.record-button').show();
-    blink_red();
-    red_record_interval = setInterval(blink_red, 1600);
-    var e1 = jQuery.Event("keydown");
-    e1.which = 2;
-    $("input").trigger(e1);
-}
-else
-  {
-    $('#record-query-button').hide();
-    $('.record-button').hide();
-    clearInterval(red_record_interval);
-    $('#progressbar').show();
-    $('.progress-label').show();
-    toggle_mic_color = 0;
-    var e2 = jQuery.Event("keyup");
-    e2.which = 17;
-    console.log("hello!")
-    $("input").trigger(e2);
-  }
+  $('#record-query-button').hide();
+  $('.svg-box').hide();
+  $('#stop-query-button').show();
+  $('.record-button').show();
+  blink_red();
+  red_record_interval = setInterval(blink_red, 1600);
+  var e1 = jQuery.Event("keydown");
+  e1.which = 2;
+  $("input").trigger(e1);
+});
+$('#stop-query-button').click(function() {
+  $('#stop-query-button').hide();
+  $('.record-button').hide();
+  clearInterval(red_record_interval);
+  $('#progressbar').show();
+  $('.progress-label').show();
+  toggle_mic_color = 0;
+  var e2 = jQuery.Event("keyup");
+  e2.which = 17;
+  console.log("hello!")
+  $("input").trigger(e2);
 });
 
 
