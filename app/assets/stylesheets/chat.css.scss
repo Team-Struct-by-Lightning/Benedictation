@@ -13,6 +13,10 @@
   color: #CCCCCC;
 }
 
+.group-header-list-elem {
+  list-style-type: none;
+}
+
 .btn.btn-primary:hover {
   border-color: #333333;
   background-color: #333333;
@@ -43,6 +47,62 @@
   left: 27%;
   color: #CCCCCC;
 }
+
+
+.ul-group-head {
+  position: relative;
+  left: 450px;
+  width: 421px;
+  margin: 0 !important;
+  height: 50px;
+  padding: 0px;
+}
+
+#room-list-head {
+  position: relative;
+  height: 50px;
+  width: 132px;
+  top: -50px;
+  left: 151px;
+}
+
+#room-list-head:hover {
+  a {
+    color: #777777 !important;
+  }
+  background-color: #dddddd;
+}
+
+#leave-list-head:hover {
+  a {
+    color: #777777 !important;
+  }
+  background-color: #dddddd;
+}
+
+#leave-list-head {
+  position: relative;
+  height: 50px;
+  width: 116px;
+  top: -100px;
+  left: 284px;
+}
+
+#add-user-list-head {
+  position: relative;
+  height: 50px;
+  width: 151px;
+  top: 0px;
+  left: 0px;
+}
+
+#add-user-list-head:hover {
+  a {
+    color: #777777 !important;
+  }
+  background-color: #dddddd;
+}
+
 
 .random-button {
   position: fixed;
@@ -128,8 +188,9 @@
 #add-user-in-member-box {
   position: absolute;
   width: 180px;
-  left: 13px;
-  top: 272px;
+  left: 10px;
+  top: 17px;
+  height: 20px;
   color: #000000;
   text-decoration: none;
   word-spacing: -10px;
@@ -268,7 +329,8 @@
 
 #go-to-room-in-chat-header {
 	position: absolute;
-  left: 66%;
+  width: 121px;
+  left: 10px;
   font-size: small;
   top: 18px;
   text-decoration: none !important;
@@ -283,7 +345,7 @@
 
 #leave-group-chat-header {
 	position: absolute;
-  left: 85%;
+  left: 10px;
   top: 18px;
   font-size: small;
   text-decoration: none !important;
