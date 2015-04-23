@@ -72,7 +72,7 @@ module RoomsHelper
 			puts "We will access the google docs api!"
 		when 'wolfram'
 			puts "We will access the wolfram alpha api!"
-			query_wolfram_alpha(json_hash)
+			#query_wolfram_alpha(json_hash)
 		when 'youtube'
 			puts "We will access the youtube api!"
 		when 'wikipedia'
@@ -108,18 +108,18 @@ module RoomsHelper
 	def query_wolfram_alpha(json_hash)
 		query_string = json_hash['query']
 		app_id = WolframAPIKey["app_id"]
-		# wolfram_url = URI.parse("http://api.wolframalpha.com/v2/query?input=" + query_string + "&appid=" + app_id + "&format=html")
-		# html = open(wolfram_url)
-		# doc = Nokogiri::HTML(html.read)
-		# markups = []
-		# doc.css("markup").each do |markup|
-		# 	markup.css("ul").each do |ul|
-		# 		ul.content = ""
-		# 	end
-		# 	markups << markup.inner_html
-		# end
-		#@wolfram_html = (markups.join("\n").gsub(']]&gt;', '')).gsub('&amp;','&')
-		#File.open('blah.html', 'w') { |file| file.write(@wolfram_html) }
+		wolfram_url = URI.parse("http://api.wolframalpha.com/v2/query?input=" + query_string + "&appid=" + app_id + "&format=html")
+		html = open(wolfram_url)
+		doc = Nokogiri::HTML(html.read)
+		markups = []
+		doc.css("markup").each do |markup|
+			markup.css("ul").each do |ul|
+				ul.content = ""
+			end
+			markups << markup.inner_html
+		end
+		@wolfram_html = (markups.join("\n").gsub(']]&gt;', '')).gsub('&amp;','&')
+		File.open('blah.html', 'w') { |file| file.write(@wolfram_html) }
 	end
 
 

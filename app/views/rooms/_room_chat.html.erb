@@ -49,7 +49,7 @@ function sendBennyReply(json_api_reply) {
     var id = String(url[url.length - 2]);
     var name = String(url[url.length - 1])
     var key = name + ":" + id + ":bennyhistory";
-     $.ajax({
+    $.ajax({
            type: "GET",
            url: "/get_redis_length",
            dataType: "json",
@@ -143,7 +143,7 @@ function appendNewBennyReply(options) {
         var benny_item_link_id = "benny_query" + key;
         var parameter = 'clickable("' + options.key + '")';
         $('.benny-list-body').addClass('benny-list-body-func');
-        if (json_murph.api_type == 'calendar') {
+        if (json_murph.api_type === 'calendar') {
             $('.benny-list-body').append('<div class="benny-item benny-calendar" id=' + benny_item_id +'>' +
                             '<%= image_tag("#{image_name}", class: "favicon") %>' +
                             '<a class="name-and-summary-calendar">' + name + '</a>' +
@@ -156,9 +156,26 @@ function appendNewBennyReply(options) {
                 '<%= image_tag("#{image_name}", class: "favicon") %>' +
                 '<a class="name-and-summary-calendar">' + name + '</a>' +
                 '<a class="benny-link" onclick=' + parameter + ' id=' +
-                benny_item_link_id + '> Summary: ' + summary + '</a>' +
+                benny_item_link_id + '> View calendar </a>' +
                 '</div>');
         }
+    }
+    else if (json_murph.api_type == 'wolfram'){
+        <% image_name = "wolfram.jpg" %>
+        var summary = ""
+        if (json_murph.summary == ""){
+            summary = "No summary."
+        }
+        else {
+            summary = truncation(json_murph.summary, 40);
+
+        }
+    }
+    else if (json_murph.api_type == 'google') {
+
+    }
+    else if (json_murph.api_type == 'docs' || json_murph.api_type == 'docs_show'){
+
     }
     else if (json_murph.api_type == 'No Result') {
 
