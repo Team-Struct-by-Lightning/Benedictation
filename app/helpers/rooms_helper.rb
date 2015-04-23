@@ -8,6 +8,7 @@ module RoomsHelper
 	require 'nokogiri'
 
 	GoogleAPIKeys = YAML.load_file("#{::Rails.root}/config/google.yml")[::Rails.env]
+	WolframAPIKey = YAML.load_file("#{::Rails.root}/config/wolfram.yml")[::Rails.env]
 
 	def redirect_user
 		url_string = request.original_url
@@ -106,19 +107,19 @@ module RoomsHelper
 
 	def query_wolfram_alpha(json_hash)
 		query_string = json_hash['query']
-		app_id = "P3P4W5-LGWA2A3RU2"
-		wolfram_url = URI.parse("http://api.wolframalpha.com/v2/query?input=" + query_string + "&appid=" + app_id + "&format=html")
-		html = open(wolfram_url)
-		doc = Nokogiri::HTML(html.read)
-		markups = []
-		doc.css("markup").each do |markup|
-			markup.css("ul").each do |ul|
-				ul.content = ""
-			end
-			markups << markup.inner_html
-		end
-		@wolfram_html = (markups.join("\n").gsub(']]&gt;', '')).gsub('&amp;','&')
-		File.open('blah.html', 'w') { |file| file.write(@wolfram_html) }
+		app_id = WolframAPIKey["app_id"]
+		# wolfram_url = URI.parse("http://api.wolframalpha.com/v2/query?input=" + query_string + "&appid=" + app_id + "&format=html")
+		# html = open(wolfram_url)
+		# doc = Nokogiri::HTML(html.read)
+		# markups = []
+		# doc.css("markup").each do |markup|
+		# 	markup.css("ul").each do |ul|
+		# 		ul.content = ""
+		# 	end
+		# 	markups << markup.inner_html
+		# end
+		#@wolfram_html = (markups.join("\n").gsub(']]&gt;', '')).gsub('&amp;','&')
+		#File.open('blah.html', 'w') { |file| file.write(@wolfram_html) }
 	end
 
 

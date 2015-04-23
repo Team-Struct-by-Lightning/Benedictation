@@ -43,6 +43,7 @@
 /config/database.yml
 /config/secrets.yml
 /config/google.yml
+/config/wolfram.yml
 passwords.yml
 python_api.yml
 tornado_rsa_key.pem
