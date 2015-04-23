@@ -28,15 +28,13 @@
 $('#home-list-head').hide();
 $('#out-home-list-head').hide();
 $(window).resize(function() {
-  if ($(document).width() < 700) {
+  if ($(document).width() < 800) {
     $('#chat-list-head').hide();
-    $('#home-list-head').hide();
     $('#help-list-head').hide();
     $('#help-icon1').hide();
     $('#help-icon2').hide();
     $('#log-out-list-head').hide();
     $('#log-in-list-head').hide();
-    $('#out-home-list-head').hide();
   }
   else{
       <% url_string = request.original_url %>
