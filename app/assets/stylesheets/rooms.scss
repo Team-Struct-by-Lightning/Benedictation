@@ -363,16 +363,16 @@ div.calendar-frame body{
   text-decoration: none !important;
   color: #CCCCCC;
   position: relative;
-  left: -5px;
-  top: -3px;
+  left: -124px;
+  top: -2px;
 }
 
 .mic-header-text {
   color: #CCCCCC;
   text-decoration: none !important;
-  position: absolute;
-  left: 93px;
-  top: 133px;
+  position: relative !important;
+  left: 68px;
+  top: -4px;
 }
 
 #stop-query-button {
@@ -396,8 +396,8 @@ div.calendar-frame body{
   display: none;
   color: #CCCCCC;
   position: relative;
-  left: -5px;
-  top: -3px;
+  left: -124px;
+  top: -2px;
 }
 
 #minimize-chat-down:hover{
@@ -582,6 +582,10 @@ transform: scale(.05);
   border-width: 1px;
 }
 
+#name-and-summary-wolfram:hover {
+  text-decoration: none !important;
+  color: black !important;
+}
 
 .benny-item{
   margin: 5px;

@@ -186,6 +186,31 @@ function appendNewBennyReply(options) {
 
     }
     else if (json_murph.api_type == 'google') {
+        <% image_name = "google-fav.jpg" %>
+        var query = ""
+        if (json_murph.query == ""){
+            query = "No query.";
+        }
+        else {
+            query = truncation(json_murph.query, 40);
+
+        }
+        var key_array = options.key.split(":");
+        var key_array_slice = key_array.slice(0, 4);
+        var key = key_array_slice.join(":");
+        var benny_item_id = "benny" + key;
+        var benny_item_link_id = "benny_query" + key;
+        var parameter = 'clickable("' + options.key + '")';
+
+
+        $('.benny-list-body').addClass('benny-list-body-func');
+        $('.benny-list-body').append('<div class="benny-item benny-google" id=' + benny_item_id +'>' +
+                            '<%= image_tag("#{image_name}", class: "favicon", id:"google-fav") %>' +
+                            '<a class="name-and-summary-wolfram">' + name + '</a>' +
+                            '<a class="benny-link" onclick=' + parameter + ' id=' +
+                            benny_item_link_id + '> Query: ' + query + '</a>' +
+                            '</div>');
+
 
     }
     else if (json_murph.api_type == 'docs' || json_murph.api_type == 'docs_show'){
