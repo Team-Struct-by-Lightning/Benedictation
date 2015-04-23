@@ -3,6 +3,8 @@ var app_id = "<%= icecomm['app_id'] %>";
 var comm = new Icecomm(app_id, {
     debug: true
 });
+var attendees_array = new Object();
+
 var websocket; // our speech recognition websocket
 // Set up the WebSocket
 var myLocation = location.host;
@@ -23,6 +25,21 @@ websocket.onmessage = function(e) {
     if (e.data != "") {
         try {
             var myData = JSON.parse(e.data);
+
+            attendees_to_send = [];
+            for (var key in attendees_array) {
+              if (attendees_array.hasOwnProperty(key)) {
+                attendees_to_send.push(attendees_array[key]);
+              }
+            }
+            myData["attendees_array"] = attendees_to_send;
+            
+            for (var key in myData) {
+              if (myData.hasOwnProperty(key)) {
+                alert(key + " -> " + myData[key]);
+              }
+            }
+
             if (myData.api_type === 'calendar') {
                 $.ajax({
                     type: "POST",
@@ -57,6 +74,7 @@ comm.on('local', function(options) {
     localVideo.muted = true;
     console.log(localAudioStream.getAudioTracks());
     console.log("Obtained user camera/microphone approval");
+
     // fill in chat history from redis
     var chat_history;
     // send to redis
@@ -68,6 +86,10 @@ comm.on('local', function(options) {
     // this will work later when icecomm's comm.getRoomSize() is functional
     //if (comm.getHost()) {
     // get chat history
+
+    attendees_array[id] = "<%=current_user.email %>";
+
+
     $.ajax({
         type: "GET",
         url: "/get_redis",
@@ -165,6 +187,9 @@ comm.on('disconnect', function(options) {
     var id = String(url[url.length - 2]);
     var name = String(url[url.length - 1]);
     var key = name + ":" + id + ":chathistory";
+
+    delete attendees_array[id];
+
     // this will work later when icecomm's comm.getRoomSize() is functional
     // if (comm.getRoomSize() == 1 && id.to_i.to_s == id) {
     //     $.ajax({
