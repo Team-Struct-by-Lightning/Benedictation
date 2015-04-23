@@ -33,12 +33,6 @@ websocket.onmessage = function(e) {
               }
             }
             myData["attendees_array"] = attendees_to_send;
-            
-            for (var key in myData) {
-              if (myData.hasOwnProperty(key)) {
-                alert(key + " -> " + myData[key]);
-              }
-            }
 
             if (myData.api_type === 'calendar') {
                 $.ajax({
