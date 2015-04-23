@@ -6,6 +6,10 @@
         $("#wrapper").toggleClass("active");
     });
 
+    $("#benedict-list").click(function() {
+      benny_note_number = 0;
+    });
+
 
      $("").hover(
         function() {
@@ -16,6 +20,9 @@
     });
 
     function minimize(string1, string2, string3){
+      if (string1 === ".benny-list-body"){
+        benny_note_number = 0;
+      }
       $(string1).slideToggle();
       $(string2).hide();
       $(string3).show();

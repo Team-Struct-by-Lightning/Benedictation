@@ -158,8 +158,20 @@ div.calendar-frame body{
   color: #CCCCCC;
   text-decoration: none !important;
   position: absolute;
-  left: 155px;
+  left: 97px;
 }
+
+.notification-number {
+  position: relative;
+  float: right;
+  top: -2px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-radius: 3px;
+  color: white;
+  background-color: red;
+}
+
 
 .benedict-query-header-text:hover {
   color: #CCCCCC;
@@ -175,7 +187,7 @@ div.calendar-frame body{
   color: #CCCCCC;
   text-decoration: none !important;
   position: absolute;
-  left: 234px;
+  left: 134px;
 }
 
 .chat-header:hover {

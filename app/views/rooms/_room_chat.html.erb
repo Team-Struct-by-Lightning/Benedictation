@@ -108,6 +108,7 @@ function appendNewIM(options) {
     mediaObjectIM(caller_name, caller_uid, caller_token, message_data);
 }
 // stick new reply from benny onto the speechrec body
+var benny_note_number = 0;
 
 function appendNewBennyReply(options) {
     <% image_name = "" %>
@@ -121,6 +122,7 @@ function appendNewBennyReply(options) {
     $('.svg-box').show();
 
     if (json_murph.api_type != 'Blank Query') {
+        benny_note_number = benny_note_number + 1;
         $('#benny-help-temp').remove();
     }
     if (json_murph.api_type == 'calendar' || json_murph.api_type == 'calendar_show'){
@@ -170,6 +172,10 @@ function appendNewBennyReply(options) {
         var item_to_toggle = benny_childs[benny_childs.length - 1];
         $(item_to_toggle).delay(20000).slideToggle( function() {
              item_to_toggle.remove();
+             if (benny_note_number != 0) {
+                benny_note_number = benny_note_number - 1;
+             }
+             bennyNotificationNumber();
          });
 
 
@@ -231,6 +237,18 @@ function hoverHelp(){
 }
 
 
+var benny_notification_interval = setInterval(bennyNotificationNumber, 300);
+
+
+function bennyNotificationNumber(){
+    if (benny_note_number <= 0 ) {
+         $('.notification-number').hide();
+    }
+    else {
+         $('.notification-number').html(benny_note_number.toString());
+         $('.notification-number').show();
+    }
+}
 
 
 
