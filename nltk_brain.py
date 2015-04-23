@@ -12,8 +12,14 @@ schedule_verbs = ['set', 'make', 'create', 'get', 'schedule', 'appoint',
 				 'slate', 'arrange', 'organize', 'construct', 'coordinate',
 				 'establish', 'form', 'formulate', 'run', 'compose', 'have', 'meet',
 				 'reschedule']
+
 schedule_nouns = ['appointment', 'meeting','meetup', 'reservation', 'session'
 				 'talk', 'call', 'powwow', 'meet', 'rendezvous', 'event', 'conference']
+
+doc_verbs = ['open', 'view', 'launch', 'look','display', 'check', 'start',
+				'begin','create', 'make', 'get', 'have', 'set', 'generate']
+
+doc_nouns = ['doc', 'dog', 'dock' , 'document', 'script', 'record', 'report', 'page']
 
 def oclock_remover(sentence):
 	if "o'clock" in sentence:
@@ -56,10 +62,19 @@ def interpret(sentences):
 					for verb_subtree in element.subtrees():
 						# Check if the VP contains a VB that is in the schedule_verbs.
 						if 'VB' in verb_subtree.label() \
+						and any(x in verb_subtree.leaves() for x in doc_verbs):
+							for subtree in element.subtrees():
+									if 'NP' in subtree.label() and any(x in subtree.leaves() for x in doc_nouns):
+										print 'Interpreting as doc request'
+										return '{"api_type": "google_docs"}'
+
+						if 'VB' in verb_subtree.label() \
 						and any(x in verb_subtree.leaves() for x in schedule_verbs):
 
 							print "Interpreting as schedule request"
 							return schedule(element)
+
+
 
 				if "SBAR" in element.label():
 					for subtree in element.subtrees():
@@ -67,6 +82,8 @@ def interpret(sentences):
 
 							print "Interpreting as Wolfram query"
 							return wolfram(element)
+
+
 
 		# If we hit here and haven't returned, then the query didn't match any of our patterns,
 		# so default to Google Search.
@@ -110,6 +127,15 @@ def schedule(element):
 
 	return text
 
+
+def google_doc(element):
+
+	for subtree in element.subtrees():
+		if 'NP' in subtree.label() and any(x in subtree.leaves() for x in doc_nouns):
+			return '{"api_type": "google_docs"}'
+
+	
+
 def wolfram(element):
 	words = ' '.join(element.leaves())
 
@@ -132,4 +158,5 @@ if __name__ == "__main__":
 	#run_tests('example_sentences.txt')
 	#schedule_JJ("schedule meeting for tomorrow at 4 pm")
 	#print schedule_meeting(["schedule a meeting for tomorrow at 3 pm"])
-	run_tests('example_sentences.txt')
+	#run_tests('example_sentences.txt')
+	print interpret(["just keep talking"])
