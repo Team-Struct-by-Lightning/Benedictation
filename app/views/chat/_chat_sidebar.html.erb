@@ -19,7 +19,7 @@ var w = new WebSocket(websocketprotocol + myLocation + ":" + port + uri);
    <ul class="sidebar-nav create-group-list" id="create-group-list">
       <li id="sidebar-temp-room-list-item">
         <% random_url = "/room/" + get_random_string + "/" + get_random_string %>
-        <a class="sidebar-item glyphicon glyphicon-facetime-video" id="create-conference-room-button" href=<%= random_url %> ><p id="sidebar-temp-room-text">Join a temporary room </p></a>
+        <a class="popup-with-form sidebar-item glyphicon glyphicon-facetime-video" id="create-conference-room-button" href="#temp-room-confirm"><p id="sidebar-temp-room-text">Join a temporary room </p></a>
       </li>
       <li id="sidebar-create-group-list-item">
          <a class="popup-with-form sidebar-item glyphicon glyphicon-plus" id="create-group-button" href="#create-group" ><p id="sidebar-create-group">Create new group</p></a>
@@ -32,6 +32,9 @@ var w = new WebSocket(websocketprotocol + myLocation + ":" + port + uri);
          <% group_id = group.id %>
          <% group_name = group.group_name %>
          <% group_name_url_string = "/room/" + "#{group_id}" + "/" + group_name %>
+         <% go_to_room_href = '#room-verify' + group_id.to_s %>
+         <% go_to_room_href_no_hash = 'room-verify' + group_id.to_s %>
+         <% group_name_url_string = "/room/" + "#{group_id}" + "/" + group_name %>
          <%= form_for(current_user.active_relationships.find_by(id: relationship_id),
             html: { method: :delete }) do |f| %>
          <a class="popup-with-form glyphicon glyphicon-remove sidebar-item" id="delete-group" href=<%= '#delete-user' + relationship_id.to_s %> aria-hidden="true">
@@ -43,7 +46,8 @@ var w = new WebSocket(websocketprotocol + myLocation + ":" + port + uri);
          <% end %>
          <a class="popup-with-form glyphicon glyphicon-plus sidebar-item" id="add-user" href=<%= '#add-user' + group_id.to_s %> aria-hidden="true">
          </a>
-         <a class="glyphicon glyphicon-facetime-video" id="go-to-room" href=<%= group_name_url_string %> aria-hidden="true">
+         <a class="popup-with-form glyphicon glyphicon-facetime-video" id="go-to-room" href=<%= go_to_room_href %> aria-hidden="true">
+
          </a>
          <% end %>
          <div id=<%= 'add-user' + group_id.to_s %> class="white-popup-block mfp-hide">
@@ -117,6 +121,16 @@ var w = new WebSocket(websocketprotocol + myLocation + ":" + port + uri);
             <%= f.submit "Leave group" , class: "btn btn-primary" %>
             <% end %>
          </div>
+           <div id='<%= go_to_room_href_no_hash %>' class="white-popup-block mfp-hide">
+           <h1> You are about to join a video room.</h1>
+           <br>
+           <%= link_to "Continue on", group_name_url_string, class: "btn btn-primary continue-button" %>
+       </div>
+        <div id='temp-room-confirm' class="white-popup-block mfp-hide">
+           <h1> You are about to join a temporary video room.</h1>
+           <br>
+           <%= link_to "Continue on", random_url, class: "btn btn-primary continue-button" %>
+       </div>
       </li>
       <% end %>
    </ul>
