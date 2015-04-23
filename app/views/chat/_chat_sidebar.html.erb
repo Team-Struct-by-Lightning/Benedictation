@@ -19,7 +19,7 @@ var w = new WebSocket(websocketprotocol + myLocation + ":" + port + uri);
    <ul class="sidebar-nav create-group-list" id="create-group-list">
       <li id="sidebar-temp-room-list-item">
         <% random_url = "/room/" + get_random_string + "/" + get_random_string %>
-        <a class="popup-with-form sidebar-item glyphicon glyphicon-facetime-video" id="create-conference-room-button" href="#temp-room-confirm"><p id="sidebar-temp-room-text">Join a temporary room </p></a>
+        <a class="popup-with-form sidebar-item glyphicon glyphicon-facetime-video" id="create-conference-room-button" href="#temp-room-confirm"><p id="sidebar-temp-room-text">Join a temporary video call</p></a>
       </li>
       <li id="sidebar-create-group-list-item">
          <a class="popup-with-form sidebar-item glyphicon glyphicon-plus" id="create-group-button" href="#create-group" ><p id="sidebar-create-group">Create new group</p></a>
@@ -122,12 +122,12 @@ var w = new WebSocket(websocketprotocol + myLocation + ":" + port + uri);
             <% end %>
          </div>
            <div id='<%= go_to_room_href_no_hash %>' class="white-popup-block mfp-hide">
-           <h1> You are about to join a video room.</h1>
+           <h1> You are about to join a video call.</h1>
            <br>
            <%= link_to "Continue on", group_name_url_string, class: "btn btn-primary continue-button" %>
        </div>
         <div id='temp-room-confirm' class="white-popup-block mfp-hide">
-           <h1> You are about to join a temporary video room.</h1>
+           <h1> You are about to join a temporary video call.</h1>
            <br>
            <%= link_to "Continue on", random_url, class: "btn btn-primary continue-button" %>
        </div>
