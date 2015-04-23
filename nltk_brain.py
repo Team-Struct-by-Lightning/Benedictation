@@ -72,7 +72,7 @@ def interpret(sentences):
 		# so default to Google Search.
 		words = sentences[0]
 		text = '{"api_type": "google", \
-			 "query": ' + words + '}'
+			 "query": ' + str(words) + '}'
 		return text
 
 	except Exception as e:
@@ -114,7 +114,7 @@ def wolfram(element):
 	words = ' '.join(element.leaves())
 
 	text = '{"api_type": "wolfram", \
-			 "query": ' + words + '}'
+			 "query": ' + str(words) + '}'
 
 	return text
 
