@@ -350,6 +350,31 @@ div.calendar-frame body{
   top: 4px;
 }
 
+#minimize-mic-down{
+  text-decoration: none !important;
+  color: #CCCCCC;
+  position: relative;
+  left: -5px;
+  top: -3px;
+}
+
+.mic-header-text {
+  color: #CCCCCC;
+  text-decoration: none !important;
+  position: absolute;
+  left: 93px;
+  top: 133px;
+}
+
+#minimize-mic-right{
+  text-decoration: none !important;
+  display: none;
+  color: #CCCCCC;
+  position: relative;
+  left: -5px;
+  top: -3px;
+}
+
 #minimize-chat-down:hover{
   text-decoration: none !important;
   color: #FFFFFF
@@ -360,6 +385,16 @@ div.calendar-frame body{
   color: #FFFFFF
 }
 
+
+#minimize-mic-down:hover{
+  text-decoration: none !important;
+  color: #FFFFFF
+}
+
+#minimize-mic-right:hover{
+  text-decoration: none !important;
+  color: #FFFFFF
+}
 
 #minimize-query-down{
   text-decoration: none !important;
@@ -448,10 +483,20 @@ transform: scale(.05);
   height: 50px;
   position: relative;
   width: 278px;
-  top: 10px;
-  background-color: #333333 !important;
-  border-radius: 3px;
+  top: 0px;
+  background-color: #CCCCCC !important;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 3px;
 }
+
+#mic-header {
+  background-color: #333333;
+  border-radius: 3px;
+  margin-top: 10px;
+  width: 278px;
+  height: 31px;
+}
+
 .ui-progressbar {
     position: relative;
     display: none;

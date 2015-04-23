@@ -43,6 +43,11 @@
             </button>
             </span>
          </div>
+         <div class='panel-heading' id="mic-header">
+          <a class="mic-header-text"> Speak to Benedict </a>
+               <a class ="glyphicon glyphicon-chevron-down" id = "minimize-mic-down" href = "javascript:minimize('#microphone-spot', '#minimize-mic-down', '#minimize-mic-right');"> </a>
+               <a class ="glyphicon glyphicon-chevron-right" id = "minimize-mic-right" href = "javascript:minimize('#microphone-spot', '#minimize-mic-right', '#minimize-mic-down');"> </a>
+         </div>
          <div id="microphone-spot">
           <div class="svg-box">
           <%= image_tag("black-mic-svg.svg", id: "mic-glyph") %>
