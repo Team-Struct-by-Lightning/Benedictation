@@ -455,11 +455,10 @@ transform: scale(.05);
 }
 
 #mic-glyph {
-  transform: scale(0.07) !important;
-  position: absolute;
-  top: -214px;
-  left: -181px;
-  border-radius: 500px;
+  transform: scale(0.033) !important;
+  position: relative;
+  top: -381px;
+  left: -179px;
   background-color: #777777;
 }
 
@@ -467,6 +466,15 @@ transform: scale(.05);
   text-decoration: none !important;
 }
 
+.svg-box {
+  background-color: #777777;
+  width: 32.5px;
+  height: 33px;
+  left: 42.5px;
+  top: 9px;
+  position: absolute !important;
+  border-radius: 500px;
+}
 
 #record-query-button {
   background-color: #777777 !important;

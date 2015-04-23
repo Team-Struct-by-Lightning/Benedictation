@@ -44,7 +44,9 @@
             </span>
          </div>
          <div id="microphone-spot">
-          <%= image_tag("black-mic.svg", id: "mic-glyph") %>
+          <div class="svg-box">
+          <%= image_tag("black-mic-svg.svg", id: "mic-glyph") %>
+        </div>
           <button class="btn btn-primary" id="record-query-button">Click to record</button>
           <div id = "progressbar"><div class = "progress-label">Loading...</div></div>
           <%= image_tag("red-mic-pic.png", class: "record-button", id: "red-flash-button", align: "left") %>
@@ -180,7 +182,7 @@ $('#record-query-button').click(function() {
   toggle_mic_color++;
   if(toggle_mic_color === 1){
     $('#record-query-button').html("Click to stop");
-    $('#mic-glyph').hide();
+    $('.svg-box').hide();
     $('.record-button').show();
     blink_red();
     red_record_interval = setInterval(blink_red, 1600);
