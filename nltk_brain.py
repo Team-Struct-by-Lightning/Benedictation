@@ -8,7 +8,7 @@ from datetime import datetime , timedelta
 parser = Parser()	# Build this outside the fn. so it doesn't rebuild each time
 cal = parsedatetime.Calendar()
 
-schedule_verbs = ['set', 'make', 'create', 'get', 'schedule', 'appoint',
+schedule_verbs = ['add', 'set', 'make', 'create', 'get', 'schedule', 'appoint',
 				 'slate', 'arrange', 'organize', 'construct', 'coordinate',
 				 'establish', 'form', 'formulate', 'run', 'compose', 'have', 'meet',
 				 'reschedule']
@@ -20,6 +20,9 @@ doc_verbs = ['open', 'view', 'launch', 'look','display', 'check', 'start',
 				'begin','create', 'make', 'get', 'have', 'set', 'generate']
 
 doc_nouns = ['doc', 'dog', 'dock' , 'document', 'script', 'record', 'report', 'page']
+
+group_prps  = ['we', 'us', 'our'] 
+group_nouns = ['everyone', 'everybody']
 
 def oclock_remover(sentence):
 	if "o'clock" in sentence:
@@ -60,7 +63,7 @@ def interpret(sentences):
 
 				if 'VP' in element.label() or 'SQ' in element.label():
 					for verb_subtree in element.subtrees():
-						# Check if the VP contains a VB that is in the schedule_verbs.
+
 						if 'VB' in verb_subtree.label() \
 						and any(x in verb_subtree.leaves() for x in doc_verbs):
 							for subtree in element.subtrees():
@@ -72,7 +75,7 @@ def interpret(sentences):
 						and any(x in verb_subtree.leaves() for x in schedule_verbs):
 
 							print "Interpreting as schedule request"
-							return schedule(element)
+							return schedule(element, tree)
 
 
 
@@ -100,7 +103,7 @@ def interpret(sentences):
 # Pass a top-level element to this once we've determined that it likely contains a scheduling request.
 # Input:  an NLTK Tree element
 # Return: a tuple containing (start_time, end_time, description)
-def schedule(element):
+def schedule(element, tree):
 	# Find the "schedule word" in a NP, if one exists
 	schedule_word = "Meeting"
 	for subtree in element.subtrees():
@@ -109,8 +112,18 @@ def schedule(element):
 				if x in schedule_nouns:
 					schedule_word = x
 
+	group_flag = False
+	for elem in tree.subtrees():
+		if 'PRP' in elem.label() and any(x in elem.leaves() for x in group_prps):
+			group_flag = True
+		if any (x in elem.leaves() for x in group_nouns):
+			group_flag = True
+
 	words = ' '.join(element.leaves())
 	words = am_pm_adder(words)
+
+	print group_flag
+
 	if cal.parse(words)[1] == 0:
 		return '{"api_type": "Blank Query"}'
 
@@ -159,4 +172,4 @@ if __name__ == "__main__":
 	#schedule_JJ("schedule meeting for tomorrow at 4 pm")
 	#print schedule_meeting(["schedule a meeting for tomorrow at 3 pm"])
 	#run_tests('example_sentences.txt')
-	print interpret(["just keep talking"])
+	print interpret(["Can everybody meet on Thursday at 3 pm"])
