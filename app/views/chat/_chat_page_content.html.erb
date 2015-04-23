@@ -26,8 +26,11 @@
                                     <div class="fixed-header-div">
                                         <%= image_tag("glyphicons-44-group.png", id: "group-image") %>
                                         <a id="group-name-in-chat-header"> <%= '#' + group_name %></a>
-                                        <%= link_to "<a class='popup-with-form glyphicon glyphicon-facetime-video' id='go-to-room-in-chat-header' href=#{go_to_room_href}> <p id='go-to-room-text'>Go to video call</p></a>".html_safe %>
-                                        <%= link_to "<a class='popup-with-form glyphicon glyphicon-remove' id='leave-group-chat-header' href=#{delete_href} aria-hidden='true'> <p id='leave-group-text'>Leave group</p></a>".html_safe %>
+                                        <ul class="ul-group-head">
+                                            <li class="group-header-list-elem" id="add-user-list-head"><%= link_to "<a class='popup-with-form glyphicon glyphicon-plus' id='add-user-in-member-box' href=#{add_href} aria-hidden='true'> <p id='add-user-text'>Add user to group</p></a>".html_safe %></li>
+                                            <li class="group-header-list-elem" id="room-list-head"><%= link_to "<a class='popup-with-form glyphicon glyphicon-facetime-video' id='go-to-room-in-chat-header' href=#{go_to_room_href}> <p id='go-to-room-text'>Go to video call</p></a>".html_safe %></li>
+                                            <li class="group-header-list-elem" id="leave-list-head"><%= link_to "<a class='popup-with-form glyphicon glyphicon-remove' id='leave-group-chat-header' href=#{delete_href} aria-hidden='true'> <p id='leave-group-text'>Leave group</p></a>".html_safe %></li>
+                                        </ul>
                                     </div>
                                 </div>
                                 <div id='<%= go_to_room_href_no_hash %>' class="white-popup-block mfp-hide">
@@ -51,9 +54,6 @@
                                                                                         </span></li>
                                             <% end %>
                                             </ul>
-                                        </div>
-                                        <div id="add-user-to-list">
-                                            <%= link_to "<a class='popup-with-form glyphicon glyphicon-plus' id='add-user-in-member-box' href=#{add_href} aria-hidden='true'> <p id='add-user-text'>Add user to group</p></a>".html_safe %>
                                         </div>
                                     </div>
                                 </div>
