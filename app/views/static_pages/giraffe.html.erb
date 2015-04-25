@@ -7,12 +7,10 @@
  <br>
 <script>
  var js_wolfram = $.noConflict( true );
- var elem = js_wolfram('#i0').attr('value', 'weather 93117');
  </script>
-
-<%= javascript_include_tag "//www.wolframalpha.com/widget/widget.jsp?id=cbfe2744cab85791e857fa81debda885&output=iframeOpenExpand", :id => "WolframAlphaScriptcbfe2744cab85791e857fa81debda885"  %>
+<%= javascript_include_tag "http://www.wolframalpha.com/widget/widget.jsp?id=cbfe2744cab85791e857fa81debda885&output=iframeOpenExpand", :id => "WolframAlphaScriptcbfe2744cab85791e857fa81debda885"  %>
 <script>
-
+var elem = js_wolfram('#i0').attr('value', 'current phase of the moon');
 </script>
 
 </div>
