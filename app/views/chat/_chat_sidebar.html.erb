@@ -37,16 +37,12 @@ var w = new WebSocket(websocketprotocol + myLocation + ":" + port + uri);
          <% group_name_url_string = "/room/" + "#{group_id}" + "/" + group_name %>
          <%= form_for(current_user.active_relationships.find_by(id: relationship_id),
             html: { method: :delete }) do |f| %>
-         <a class="popup-with-form glyphicon glyphicon-remove sidebar-item" id="delete-group" href=<%= '#delete-user' + relationship_id.to_s %> aria-hidden="true">
          </a>
-         <% if group_name_url_string.length < 8 %>
+         <% if group_name_url_string.length < 14 %>
          <a class="menu-group" id=<%= "menu-group" + group_id.to_s%>><%= "#" + group_name%></a>
          <% else %>
-         <a class="menu-group group-name sidebar-item" id=<%= "menu-group" + group_id.to_s%>><%= "#" + truncate(group_name, length: 9 )%></a>
+         <a class="menu-group group-name sidebar-item" id=<%= "menu-group" + group_id.to_s%>><%= "#" + truncate(group_name, length: 15 )%></a>
          <% end %>
-         <a class="popup-with-form glyphicon glyphicon-plus sidebar-item" id="add-user" href=<%= '#add-user' + group_id.to_s %> aria-hidden="true">
-         </a>
-         <a class="popup-with-form glyphicon glyphicon-facetime-video" id="go-to-room" href=<%= go_to_room_href %> aria-hidden="true">
 
          </a>
          <% end %>
