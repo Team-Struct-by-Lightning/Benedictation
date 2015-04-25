@@ -108,7 +108,7 @@ module RoomsHelper
 	def query_wolfram_alpha(json_hash)
 		query_string = json_hash['query']
 		app_id = WolframAPIKey["app_id"]
-		wolfram_url = URI.parse("http://api.wolframalpha.com/v2/query?input=" + query_string + "&appid=" + app_id + "&format=html")
+		wolfram_url = URI.parse("//api.wolframalpha.com/v2/query?input=" + query_string + "&appid=" + app_id + "&format=html")
 		html = open(wolfram_url)
 		doc = Nokogiri::HTML(html.read)
 		markups = []
