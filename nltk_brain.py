@@ -17,9 +17,11 @@ schedule_nouns = ['appointment', 'meeting','meetup', 'reservation', 'session'
 				 'talk', 'call', 'powwow', 'meet', 'rendezvous', 'event', 'conference']
 
 doc_verbs = ['open', 'view', 'launch', 'look','display', 'check', 'start',
-				'begin','create', 'make', 'get', 'have', 'set', 'generate']
+				'begin','create', 'make', 'get', 'have', 'set', 'generate', 'show']
 
 doc_nouns = ['doc', 'dog', 'dock' , 'document', 'script', 'record', 'report', 'page']
+
+calendar_nouns = ['calendar', 'agenda', 'schedule', 'itinerary']
 
 group_prps  = ['we', 'us', 'our'] 
 group_nouns = ['everyone', 'everybody']
@@ -70,6 +72,10 @@ def interpret(sentences):
 									if 'NP' in subtree.label() and any(x in subtree.leaves() for x in doc_nouns):
 										print 'Interpreting as doc request'
 										return '{"api_type": "google_docs"}'
+
+									if 'NP' in subtree.label() and any(x in subtree.leaves() for x in calendar_nouns):
+										print 'Interpreting as calendar request'
+										return '{"api_type": "calendar_show"}'
 
 						if 'VB' in verb_subtree.label() \
 						and any(x in verb_subtree.leaves() for x in schedule_verbs):
@@ -141,13 +147,6 @@ def schedule(element, tree):
 	return text
 
 
-def google_doc(element):
-
-	for subtree in element.subtrees():
-		if 'NP' in subtree.label() and any(x in subtree.leaves() for x in doc_nouns):
-			return '{"api_type": "google_docs"}'
-
-	
 
 def wolfram(element):
 	words = ' '.join(element.leaves())
