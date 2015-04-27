@@ -1,19 +1,24 @@
 <!-- <script type="text/javascript" id="WolframAlphaScriptcbfe2744cab85791e857fa81debda885" src="http://www.wolframalpha.com/widget/widget.jsp?id=cbfe2744cab85791e857fa81debda885"></script>
  -->
- <div>
- <br>
- <br>
- <br>
- <br>
+<br>
+<br>
+<br>
 <script>
- var js_wolfram = $.noConflict( true );
+// reset jQuery/$ variables -> undefined so that wolfram knows to load 1.5.1, while keeping $ -> 1.11.2
+$ = jQuery.noConflict( true ); 
  </script>
-<%= javascript_include_tag "http://www.wolframalpha.com/widget/widget.jsp?id=cbfe2744cab85791e857fa81debda885&output=iframeOpenExpand", :id => "WolframAlphaScriptcbfe2744cab85791e857fa81debda885"  %>
+
+<!-- load wolfram widget, which resets global jQuery/$ -> 1.5.1 -->
+<%= javascript_include_tag URI.parse("//www.wolframalpha.com/widget/widget.jsp?id=cbfe2744cab85791e857fa81debda885"), :id => "WolframAlphaScriptcbfe2744cab85791e857fa81debda885"  %>
+
 <script>
-var elem = js_wolfram('#i0').attr('value', 'current phase of the moon');
+// $ is undefined from first reset, so reset $ -> 1.11.2 for the rest of the page, while keeping jQuery -> 1.5.1 for wolfram widget
+jQuery.noConflict(); 
+jQuery('#i0').attr('value', 'current phase of the moon');
+jQuery('.wolframAlphaWidgetBody').addClass('collapse');
+console.log($.fn.jquery);
 </script>
 
-</div>
 
 
 
