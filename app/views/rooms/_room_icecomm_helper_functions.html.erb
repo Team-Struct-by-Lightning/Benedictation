@@ -39,14 +39,14 @@ websocket.onmessage = function(e) {
                     if (emails.length != 0) {
                         // append what you send to your own page
                         for (var i = 0; i < emails.length; i++) {
-                            alert("we're here with " + emails[i]);
+                            //alert("we're here with " + emails[i]);
                             attendees_to_send.push({email: emails[i]});
                         }
                     }
 
                     var myData = JSON.parse(e.data);
-                    myData["attendees_array"] = JSON.stringify(attendees_to_send);
-                    alert("the attendees to send are " + attendees_to_send);
+                    myData["attendees_array"] = attendees_to_send; //JSON.stringify(attendees_to_send);
+                    //alert("the attendees to send are " + attendees_to_send);
                     if (myData.api_type === 'calendar') {
                         $.ajax({
                             type: "POST",

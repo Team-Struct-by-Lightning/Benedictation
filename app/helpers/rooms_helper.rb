@@ -96,19 +96,16 @@ module RoomsHelper
 		puts "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
 		puts "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
 		puts "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
-		puts json_hash['attendees_array']
+		#puts (json_hash['attendees_array']).class
 
-		#attendees = json_hash['attendees_array']
-
-
-		if full_group
+		puts json_hash['group_flag'].class
+		if full_group == "True"
 			puts "IT WAS THE FULL GROUP!!!!!"
-			attendee_array << json_hash['attendees_array']
+			attendee_array = json_hash['attendees_array']
 		else
-			attendee_array << current_user.email
+			attendee_array = current_user.email
 		end
-		puts attendee_array
-
+		
 		json_event = {
 				'summary' => json_hash['summary'],
 				'location' => json_hash['location'],
