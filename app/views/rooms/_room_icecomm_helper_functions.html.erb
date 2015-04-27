@@ -22,16 +22,42 @@ websocket.onmessage = function(e) {
     count_b = 0;
     if (e.data != "") {
         try {
-            var myData = JSON.parse(e.data);
-            if (myData.api_type === 'calendar') {
-                $.ajax({
-                    type: "POST",
-                    url: "/check_api",
-                    data: {
-                        jsonData: JSON.stringify(myData)
+            var url = (window.location.pathname).split("/");
+            var id = String(url[url.length - 2]);
+            var name = String(url[url.length - 1]);
+            var emails_key = name + ":" + id + ":emails";
+            var attendees_to_send = [];
+            $.ajax({
+                type: "GET",
+                url: "/get_redis",
+                dataType: "json",
+                data: {
+                    'redis_key': emails_key
+                },
+                success: function(emails) {
+                    if (emails.length != 0) {
+                        // append what you send to your own page
+                        for (var i = 0; i < emails.length; i++) {
+                            alert("we're here with " + emails[i]);
+                            attendees_to_send.push(emails[i]);
+                        }
                     }
-                });
-            }
+                    var myData = JSON.parse(e.data);
+                    myData["attendees_array"] = JSON.stringify(attendees_to_send);
+                    alert("the attendees to send are" + attendees_to_send);
+                    if (myData.api_type === 'calendar') {
+                        $.ajax({
+                            type: "POST",
+                            url: "/check_api",
+                            data: {
+                                jsonData: JSON.stringify(myData)
+                            }
+                        });
+                    }
+                }
+            });
+
+            
             sendBennyReply(e.data);
         } catch (e) {
             console.log("data from server not JSON");
@@ -63,7 +89,7 @@ comm.on('local', function(options) {
     var id = String(url[url.length - 2]);
     var name = String(url[url.length - 1]);
     var chat_history_key = name + ":" + id + ":chathistory";
-    
+    var emails_key = name + ":" + id + ":emails";
     // get chat history from redis
     $.ajax({
         type: "GET",
@@ -79,6 +105,14 @@ comm.on('local', function(options) {
                     appendNewIM_text_only(messages[i]);
                 }
             }
+        }
+    });
+    $.ajax({
+        type: "POST",
+        url: "/update_redis",
+        data: {
+            redis_key: emails_key,
+            message: "<%= current_user.email %>"
         }
     });
 
@@ -142,6 +176,8 @@ comm.on('connected', function(options) {
 comm.on('disconnect', function(options) {
     console.log('disconnect happening');
     document.getElementById(options.ID).remove();
+
+
 });
 
 // clear the chat history for random rooms
@@ -152,6 +188,8 @@ jQuery(window).bind(
         var id = String(url[url.length - 2]);
         var name = String(url[url.length - 1]);
         var key = name + ":" + id + ":chathistory";
+        var emails_key = name + ":" + id + ":emails";
+
         // if last person is leaving the room and it's a random room, then clear the chat history
         if ((comm.getRoomSize() == 1) && !(parseInt(id) || 0)) {
             console.log("Clearing chat history from redis for temporary room.");
@@ -162,7 +200,17 @@ jQuery(window).bind(
                     redis_key: key
                 }
             });
+
         }
+        
+        $.ajax({
+                type: "POST",
+                url: "/clear_redis_item",
+                data: {
+                    redis_key: emails_key,
+                    email: "<%= current_user.email %>"
+                }
+            });
     });
 
 comm.on('data', function(options) {
