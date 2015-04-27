@@ -142,7 +142,8 @@ def schedule(element, tree):
     		"end": {"datetime": "' + str(endtime) + '",\
     		"timezone": "America/Los_Angeles"}, \
     		"location": "", \
-    		"summary": "' + str(schedule_word).capitalize() +' scheduled by Benedict"}'
+    		"summary": "' + str(schedule_word).capitalize() +' scheduled by Benedict",\
+    		"group_flag": "' + str(group_flag) + '"}'
 
 	return text
 
