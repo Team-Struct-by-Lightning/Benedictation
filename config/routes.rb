@@ -20,6 +20,7 @@ Rails.application.routes.draw do
   post '/clear_redis' => "groups#clear_redis"
   get '/get_redis_item' => "groups#get_redis_item"
   get '/get_redis_length' => "groups#get_redis_length"
+  post '/clear_redis_item' => "groups#clear_redis_item"
   resources :sessions, only: [:create, :destroy]
   resource :home, only: [:show]
   resources :relationships,       only: [:create, :destroy]

@@ -33,6 +33,11 @@ class GroupsController < ApplicationController
     render nothing: true
   end
 
+  def clear_redis_item
+    $redis.lrem(params[:redis_key], 0, params[:email])
+    render nothing: true
+  end
+
 	def show
     @group = Group.find(params[:id])
   end
