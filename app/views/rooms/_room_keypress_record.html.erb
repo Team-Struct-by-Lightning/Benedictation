@@ -9,6 +9,12 @@ function tell(evt) {
             ready_to_record = 2; //lets the user know we are recording
             bdown = 1;
             count_trigger = 0; //initializes the trigger if needed
+              $('#record-query-button').hide();
+              $('.svg-box').hide();
+              $('#stop-query-button').show();
+              $('.record-button').show();
+              blink_red();
+              red_record_interval = setInterval(blink_red, 1600);
             recordSpeech();
             // automatically trigger a keyup event after 10 seconds because
             //that's all the web speech api can handle
@@ -28,6 +34,11 @@ function tell(evt) {
         bdown = 0;
         console.log(evt.which, evt.type);
         if (recordSpeech.recording == 1) {
+             $('#stop-query-button').hide();
+              $('.record-button').hide();
+              clearInterval(red_record_interval);
+              $('#progressbar').show();
+              $('.progress-label').show();
             count_trigger = 2; //prevents a trigger if not needed
             ready_to_record = 3; //lets the user know we are analyzing
             speechRegRec.stop(); // stop recording
