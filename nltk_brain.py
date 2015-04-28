@@ -1,17 +1,18 @@
 import nltk
-import parsedatetime
+from parsedatetime import Calendar
 from nltk.tag import pos_tag, map_tag
 from stat_parser import Parser, display_tree
 from time import mktime
 from datetime import datetime , timedelta
+from dateutil.relativedelta import *
 
 parser = Parser()	# Build this outside the fn. so it doesn't rebuild each time
-cal = parsedatetime.Calendar()
+cal = Calendar()
 
 schedule_verbs = ['add', 'set', 'make', 'create', 'get', 'schedule', 'appoint',
 				 'slate', 'arrange', 'organize', 'construct', 'coordinate',
 				 'establish', 'form', 'formulate', 'run', 'compose', 'have', 'meet',
-				 'reschedule']
+				 'reschedule', 'find'] #'find' is for schedule-suggesting; be careful
 
 schedule_nouns = ['appointment', 'meeting','meetup', 'reservation', 'session'
 				 'talk', 'call', 'powwow', 'meet', 'rendezvous', 'event', 'conference']
@@ -47,7 +48,7 @@ def am_pm_adder(words):
 	return words
 
 def time_converter(time_struct):
-	starttime = datetime.fromtimestamp(mktime(time_struct[0]))
+	starttime = datetime.fromtimestamp(mktime(time_struct))
 	endtime = starttime + timedelta(hours = 1)
 	return starttime.strftime('%Y-%m-%dT%H:%M:%S'), endtime.strftime('%Y-%m-%dT%H:%M:%S')
 
@@ -84,10 +85,11 @@ def interpret(sentences):
 							return schedule(element, tree)
 
 
-
 				if "SBAR" in element.label():
 					for subtree in element.subtrees():
 						if "W" in subtree.label():
+
+							# TODO: Implement logic here to catch "when"-questions related to scheduling.
 
 							print "Interpreting as Wolfram query"
 							return wolfram(element)
@@ -104,7 +106,7 @@ def interpret(sentences):
 	except Exception as e:
 		print "Error in NLTK Brain: ", e.message
 
-	return None
+	return '{"api_type": "blank_query"}'
 
 # Pass a top-level element to this once we've determined that it likely contains a scheduling request.
 # Input:  an NLTK Tree element
@@ -128,15 +130,19 @@ def schedule(element, tree):
 	words = ' '.join(element.leaves())
 	words = am_pm_adder(words)
 
-	print group_flag
-
-	if cal.parse(words)[1] == 0:
-		return '{"api_type": "Blank Query"}'
-
-	starttime, endtime = time_converter(cal.parse(words))
+	cal_parse = cal.parse(words)
+	print cal_parse
+	if cal_parse[1] == 0 or cal_parse[1] == 1:
+		starttime, endtime = schedule_suggest(cal_parse, words)
+		starttime = starttime.strftime('%Y-%m-%dT%H:%M:%S')
+		endtime   = endtime.strftime('%Y-%m-%dT%H:%M:%S')
+		api_type  = "schedule_suggest"
+	else:
+		starttime, endtime = time_converter(cal_parse[0])
+		api_type = "calendar"
 
 	text = '{"attendees": [{"email": "trevor.frese@gmail.com" }], \
-    		"api_type": "calendar", \
+    		"api_type": "' + api_type + '", \
     		"start": {"datetime": "' + str(starttime) + '", \
     		"timezone": "America/Los_Angeles"}, \
     		"end": {"datetime": "' + str(endtime) + '",\
@@ -147,7 +153,37 @@ def schedule(element, tree):
 
 	return text
 
+# Currently supports: "this week", "next week", "this month", "next month",
+# specific days e.g. "[this] Thursday", "next Tuesday"
+# Eventually: even more precision ("the first week in April"?)
+def schedule_suggest(cal_parse, words):
+	starttime = None
+	endtime = None
+	if cal_parse[1] == 0:		# No date or time
+		if "this week" in words:
+			starttime = datetime.today() + relativedelta(weekday=MO(-1), hour=8, minute=0, second=0)
+			endtime = starttime + relativedelta(weekday=FR, hour=17)
+		elif "this month" in words:
+			starttime = datetime.today() + relativedelta(day=1, hour=8, minute=0, second=0) 
+			endtime = starttime + relativedelta(day=31, weekday=FR(-1), hour=17)	# Last Friday of the month.
+		else:	# Default to finding a time today.
+			starttime = datetime.today()
+			endtime = starttime + relativedelta(hour=17, minute=0, second=0)
 
+	elif cal_parse[1] == 1:		# Date without a time
+		if cal_parse[0][6] == 0 and cal_parse[0][3] == 9 and cal_parse[0][4] == 0:
+			if "next week" in words:
+				starttime = datetime.fromtimestamp(mktime(cal_parse[0])) + relativedelta(hour=8)
+				endtime = starttime + relativedelta(weekday=FR, hour=17)
+		elif cal_parse[0][6] == 0 and cal_parse[0][3] == 9 and cal_parse[0][4] == 0:				
+			if "next month" in words:
+				starttime = datetime.fromtimestamp(mktime(cal_parse[0]))	+ relativedelta(hour=8)
+				endtime = starttime + relativedelta(day=31, weekday=FR(-1), hour=17)	# Last Friday of the month.
+		else:
+			starttime = datetime.fromtimestamp(mktime(cal_parse[0])) + relativedelta(hour=8, minute=0, second=0)
+			endtime = starttime + relativedelta(hour=17)
+
+	return starttime, endtime
 
 def wolfram(element):
 	words = ' '.join(element.leaves())
@@ -172,4 +208,4 @@ if __name__ == "__main__":
 	#schedule_JJ("schedule meeting for tomorrow at 4 pm")
 	#print schedule_meeting(["schedule a meeting for tomorrow at 3 pm"])
 	#run_tests('example_sentences.txt')
-	print interpret(["Can everybody meet on Thursday at 3 pm"])
+	print interpret(["Can we find a time to meet next week"])
