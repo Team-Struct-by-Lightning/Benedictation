@@ -522,6 +522,13 @@ transform: scale(.05);
   height: 31px;
 }
 
+#progressbar {
+  border-width: 3px;
+  border-color: #333333;
+  border-style: groove;
+}
+
+
 .ui-progressbar {
     position: relative;
     display: none;
@@ -532,8 +539,8 @@ transform: scale(.05);
 .progress-label {
   position: absolute;
   display: none;
-  left: 37%;
-  top: 4px;
+  left: 34%;
+  top: 2px;
   font-weight: bold;
   text-shadow: 1px 1px 0 #fff;
 }
