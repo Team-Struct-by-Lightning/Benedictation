@@ -1,0 +1,7 @@
+#searchcontrol{
+	margin-top: 100px;
+	margin-left: 250px;
+}
+#searchcontrol > div{
+	width: 500px;
+}
