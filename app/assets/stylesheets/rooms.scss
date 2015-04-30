@@ -535,7 +535,12 @@ transform: scale(.05);
     margin-left: 10px;
     margin-right: 10px;
     top: 19%;
-  }
+}
+
+.ui-progressbar-value {
+  margin-top: 0px !important;
+}
+
 .progress-label {
   position: absolute;
   display: none;
