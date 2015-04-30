@@ -6,6 +6,7 @@ module RoomsHelper
 	require 'open-uri'
 	require 'fileutils'
 	require 'nokogiri'
+	require 'date'
 
 	GoogleAPIKeys = YAML.load_file("#{::Rails.root}/config/google.yml")[::Rails.env]
 	WolframAPIKey = YAML.load_file("#{::Rails.root}/config/wolfram.yml")[::Rails.env]
@@ -59,6 +60,7 @@ module RoomsHelper
 
 	def choose_api(json)
 		json_hash = string_to_json(json)
+		puts json_hash['api_type']
 
 		case json_hash['api_type']
 		when 'calendar'
@@ -68,6 +70,9 @@ module RoomsHelper
 		when 'calendar_show'
 			puts "We will show the calendar"
 			json_event = calendar_json(json_hash)
+		when 'schedule_suggest'
+			puts 'We will find a time that works'
+			json_event = schedule_json(json_hash)
 		when 'docs'
 			puts "We will access the google docs api!"
 		when 'wolfram'
@@ -107,6 +112,59 @@ module RoomsHelper
 				},
 				'attendees' => attendee_array
 			}
+	end
+
+	def schedule_json(json_hash)
+
+		get_available_times(json_hash['start'],json_hash['end'])
+
+	end 
+
+	def get_available_times(starttime, endtime)
+
+	client = Google::APIClient.new
+	client.authorization.client_id = GoogleAPIKeys["app_id"]
+	client.authorization.client_secret = GoogleAPIKeys["secret"]
+	client.authorization.scope = "https://www.googleapis.com/auth/calendar"
+	client.authorization.refresh_token = current_user.refresh_token
+	client.authorization.access_token = current_user.oauth_token
+
+	if client.authorization.refresh_token && client.authorization.expired?
+	  client.authorization.fetch_access_token!
+	end
+
+	service = client.discovered_api('calendar', 'v3')
+
+	puts '@@@@@@@@@ Entering Schedule Suggest @@@@@@@@@'
+	starttime_string = starttime['datetime'] + "-0000"
+	endtime_string = endtime['datetime'] + "-0000"
+	puts starttime_string, endtime_string
+	# This will list all busy times within the week of April 13 - 17
+	result = client.execute(:api_method => service.events.list,
+                        	:parameters => {'calendarId' => 'primary',
+                        					'timeMin' => starttime_string,
+                        					'timeMax' => endtime_string })
+
+	
+	events = result.data.items
+	#puts result.data.items
+
+
+	puts "@@@@@@@@@@@@@@@@@@@@@@"
+	#starttime = DateTime.parse(starttime)
+	#endtime = DateTime.parse(endtime)
+	#days = (starttime - endtime)/(60*60*24)
+
+	# Create a boolean array of length (days * 48) if using 30min increments; init all to True (free)
+	#event_array = Array.new(days*48, true)
+	puts '@@@@@@@@@@ LIST OF EVENTS @@@@@@@@@@@@'
+	puts events.length
+
+	events.each do |e|
+		puts e
+		puts e.start.dateTime , e.end.dateTime, e.summary
+
+		end	
 	end
 
 	def query_wolfram_alpha(json_hash)

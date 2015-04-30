@@ -208,4 +208,4 @@ if __name__ == "__main__":
 	#schedule_JJ("schedule meeting for tomorrow at 4 pm")
 	#print schedule_meeting(["schedule a meeting for tomorrow at 3 pm"])
 	#run_tests('example_sentences.txt')
-	print interpret(["Can we find a time to meet next week"])
+	print interpret(["Can we find a time to meet next Thursday"])
