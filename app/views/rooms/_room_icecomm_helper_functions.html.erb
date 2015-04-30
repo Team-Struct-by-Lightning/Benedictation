@@ -43,16 +43,17 @@ websocket.onmessage = function(e) {
                     }
 
                     var myData = JSON.parse(e.data);
+                    
                     myData["attendees_array"] = attendees_to_send; 
-                    if (myData.api_type === 'calendar') {
-                        $.ajax({
-                            type: "POST",
-                            url: "/check_api",
-                            data: {
-                                jsonData: JSON.stringify(myData)
-                            }
-                        });
-                    }
+                   
+                    $.ajax({
+                        type: "POST",
+                        url: "/check_api",
+                        data: {
+                            jsonData: JSON.stringify(myData)
+                        }
+                    });
+                    
                 }
             });
 
