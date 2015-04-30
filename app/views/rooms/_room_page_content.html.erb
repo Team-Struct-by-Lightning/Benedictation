@@ -145,13 +145,32 @@
                                       var title = "Google Search";
                                       console.log(user_name_title);
                                       var email_name = user_email.split('@')[0];
-                        
                                       var render_item_id = "render" + div_id;
                                       $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id +'>' +
                               '  <div class="calendar-border"> <h1 class="calendar-title">' + title + '</h1> <a class="glyphicon glyphicon-remove" id="remove_item_id"></a>' +
-                              '<iframe class="calendar-frame" style=" border-width:0 " width="800" height="600" frameborder="0" scrolling="no"></iframe></div>' +
+                              '<div id="searchcontrol">Loading</div>'+
+                              '</div>' +
                                                       '</div>');
 
+
+                                      var searchControl = new google.search.SearchControl();
+
+                                      // Add in a full set of searchers
+                                      searchControl.addSearcher(new google.search.WebSearch());
+                                      searchControl.addSearcher(new google.search.ImageSearch());
+                                      searchControl.addSearcher(new google.search.VideoSearch());
+                                      searchControl.addSearcher(new google.search.NewsSearch());
+
+                                      // create a drawOptions object
+                                      var drawOptions = new google.search.DrawOptions();
+
+                                      // tell the searcher to draw itself in linear mode
+                                      drawOptions.setDrawMode(google.search.SearchControl.DRAW_MODE_TABBED);
+                                      // tell the searcher to draw itself and tell it where to attach
+                                      searchControl.draw(document.getElementById("searchcontrol"), drawOptions);
+
+                                      // execute an inital search
+                                      searchControl.execute("Benedictation");
 
                                   }
                                }
@@ -176,8 +195,21 @@
    </div>
    <!-- Page Content -->
 </div>
-<script>
 
+
+<script src="https://www.google.com/jsapi"
+        type="text/javascript"></script>
+    <script language="Javascript" type="text/javascript">
+    //<!
+    google.load('search', '1');
+
+
+    //google.setOnLoadCallback(OnLoad);
+
+    //]]>
+    </script>
+
+<script>
 
 // function blinker2() {
 //   $('.glyphicon-volume-up').fadeTo( 850 , .1, function() {});
@@ -336,4 +368,7 @@ $('#stop-query-button').click(function() {
            }
        });
    });
+
+
+
 </script>
