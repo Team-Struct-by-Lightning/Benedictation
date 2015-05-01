@@ -110,8 +110,8 @@ module RoomsHelper
 	def query_wolfram_alpha(json_hash)
 		coder = HTMLEntities.new
 		query_string = json_hash['query'].to_s
-		query_string = query_string.split(" " + "\u2018s" + " ").join("s ")
-		query_string = query_string.split(" 's ").join("s ")
+		query_string = query_string.split(" '").join
+		query_string = query_string.split("'").join
 		puts "&&&&&&&&&&&&&&&&: " + query_string
 		app_id = WolframAPIKey["app_id"]
 		wolfram_url = URI.parse("http://api.wolframalpha.com/v2/query?appid=P3P4W5-LGWA2A3RU2&input=" + query_string + "&format=image").to_s
