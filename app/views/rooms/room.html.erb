@@ -11,52 +11,11 @@
          <%= render 'rooms/room_page_content' %>
 </div>
 
-<div id="help-room-popup" class="white-popup-block mfp-hide">
-    <table style="width:100%" >
-        <tr>
-           <td><h1>Hold Ctrl-B to speak to Benedict.</h1> </td>
-           <td>
-                <h3>
 
-                <ul><b>Example Queries</b>
-                    <li>Schedule a meeting on...</li>
-                    <li>Can you schedule an appointment for... </li>
-                    <li>Let's meet up on... </li>
-                </ul>
-                </h3>
-            </td>
-        </tr>
-        <tr>
-           <td><%= image_tag("benedict_button.png", class: "benedict_examples") %></td>
-           <td>
-                <h3 id = "tutorial-explanation">
-                    <b>Instead of holding Ctrl-B to speak to Benedict</b>, you can click and 
-                    hold this button. 
-                </h3>
-            </td>
-        </tr>
-        <tr>
-	       <td><%= image_tag("benny_example.png", class: "benedict_examples") %> </td>
-           <td>
-                <h3 id = "tutorial-explanation">
-                Click on one of these queries and it will expand to fill up the center
-                of the screen!
-                </h3>
-            </td>
-        </tr>
-        <tr>
-           <td><%= image_tag("drag_example.png", class: "") %> </td>
-           <td>
-                <h3 id = "tutorial-explanation">
-                Drag a webcam video into the center spotlight of the page to get a better view
-                of that special someone!
-                </h3>
-            </td>
-        </tr>
-    </table>
-</div>
+<%= render 'rooms/help_div_popup' %>
 
 <%= render 'rooms/room_toggle_menu_script' %>
+
 
 <%= javascript_tag do %>
 	<%= render 'rooms/room_pocketsphinx_helper_functions' %>
