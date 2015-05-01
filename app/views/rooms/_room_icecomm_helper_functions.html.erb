@@ -23,7 +23,8 @@ websocket.onmessage = function(e) {
     if (e.data != "") {
         try {
             var myData = JSON.parse(e.data);
-            if (myData.api_type === 'calendar') {
+            console.log("api type: ",myData.api_type);
+            if (myData.api_type === 'calendar' || myData.api_type === 'wolfram') {
                 $.ajax({
                     type: "POST",
                     url: "/check_api",
