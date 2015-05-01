@@ -109,9 +109,9 @@ module RoomsHelper
 
 	def query_wolfram_alpha(json_hash)
 		coder = HTMLEntities.new
-		query_string = json_hash['query']
+		query_string = json_hash['query'].to_s
 		app_id = WolframAPIKey["app_id"]
-		wolfram_url = URI.parse("http://api.wolframalpha.com/v2/query?appid=P3P4W5-LGWA2A3RU2&input=" + query_string + "&format=image").to_s
+		wolfram_url = URI.parse("http://api.wolframalpha.com/v2/query?appid=P3P4W5-LGWA2A3RU2&input=" + "moon" + "&format=image").to_s
 		puts "@@@@@@@@@@@@wolfram url: " + wolfram_url
 		doc = Nokogiri::XML(open(wolfram_url))
 		images = doc.xpath("//img")
@@ -120,7 +120,7 @@ module RoomsHelper
 			image_array << img.to_s
 			image_array << "<br>"
 		end
-		imagestring = coder.decode(image_array.join("\n").to_s)
+		imagestring = image_array.join.to_s.split('"').join("'")
 		puts  "@@@@@@@@@@@@@@@@@@@@@@@@@@" + imagestring
 		#stick in redis
 		$redis.set("wolfram_div",imagestring)

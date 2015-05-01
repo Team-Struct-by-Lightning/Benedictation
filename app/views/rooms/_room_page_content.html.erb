@@ -143,12 +143,13 @@
                           else if (api_type == 'wolfram'){
 
                       var render_item_id = "render" + div_id;
-                     var decoded = "<%= $redis.get("wolfram_div") %>";
+                     var decoded = '<%= $redis.get("wolfram_div") %>';
                       console.log("decoded: ",decoded);
-                      var wolframDiv = '<div class="render-spot" id=' + render_item_id +'>' + '<div class="wolfram-border">' + wolframDiv + '</div></div>';
+                      var html_decoded = $("<div />").html(decoded).text();
+                      var wolframDiv = '<div class="render-spot" id="' + render_item_id +'"><div class="wolfram-border"><div class="wolfram-scale">' + html_decoded + '</div></div></div>';
                       console.log("final append string: ",wolframDiv);
                       $('.room-layout-table').append(wolframDiv);
-                       <% $redis.del("wolfram_div") %>
+
 
                           }
                        }
