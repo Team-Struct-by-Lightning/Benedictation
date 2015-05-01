@@ -418,6 +418,10 @@
     color: $gray-lighter;
 }
 
+.menu-group {
+  cursor:pointer;
+}
+
 #create-group-button:hover {
     text-decoration: none;
     color: $gray-lighter;
