@@ -58,6 +58,9 @@ module ScheduleHelper
 												'singleEvents' => true})
 		events = result.data.items
 
+		# Thinking: We don't even need to bother returning events before 8a or after 5p each day
+		# So maybe we make a sub-function and call it once for each day in the range with those as the bounds?
+		# Although it shouldn't be hardcoded, the user should maybe have an option "Limit to business hours" which they can turn on/off
 
 		starttime = DateTime.parse(start_str)
 		endtime   = DateTime.parse(end_str)
@@ -73,7 +76,6 @@ module ScheduleHelper
 			stime_delta = (stime - starttime) / (60*30)
 			etime_delta = (etime - starttime) / (60*30)
 			logger.error stime_delta.to_s + " " + etime_delta.to_s
-
 
 		end	
 	end
