@@ -142,10 +142,10 @@
                                   }
                                   if (api_type == 'google') {
                                       console.log(user_name);
-                                      var title = "Google Search";
-                                      console.log(user_name_title);
+                                      var title = "Search Results";
                                       var email_name = user_email.split('@')[0];
                                       var render_item_id = "render" + div_id;
+                                      var search_query = item['query'];
                                       $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id +'>' +
                               '  <div class="calendar-border"> <h1 class="calendar-title">' + title + '</h1> <a class="glyphicon glyphicon-remove" id="remove_item_id"></a>' +
                               '<div id="searchcontrol">Loading</div>'+
@@ -170,7 +170,7 @@
                                       searchControl.draw(document.getElementById("searchcontrol"), drawOptions);
 
                                       // execute an inital search
-                                      searchControl.execute("Benedictation");
+                                      searchControl.execute(search_query);
 
                                   }
                                }

@@ -1,7 +1,24 @@
-#searchcontrol{
-	margin-top: 100px;
-	margin-left: 250px;
-}
+
 #searchcontrol > div{
-	width: 500px;
+	width: 100%;
+	height:100%;
+}
+
+
+
+div.gsc-webResult.gsc-result{
+	height: 80px;
+	font-size: 13px;
+}
+
+#searchcontrol > div > div > div.gsc-tabsArea{
+	margin: 0;
+}
+#resInfo{
+	margin: 0;
+}
+
+div.gsc-newsResult.gsc-result{
+	height: 80px;
+	font-size: 13px;
 }
