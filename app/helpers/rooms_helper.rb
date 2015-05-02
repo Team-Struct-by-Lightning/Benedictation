@@ -114,7 +114,7 @@ module RoomsHelper
 		query_string = query_string.split("'").join
 		puts "&&&&&&&&&&&&&&&&: " + query_string
 		app_id = WolframAPIKey["app_id"]
-		wolfram_url = URI.parse("http://api.wolframalpha.com/v2/query?appid=P3P4W5-LGWA2A3RU2&input=" + query_string + "&format=image").to_s
+		wolfram_url = URI.parse("http://api.wolframalpha.com/v2/query?appid=P3P4W5-LGWA2A3RU2&input=" + query_string + "&format=image,html").to_s
 		puts "@@@@@@@@@@@@wolfram url: " + wolfram_url
 		doc = Nokogiri::XML(open(wolfram_url))
 		images = doc.xpath("//img")
@@ -126,26 +126,43 @@ module RoomsHelper
 		imagestring = image_array.join.to_s.split('"').join("'")
 		puts  "@@@@@@@@@@@@@@@@@@@@@@@@@@" + imagestring
 		#stick in redis
-		$redis.set("wolfram_div",imagestring)
+		# $redis.set("wolfram_div",imagestring)
 		# scripts = doc.xpath("//scripts")
 		# puts "@@@@@@@@@@@@@@@@" + scripts.inner_html
 		#File.open('wolfram_images.html', 'w') { |file| file.write(imagestring) }
 
+		# doc = Nokogiri::HTML(open(wolfram_url))
+		markups = []
+		scripts = []
+		css = []
+		doc.xpath("//markup").each do |markup|
+			markups << markup.text
+		end
+		doc.xpath("//scripts").each do |script|
+			scripts << script.text
+		end
+		doc.xpath("//css").each do |c|
+			css << c.text
+		end
 
+		@wolfram_html = markups.join.to_s.split('"').join("'")
+		@wolfram_html = @wolfram_html.split("\n").join()
 
+		@wolfram_css = css.join.to_s.split('"').join("'")
+		@wolfram_css = @wolfram_css.split("\n").join()
 
+		
+		@wolfram_scripts = scripts.join.to_s.split('"').join("'")
+		@wolfram_scripts = @wolfram_scripts.split("\n").join()
 
+		puts "@@@@@@@@@@@@@@@@@@@scripts" + @wolfram_scripts
+		puts "@@@@@@@@@@@@@@@@@@@html" + @wolfram_html
+		puts "@@@@@@@@@@@@@@@@@@@css" + @wolfram_css
 
-		# doc = Nokogiri::HTML(image_xml.read)
-		# markups = []
-		# doc.css("markup").each do |markup|
-		# 	markup.css("ul").each do |ul|
-		# 		ul.content = ""
-		# 	end
-		# 	markups << markup.inner_html
-		# end
-		# @wolfram_html = (markups.join("\n").gsub(']]&gt;', '')).gsub('&amp;','&')
-		# File.open('blah.html', 'w') { |file| file.write(@wolfram_html) }
+		$redis.set("wolfram_html",@wolfram_html.to_s)
+		$redis.set("wolfram_css",@wolfram_css.to_s)
+		$redis.set("wolfram_scripts",@wolfram_scripts.to_s)
+
 	end
 
 

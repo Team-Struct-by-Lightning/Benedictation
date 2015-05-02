@@ -143,12 +143,37 @@
                           else if (api_type == 'wolfram'){
 
                       var render_item_id = "render" + div_id;
-                     var decoded = '<%= $redis.get("wolfram_div") %>';
-                      console.log("decoded: ",decoded);
-                      var html_decoded = $("<div />").html(decoded).text();
-                      var wolframDiv = '<div class="render-spot" id="' + render_item_id +'"><div class="wolfram-border"><div class="wolfram-scale">' + html_decoded + '</div></div></div>';
-                      console.log("final append string: ",wolframDiv);
-                      $('.room-layout-table').append(wolframDiv);
+                     var wolfram_html = '<%= $redis.get("wolfram_html") %>';
+                     var wolfram_css = '<%= $redis.get("wolfram_css") %>';
+                     var wolfram_scripts = '<%= $redis.get("wolfram_scripts") %>';
+
+
+                      
+                      var html_decoded = $("<div />").html(wolfram_html).text();
+                      var css_decoded = $("<div />").html(wolfram_css).text();
+                      var scripts_decoded = $("<div />").html(wolfram_scripts).text();
+                 <!--      var wolframDiv = '<div class="render-spot" id="' + render_item_id +'"><div class="wolfram-border"><div class="wolfram-scale">' + '<iframe id="wolfram-frame" src=' + html_decoded +' style=" border-width:0 " width="800" height="600" frameborder="0" scrolling="no"></iframe>' + '</div></div></div>'; -->
+
+                      var wolframdiv = '<div class="render-spot" id=' + render_item_id +'>' +
+                              '  <div class="wolfram-border"> <a class="glyphicon glyphicon-remove" id="remove_item_id"></a>' + '<iframe id="wolfram-iframe" style=" border-width:0 " width="800" height="600" frameborder="0"></iframe></div>' +'</div>'
+
+                      $('.room-layout-table').append(wolframdiv);
+                      var blah = '<style>{content:url("http://www.wolframalpha.com/compress/css/Alpha-201504231127-concatenated-min.css");}</style>'
+                      $('#wolfram-iframe').contents().find('html').html(html_decoded);
+                      $('#wolfram-iframe').contents().find('body').prepend('<div id="logo-wrapper" class="ir normalLogo"><a href="/" class="ir normalLogo" id="logo" title="Wolfram|Alpha Computational Knowledge Engine">Wolfram|Alpha Computational Knowledge Engine</a></div>');
+                      $('#wolfram-iframe').contents().find('head').html('<link href="http://www.wolframalpha.com/compress/css/Alpha-201504231127-concatenated-min.css" rel="stylesheet" />');
+                      $('#wolfram-iframe').contents().find('#logo-wrapper').css('top','0px');
+                      $('#wolfram-iframe').contents().find('#logo-wrapper').css('position','relative');
+
+
+
+
+                      
+
+              
+
+
+
 
 
                           }
