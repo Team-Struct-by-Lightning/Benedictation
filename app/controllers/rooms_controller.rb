@@ -13,4 +13,10 @@ include RoomsHelper
   	render nothing: true
   end
 
+  def get_wolfram
+    hash = {}
+    hash['result'] = $redis.get("wolfram_html")
+    render :json => hash
+  end
+
 end

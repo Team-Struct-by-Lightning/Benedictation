@@ -30,10 +30,14 @@ websocket.onmessage = function(e) {
                     url: "/check_api",
                     data: {
                         jsonData: JSON.stringify(myData)
+                    },
+                    success: function(messages) {
+                        console.log("redis: ","<%= $redis.get('wolfram_html')%>");
+                        sendBennyReply(e.data);
                     }
                 });
             }
-            sendBennyReply(e.data);
+            
         } catch (e) {
             console.log("data from server not JSON");
         }
