@@ -15,7 +15,7 @@ include RoomsHelper
 
   def get_wolfram
     hash = {}
-    hash['result'] = $redis.get("wolfram_html")
+    hash['result'] = $redis.get("wolfram_html").to_s
     render :json => hash
   end
 

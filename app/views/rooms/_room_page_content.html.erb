@@ -143,16 +143,8 @@
 
                           }
                           else if (api_type == 'wolfram'){
-
                       var render_item_id = "render" + div_id;
-
-                       $.ajax({
-        type: "GET",
-        url: "/get_wolfram",
-        dataType: "json",
-        success: function(wolfram) {
-        console.log("wolfram: " ,wolfram['result']);
-            wolfram_html = wolfram['result'];
+                      wolfram_html = item['wolfram_html'];
             var html_decoded = wolfram_html;
                     console.log("html decoded: ",html_decoded);
                     
@@ -166,27 +158,6 @@
                       $('#wolfram-iframe').contents().find('head').html('<link href="http://www.wolframalpha.com/compress/css/Alpha-201504231127-concatenated-min.css" rel="stylesheet" />');
                       $('#wolfram-iframe').contents().find('#logo-wrapper').css('top','0px');
                       $('#wolfram-iframe').contents().find('#logo-wrapper').css('position','relative');
-        }
-    });
-
-                    
-                      
-
-
-
-                      
-                      
-
-
-
-
-                      
-
-              
-
-
-
-
 
                           }
                        }
