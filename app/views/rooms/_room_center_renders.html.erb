@@ -27,7 +27,7 @@
 
                           var api_type = "";
 
-                        
+
 
                           console.log("key ", key);
                           console.log("div_id ", div_id);
@@ -64,16 +64,25 @@
                       var render_item_id = "render" + div_id;
                       wolfram_html = item['wolfram_html'];
                       var wolframdiv = '<div class="render-spot" id=' + render_item_id +'>' +
-                              '  <div class="wolfram-border"> <a class="glyphicon glyphicon-remove" id="remove_item_id"></a>' + '<iframe id="wolfram-iframe" style=" border-width:0 " width="800" height="600" frameborder="0"></iframe></div>' +'</div>'
+                              '  <div class="wolfram-border"> <a class="glyphicon glyphicon-remove wolfram-remove" id="remove_item_id"></a>' + '<iframe id="wolfram-iframe" style=" border-width:0" width="609" height="500" max-height="470" position="relative" top="11" left="-3" frameborder="0"></iframe></div>' +'</div>'
 
                       $('.room-layout-table').append(wolframdiv);
                       var blah = '<style>{content:url("http://www.wolframalpha.com/compress/css/Alpha-201504231127-concatenated-min.css");}</style>'
                       $('#wolfram-iframe').contents().find('html').html(wolfram_html);
                       $('#wolfram-iframe').contents().find('body').prepend('<div id="logo-wrapper" class="ir normalLogo"><a href="/" class="ir normalLogo" id="logo" title="Wolfram|Alpha Computational Knowledge Engine">Wolfram|Alpha Computational Knowledge Engine</a></div>');
                       $('#wolfram-iframe').contents().find('head').html('<link href="http://www.wolframalpha.com/compress/css/Alpha-201504231127-concatenated-min.css" rel="stylesheet" />');
-                      $('#wolfram-iframe').contents().find('#logo-wrapper').css('top','0px');
+                      $('#wolfram-iframe').contents().find('#logo-wrapper').css('top','4px');
                       $('#wolfram-iframe').contents().find('#logo-wrapper').css('position','relative');
-
+                      $('#wolfram-iframe').contents().find('html').css('min-width', '300px');
+                      $('#wolfram-iframe').contents().find('html').css('width', '584px');
+                      $('#wolfram-iframe').contents().find('body').css('min-width', '300px');
+                      $('#wolfram-iframe').css('position','relative');
+                      $('#wolfram-iframe').css('max-height', '471px');
+                      $('#wolfram-iframe').css('top','10px');
+                      $('#wolfram-iframe').css('left','-3px');
+                      $('#wolfram-iframe').contents().find('a').click(function(event) {
+                        event.preventDefault();
+                      });
                           }
                        }
                    });
