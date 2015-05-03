@@ -8,8 +8,10 @@ module RoomsHelper
 	require 'nokogiri'
 	require 'date'
 
+
 	GoogleAPIKeys = YAML.load_file("#{::Rails.root}/config/google.yml")[::Rails.env]
 	WolframAPIKey = YAML.load_file("#{::Rails.root}/config/wolfram.yml")[::Rails.env]
+
 
 	def redirect_user
 		url_string = request.original_url
@@ -77,7 +79,7 @@ module RoomsHelper
 			puts "We will access the google docs api!"
 		when 'wolfram'
 			puts "We will access the wolfram alpha api!"
-			#query_wolfram_alpha(json_hash)
+			query_wolfram_alpha(json_hash)
 		when 'youtube'
 			puts "We will access the youtube api!"
 		when 'wikipedia'
@@ -168,20 +170,29 @@ module RoomsHelper
 	end
 
 	def query_wolfram_alpha(json_hash)
-		query_string = json_hash['query']
+		coder = HTMLEntities.new
+		query_string = json_hash['query'].to_s
+		query_string = query_string.split(" '").join
+		query_string = query_string.split("'").join
+		puts "&&&&&&&&&&&&&&&&: " + query_string
 		app_id = WolframAPIKey["app_id"]
-		wolfram_url = URI.parse("http://api.wolframalpha.com/v2/query?input=" + query_string + "&appid=" + app_id + "&format=html")
-		html = open(wolfram_url)
-		doc = Nokogiri::HTML(html.read)
+		wolfram_url = URI.parse("http://api.wolframalpha.com/v2/query?appid=P3P4W5-LGWA2A3RU2&input=" + query_string + "&format=html,image").to_s
+		puts "@@@@@@@@@@@@wolfram url: " + wolfram_url
+		doc = Nokogiri::XML(open(wolfram_url))
 		markups = []
-		doc.css("markup").each do |markup|
-			markup.css("ul").each do |ul|
-				ul.content = ""
-			end
-			markups << markup.inner_html
+		doc.xpath("//markup").each do |markup|
+			markups << markup.text
 		end
-		@wolfram_html = (markups.join("\n").gsub(']]&gt;', '')).gsub('&amp;','&')
-		File.open('blah.html', 'w') { |file| file.write(@wolfram_html) }
+
+		wolfram_html = markups.join.to_s.split('"').join("'")
+		wolfram_html = wolfram_html.split("\n").join()
+		puts "@@@@@@@@@@@@@@@@@@@html" + wolfram_html
+		
+
+		$redis.set("wolfram_html",wolfram_html.to_s)
+
+
+
 	end
 
 
