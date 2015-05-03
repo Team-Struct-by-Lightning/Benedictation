@@ -14,11 +14,24 @@ div.gsc-webResult.gsc-result{
 #searchcontrol > div > div > div.gsc-tabsArea{
 	margin: 0;
 }
-#resInfo{
+.gsc-result-info{
 	margin: 0;
 }
 
 div.gsc-newsResult.gsc-result{
-	height: 80px;
+	height: 85px;
 	font-size: 13px;
 }
+
+div.gsc-videoResult.gsc-result{
+	height:80px;
+}
+
+div.gs-clusterUrl{
+	visibility: hidden;
+}
+
+#searchcontrol{ 
+	margin-top: -30px;
+}
+
