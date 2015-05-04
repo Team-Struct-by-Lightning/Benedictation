@@ -35,40 +35,49 @@ websocket.onmessage = function(e) {
                     'redis_key': emails_key
                 },
                 success: function(emails) {
-
                     if (emails.length != 0) {
                         for (var i = 0; i < emails.length; i++) {
-                            attendees_to_send.push({email: emails[i]});
+                            attendees_to_send.push({
+                                email: emails[i]
+                            });
                         }
                     }
-
                     var myData = JSON.parse(e.data);
-                    
-                    myData["attendees_array"] = attendees_to_send; 
-                   
+                    myData["attendees_array"] = attendees_to_send;
                     $.ajax({
                         type: "POST",
                         url: "/check_api",
                         data: {
                             jsonData: JSON.stringify(myData)
+                        },
+                        success: function() {
+                            if (myData.api_type === 'wolfram') {
+                                // append wolfram api html reply to the json we are saving in redis (so we can click again)
+                                $.ajax({
+                                    type: "GET",
+                                    url: "/get_wolfram",
+                                    dataType: "json",
+                                    success: function(wolfram) {
+                                        // add wolfram html to the json object so we can save it later
+                                        myData['wolfram_html'] = wolfram['result'];
+                                        sendBennyReply(JSON.stringify(myData));
+                                    }
+                                });
+                            } else {
+                                sendBennyReply(e.data);
+                            }
                         }
                     });
-                    
                 }
             });
-
-            
-            sendBennyReply(e.data);
         } catch (e) {
             console.log("data from server not JSON");
         }
     }
-
     ready_to_record = 1;
     recordSpeech.recording = 0;
     count_b = 0;
 }
-
 // Initialize Icecomm
 comm.connect(window.location.pathname);
 console.log("Initialized Icecomm, waiting for user media permissions...");
@@ -115,7 +124,6 @@ comm.on('local', function(options) {
             message: "<%= current_user.email %>"
         }
     });
-
     // scroll to bottom of history in chat
     var height = 0;
     $('div, #chatty').each(function(i, value) {
@@ -127,7 +135,6 @@ comm.on('local', function(options) {
     $('#js-chat-body').animate({
         scrollTop: height
     }, 'fast');
-    
     // Initialize our new recorder with its own copy of the local media stream
     var input = audioContext.createMediaStreamSource(localAudioStream);
     speechRegRec = new Recorder(input);
@@ -176,43 +183,34 @@ comm.on('connected', function(options) {
 comm.on('disconnect', function(options) {
     console.log('disconnect happening');
     document.getElementById(options.ID).remove();
-
-
 });
-
 // clear the chat history for random rooms
-jQuery(window).bind(
-    "beforeunload", 
-    function() { 
-        var url = (window.location.pathname).split("/");
-        var id = String(url[url.length - 2]);
-        var name = String(url[url.length - 1]);
-        var key = name + ":" + id + ":chathistory";
-        var emails_key = name + ":" + id + ":emails";
-
-        // if last person is leaving the room and it's a random room, then clear the chat history
-        if ((comm.getRoomSize() == 1) && !(parseInt(id) || 0)) {
-            console.log("Clearing chat history from redis for temporary room.");
-            $.ajax({
-                type: "POST",
-                url: "/clear_redis",
-                data: {
-                    redis_key: key
-                }
-            });
-
-        }
-        
+jQuery(window).bind("beforeunload", function() {
+    var url = (window.location.pathname).split("/");
+    var id = String(url[url.length - 2]);
+    var name = String(url[url.length - 1]);
+    var key = name + ":" + id + ":chathistory";
+    var emails_key = name + ":" + id + ":emails";
+    // if last person is leaving the room and it's a random room, then clear the chat history
+    if ((comm.getRoomSize() == 1) && !(parseInt(id) || 0)) {
+        console.log("Clearing chat history from redis for temporary room.");
         $.ajax({
-                type: "POST",
-                url: "/clear_redis_item",
-                data: {
-                    redis_key: emails_key,
-                    email: "<%= current_user.email %>"
-                }
-            });
+            type: "POST",
+            url: "/clear_redis",
+            data: {
+                redis_key: key
+            }
+        });
+    }
+    $.ajax({
+        type: "POST",
+        url: "/clear_redis_item",
+        data: {
+            redis_key: emails_key,
+            email: "<%= current_user.email %>"
+        }
     });
-
+});
 comm.on('data', function(options) {
     console.log("data: ", options.data);
     var message_data = options.data.split("@@@");
