@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem 'htmlentities', '~> 4.3.3'
 gem 'redis', '~> 3.2.1'
 gem 'passenger',          '~> 4.0.59'
 gem 'rails',                '4.2.0'

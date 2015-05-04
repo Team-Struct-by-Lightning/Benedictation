@@ -62,6 +62,7 @@ function sendBennyReply(json_api_reply) {
                 var name_arr = user_name.split(" ");
                 var new_name = name_arr.join(":");
                 var key_user_id_and_index =  String(len) + ":" + name + ":" + id + ":bennyhistory:" +"<%= current_user.email %>" + ":" + new_name;
+                console.log("key_user_id_and_index: ",key_user_id_and_index);
                 $.ajax({
                     type: "POST",
                     url: "/update_redis",
@@ -181,13 +182,14 @@ function appendNewBennyReply(options) {
         var key = key_array_slice.join(":");
         var benny_item_id = "benny" + key;
         var benny_item_link_id = "benny_query" + key;
+        console.log("benny item link id in chat: ", benny_item_link_id);
         var parameter = 'clickable("' + options.key + '")';
         $('.benny-list-body').addClass('benny-list-body-func');
         $('.benny-list-body').append('<div class="benny-item benny-wolfram" id=' + benny_item_id +'>' +
                             '<%= image_tag("#{image_name}", class: "favicon") %>' +
                             '<a class="name-and-summary-wolfram">' + name + '</a>' +
                             '<a class="benny-link" onclick=' + parameter + ' id=' +
-                            benny_item_link_id + '> Query: ' + query + '</a>' +
+                            benny_item_link_id + '> Query: ' + query + '?</a>' +
                             '</div>');
 
     }

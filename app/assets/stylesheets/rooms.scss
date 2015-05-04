@@ -33,6 +33,19 @@
   left: -85px;
 }
 
+.wolfram-frame {
+/*  position: relative;
+  transform: scale(0.78);
+  top: -120px;
+  left: -85px;*/
+  border-width: 0;
+  width: 609px;
+  max-height: 470px;
+  position: relative;
+  top: 11px;
+  left: -3px;
+}
+
 .calendar-border {
   box-shadow: 0px 0px 10px #777777;
   border-radius: 4px;
@@ -45,7 +58,37 @@
   background-color: white;
 }
 
+.wolfram-border {
+  box-shadow: 0px 0px 10px #777777;
+  border-radius: 4px;
+  position: fixed;
+  top: 100px;
+  height: 510px;
+  width: 650px;
+  left: 190px;
+  padding: 10px;
+  padding-bottom: 10px;
+  background-color: white;
+}
+
+.wolfram-remove {
+  position: relative;
+  top: -460px !important;
+  color: black;
+  z-index: 20;
+  left: 620px !important;
+}
+
+
+.wolfram-min-width {
+  min-width: 300px !important;
+}
+
 div.calendar-frame body{
+  transform: scale(.95);
+}
+
+div.wolfram-frame body{
   transform: scale(.95);
 }
 
@@ -173,7 +216,6 @@ div.calendar-frame body{
   color: white;
   background-color: red;
 }
-
 
 .name-and-summary-wolfram {
   position: relative;
