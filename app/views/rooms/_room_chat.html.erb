@@ -121,10 +121,12 @@ function appendNewBennyReply(options) {
     $('#record-query-button').show();
     $('.svg-box').show();
 
-    var query = json_murph.query;
-
-    query = query.split(" '").join("'")
-    query = query.split(" \u0027").join("'")
+    var query;
+    if (json_murph.query) {
+        query = json_murph.query;
+        query = query.split(" '").join("'")
+        query = query.split(" \u0027").join("'")
+    }
 
     if (json_murph.api_type != 'Blank Query') {
         benny_note_number = benny_note_number + 1;
