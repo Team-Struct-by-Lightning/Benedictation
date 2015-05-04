@@ -176,7 +176,7 @@ module RoomsHelper
 		query_string = query_string.split("'").join
 		puts "&&&&&&&&&&&&&&&&: " + query_string
 		app_id = WolframAPIKey["app_id"]
-		wolfram_url = URI.parse("http://api.wolframalpha.com/v2/query?appid=P3P4W5-LGWA2A3RU2&input=" + query_string + "&format=html,image").to_s
+		wolfram_url = URI.parse("http://api.wolframalpha.com/v2/query?appid=P3P4W5-LGWA2A3RU2&input=" + URI.encode(query_string.strip) + "&format=html,image").to_s
 		puts "@@@@@@@@@@@@wolfram url: " + wolfram_url
 		doc = Nokogiri::XML(open(wolfram_url))
 		markups = []
