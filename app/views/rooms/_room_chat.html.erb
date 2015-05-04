@@ -200,9 +200,10 @@ function appendNewBennyReply(options) {
             query = "No query.";
         }
         else {
-            query = truncation(query, 40);
+            query = truncation(json_murph.query, 40);
 
         }
+        
         var key_array = options.key.split(":");
         var key_array_slice = key_array.slice(0, 4);
         var key = key_array_slice.join(":");

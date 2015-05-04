@@ -987,3 +987,41 @@ transform: scale(.05);
 .benedict-sidebar-nav  > .benedict-sidebar-brand a {
     color: $gray-light;
 }
+
+/* Google Search */
+#searchcontrol > div{
+  width: 100%;
+  height:100%;
+  overflow-y: hidden;
+}
+
+
+
+div.gsc-webResult.gsc-result{
+  height: 80px;
+  font-size: 13px;
+}
+
+#searchcontrol > div > div > div.gsc-tabsArea{
+  margin: 0;
+}
+.gsc-result-info{
+  margin: 0;
+}
+
+div.gsc-newsResult.gsc-result{
+  height: 85px;
+  font-size: 13px;
+}
+
+div.gsc-videoResult.gsc-result{
+  height:80px;
+}
+
+div.gs-clusterUrl{
+  visibility: hidden;
+}
+
+#searchcontrol{ 
+  margin-top: -30px;
+}

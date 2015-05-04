@@ -60,6 +60,39 @@
 
 
                           }
+                          else if (api_type == 'google') {
+                                      console.log(user_name);
+                                      var title = "Search Results";
+                                      var email_name = user_email.split('@')[0];
+                                      var render_item_id = "render" + div_id;
+                                      var search_query = item['query'];
+                                      $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id +'>' +
+                              '  <div class="calendar-border" style="height:540px;"> <h1 class="calendar-title">' + title + '</h1> <a class="glyphicon glyphicon-remove" id="remove_item_id"></a>' +
+                              '<div id="searchcontrol">Loading</div>'+
+                              '</div>' +
+                                                      '</div>');
+
+
+                                      var searchControl = new google.search.SearchControl();
+
+                                      // Add in a full set of searchers
+                                      searchControl.addSearcher(new google.search.WebSearch());
+                                      searchControl.addSearcher(new google.search.ImageSearch());
+                                      searchControl.addSearcher(new google.search.VideoSearch());
+                                      searchControl.addSearcher(new google.search.NewsSearch());
+
+                                      // create a drawOptions object
+                                      var drawOptions = new google.search.DrawOptions();
+
+                                      // tell the searcher to draw itself in linear mode
+                                      drawOptions.setDrawMode(google.search.SearchControl.DRAW_MODE_TABBED);
+                                      // tell the searcher to draw itself and tell it where to attach
+                                      searchControl.draw(document.getElementById("searchcontrol"), drawOptions);
+
+                                      // execute an inital search
+                                      searchControl.execute(search_query);
+
+                                  }
                           else if (api_type == 'wolfram'){
                       var render_item_id = "render" + div_id;
                       wolfram_html = item['wolfram_html'];
