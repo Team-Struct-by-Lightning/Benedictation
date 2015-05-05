@@ -1,126 +1,166 @@
 <%= javascript_tag do %>
-                  function clickable(me) {
-                          var children = $("#drop-spot").children();
-                          console.log(children);
-                          for(i = 0; i < children.length; i++){
-                                  if ($(children[i]).hasClass("video-center")){
-                                  var video = children[i];
-                                  document.getElementById(get_free_spot()).appendChild(children[i]);
-                                  $(video).get(0).play();
-                                  }
-                          }
-                          $('.render-spot').remove();
+function clickable(me) {
+        var children = $("#drop-spot").children();
+        console.log(children);
+        for(i = 0; i < children.length; i++){
+                if ($(children[i]).hasClass("video-center")){
+                var video = children[i];
+                document.getElementById(get_free_spot()).appendChild(children[i]);
+                $(video).get(0).play();
+                }
+        }
+        $('.render-spot').remove();
 
-                          var arr = me.split(':');
-                          var index = arr[0];
+        var arr = me.split(':');
+        var index = arr[0];
 
-                          var user_email = arr[4];
+        var user_email = arr[4];
 
-                          var name_array = arr.slice(5, arr.length);
-                          var user_name = name_array.join(" ");
+        var name_array = arr.slice(5, arr.length);
+        var user_name = name_array.join(" ");
 
-                          var key_arr = arr.slice(1, 4);
-                          var key = key_arr.join(":");
+        var key_arr = arr.slice(1, 4);
+        var key = key_arr.join(":");
 
-                          var div_id_arr = arr.slice(0, 4);
-                          var div_id = div_id_arr.join(":");
+        var div_id_arr = arr.slice(0, 4);
+        var div_id = div_id_arr.join(":");
 
-                          var api_type = "";
-
-
-
-                          console.log("key ", key);
-                          console.log("div_id ", div_id);
-                          console.log("key arr ", key_arr);
-                          console.log("div arr ", div_id_arr);
-                          console.log(user_name);
-                          console.log(user_email);
-                          $.ajax({
-                               type: "GET",
-                               url: "/get_redis_item",
-                               dataType: "json",
-                               data: {
-                                   'redis_key': key,
-                                   'index' : index
-                               },
-                               success: function(item) {
-                                  api_type = item['api_type'];
-                                   if (api_type == 'calendar' || api_type == 'calendar_show') {
-                                      console.log(user_name);
-                                      var user_name_title = user_name + "\'s Google Calendar";
-                                      console.log(user_name_title);
-                                      var email_name = user_email.split('@')[0];
-                                      var user_timezone = '<%= user_timezone = "America/Los_Angeles" %>';
-                                      var email_url = "https://www.google.com/calendar/embed?showPrint=0&amp;showTz=0&amp;mode=WEEK&amp;height=600&amp;wkst=1&amp;bgcolor=%23ffffff&amp;src=" + email_name + "%40gmail.com&amp;color=%234E5D6C&amp;ctz=" + user_timezone;
-                                      var render_item_id = "render" + div_id;
-                                      $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id +'>' +
-                              '  <div class="calendar-border"> <h1 class="calendar-title">' + user_name_title + '</h1> <a class="glyphicon glyphicon-remove" id="remove_item_id"></a>' +
-                              '<iframe class="calendar-frame" src=' + email_url +' style=" border-width:0 " width="800" height="600" frameborder="0" scrolling="no"></iframe></div>' +
-                                                      '</div>');
+        var api_type = "";
 
 
-                          }
-                          else if (api_type == 'google') {
-                                      console.log(user_name);
-                                      var title = "Search Results";
-                                      var email_name = user_email.split('@')[0];
-                                      var render_item_id = "render" + div_id;
-                                      var search_query = item['query'];
-                                      $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id +'>' +
-                              '  <div class="calendar-border" style="height:540px;"> <h1 class="calendar-title">' + title + '</h1> <a class="glyphicon glyphicon-remove" id="remove_item_id"></a>' +
-                              '<div id="searchcontrol">Loading</div>'+
-                              '</div>' +
-                                                      '</div>');
+
+        console.log("key ", key);
+        console.log("div_id ", div_id);
+        console.log("key arr ", key_arr);
+        console.log("div arr ", div_id_arr);
+        console.log(user_name);
+        console.log(user_email);
+        $.ajax({
+             type: "GET",
+             url: "/get_redis_item",
+             dataType: "json",
+             data: {
+                 'redis_key': key,
+                 'index' : index
+             },
+             success: function(item) {
+                api_type = item['api_type'];
+                  if (api_type == 'calendar' || api_type == 'calendar_show') {
+                    console.log(user_name);
+                    var user_name_title = user_name + "\'s Google Calendar";
+                    console.log(user_name_title);
+                    var email_name = user_email.split('@')[0];
+                    var user_timezone = '<%= user_timezone = "America/Los_Angeles" %>';
+                    var email_url = "https://www.google.com/calendar/embed?showPrint=0&amp;showTz=0&amp;mode=WEEK&amp;height=600&amp;wkst=1&amp;bgcolor=%23ffffff&amp;src=" + email_name + "%40gmail.com&amp;color=%234E5D6C&amp;ctz=" + user_timezone;
+                    var render_item_id = "render" + div_id;
+                    $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id +'>' +
+                      '  <div class="calendar-border"> <h1 class="calendar-title">' + user_name_title + '</h1> <a class="glyphicon glyphicon-remove" id="remove_item_id"></a>' +
+                      '<iframe class="calendar-frame" src=' + email_url +' style=" border-width:0 " width="800" height="600" frameborder="0" scrolling="no"></iframe></div>' +
+                                              '</div>');
+                  }
+                  else if (api_type == 'google') {
+                              console.log(user_name);
+                              var title = "Search Results";
+                              var email_name = user_email.split('@')[0];
+                              var render_item_id = "render" + div_id;
+                              var search_query = item['query'];
+                              $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id +'>' +
+                      '  <div class="calendar-border" style="height:540px;"> <h1 class="calendar-title">' + title + '</h1> <a class="glyphicon glyphicon-remove" id="remove_item_id"></a>' +
+                      '<div id="searchcontrol">Loading</div>'+
+                      '</div>' +
+                                              '</div>');
 
 
-                                      var searchControl = new google.search.SearchControl();
+                              var searchControl = new google.search.SearchControl();
 
-                                      // Add in a full set of searchers
-                                      searchControl.addSearcher(new google.search.WebSearch());
-                                      searchControl.addSearcher(new google.search.ImageSearch());
-                                      searchControl.addSearcher(new google.search.VideoSearch());
-                                      searchControl.addSearcher(new google.search.NewsSearch());
+                              // Add in a full set of searchers
+                              searchControl.addSearcher(new google.search.WebSearch());
+                              searchControl.addSearcher(new google.search.ImageSearch());
+                              searchControl.addSearcher(new google.search.VideoSearch());
+                              searchControl.addSearcher(new google.search.NewsSearch());
 
-                                      // create a drawOptions object
-                                      var drawOptions = new google.search.DrawOptions();
+                              // create a drawOptions object
+                              var drawOptions = new google.search.DrawOptions();
 
-                                      // tell the searcher to draw itself in linear mode
-                                      drawOptions.setDrawMode(google.search.SearchControl.DRAW_MODE_TABBED);
-                                      // tell the searcher to draw itself and tell it where to attach
-                                      searchControl.draw(document.getElementById("searchcontrol"), drawOptions);
+                              // tell the searcher to draw itself in linear mode
+                              drawOptions.setDrawMode(google.search.SearchControl.DRAW_MODE_TABBED);
+                              // tell the searcher to draw itself and tell it where to attach
+                              searchControl.draw(document.getElementById("searchcontrol"), drawOptions);
 
-                                      // execute an inital search
-                                      searchControl.execute(search_query);
+                              // execute an inital search
+                              searchControl.execute(search_query);
 
-                                  }
-                          else if (api_type == 'wolfram'){
-                      var render_item_id = "render" + div_id;
-                      wolfram_html = item['wolfram_html'];
-                      var wolframdiv = '<div class="render-spot" id=' + render_item_id +'>' +
-                              '  <div class="wolfram-border"> <a class="glyphicon glyphicon-remove wolfram-remove" id="remove_item_id"></a>' + '<iframe id="wolfram-iframe" style=" border-width:0" width="609" height="500" max-height="470" position="relative" top="11" left="-3" frameborder="0"></iframe></div>' +'</div>'
+                  }
+                  else if (api_type == 'wolfram'){
+                    var render_item_id = "render" + div_id;
+                    wolfram_html = item['wolfram_html'];
+                    var query =  item['query'];
+                    query = query.split(" '").join("'");
+                    query = query.split(" \u0027").join("'");
+                    var query_action = 'wolfram_text(' + query + ')';
+                    var wolframdiv = '<div class="render-spot" id=' + render_item_id +'>' +
+                            '  <div class="wolfram-border"> <a class="glyphicon glyphicon-remove wolfram-remove" id="remove_item_id"></a>' + '<iframe id="wolfram-iframe" style=" border-width:0" width="609" height="500" max-height="470" position="relative" top="11" left="-3" frameborder="0"></iframe></div>' +'</div>'
 
-                      $('.room-layout-table').append(wolframdiv);
-                      var blah = '<style>{content:url("http://www.wolframalpha.com/compress/css/Alpha-201504231127-concatenated-min.css");}</style>'
-                      $('#wolfram-iframe').contents().find('html').html(wolfram_html);
-                      $('#wolfram-iframe').contents().find('body').prepend('<div id="logo-wrapper" class="ir normalLogo"><a href="/" class="ir normalLogo" id="logo" title="Wolfram|Alpha Computational Knowledge Engine">Wolfram|Alpha Computational Knowledge Engine</a></div>');
-                      $('#wolfram-iframe').contents().find('head').html('<link href="http://www.wolframalpha.com/compress/css/Alpha-201504231127-concatenated-min.css" rel="stylesheet" />');
-                      $('#wolfram-iframe').contents().find('#logo-wrapper').css('top','4px');
-                      $('#wolfram-iframe').contents().find('#logo-wrapper').css('position','relative');
-                      $('#wolfram-iframe').contents().find('html').css('min-width', '300px');
-                      $('#wolfram-iframe').contents().find('html').css('width', '584px');
-                      $('#wolfram-iframe').contents().find('body').css('min-width', '300px');
-                      $('#wolfram-iframe').css('position','relative');
-                      $('#wolfram-iframe').css('max-height', '471px');
-                      $('#wolfram-iframe').css('top','10px');
-                      $('#wolfram-iframe').css('left','-3px');
-                      $('#wolfram-iframe').contents().find('a').click(function(event) {
-                        event.preventDefault();
-                      });
-                          }
-                       }
-                   });
+                    $('.room-layout-table').append(wolframdiv);
+                    var blah = '<style>{content:url("http://www.wolframalpha.com/compress/css/Alpha-201504231127-concatenated-min.css");}</style>'
+                    $('#wolfram-iframe').contents().find('html').html(wolfram_html);
+                    $('#wolfram-iframe').contents().find('body').prepend('<form action="#" onsubmit="return wolfram_text(this);"><fieldset id="input" class="wolfram-text-box"' +
+                      ' style="position: relative;margin-bottom: 48px;margin-top: 10px;"><input id="i" name="i" maxlength="200"' +
+                      ' type="text" autocomplete="off" value="' + query +'" class=""><input id="dataset-input" name="dataset" ' +
+                      'value="" type="hidden"><div id="imath" style="display: none;"><div class="im" style="display: none;"> ' +
+                      '</div><div class="ac"></div><ul class="moreInput">       <li class="inputtab inputtab-keyboard" data-tab="keyboard">' +
+                      '<a href="#"></a>       </li><li class="inputtab inputtab-images" data-tab="images"><a href="#"></a>   ' +
+                      '      </li><li class="inputtab inputtab-datainput" data-tab="datainput"><a href="#"></a>   ' +
+                      '     </li><li class="inputtab inputtab-genfiles" data-tab="genfiles"><a href="#"></a>   ' +
+                      '  </li></ul></div><noscript>&amp;lt;input type="hidden" name="asynchronous" value="false" /&amp;gt;</noscript> ' +
+                      ' <a id="star-inputfield" class="star-input star-disabled" href="#" style="display: none;"></a><div id="equal" title="compute"></div></fieldset></form>');
+                    $('#wolfram-iframe').contents().find('body').prepend('<div id="logo-wrapper" class="ir normalLogo"><a href="/" class="ir normalLogo" id="logo" title="Wolfram|Alpha Computational Knowledge Engine">Wolfram|Alpha Computational Knowledge Engine</a></div>');
+                    $('#wolfram-iframe').contents().find('head').html('<link href="http://www.wolframalpha.com/compress/css/Alpha-201504231127-concatenated-min.css" rel="stylesheet" />');
+                    $('#wolfram-iframe').contents().find('#logo-wrapper').css('top','4px');
+                    $('#wolfram-iframe').contents().find('#logo-wrapper').css('position','relative');
+                    $('#wolfram-iframe').contents().find('html').css('min-width', '300px');
+                    $('#wolfram-iframe').contents().find('html').css('width', '584px');
+                    $('#wolfram-iframe').contents().find('body').css('min-width', '300px');
+                    $('#wolfram-iframe').css('position','relative');
+                    $('#wolfram-iframe').css('max-height', '471px');
+                    $('#wolfram-iframe').css('top','10px');
+                    $('#wolfram-iframe').css('left','-3px');
+                    $('#wolfram-iframe').contents().find('a').click(function(event) {
+                      event.preventDefault();
+                    });
+                }
+             }
+         });
 
-          }
+}
 
+function wolfram_text(wolfram_form) {
 
-               <% end %>
+  $('.render-spot').remove();
+  console.log(wolfram_form.input);
+//     wolfram_json = '{ "api_type" : "wolfram", ' +
+//                     ' "query"' + wolfram_form.input '}';
+//     $.ajax({
+//         type: "POST",
+//         url: "/check_api",
+//         data: {
+//         jsonData: JSON.stringify(wolfram_json)
+//     },
+//     success: function() {
+//         if (myData.api_type === 'wolfram') {
+//             // append wolfram api html reply to the json we are saving in redis (so we can click again)
+//             $.ajax({
+//                 type: "GET",
+//                 url: "/get_wolfram",
+//                 dataType: "json",
+//                 success: function(wolfram) {
+//                     // add wolfram html to the json object so we can save it later
+//                     myData['wolfram_html'] = wolfram['result'];
+//                     sendBennyReply(JSON.stringify(myData));
+//                 }
+//             });
+//   }
+// })
+}
+
+<% end %>
