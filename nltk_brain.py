@@ -56,7 +56,10 @@ def interpret(sentences):
 	try:
 		for sentence in sentences:
 			if(len(sentence.split()) <= 1):
-				return None
+				words = sentences[0]
+				text = '{"api_type": "google", \
+			 		"query": "' + words + '"}'
+				return text
 			sentence = oclock_remover(sentence)
 
 			tree = parser.parse(sentence)
