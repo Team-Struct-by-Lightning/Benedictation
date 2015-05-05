@@ -77,9 +77,42 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
     def check_origin(self,origin):
         return True
 
+# Handle audio data sent to /recognize_test.
+class SpeechWSHandler_Test(tornado.websocket.WebSocketHandler):
+
+    def open(self):
+        print "New connection to speech recognizer opened"
+        self.recognizer = speechrec.SpeechRecognizer()
+
+    def on_message(self, message):
+        text = None
+        try:
+            text = [message]
+            print "server received: ",text
+            if text and (x != "" for x in text):
+                text = interpret(text)
+            else:
+                text = '{"api_type": "Blank Query"}'
+
+        except Exception as e:
+            print e.message
+            text = '{"api_type": "Blank Query"}'
+
+        if not text:
+            text = '{"api_type": "Blank Query"}'
+        self.write_message(text)
+        print "we have finished writing @@@@@"
+
+    def on_close(self):
+        print "Connection closed."
+
+    def check_origin(self,origin):
+        return True
+
 application = tornado.web.Application([
     (r"/recognize", SpeechWSHandler),
-    (r"/email", EmailWSHandler)
+    (r"/email", EmailWSHandler),
+    (r"/recognize_test",SpeechWSHandler_Test)
 ])
 
 if __name__ == "__main__":
