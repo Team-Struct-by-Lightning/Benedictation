@@ -114,8 +114,12 @@
       // Set up the WebSocket
       var myLocation = location.host.split(":")[0];
       var port = "8888";
-      var websocketprotocol = "ws://";
       var uri = "/recognize_test";
+      var websocketprotocol = "wss://";
+if (location.protocol !== "https:") {
+    websocketprotocol = "ws://";
+    myLocation = myLocation.split(":")[0];
+}
       var websocket = new WebSocket(websocketprotocol + myLocation + ":" + port + uri); // initialize
       var queries = [
           "what's a dog",
