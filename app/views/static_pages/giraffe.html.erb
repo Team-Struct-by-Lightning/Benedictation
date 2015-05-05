@@ -1,175 +1,82 @@
-<!DOCTYPE html>
-<html>
-  <body>
-    <div class="querytable">
-    <table id="query">
-        <tr>
-            <td>Query</td>
-            <td>Api JSON from server</td>
-        </tr>
-    </table>
-</div>
-    <style>
-.querytable {
-  top: 65px;
-  position: relative;
-  table-layout: auto;
-  margin:0px;padding:0px;
-  width:100%;
-  border:1px solid #000000;
-  
-  -moz-border-radius-bottomleft:10px;
-  -webkit-border-bottom-left-radius:10px;
-  border-bottom-left-radius:10px;
-  
-  -moz-border-radius-bottomright:10px;
-  -webkit-border-bottom-right-radius:10px;
-  border-bottom-right-radius:10px;
-  
-  -moz-border-radius-topright:10px;
-  -webkit-border-top-right-radius:10px;
-  border-top-right-radius:10px;
-  
-  -moz-border-radius-topleft:10px;
-  -webkit-border-top-left-radius:10px;
-  border-top-left-radius:10px;
-}.querytable table{
-    border-collapse: collapse;
-        border-spacing: 0;
-  width:100%;
-  height:100%;
-  margin:0px;padding:0px;
-}.querytable tr:last-child td:last-child {
-  -moz-border-radius-bottomright:10px;
-  -webkit-border-bottom-right-radius:10px;
-  border-bottom-right-radius:10px;
-}
-.querytable table tr:first-child td:first-child {
-  -moz-border-radius-topleft:10px;
-  -webkit-border-top-left-radius:10px;
-  border-top-left-radius:10px;
-}
-.querytable table tr:first-child td:last-child {
-  -moz-border-radius-topright:10px;
-  -webkit-border-top-right-radius:10px;
-  border-top-right-radius:10px;
-}.querytable tr:last-child td:first-child{
-  -moz-border-radius-bottomleft:10px;
-  -webkit-border-bottom-left-radius:10px;
-  border-bottom-left-radius:10px;
-}.querytable tr:hover td{
-  background-color:#ffffff;
-    
 
-}
-.querytable td{
-  vertical-align:middle;
-  
-  background-color:#ffffff;
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>Google Picker Example</title>
 
-  border:1px solid #000000;
-  border-width:0px 1px 1px 0px;
-  text-align:left;
-  padding:5px;
-  font-size:12px;
-  font-family:Arial;
-  font-weight:normal;
-  color:#000000;
-}.querytable tr:last-child td{
-  border-width:0px 1px 0px 0px;
-}.querytable tr td:last-child{
-  border-width:0px 0px 1px 0px;
-}.querytable tr:last-child td:last-child{
-  border-width:0px 0px 0px 0px;
-}
-.querytable tr:first-child td{
-    background:-o-linear-gradient(bottom, #56aaff 5%, #56aaff 100%);  background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #56aaff), color-stop(1, #56aaff) );
-  background:-moz-linear-gradient( center top, #56aaff 5%, #56aaff 100% );
-  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr="#56aaff", endColorstr="#56aaff");  background: -o-linear-gradient(top,#56aaff,56aaff);
+    <script type="text/javascript">
 
-  background-color:#56aaff;
-  border:0px solid #000000;
-  text-align:center;
-  border-width:0px 0px 1px 1px;
-  font-size:14px;
-  font-family:Arial Black;
-  font-weight:bold;
-  color:#191919;
-}
-.querytable tr:first-child:hover td{
-  background:-o-linear-gradient(bottom, #56aaff 5%, #56aaff 100%);  background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #56aaff), color-stop(1, #56aaff) );
-  background:-moz-linear-gradient( center top, #56aaff 5%, #56aaff 100% );
-  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr="#56aaff", endColorstr="#56aaff");  background: -o-linear-gradient(top,#56aaff,56aaff);
+    // The Browser API key obtained from the Google Developers Console.
+    // Replace with your own Browser API key, or your own key.
+    var developerKey = 'AIzaSyD9JtT_kVZ0S0vKsskgxrK_WtIE1G7FAjY';
 
-  background-color:#56aaff;
-}
-.querytable tr:first-child td:first-child{
-  border-width:0px 0px 1px 0px;
-}
-.querytable tr:first-child td:last-child{
-  border-width:0px 0px 1px 1px;
-}
-    </style>
-    <script>
-      // Set up the WebSocket
-      var myLocation = location.host.split(":")[0];
-      var port = "8888";
-      var uri = "/recognize_test";
-      var websocketprotocol = "wss://";
-if (location.protocol !== "https:") {
-    websocketprotocol = "ws://";
-    myLocation = myLocation.split(":")[0];
-}
-      var websocket = new WebSocket(websocketprotocol + myLocation + ":" + port + uri); // initialize
-      var queries = [
-          "what's a dog",
-          "whats a dog",
-          "what a dog",
-          "dog",
-          "what is the radius of the earth in centimeters",
-          "weather 93117",
-          "weather in isla vista"
-      ];
-      // run the test queries
-      testQueries();
-      // websocket message
-      websocket.onmessage = function(e) {
-          console.log("data from server: ", e.data);
-          drawRow(JSON.parse(e.data));
+    // The Client ID obtained from the Google Developers Console. Replace with your own Client ID.
+    var clientId = "165043768486-h54df8d1s3id58p9c603q3cq90pe60it.apps.googleusercontent.com"
 
+    // Replace with your own App ID. (Its the first number in your Client ID)
+    var appId = "165043768486";
+
+    // Scope to use to access user's Drive items.
+    var scope = ['https://www.googleapis.com/auth/drive'];
+
+    var pickerApiLoaded = false;
+    var oauthToken;
+
+    // Use the Google API Loader script to load the google.picker script.
+    function loadPicker() {
+      gapi.load('auth', {'callback': onAuthApiLoad});
+      gapi.load('picker', {'callback': onPickerApiLoad});
+    }
+
+    function onAuthApiLoad() {
+      window.gapi.auth.authorize(
+          {
+            'client_id': clientId,
+            'scope': scope,
+            'immediate': false
+          },
+          handleAuthResult);
+    }
+
+    function onPickerApiLoad() {
+      pickerApiLoaded = true;
+      createPicker();
+    }
+
+    function handleAuthResult(authResult) {
+      if (authResult && !authResult.error) {
+        oauthToken = authResult.access_token;
+        createPicker();
       }
-      // test wolfram function
-      function testQueries(){
-          var arrayLength = queries.length;
-          for (var i = 0; i < arrayLength; i++) {
-              console.log("sending: ",queries[i]);
-              sendMessage(queries[i]);
-          }
+    }
+
+    // Create and render a Picker object for searching images.
+    function createPicker() {
+      if (pickerApiLoaded && oauthToken) {
+        var view = new google.picker.View(google.picker.ViewId.DOCS);
+        //view.setMimeTypes("image/png,image/jpeg,image/jpg");
+        var picker = new google.picker.PickerBuilder()
+            .enableFeature(google.picker.Feature.NAV_HIDDEN)
+            .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
+            .setAppId(appId)
+            .setOAuthToken(oauthToken)
+            .addView(view)
+            .addView(new google.picker.DocsUploadView())
+            .setDeveloperKey(developerKey)
+            .setCallback(pickerCallback)
+            .build();
+         picker.setVisible(true);
       }
-      function sendMessage(msg) {
-          waitForSocketConnection(websocket, function() {
-              websocket.send(msg);
-          });
-      };
-      function waitForSocketConnection(socket, callback){
-          setTimeout(
-              function(){
-                  if (socket.readyState === 1) {
-                      if(callback !== undefined){
-                          callback();
-                      }
-                      return;
-                  } else {
-                      waitForSocketConnection(socket,callback);
-                  }
-              }, 5);
-      };
-      function drawRow(rowData) {
-          var row = $("<tr />")
-          $("#query").append(row); //this will append tr element to table... keep its reference for a while since we will add cels into it
-          row.append($("<td align='left'>" + rowData.query + "</td>"));
-          row.append($("<td align='left'>" + rowData.api_type + "</td>"));
+    }
+
+    // A simple callback implementation.
+    function pickerCallback(data) {
+      if (data.action == google.picker.Action.PICKED) {
+        var fileId = data.docs[0].id;
+        alert('The user selected: ' + fileId);
       }
+    }
     </script>
-  </body>
-</html>
+
+    <div id="result"></div>
+
+    <!-- The Google API Loader script. -->
+    <script type="text/javascript" src="https://apis.google.com/js/api.js?onload=loadPicker"></script>
