@@ -53,8 +53,8 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
             f.close()
 
             print "wrote to file"
-            text = self.recognizer.recognize(outfilename)   # This should always return something                                                          
-            os.remove(outfilename)                          # an empty hyp [""] if nothing found 
+            text = self.recognizer.recognize(outfilename)   # This should always return something
+            os.remove(outfilename)                          # an empty hyp [""] if nothing found
 
             print text
             if text and (x != "" for x in text):
@@ -120,8 +120,8 @@ if __name__ == "__main__":
     # This line will connect to the website, read its contents
     # and parse the JSON output
 
-    data = loads(urlopen("http://httpbin.org/ip").read())
-    if "local" not in str(socket.gethostname()) and "ubuntu" not in str(socket.gethostname()) and str(data["origin"]) != "52.11.213.209":
+    data = loads(urlopen("http://httpbin.org/ip ").read())
+    if '172-31--10-207' in str(socket.gethostname()):   # If on AWS
 
         benny_ssl_options = {
             "certfile": os.path.join("/etc/nginx/ssl/benedictation_io/ssl-bundle.crt"),

@@ -6,9 +6,141 @@ var $inputIM = $("#js-input-im");
 var $chatBody = $("#js-chat-body");
 var $speechRecBody = $("#speech-rec-body");
 var localId = comm.getLocalID();
+var $bennySendButton = $("#benny-send-button-im");
+var $bennyInputIM = $("#benny-input-text");
 
 $sendButton.on('click', sendIM);
-$inputIM.on('keypress', checkEnterKey);
+$bennySendButton.on('click', sendMessage);
+
+// click the send button when enter key is pressed
+$inputIM.keydown(function (event) {
+    var keypressed = event.keyCode || event.which;
+    if (keypressed == 13) {
+        $sendButton.click();
+    }
+});
+
+$bennyInputIM.keydown(function (event) {
+    var keypressed = event.keyCode || event.which;
+    if (keypressed == 13) {
+        $bennySendButton.click();
+    }
+});
+
+
+
+// function checkEnterKey(event) {
+//     if (event.keyCode == 13) {
+//         $sendButton.click();
+//     }
+// }
+
+
+// Set up the WebSocket
+var myLocation = location.host.split(":")[0];
+var port = "8888";
+var uri = "/recognize_test";
+var websocketprotocol = "wss://";
+
+if (location.protocol !== "https:") {
+    websocketprotocol = "ws://";
+    myLocation = myLocation.split(":")[0];
+}
+
+var bennySocket = new WebSocket(websocketprotocol + myLocation + ":" + port + uri); // initialize
+
+
+
+function sendMessage() {
+  waitForSocketConnection(bennySocket, function() {
+      bennySocket.send($bennyInputIM.val());
+      $bennyInputIM.val("");
+  });
+};
+
+function waitForSocketConnection(socket, callback){
+  setTimeout(
+      function(){
+          if (socket.readyState === 1) {
+              if(callback !== undefined){
+                  callback();
+              }
+              return;
+          } else {
+              waitForSocketConnection(socket,callback);
+          }
+      }, 5);
+};
+
+
+bennySocket.onmessage = function(e) {
+    console.log("data from server: ", e.data);
+    // reset flags so that ctrl-b will work again
+    ready_to_record = 1;
+    recordSpeech.recording = 0;
+    count_b = 0;
+    if (e.data != "") {
+        try {
+            var url = (window.location.pathname).split("/");
+            var id = String(url[url.length - 2]);
+            var name = String(url[url.length - 1]);
+            var emails_key = name + ":" + id + ":emails";
+            var attendees_to_send = [];
+            $.ajax({
+                type: "GET",
+                url: "/get_redis",
+                dataType: "json",
+                data: {
+                    'redis_key': emails_key
+                },
+                success: function(emails) {
+                    if (emails.length != 0) {
+                        for (var i = 0; i < emails.length; i++) {
+                            attendees_to_send.push({
+                                email: emails[i]
+                            });
+                        }
+                    }
+                    var myData = JSON.parse(e.data);
+                    myData["attendees_array"] = attendees_to_send;
+                    $.ajax({
+                        type: "POST",
+                        url: "/check_api",
+                        data: {
+                            jsonData: JSON.stringify(myData)
+                        },
+                        success: function() {
+                            if (myData.api_type === 'wolfram') {
+                                // append wolfram api html reply to the json we are saving in redis (so we can click again)
+                                $.ajax({
+                                    type: "GET",
+                                    url: "/get_wolfram",
+                                    dataType: "json",
+                                    success: function(wolfram) {
+                                        // add wolfram html to the json object so we can save it later
+                                        myData['wolfram_html'] = wolfram['result'];
+                                        sendBennyReply(JSON.stringify(myData));
+                                    }
+                                });
+                            } else {
+                                sendBennyReply(e.data);
+                            }
+                        }
+                    });
+                }
+            });
+        } catch (e) {
+            console.log("data from server not JSON");
+        }
+    }
+    ready_to_record = 1;
+    recordSpeech.recording = 0;
+    count_b = 0;
+}
+
+
+
+
 // With Turbolinks pages will change without a full reload, so you can't rely on the usual window.beforepageunload event. Instead Turbolinks fires events on document to provide hooks into the lifecycle of the page.
 $(document).on("page:fetch", function() {
     console.log('turbolinks page fetch event');
@@ -84,12 +216,7 @@ function sendBennyReply(json_api_reply) {
     });
 
 }
-// click the send button when enter key is pressed
-function checkEnterKey(event) {
-    if (event.keyCode == 13) {
-        $sendButton.click();
-    }
-}
+
 
 function appendNewIM_text_only(message_string) {
     $chatBody.append(message_string);
@@ -203,7 +330,7 @@ function appendNewBennyReply(options) {
             query = truncation(json_murph.query, 40);
 
         }
-        
+
         var key_array = options.key.split(":");
         var key_array_slice = key_array.slice(0, 4);
         var key = key_array_slice.join(":");
