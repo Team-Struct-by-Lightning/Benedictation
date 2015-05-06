@@ -20,6 +20,8 @@ $inputIM.keydown(function (event) {
     }
 });
 
+var text_query_flag = 0;
+
 $bennyInputIM.keydown(function (event) {
     var keypressed = event.keyCode || event.which;
     if (keypressed == 13) {
@@ -28,6 +30,7 @@ $bennyInputIM.keydown(function (event) {
         $('.svg-box').hide();
         $('#progressbar').show();
         $('.progress-label').show();
+        text_query_flag = 1;
     }
 });
 
@@ -241,10 +244,6 @@ function appendNewBennyReply(options) {
     json_murph = JSON.parse(options.data);
     console.log(json_murph.api_type);
     var name = truncation(options.name, 14);
-    $('#progressbar').hide();
-    $('.progress-label').hide();
-    $('#record-query-button').show();
-    $('.svg-box').show();
 
     var query;
     if (json_murph.query) {
@@ -378,6 +377,12 @@ function appendNewBennyReply(options) {
         scrollTop: height
     }, 'fast');
 
+
+    $('#progressbar').hide();
+    $('.progress-label').hide();
+    $('#record-query-button').show();
+    $('.svg-box').show();
+    text_query_flag = 0;
 }
 
 // media object to append to the page each time there's a new chat
