@@ -23,7 +23,9 @@
     // Use the Google API Loader script to load the google.picker script.
     function loadPicker() {
       gapi.load('auth', {'callback': onAuthApiLoad});
+
       gapi.load('picker', {'callback': onPickerApiLoad});
+
     }
 
     function onAuthApiLoad() {
@@ -44,6 +46,13 @@
     function handleAuthResult(authResult) {
       if (authResult && !authResult.error) {
         oauthToken = authResult.access_token;
+        //gapi.client.setApiKey(appId); 
+        //gapi.client.load('drive', 'v2', makeRequest); 
+        gapi.load('client', function() { 
+          console.log('gapi.client loaded.');
+          gapi.client.load('drive', 'v2', makeRequests); 
+        });
+
         createPicker();
       }
     }
@@ -52,7 +61,7 @@
     function createPicker() {
       if (pickerApiLoaded && oauthToken) {
         var view = new google.picker.View(google.picker.ViewId.DOCS);
-        //view.setMimeTypes("image/png,image/jpeg,image/jpg");
+        view.setMimeTypes("image/png,image/jpeg,image/jpg");
         var picker = new google.picker.PickerBuilder()
             .enableFeature(google.picker.Feature.NAV_HIDDEN)
             .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
@@ -67,16 +76,51 @@
       }
     }
 
+    function makeRequest(fileId){
+      console.log("making a file request now");
+
+        var request = gapi.client.request({
+                'path': '/drive/v2/files',
+                'method': 'GET',
+                'params': {'fileId': fileId}
+                });
+
+        request.execute(function(resp) {
+        console.log(resp);
+        console.log("GOING HERE WITH FILE ID " + fileId);
+        console.log('Title: ' + resp['title']);
+        console.log('Description: ' + resp['kind']);
+        console.log('MIME type: ' + resp['mimeType']);
+      });
+    }
     // A simple callback implementation.
     function pickerCallback(data) {
       if (data.action == google.picker.Action.PICKED) {
         var fileId = data.docs[0].id;
-        alert('The user selected: ' + fileId);
+        makeRequest(fileId);
+        //alert('The user selected: ' + fileId);
+        //alert(data.docs[0].audience);
+        
+        /*request.execute(function(resp) {
+          console.log('Title: ' + resp.title);
+          console.log('Description: ' + resp.description);
+          console.log('MIME type: ' + resp.mimeType);
+        });*/
+
       }
     }
+
+
+
+
     </script>
 
     <div id="result"></div>
 
     <!-- The Google API Loader script. -->
     <script type="text/javascript" src="https://apis.google.com/js/api.js?onload=loadPicker"></script>
+
+
+
+
+

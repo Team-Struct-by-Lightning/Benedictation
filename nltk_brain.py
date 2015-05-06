@@ -60,6 +60,7 @@ def interpret(sentences):
 				text = '{"api_type": "google", \
 			 		"query": "' + words + '"}'
 				return text
+				
 			sentence = oclock_remover(sentence)
 
 			tree = parser.parse(sentence)
