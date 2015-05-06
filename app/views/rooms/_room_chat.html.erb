@@ -24,16 +24,13 @@ $bennyInputIM.keydown(function (event) {
     var keypressed = event.keyCode || event.which;
     if (keypressed == 13) {
         $bennySendButton.click();
+        $('#record-query-button').hide();
+        $('.svg-box').hide();
+        $('#progressbar').show();
+        $('.progress-label').show();
     }
 });
 
-
-
-// function checkEnterKey(event) {
-//     if (event.keyCode == 13) {
-//         $sendButton.click();
-//     }
-// }
 
 
 // Set up the WebSocket
