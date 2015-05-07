@@ -1,5 +1,125 @@
+ <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>Google Picker Example</title>
+
+    <script type="text/javascript">
+    // The Browser API key obtained from the Google Developers Console.
+    // Replace with your own Browser API key, or your own key.
+    var developerKey = 'AIzaSyD9JtT_kVZ0S0vKsskgxrK_WtIE1G7FAjY';
+    // The Client ID obtained from the Google Developers Console. Replace with your own Client ID.
+    var clientId = "165043768486-h54df8d1s3id58p9c603q3cq90pe60it.apps.googleusercontent.com"
+    // Replace with your own App ID. (Its the first number in your Client ID)
+    var appId = "165043768486";
+    // Scope to use to access user's Drive items.
+    var scope = ['https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/drive.file',
+    'https://www.googleapis.com/auth/drive.appdata', 'https://www.googleapis.com/auth/drive.apps.readonly'];
+    var pickerApiLoaded = false;
+    var oauthToken;
+    // Use the Google API Loader script to load the google.picker script.
+    function loadPicker() {
+      gapi.load('auth', {'callback': onAuthApiLoad});
+      gapi.load('picker', {'callback': onPickerApiLoad});
+    }
+    function httpGet(theUrl)
+    {
+      var xmlHttp = new XMLHttpRequest();
+      xmlHttp.open( "GET", theUrl, false );
+      xmlHttp.send( null );
+      return xmlHttp.responseText;
+    }
+    function onAuthApiLoad() {
+      window.gapi.auth.authorize(
+          {
+            'client_id': clientId,
+            'scope': scope,
+            'immediate': false
+          },
+          handleAuthResult);
+    }
+    function onPickerApiLoad() {
+      pickerApiLoaded = true;
+      createPicker();
+    }
+    function handleAuthResult(authResult) {
+      if (authResult && !authResult.error) {
+        oauthToken = authResult.access_token;
+        //gapi.client.setApiKey(appId); 
+        //gapi.client.load('drive', 'v2', makeRequest); 
+        gapi.load('client', function() { 
+          console.log('gapi.client loaded.');
+          gapi.client.load('drive', 'v2', makeRequests); 
+        });
+        createPicker();
+      }
+    }
+    // Create and render a Picker object for searching images.
+    function createPicker() {
+      if (pickerApiLoaded && oauthToken) {
+        var view = new google.picker.View(google.picker.ViewId.DOCS);
+        view.setMimeTypes("image/png,image/jpeg,image/jpg");
+        var picker = new google.picker.PickerBuilder()
+            .enableFeature(google.picker.Feature.NAV_HIDDEN)
+            .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
+            .setAppId(appId)
+            .setOAuthToken(oauthToken)
+            .addView(view)
+            .addView(new google.picker.DocsUploadView())
+            .setDeveloperKey(developerKey)
+            .setCallback(pickerCallback)
+            .build();
+         picker.setVisible(true);
+      }
+    }
+    function makeRequest(fileId){
+      console.log("making a file request now");
+      //response = httpGet('https://www.googleapis.com/drive/v2/files/'+ fileId +'?key='+developerKey);
+      
+      var request = gapi.client.request({
+        'path': '/drive/v2/files',
+        'method': 'POST',
+        'body':{
+            "title" : "0000000",
+            "mimeType" : "application/vnd.google-apps.document",
+            "description" : "finally"
+         }
+     });
+
+      request.execute(function(resp) { console.log(resp); });
+
+      //console.log(response);
+        /*
+        request.execute(function(resp) {
+          console.log(fileId);
+          console.log(resp);
+          console.log('Title: ' + resp.title);
+          console.log('Description: ' + resp.description);
+          console.log('MIME type: ' + resp.mimeType);
+        });
+          */
+        //var request = gapi.client.drive.files.touch({
+        //  'fileId': 150295810925809
+        //});
+        //request.execute(function(resp) { });
+    }
+    // A simple callback implementation.
+    function pickerCallback(data) {
+      if (data.action == google.picker.Action.PICKED) {
+        var fileId = data.docs[0].id;
+        makeRequest(fileId);
+        //alert('The user selected: ' + fileId);
+        //alert(data.docs[0].audience);
+        
+        /*request.execute(function(resp) {
+          console.log('Title: ' + resp.title);
+          console.log('Description: ' + resp.description);
+          console.log('MIME type: ' + resp.mimeType);
+        });*/
+      }
+    }
+    </script>
+
+    <div id="result"></div>
+
+    <!-- The Google API Loader script. -->
+    <script type="text/javascript" src="https://apis.google.com/js/api.js?onload=loadPicker"></script>
 
 
-<!--<div id="examplePadBasic" style = "margin-left:250px; margin-right:250px;"></div> -->
-<iframe src= "https://docs.google.com/document/d/14tdJDE09q8-l7loXXve1auCa8XJasWI9ZZWXG77orbE/edit"
-style = "margin-top:60px;width:800px; height:800px;"> </iframe>
