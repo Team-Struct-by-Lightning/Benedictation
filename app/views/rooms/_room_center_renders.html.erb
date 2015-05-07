@@ -129,10 +129,10 @@ function clickable(me) {
                       event.preventDefault();
                     });
                 }
-                else if(api_type == 'docs'){
+                else if(api_type == 'google_docs'){
                   $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id +'>' +
-                      '  <div class="calendar-border"> <h1 class="calendar-title">' + user_name_title + '</h1> <a class="glyphicon glyphicon-remove" id="remove_item_id"></a>' +
-                      '<iframe class="calendar-frame" src='https://docs.google.com/document/d/14tdJDE09q8-l7loXXve1auCa8XJasWI9ZZWXG77orbE/edit' style=" border-width:0 " width="800" height="600" frameborder="0" scrolling="no"></iframe></div>' +
+                      '  <div class="calendar-border"> <h1 class="calendar-title">' + user_name +'\s Google Document</h1> <a class="glyphicon glyphicon-remove" id="remove_item_id"></a>' +
+                      '<iframe class="calendar-frame" src="https://docs.google.com/document/d/14tdJDE09q8-l7loXXve1auCa8XJasWI9ZZWXG77orbE/edit" style=" border-width:0 " width="800" height="600" frameborder="0" scrolling="no"></iframe></div>' +
                                               '</div>');
                 }
              }

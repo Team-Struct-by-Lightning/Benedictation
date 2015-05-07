@@ -222,7 +222,24 @@ function appendNewBennyReply(options) {
 
 
     }
-    else if (json_murph.api_type == 'docs' || json_murph.api_type == 'docs_show'){
+    else if (json_murph.api_type == 'google_docs' || json_murph.api_type == 'docs_show'){
+        <% image_name = "google_docs.png" %>
+        console.log("trying to open it up");
+        var key_array = options.key.split(":");
+        var key_array_slice = key_array.slice(0, 4);
+        var key = key_array_slice.join(":");
+        var benny_item_id = "benny" + key;
+        var benny_item_link_id = "benny_query" + key;
+        var parameter = 'clickable("' + options.key + '")';
+
+
+        $('.benny-list-body').addClass('benny-list-body-func');
+        $('.benny-list-body').append('<div class="benny-item benny-google" id=' + benny_item_id +'>' +
+                            '<%= image_tag("#{image_name}", class: "favicon", id:"google-fav") %>' +
+                            '<a class="name-and-summary-calendar">' + name + '</a>' +
+                            '<a class="benny-link" onclick=' + parameter + ' id=' +
+                            benny_item_link_id + '> View the new document </a>' +
+                            '</div>');
 
     }
     else if (json_murph.api_type == 'No Result') {
