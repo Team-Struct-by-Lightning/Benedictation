@@ -252,10 +252,14 @@ function appendNewBennyReply(options) {
         query = query.split(" \u0027").join("'")
     }
 
-    if (json_murph.api_type != 'Blank Query') {
-        benny_note_number = benny_note_number + 1;
-        $('#benny-help-temp').remove();
-    }
+    // if (json_murph.api_type != 'Blank Query') {
+    //     benny_note_number = benny_note_number + 1;
+    //     $('#benny-help-temp').remove();
+    // }
+
+    benny_note_number = benny_note_number + 1;
+    $('#benny-help-temp').remove();
+
     if (json_murph.api_type == 'calendar' || json_murph.api_type == 'calendar_show'){
 
         <% image_name = "googz.ico" %>
@@ -264,8 +268,9 @@ function appendNewBennyReply(options) {
             summary = "No summary."
         }
         else {
-            summary = truncation(json_murph.summary, 40);
-
+            if (json_murph.api_type != 'calendar_show') {
+                summary = truncation(json_murph.summary, 40);
+            }
         }
         var key_array = options.key.split(":");
         var key_array_slice = key_array.slice(0, 4);
@@ -348,7 +353,7 @@ function appendNewBennyReply(options) {
     else if (json_murph.api_type == 'docs' || json_murph.api_type == 'docs_show'){
 
     }
-    else if (json_murph.api_type == 'No Result') {
+    else if (json_murph.api_type == 'No Result' || json_murph.api_type == 'Blank Query') {
 
         $('.benny-list-body').append('<div class="benny-item benny-no-result" id=' + benny_item_id +'>' +
                         '<a class="glyphicon glyphicon-question-sign" id="benny-query-question-mark" onmouseover="hoverHelp()"></a>' +
