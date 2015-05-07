@@ -1,4 +1,5 @@
 class StaticPagesController < ApplicationController
+  require 'etherpad-lite'
 
   def home
     if logged_in?
