@@ -65,16 +65,16 @@ module RoomsHelper
 			puts "We will do a google search"
 			json_hash #return unmodified json hash
 		when 'calendar'
-			logger.info "We will access the calendar api!"
+			logger.error "We will access the calendar api!"
 			json_event = calendar_json(json_hash)
 			create_calendar_event(json_event)
 			json_hash #return unmodified json hash
 		when 'calendar_show'
-			puts "We will show the calendar"
+			logger.error "We will show the calendar"
 			#json_event = calendar_show_json(json_hash)
 			json_hash #return unmodified json hash 
 		when 'schedule_suggest'
-			logger.info 'We will find a time that works'
+			logger.error 'We will find a time that works'
 			json_event = schedule_json(json_hash)
 			json_hash # return unmodified json hash (for now, EVAN edit this)
 		when 'google_docs'
@@ -123,7 +123,6 @@ module RoomsHelper
 		end
 		json_hash
 	end
-
 
 	def query_wikipedia(json_hash)
 		query_string = json_hash['noun_phrase'].to_s

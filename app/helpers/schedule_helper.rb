@@ -1,8 +1,9 @@
 module ScheduleHelper
+	require 'json'
 	require 'google/api_client'
 	require 'date'
 
-	GoogleAPIKeys = YAML.load_file("#{::Rails.root}/config/google.yml")[::Rails.env]	
+	GoogleAPIKeys = YAML.load_file("#{::Rails.root}/config/google.yml")[::Rails.env]
 
 	def calendar_json(json_hash)
 		attendee_array = []
@@ -26,21 +27,22 @@ module ScheduleHelper
 					'timeZone' => json_hash['end']['timezone']
 				},
 				'attendees' => attendee_array
-			}
+		}
 	end
 
 	def schedule_json(json_hash)
-		get_user_available_times(json_hash['start']['datetime'],json_hash['end']['datetime'])
+		user_availability = get_user_availability(json_hash['start']['datetime'],json_hash['end']['datetime'])
+		start_range = DateTime.parse(json_hash['start']['datetime'])
+		return available_times_json(user_availability, start_range)
 	end 
 
-	def get_user_available_times(start_str, end_str)
+	def get_user_availability(start_str, end_str)
 		logger.error "=== In get_available_times ==="
 
-		time_resolution = 30.minutes	# this is a cool Rails thingß
-		lower_bound = 8	
+		time_resolution = 30.minutes	# this is a cool Rails thing
+		lower_bound = 8
 		upper_bound = 17
-		tz_offset	= "-0700"
-
+		tz_offset = "-0700"
 
 		client = Google::APIClient.new
 		client.authorization.client_id = GoogleAPIKeys["app_id"]
@@ -93,9 +95,37 @@ module ScheduleHelper
 				day_index += 1	
 			end	
 		end	
-		#logger.error userAvailabilityArray	
 		return userAvailabilityArray
 	end
+
+	# Create a JSON object representing the times the current user is available, for display purposes
+	# This involves converting array indices *back* to datetimes, the reverse of the above.
+	# If anyone thinks of a more efficient way let me know
+	def available_times_json(availabilityArray, start_range)
+		available_times = []
+		flag = false
+		start_time = start_range
+		end_time   = start_range
+		availabilityArray.each_with_index do |day, day_index|
+			day.each_with_index do |free, time_index|
+				if free and not flag
+					start_time = (start_range + day_index) + (30*time_index).minutes
+					flag = true
+				end
+				if flag and time_index == 17	# cut off at the end of day
+					end_time = (start_range + day_index) + (30*(time_index+1)).minutes
+					flag = false
+					available_times.append({"start" => start_time, "end" => end_time})
+				end
+				if not free and flag
+					end_time = (start_range + day_index) + (30*time_index).minutes
+					flag = false
+					available_times.append({"start" => start_time, "end" => end_time})
+				end
+			end
+		end
+		return available_times.to_json
+	end	
 
 	def create_calendar_event(json)
 		client = Google::APIClient.new
