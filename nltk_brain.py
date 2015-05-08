@@ -203,10 +203,10 @@ def schedule_suggest(cal_parse, words):
 	if cal_parse[1] == 0:		# No date or time
 		if "this week" in words:
 			starttime = datetime.today()
-			endtime = starttime + relativedelta(weekday=FR, hour=17)
+			endtime = starttime + relativedelta(weekday=FR, hour=17, minute=0, second=0)
 		elif "this month" in words:
 			starttime = datetime.today()
-			endtime = starttime + relativedelta(day=31, weekday=FR(-1), hour=17)	# Last Friday of the month.
+			endtime = starttime + relativedelta(day=31, weekday=FR(-1), hour=17, minute=0, second=0)	# Last Friday of the month.
 		else:	# Default to finding a time today.
 			starttime = datetime.today()
 			endtime = starttime + relativedelta(hour=17, minute=0, second=0)
