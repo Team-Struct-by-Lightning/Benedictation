@@ -13,9 +13,12 @@ include RoomsHelper
   	render nothing: true
   end
 
-  def get_wolfram
+  # this function returns a json object containing the wolfram/wiki html to put in the div, and the augmented api type
+  # calculated in rooms_helper wolfram and wiki query methods
+  def get_api_html
     hash = {}
-    hash['result'] = $redis.get("wolfram_html").to_s
+    hash['result'] = $redis.get("api_html").to_s
+    hash['real_api_type'] = $redis.get("real_api_type")
     render :json => hash
   end
 

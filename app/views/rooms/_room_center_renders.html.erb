@@ -93,7 +93,7 @@ function clickable(me) {
                   }
                   else if (api_type == 'wolfram'){
                     var render_item_id = "render" + div_id;
-                    wolfram_html = item['wolfram_html'];
+                    api_html = item['api_html'];
                     var query =  item['query'];
                     query = query.split(" '").join("'");
                     query = query.split(" \u0027").join("'");
@@ -104,7 +104,7 @@ function clickable(me) {
                             ' top="11" left="-3" frameborder="0"></iframe></div>' +'</div>'
 
                     $('.room-layout-table').append(wolframdiv);
-                    var blah = '<style>{content:url("http://www.wolframalpha.com/compress/css/Alpha-201504231127-concatenated-min.css");}</style>'
+                    var blah = '<style>{content:url("//www.wolframalpha.com/compress/css/Alpha-201504231127-concatenated-min.css");}</style>'
                     $('#wolfram-iframe').contents().find('html').html(wolfram_html);
                     $('#wolfram-iframe').contents().find('body').prepend('<form action="#"><fieldset id="input" class="wolfram-text-box"' +
                       ' style="position: relative;margin-bottom: 48px;margin-top: 10px;"><input id="i" name="i" maxlength="200"' +

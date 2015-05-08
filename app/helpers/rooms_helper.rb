@@ -177,22 +177,39 @@ module RoomsHelper
 		puts "&&&&&&&&&&&&&&&&: " + query_string
 		app_id = WolframAPIKey["app_id"]
 		wolfram_url = URI.parse("http://api.wolframalpha.com/v2/query?appid=P3P4W5-LGWA2A3RU2&input=" + URI.encode(query_string.strip) + "&format=html,image").to_s
+
 		puts "@@@@@@@@@@@@wolfram url: " + wolfram_url
 		doc = Nokogiri::XML(open(wolfram_url))
-		markups = []
-		doc.xpath("//markup").each do |markup|
-			markups << markup.text
+		# check to see if the freakin pods exist in the wolfram. if yes, then make 
+		# JSON object out of wolfram_html, but add the attribute "valid: yes/no" 
+
+		# <queryresult success='false' OR # <pod title='Definition' means we should do wiki instead of wolfram
+		api_html = ""
+		real_api_type = ""
+		if xml.xpath("//queryresult").attr("success").to_s or xml.xpath('//*[@title="Definition"]').length == 0
+			# get wiki hash
+			real_api_type = "wikipedia"
+			wikihash = query_wikipedia(json_hash)
+			# return relevant html for wiki somehow by setting api_html in redis to the right stuff
 		end
+		# otherwise the api type is definitely wolfram
+		else
+			# grab the wolfram html
+			real_api_type = "wolfram"
+			markups = []
+			doc.xpath("//markup").each do |markup|
+				markups << markup.text
+			end
 
-		wolfram_html = markups.join.to_s.split('"').join("'")
-		wolfram_html = wolfram_html.split("\n").join()
-		puts "@@@@@@@@@@@@@@@@@@@html" + wolfram_html
-		
-
-		$redis.set("wolfram_html",wolfram_html.to_s)
-
-
-
+			api_html = markups.join.to_s.split('"').join("'")
+			api_html = wolfram_html.split("\n").join()
+			api_html.gsub! 'http://',''
+		end
+		puts "@@@@@@@@@@@@@@@@@@@html" + api_html
+		puts "@@@@@@@@@@@@@@@@@@@real_api_type" + real_api_type
+		# store wolfram or wiki api_html in redis
+		$redis.set("api_html",api_html.to_s)
+		$redis.set("real_api_type", real_api_type)
 	end
 
 

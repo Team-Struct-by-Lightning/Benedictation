@@ -21,7 +21,7 @@ Rails.application.routes.draw do
   get '/get_redis_item' => "groups#get_redis_item"
   get '/get_redis_length' => "groups#get_redis_length"
   post '/clear_redis_item' => "groups#clear_redis_item"
-  get '/get_wolfram' => "rooms#get_wolfram"
+  get '/get_api_html' => "rooms#get_api_html"
 
   resources :sessions, only: [:create, :destroy]
   resource :home, only: [:show]

@@ -114,11 +114,13 @@ bennySocket.onmessage = function(e) {
                                 // append wolfram api html reply to the json we are saving in redis (so we can click again)
                                 $.ajax({
                                     type: "GET",
-                                    url: "/get_wolfram",
+                                    url: "/get_api_html",
                                     dataType: "json",
-                                    success: function(wolfram) {
+                                    success: function(api) {
                                         // add wolfram html to the json object so we can save it later
-                                        myData['wolfram_html'] = wolfram['result'];
+                                        myData['api_html'] = api['result'];
+                                        console.log("real api type: ",myData['api_type']);
+                                        myData['api_type'] = api['real_api_type'];
                                         sendBennyReply(JSON.stringify(myData));
                                     }
                                 });
@@ -204,7 +206,6 @@ function sendBennyReply(json_api_reply) {
                     }
                 });
                 if (json_api_reply['api_type'] != "No Result" && json_api_reply['api_type'] != "Blank Query") {
-                    console.log("saving this json to redis: ", json_api_reply)
                     appendNewBennyReply({
                         name: "<%= current_user.name %>",
                         data: json_api_reply,
@@ -344,6 +345,9 @@ function appendNewBennyReply(options) {
                             '</div>');
 
 
+    }
+    else if(json_murph.api_type == 'wikipedia'){
+        console.log("woooo, wolfram to wikipedia transition worked!");
     }
     else if (json_murph.api_type == 'docs' || json_murph.api_type == 'docs_show'){
 
