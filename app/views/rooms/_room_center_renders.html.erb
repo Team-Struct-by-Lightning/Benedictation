@@ -130,10 +130,55 @@ function clickable(me) {
                     });
                 }
                 else if(api_type == 'google_docs'){
-                  $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id +'>' +
-                      '  <div class="calendar-border"> <h1 class="calendar-title">' + user_name +'\s Google Document</h1> <a class="glyphicon glyphicon-remove" id="remove_item_id"></a>' +
-                      '<iframe class="calendar-frame" src="https://docs.google.com/document/d/14tdJDE09q8-l7loXXve1auCa8XJasWI9ZZWXG77orbE/edit" style=" border-width:0 " width="800" height="600" frameborder="0" scrolling="no"></iframe></div>' +
-                                              '</div>');
+                  var developerKey = 'AIzaSyD9JtT_kVZ0S0vKsskgxrK_WtIE1G7FAjY';
+                  var clientId = "165043768486-h54df8d1s3id58p9c603q3cq90pe60it.apps.googleusercontent.com"
+                  var scope = ['https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/drive.file',
+    'https://www.googleapis.com/auth/drive.appdata', 'https://www.googleapis.com/auth/drive.apps.readonly'];
+
+                  gapi.load('auth', {'callback': onAuthApiLoad});
+                  function onAuthApiLoad() {
+                    window.gapi.auth.authorize(
+                        {
+                          'client_id': clientId,
+                          'scope': scope,
+                          'immediate': false
+                        },
+                        handleAuthResult);
+                  }
+                  function handleAuthResult(authResult) {
+                    if (authResult && !authResult.error) {
+                      oauthToken = authResult.access_token; 
+                      gapi.load('client', function() { 
+                        gapi.client.load('drive', 'v2', makeRequest); 
+                      });
+                    }
+                  }
+                  function makeRequest(){
+                    console.log("making a file request now");
+                    
+                    var request = gapi.client.request({
+                      'path': '/drive/v2/files',
+                      'method': 'POST',
+                      'body':{
+                          "title" : user_name,
+                          "mimeType" : "application/vnd.google-apps.document",
+                          "description" : "Document created by Benedict"
+                       }
+                   });
+
+                    request.execute(function(resp) { 
+                      console.log(resp.alternateLink);
+                      var document_link = resp.alternateLink;
+                      $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id +'>' +
+                  '  <div class="calendar-border"> <h1 class="calendar-title">' + user_name +'\s Google Document</h1> <a class="glyphicon glyphicon-remove" id="remove_item_id"></a>' +
+                  '<iframe class="calendar-frame" src=' + document_link + ' style=" border-width:0 " width="800" height="600" frameborder="0" scrolling="no"></iframe></div>' +
+                                          '</div>');
+                    });
+
+                  }
+                  
+                  
+
                 }
              }
          });

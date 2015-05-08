@@ -45,10 +45,10 @@
         //gapi.client.setApiKey(appId); 
         //gapi.client.load('drive', 'v2', makeRequest); 
         gapi.load('client', function() { 
-          console.log('gapi.client loaded.');
-          gapi.client.load('drive', 'v2', makeRequests); 
+          //console.log('gapi.client loaded.');
+          gapi.client.load('drive', 'v2', makeRequest); 
         });
-        createPicker();
+        //createPicker();
       }
     }
     // Create and render a Picker object for searching images.
@@ -69,7 +69,7 @@
          picker.setVisible(true);
       }
     }
-    function makeRequest(fileId){
+    function makeRequest(){
       console.log("making a file request now");
       //response = httpGet('https://www.googleapis.com/drive/v2/files/'+ fileId +'?key='+developerKey);
       
@@ -85,17 +85,6 @@
 
       request.execute(function(resp) { console.log(resp); });
 
-      //console.log(response);
-        /*
-        request.execute(function(resp) {
-          console.log(fileId);
-          console.log(resp);
-          console.log('Title: ' + resp.title);
-          console.log('Description: ' + resp.description);
-          console.log('MIME type: ' + resp.mimeType);
-        });
-          */
-        //var request = gapi.client.drive.files.touch({
         //  'fileId': 150295810925809
         //});
         //request.execute(function(resp) { });
