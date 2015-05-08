@@ -212,6 +212,7 @@ function sendBennyReply(json_api_reply) {
                         key: key_user_id_and_index,
                         callerID: "<%= current_user.name %>"
                     });
+                    console.log("I'm about to call appendNewBennyReply");
                 }
             }
     });
@@ -243,7 +244,7 @@ function appendNewBennyReply(options) {
     <% image_name = "" %>
 
     json_murph = JSON.parse(options.data);
-    console.log(json_murph.api_type);
+    console.log("json_murph api type: ",json_murph.api_type);
     var name = truncation(options.name, 14);
 
     var query;

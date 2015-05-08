@@ -104,8 +104,8 @@ function clickable(me) {
                             ' top="11" left="-3" frameborder="0"></iframe></div>' +'</div>'
 
                     $('.room-layout-table').append(wolframdiv);
-                    var blah = '<style>{content:url("//www.wolframalpha.com/compress/css/Alpha-201504231127-concatenated-min.css");}</style>'
-                    $('#wolfram-iframe').contents().find('html').html(wolfram_html);
+                    var blah = '<style>{content:url("http://www.wolframalpha.com/compress/css/Alpha-201504231127-concatenated-min.css");}</style>'
+                    $('#wolfram-iframe').contents().find('html').html(api_html);
                     $('#wolfram-iframe').contents().find('body').prepend('<form action="#"><fieldset id="input" class="wolfram-text-box"' +
                       ' style="position: relative;margin-bottom: 48px;margin-top: 10px;"><input id="i" name="i" maxlength="200"' +
                       ' type="text" autocomplete="off" value="' + query +'" class=""><input id="dataset-input" name="dataset" ' +
