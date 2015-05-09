@@ -1,0 +1,107 @@
+<!-- ROOM RIGHT HAND SIDEBAR -->
+
+   <div id="benedict-sidebar-wrapper">
+      <ul class="benedict-sidebar-nav">
+         <li class="sidebar-brand">
+            <!--<a style="color:red;font-size:20px; font-weight: bold;" id="loading"></a>-->
+         </li>
+      </ul>
+
+
+
+      <!-- CHAT BODY -->
+
+
+      <div id='chat-body' valign='top'>
+         <div class='panel panel-primary' id="chat-box">
+            <div class='panel-heading' id="chat-heading">
+               <a class="chat-header">Chat</a>
+               <a class ="glyphicon glyphicon-chevron-down" id = "minimize-chat-down" href = "javascript:minimize('#js-chat-body','#minimize-chat-down', '#minimize-chat-right');"></a>
+               <a class ="glyphicon glyphicon-chevron-right" id = "minimize-chat-right" href = "javascript:minimize('#js-chat-body','#minimize-chat-right', '#minimize-chat-down');"></a>
+            </div>
+            <div class='panel-body' id='js-chat-body'></div>
+         </div>
+         <div class='input-group' id="chat-location">
+            <input class='form-control' id='js-input-im' placeholder="Send a message">
+            <span class='input-group-btn'>
+            <button class='btn btn-primary' id='js-send-button-im'>
+            </button>
+            </span>
+         </div>
+
+        <!-- SPEAK TO BENEDICT BOX -->
+
+
+         <div class='panel-heading' id="mic-header">
+          <a class="mic-header-text"> Speak to Benedict </a>
+               <a class ="glyphicon glyphicon-chevron-down" id = "minimize-mic-down" href = "javascript:minimize('#microphone-spot', '#minimize-mic-down', '#minimize-mic-right');"> </a>
+               <a class ="glyphicon glyphicon-chevron-right" id = "minimize-mic-right" href = "javascript:minimize('#microphone-spot', '#minimize-mic-right', '#minimize-mic-down');"> </a>
+         </div>
+         <div id="microphone-spot">
+          <div class="svg-box">
+          <%= image_tag("black-mic-svg.svg", id: "mic-glyph") %>
+        </div>
+          <button class="btn btn-primary" id="record-query-button">Click to record</button>
+          <button class="btn btn-primary" id="stop-query-button">Click to stop</button>
+          <div id = "progressbar"><div class = "progress-label">Loading...</div></div>
+          <%= image_tag("red-mic-pic.png", class: "record-button", id: "red-flash-button", align: "left") %>
+        </div>
+
+
+        <!-- TYPE TO BENEDICT TEXT BOX -->
+
+
+        <div class="input-group" id="chat-location">
+            <input class="form-control" id="benny-input-text" placeholder="Type to Benedict" style="
+            margin-top: 4px;
+            posiiton: relative;
+            left: 0px;">
+            <span class="input-group-btn">
+            <button class="btn btn-primary" id="benny-send-button-im">
+            </button>
+            </span>
+        </div>
+
+
+        <!-- BENNY QUERY DISPLAY BOX -->
+
+
+         <div id = "benedict-list">
+            <div class='panel-heading' id="benedict-query-header">
+               <div "notification">
+                 <p class="notification-number">
+                 </p>
+               </div>
+               <a class="benedict-query-header-text"> Benedict Queries </a>
+               <a class ="glyphicon glyphicon-chevron-down" id = "minimize-query-down" href = "javascript:minimize('.benny-list-body', '#minimize-query-down', '#minimize-query-right');"> </a>
+               <a class ="glyphicon glyphicon-chevron-right" id = "minimize-query-right" href = "javascript:minimize('.benny-list-body', '#minimize-query-right', '#minimize-query-down');"> </a>
+            </div>
+            <div class="benny-list-body">
+               <div class="benny-item" id="benny-help-temp">
+                  <%= image_tag("favicon.ico", class: "favicon", id: "lightning-favicon", align: "left") %>
+                  <a class="benny-query" id="benny-temp-message">To query Benedict, click and hold the button above, and ask Benedict your question. For suggested queries, click  <a class="popup-link" id="help-in-query" href="#help-room-popup">here</a></a>
+                  </div>
+                  <!--<div class= "benny-item">
+                  <%= image_tag("wolfram.jpg", class: "favicon") %>
+                  <a class="benny-query">What is the square root of 100?</a>
+                  </div>
+                  <div class= "benny-item">
+                  <%= image_tag("wikipedia.ico", class: "favicon") %>
+                  <a class="benny-query">What's a dog?</a>
+                  </div> -->
+              <%= render 'rooms/room_center_renders' %>
+            </div>
+         </div>
+         <!--<div id='speech-rec' >
+            <div class='panel panel-primary'>
+                                    <div class='panel-heading'>
+                                                                Speech Recognition
+                                    </div>
+                                    <div class='panel-body' id='speech-rec-body'></div>
+            </div>
+            </div>
+            -->
+      </div>
+   </div>
+   <!-- Page Content -->
+</div>
