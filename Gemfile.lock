@@ -58,8 +58,6 @@ GEM
     daemon_controller (1.2.0)
     debug_inspector (0.0.2)
     erubis (2.7.0)
-    etherpad-lite (0.3.0)
-      rest-client (>= 1.6)
     execjs (2.5.2)
     extlib (0.9.16)
     faraday (0.9.1)
@@ -231,7 +229,6 @@ PLATFORMS
 DEPENDENCIES
   bootstrap-sass (= 3.2.0.0)
   coffee-rails (= 4.1.0)
-  etherpad-lite
   google-api-client
   htmlentities (~> 4.3.3)
   jbuilder (= 2.2.3)

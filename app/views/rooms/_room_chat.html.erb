@@ -49,6 +49,9 @@ function sendBennyReply(json_api_reply) {
     var id = String(url[url.length - 2]);
     var name = String(url[url.length - 1])
     var key = name + ":" + id + ":bennyhistory";
+
+    console.log("now gonna push it to redis");
+    
     $.ajax({
            type: "GET",
            url: "/get_redis_length",
@@ -63,6 +66,8 @@ function sendBennyReply(json_api_reply) {
                 var new_name = name_arr.join(":");
                 var key_user_id_and_index =  String(len) + ":" + name + ":" + id + ":bennyhistory:" +"<%= current_user.email %>" + ":" + new_name;
                 console.log("key_user_id_and_index: ",key_user_id_and_index);
+
+
                 $.ajax({
                     type: "POST",
                     url: "/update_redis",
@@ -224,7 +229,7 @@ function appendNewBennyReply(options) {
     }
     else if (json_murph.api_type == 'google_docs' || json_murph.api_type == 'docs_show'){
         <% image_name = "google_docs.png" %>
-        console.log("trying to open it up");
+
         var key_array = options.key.split(":");
         var key_array_slice = key_array.slice(0, 4);
         var key = key_array_slice.join(":");
