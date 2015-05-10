@@ -1,11 +1,18 @@
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////====CHAT====////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
+
+//variables for the chat box
 var $sendButton = $("#js-send-button-im");
 var $inputIM = $("#js-input-im");
 var $chatBody = $("#js-chat-body");
+
+
 var $speechRecBody = $("#speech-rec-body");
 var localId = comm.getLocalID();
+
+
+
 var $bennySendButton = $("#benny-send-button-im");
 var $bennyInputIM = $("#benny-input-text");
 
@@ -409,7 +416,9 @@ function mediaObjectIM(user, uid, token, message) {
     });
 }
 
-
+// this is a function to mirror the ruby truncate
+// function so that queries do not overflow the benny
+// query divs
 function truncation(string, len){
     if (string.length > len + 3){
         var new_string;
@@ -426,6 +435,8 @@ function truncation(string, len){
     }
 }
 
+// this is a function that lights up the question mark in
+// the blank and no query divs
 function hoverHelp(){
     $('#help-icon2').css('color', '#FFFFFF');
     $("#benny-query-question-mark").hover( function(){
@@ -435,10 +446,13 @@ function hoverHelp(){
         });
 }
 
-
+// This is the interval that checks whether or not benny
+// notifications need to be hidden
 var benny_notification_interval = setInterval(bennyNotificationNumber, 300);
 
-
+// this is the function that is called by the interval
+// that actually does the hiding of the benny notification
+// number
 function bennyNotificationNumber(){
     if (benny_note_number <= 0 ) {
          $('.notification-number').hide();
