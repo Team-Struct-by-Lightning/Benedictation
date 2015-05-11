@@ -197,11 +197,7 @@ function clickable(me) {
                     // adds the word render to the unique id of the div based on
                     // the info stored in its redis key
                     var render_item_id = "render" + div_id;
-
-                    // this is the raw html from the wolfram api
-                    wolfram_html = item['wolfram_html'];
-
-                    // the query in string form
+                    api_html = item['api_html'];
                     var query =  item['query'];
 
                     // these two lines makes sure the space added before the apostrophes
@@ -219,14 +215,8 @@ function clickable(me) {
                     // appends the wolframdiv to the room layout table.
                     // this makes it appear in the center of the page
                     $('.room-layout-table').append(wolframdiv);
-
-
-                    // appends the raw wolfram html to the iframe
-                    // notice this is the syntax we use and will have to use throughout
-                    // in order to change the contents of an iframe after instantiation
-                    $('#wolfram-iframe').contents().find('html').html(wolfram_html);
-
-                    // this prepends the text box to the body of the iframe (whose text we highjack *teehee*)
+                    var blah = '<style>{content:url("http://www.wolframalpha.com/compress/css/Alpha-201504231127-concatenated-min.css");}</style>'
+                    $('#wolfram-iframe').contents().find('html').html(api_html);
                     $('#wolfram-iframe').contents().find('body').prepend('<form action="#"><fieldset id="input" class="wolfram-text-box"' +
                       ' style="position: relative;margin-bottom: 48px;margin-top: 10px;"><input id="i" name="i" maxlength="200"' +
                       ' type="text" autocomplete="off" value="' + query +'" class=""><input id="dataset-input" name="dataset" ' +
