@@ -213,8 +213,8 @@ module RoomsHelper
 		puts "@@@@@@@@@@@@@@@@@@@html" + api_html
 		puts "@@@@@@@@@@@@@@@@@@@real_api_type" + real_api_type
 		# store wolfram or wiki api_html in redis
-		$redis.set("api_html",api_html.to_s)
-		$redis.set("real_api_type", real_api_type)
+		$redis.set("#{current_user.id}:api_html",api_html.to_s)
+		$redis.set("#{current_user.id}:real_api_type", real_api_type)
 	end
 
 

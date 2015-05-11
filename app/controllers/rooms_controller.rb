@@ -17,8 +17,8 @@ include RoomsHelper
   # calculated in rooms_helper wolfram and wiki query methods
   def get_api_html
     hash = {}
-    hash['result'] = $redis.get("api_html").to_s
-    hash['real_api_type'] = $redis.get("real_api_type")
+    hash['result'] = $redis.get("#{current_user.id}:api_html").to_s
+    hash['real_api_type'] = $redis.get("#{current_user.id}:real_api_type")
     render :json => hash
   end
 

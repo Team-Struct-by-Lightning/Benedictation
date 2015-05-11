@@ -11,8 +11,6 @@ var $chatBody = $("#js-chat-body");
 var $speechRecBody = $("#speech-rec-body");
 var localId = comm.getLocalID();
 
-
-
 var $bennySendButton = $("#benny-send-button-im");
 var $bennyInputIM = $("#benny-input-text");
 
@@ -219,7 +217,6 @@ function sendBennyReply(json_api_reply) {
                         key: key_user_id_and_index,
                         callerID: "<%= current_user.name %>"
                     });
-                    console.log("I'm about to call appendNewBennyReply");
                 }
             }
     });
