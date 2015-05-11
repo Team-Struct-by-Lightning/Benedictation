@@ -289,6 +289,16 @@ function wolfram_text(render_item_id) {
   // we remove the wolfram iframe so that we can process the next query
   $('#wolfram-iframe').remove();
 
+  // adds the loading gif to the iframe body so that it lets the user know
+  // info is being crunched on the backend
+  $('#wolfram-iframe').contents().find('body').prepend('<%= image_tag("computing.gif", class: "wolfram-loading") %>');
+
+  //this adds in the wolfram loading glyph css
+  $('#wolfram-iframe').contents().find('.wolfram-loading').css('position', 'relative');
+  $('#wolfram-iframe').contents().find('.wolfram-loading').css('left', '268px');
+  $('#wolfram-iframe').contents().find('.wolfram-loading').css('top', '135px');
+  $('#wolfram-iframe').contents().find('.wolfram-loading').css('transform', 'scale(3.0)');
+
 
   // this is the raw html for the wolfram render spot containing
   // the border, the iframe, and the remove x glyph
@@ -302,15 +312,6 @@ function wolfram_text(render_item_id) {
   // this makes it appear in the center of the page
   $('.room-layout-table').append(wolframdiv);
 
-  // adds the loading gif to the iframe body so that it lets the user know
-  // info is being crunched on the backend
-  $('#wolfram-iframe').contents().find('body').prepend('<%= image_tag("computing.gif", class: "wolfram-loading") %>');
-
-  //this adds in the wolfram loading glyph css
-  $('#wolfram-iframe').contents().find('.wolfram-loading').css('position', 'relative');
-  $('#wolfram-iframe').contents().find('.wolfram-loading').css('left', '268px');
-  $('#wolfram-iframe').contents().find('.wolfram-loading').css('top', '135px');
-  $('#wolfram-iframe').contents().find('.wolfram-loading').css('transform', 'scale(3.0)');
 
   // this prepends the text box to the body of the iframe (whose text we highjack *teehee*)
   $('#wolfram-iframe').contents().find('body').prepend('<form action="#"><fieldset id="input" class="wolfram-text-box"' +
@@ -374,7 +375,7 @@ function wolfram_text(render_item_id) {
 
       $.ajax({
         type: "GET",
-        url: "/get_wolfram",
+        url: "/get_api_html",
         dataType: "json",
         success: function(wolfram) {
 
