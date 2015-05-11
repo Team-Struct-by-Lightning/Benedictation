@@ -71,7 +71,7 @@ module RoomsHelper
 			create_calendar_event(json_event)
 		when 'calendar_show'
 			puts "We will show the calendar"
-			json_event = calendar_json(json_hash)
+			#json_event = calendar_show_json(json_hash)
 		when 'schedule_suggest'
 			puts 'We will find a time that works'
 			json_event = schedule_json(json_hash)
@@ -92,15 +92,15 @@ module RoomsHelper
 
 	def calendar_json(json_hash)
 		attendee_array = []
-		
+
 		full_group = json_hash['group_flag']
-		
+
 		if full_group == "True"
 			attendee_array = json_hash['attendees_array']
 		else
 			attendee_array = current_user.email
 		end
-		
+
 		json_event = {
 				'summary' => json_hash['summary'],
 				'location' => json_hash['location'],
@@ -116,11 +116,18 @@ module RoomsHelper
 			}
 	end
 
+	# def calendar_show_json(json_hash)
+	# 	json_show = {
+	# 		'summary' => 'Displaying calendar',
+	# 		'api_type' => 'calendar_show'
+	# 	}
+	# end
+
 	def schedule_json(json_hash)
 
 		get_available_times(json_hash['start'],json_hash['end'])
 
-	end 
+	end
 
 	def get_available_times(starttime, endtime)
 
@@ -147,7 +154,7 @@ module RoomsHelper
                         					'timeMin' => starttime_string,
                         					'timeMax' => endtime_string })
 
-	
+
 	events = result.data.items
 	#puts result.data.items
 
@@ -166,7 +173,7 @@ module RoomsHelper
 		puts e
 		puts e.start.dateTime , e.end.dateTime, e.summary
 
-		end	
+		end
 	end
 
 	def query_wolfram_alpha(json_hash)
@@ -202,7 +209,6 @@ module RoomsHelper
 			api_html = api_html.split("\n").join()
 			# api_html.gsub! 'http://',''
 		end
-			
 	end
 		puts "@@@@@@@@@@@@@@@@@@@html" + api_html
 		puts "@@@@@@@@@@@@@@@@@@@real_api_type" + real_api_type

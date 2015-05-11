@@ -1,11 +1,18 @@
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////====CHAT====////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
+
+//variables for the chat box
 var $sendButton = $("#js-send-button-im");
 var $inputIM = $("#js-input-im");
 var $chatBody = $("#js-chat-body");
+
+
 var $speechRecBody = $("#speech-rec-body");
 var localId = comm.getLocalID();
+
+
+
 var $bennySendButton = $("#benny-send-button-im");
 var $bennyInputIM = $("#benny-input-text");
 
@@ -254,10 +261,14 @@ function appendNewBennyReply(options) {
         query = query.split(" \u0027").join("'")
     }
 
-    if (json_murph.api_type != 'Blank Query') {
-        benny_note_number = benny_note_number + 1;
-        $('#benny-help-temp').remove();
-    }
+    // if (json_murph.api_type != 'Blank Query') {
+    //     benny_note_number = benny_note_number + 1;
+    //     $('#benny-help-temp').remove();
+    // }
+
+    benny_note_number = benny_note_number + 1;
+    $('#benny-help-temp').remove();
+
     if (json_murph.api_type == 'calendar' || json_murph.api_type == 'calendar_show'){
 
         <% image_name = "googz.ico" %>
@@ -266,8 +277,9 @@ function appendNewBennyReply(options) {
             summary = "No summary."
         }
         else {
-            summary = truncation(json_murph.summary, 40);
-
+            if (json_murph.api_type != 'calendar_show') {
+                summary = truncation(json_murph.summary, 40);
+            }
         }
         var key_array = options.key.split(":");
         var key_array_slice = key_array.slice(0, 4);
@@ -353,7 +365,7 @@ function appendNewBennyReply(options) {
     else if (json_murph.api_type == 'docs' || json_murph.api_type == 'docs_show'){
 
     }
-    else if (json_murph.api_type == 'No Result') {
+    else if (json_murph.api_type == 'No Result' || json_murph.api_type == 'Blank Query') {
 
         $('.benny-list-body').append('<div class="benny-item benny-no-result" id=' + benny_item_id +'>' +
                         '<a class="glyphicon glyphicon-question-sign" id="benny-query-question-mark" onmouseover="hoverHelp()"></a>' +
@@ -409,7 +421,9 @@ function mediaObjectIM(user, uid, token, message) {
     });
 }
 
-
+// this is a function to mirror the ruby truncate
+// function so that queries do not overflow the benny
+// query divs
 function truncation(string, len){
     if (string.length > len + 3){
         var new_string;
@@ -426,6 +440,8 @@ function truncation(string, len){
     }
 }
 
+// this is a function that lights up the question mark in
+// the blank and no query divs
 function hoverHelp(){
     $('#help-icon2').css('color', '#FFFFFF');
     $("#benny-query-question-mark").hover( function(){
@@ -435,10 +451,13 @@ function hoverHelp(){
         });
 }
 
-
+// This is the interval that checks whether or not benny
+// notifications need to be hidden
 var benny_notification_interval = setInterval(bennyNotificationNumber, 300);
 
-
+// this is the function that is called by the interval
+// that actually does the hiding of the benny notification
+// number
 function bennyNotificationNumber(){
     if (benny_note_number <= 0 ) {
          $('.notification-number').hide();
