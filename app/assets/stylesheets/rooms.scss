@@ -92,6 +92,12 @@ div.wolfram-frame body{
   transform: scale(.95);
 }
 
+#benny-send-button-im {
+  height: 0px !important;
+  width: 0px !important;
+  padding: 0px !important;
+  border: 0px !important;
+}
 
 #benny-temp-message {
   position: relative;
@@ -942,6 +948,7 @@ transform: scale(.05);
     padding-right: 10px;
     padding-left: 10px;
     top: 55px;
+    overflow-x: hidden;
 }
 
 #wrapper.toggled #benedict-sidebar-wrapper {
