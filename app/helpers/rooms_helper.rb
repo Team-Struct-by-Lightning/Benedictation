@@ -208,7 +208,7 @@ module RoomsHelper
 			api_html = markups.join.to_s.split('"').join("'")
 			api_html = api_html.split("\n").join()
 			# api_html.gsub! 'http://',''
-		#end
+		end
 
 		puts "@@@@@@@@@@@@@@@@@@@html" + api_html
 		puts "@@@@@@@@@@@@@@@@@@@real_api_type" + real_api_type
