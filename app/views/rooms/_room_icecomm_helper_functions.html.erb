@@ -92,6 +92,7 @@ comm.on('local', function(options) {
     audioContext = new AudioContext();
     localVideo.src = options.stream;
     localAudioStream = options.rawStream;
+    console.log("options: ",options);
     localVideo.muted = true;
     console.log(localAudioStream.getAudioTracks());
     console.log("Obtained user camera/microphone approval");
