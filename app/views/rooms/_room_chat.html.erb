@@ -81,7 +81,6 @@ function waitForSocketConnection(socket, callback){
 bennySocket.onmessage = function(e) {
     console.log("data from server: ", e.data);
     // reset flags so that ctrl-b will work again
-    ready_to_record = 1;
     recordSpeech.recording = 0;
     count_b = 0;
     if (e.data != "") {
@@ -144,7 +143,6 @@ bennySocket.onmessage = function(e) {
             console.log("data from server not JSON");
         }
     }
-    ready_to_record = 1;
     recordSpeech.recording = 0;
     count_b = 0;
 }
@@ -194,7 +192,7 @@ function sendBennyReply(json_api_reply) {
     var key = name + ":" + id + ":bennyhistory";
 
     console.log("now gonna push it to redis");
-    
+
     $.ajax({
            type: "GET",
            url: "/get_redis_length",
@@ -381,7 +379,7 @@ function appendNewBennyReply(options) {
                             '<%= image_tag("#{image_name}", class: "favicon", id:"google-fav") %>' +
                             '<a class="name-and-summary-calendar">' + name + '</a>' +
                             '<a class="benny-link" onclick=' + parameter + ' id=' +
-                            benny_item_link_id + '> Document created by Benedict at '+ json_murph['current_time'] + 
+                            benny_item_link_id + '> Document created by Benedict at '+ json_murph['current_time'] +
                             ' </a>' +
                             '</div>');
     }

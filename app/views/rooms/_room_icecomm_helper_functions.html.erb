@@ -17,7 +17,6 @@ websocket = new WebSocket(websocketprotocol + myLocation + ":" + port + uri); //
 websocket.onmessage = function(e) {
     console.log("data from server: ", e.data);
     // reset flags so that ctrl-b will work again
-    ready_to_record = 1;
     recordSpeech.recording = 0;
     count_b = 0;
     if (e.data != "") {
@@ -44,7 +43,7 @@ websocket.onmessage = function(e) {
                     }
                     var myData = JSON.parse(e.data);
                     myData["attendees_array"] = attendees_to_send;
-                    
+
                     $.ajax({
                         type: "POST",
                         url: "/check_api",
@@ -91,7 +90,6 @@ console.log("Initialized Icecomm, waiting for user media permissions...");
 comm.on('local', function(options) {
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
     audioContext = new AudioContext();
-    ready_to_record = 1;
     localVideo.src = options.stream;
     localAudioStream = options.rawStream;
     localVideo.muted = true;
@@ -228,6 +226,6 @@ comm.on('data', function(options) {
 });
 
 
-  
+
 
 
