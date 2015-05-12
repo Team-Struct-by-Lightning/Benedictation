@@ -193,13 +193,13 @@ module RoomsHelper
 		# <queryresult success='false' OR # <pod title='Definition' means we should do wiki instead of wolfram
 		api_html = ""
 		real_api_type = ""
-		if doc.xpath("//queryresult").attr("success").to_s == 'false' or doc.xpath('//*[@title="Definition"]').length != 0
+		# if doc.xpath("//queryresult").attr("success").to_s == 'false' or doc.xpath('//*[@title="Definition"]').length != 0
 			# get wiki hash
-			real_api_type = "wikipedia"
-			wikihash = query_wikipedia(json_hash)
+			#real_api_type = "wikipedia"
+			#wikihash = query_wikipedia(json_hash)
 			# return relevant html for wiki somehow by setting api_html in redis to the right stuff
 		# otherwise the api type is definitely wolfram
-		else
+		# else
 			# grab the wolfram html
 			real_api_type = "wolfram"
 			markups = []
@@ -208,7 +208,7 @@ module RoomsHelper
 			api_html = markups.join.to_s.split('"').join("'")
 			api_html = api_html.split("\n").join()
 			# api_html.gsub! 'http://',''
-		end
+		#end
 	end
 		puts "@@@@@@@@@@@@@@@@@@@html" + api_html
 		puts "@@@@@@@@@@@@@@@@@@@real_api_type" + real_api_type
