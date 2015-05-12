@@ -79,7 +79,7 @@ function blink_red() {
 
 var red_record_interval;
 
-
+var keydown_triggered_by_button = 0;
 
 // this is a function that is triggered upon users
 // clicking the record button
@@ -87,6 +87,7 @@ var red_record_interval;
 $('#record-query-button').click(function() {
   var e1 = jQuery.Event("keydown");
   e1.which = 2;
+  //keydown_triggered_by_button = 1;
   $("input").trigger(e1);
 });
 

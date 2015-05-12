@@ -1,23 +1,118 @@
 /*  records speech while user holds down ctrl-b
     98 = b, ctrlKey = ctrl, 17 = ctrl
 */
+var recognizer, recorder, speechRegRec, callbackManager, audioContext;
+var recorderReady = recognizerReady = false;
+
+// This is the variable that listens for the button being in the
+// "pressed down" state.  This is integral to the logic in the
+// tell function.
+var bdown = 0;
+
+
+// This is a variable that is set so that we can truncate
+// the recording being sent if the user does not manually send
+// the recording.  We truncate because Google Speech only allows
+// for 8-10 second clips maximum, thus preventing errors when
+// sending to their API.
+var count_trigger = 0;
+
+// this variable counts the number of actual and simulated
+// control b events.  Since multiple are sent on keypress,
+// we stop the tell function from adding an additional
+// recording after the first one.
+var count_b = 0;
+
+
+
+// this is a function that is triggered upon users
+// clicking the record button and simulates a
+// cntl-b keydown
+
+$('#record-query-button').click(function() {
+  var e1 = jQuery.Event("keydown");
+  e1.which = 2;
+  $("input").trigger(e1);
+});
+
+
+// this is a function that is triggered upon users
+// clicking the stop button when they are finished
+// recording and simulates a keyup
+
+$('#stop-query-button').click(function() {
+  toggle_mic_color = 0;
+  var e2 = jQuery.Event("keyup");
+  e2.which = 17;
+  $("input").trigger(e2);
+});
+
+
+
+// Record speech for 10s and export it as .wav to a server every 1s.
+function recordSpeech() {
+    // Some JavaScript trickery: functions are objects, so they can have variables.
+    // In this case we simulate a "private static" variable indicating whether recording is already started or not;
+    // if it is, we don't do anything.
+    if (typeof recordSpeech.recording === 'undefined') { // If it's not yet initialized:
+        recordSpeech.recording = 0; // Initialize it.
+    }
+    if (recordSpeech.recording == 1) {
+        return; // Don't start recording if we are already.
+    }
+
+    // starts speechrec recorder
+    speechRegRec.record();
+
+    // sets the flag indicating we're recording.
+    recordSpeech.recording = 1;
+}
+
+
+
+
 function tell(evt) {
     // if user presses & holds ctrl-b
     if (evt.which === 2 && text_query_flag == 0) {
+
+        // on the first time entering the function, count_b should be 0
+        // thus only allowing count_b to enter the if condition on the
+        // first time we reach this point.
         count_b += 1;
+
         if (count_b == 1) {
-            ready_to_record = 2; //lets the user know we are recording
+
+            // we simulate a "key pressed" state for the record button
+            // this will be changed back to 0 on the first keyup event
+            // received in the below "else if"
             bdown = 1;
-            count_trigger = 0; //initializes the trigger if needed
-              $('#record-query-button').hide();
-              $('.svg-box').hide();
-              $('#stop-query-button').show();
-              $('.record-button').show();
-              blink_red();
-              red_record_interval = setInterval(blink_red, 1600);
+
+            // this initializes the trigger to send a key up event if
+            // 10 seconds have elapsed without the user pressing keyup
+            count_trigger = 0;
+
+
+            // this is to hide the recording button and gray mic glyph
+            // and to show the stop recording button as well as change
+            // the mic glyph to the red record
+            $('#record-query-button').hide();
+            $('.svg-box').hide();
+            $('#stop-query-button').show();
+            $('.record-button').show();
+
+            // this calls the animation initially so that the red mic
+            // begins blinking immediately
+            blink_red();
+
+            // this is the interval set so that the mic will continue
+            // to blink
+            red_record_interval = setInterval(blink_red, 1600);
+
+            // starts recording speech
             recordSpeech();
+
             // automatically trigger a keyup event after 10 seconds because
-            //that's all the web speech api can handle
+            // that's all the web speech api can handle
             trigger_function = setTimeout(function() {
                 count_trigger += 1;
                 if (count_trigger == 1) jQuery.event.trigger({
@@ -28,20 +123,40 @@ function tell(evt) {
             }, 10000);
         }
     }
+
     // send the recorded speech to our server
-    //when user releases ctrl-b (or 10 second timeout triggers a keyup event)
+    // when user releases ctrl-b (or 10 second timeout
+    // triggers a keyup event)
     else if ((evt.which === 17) && evt.type === "keyup") {
-        bdown = 0;
         console.log(evt.which, evt.type);
-        if (recordSpeech.recording == 1) {
-             $('#stop-query-button').hide();
-              $('.record-button').hide();
-              clearInterval(red_record_interval);
-              $('#progressbar').show();
-              $('.progress-label').show();
-            count_trigger = 2; //prevents a trigger if not needed
-            ready_to_record = 3; //lets the user know we are analyzing
-            speechRegRec.stop(); // stop recording
+
+        // checks if we are recording and we previously are in the
+        // "key pressed" state
+        if (recordSpeech.recording == 1 && bdown == 1) {
+
+            // indicates that we are no longer in the "key pressed" state
+            bdown = 0;
+
+            // hides the stop recording button, the red flashing glyph, and
+            // clears the interval for the red flash so that when we create
+            // it again, it won't conflict with itself
+            $('#stop-query-button').hide();
+            $('.record-button').hide();
+            clearInterval(red_record_interval);
+
+
+            // shows the loading progressbar
+            $('#progressbar').show();
+            $('.progress-label').show();
+
+            // prevents the trigger of the 10 second key down event
+            // from sending another keyup, since it isn't need at this
+            // point
+            count_trigger = 2;
+
+            // stops recording
+            speechRegRec.stop();
+
             // send the speech as a wav blob
             speechRegRec.exportWAV(function(blob) {
                 speechRegRec.clear();
@@ -51,4 +166,6 @@ function tell(evt) {
         }
     }
 };
+// this is the listener for keydowns, keypresses, and keyups
+// and is essential to all of our listeners working
 $(document).bind('keydown keypress keyup', tell);
