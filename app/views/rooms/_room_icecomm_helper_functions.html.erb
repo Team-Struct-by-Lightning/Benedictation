@@ -44,6 +44,7 @@ websocket.onmessage = function(e) {
                     }
                     var myData = JSON.parse(e.data);
                     myData["attendees_array"] = attendees_to_send;
+                    
                     $.ajax({
                         type: "POST",
                         url: "/check_api",
@@ -65,7 +66,11 @@ websocket.onmessage = function(e) {
                                         sendBennyReply(JSON.stringify(myData));
                                     }
                                 });
-                            } else {
+                            }
+                            else if(myData.api_type === 'google_docs'){
+                                create_new_document(myData);
+                            }
+                            else {
                                 sendBennyReply(e.data);
                             }
                         }
@@ -222,3 +227,8 @@ comm.on('data', function(options) {
         appendNewIM(options);
     }
 });
+
+
+  
+
+

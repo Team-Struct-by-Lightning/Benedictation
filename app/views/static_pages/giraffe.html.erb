@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
   <body>
@@ -136,41 +137,6 @@ if (location.protocol !== "https:") {
       websocket.onmessage = function(e) {
           console.log("data from server: ", e.data);
           drawRow(JSON.parse(e.data));
-
-      }
-      // test wolfram function
-      function testQueries(){
-          var arrayLength = queries.length;
-          for (var i = 0; i < arrayLength; i++) {
-              console.log("sending: ",queries[i]);
-              sendMessage(queries[i]);
-          }
-      }
-      function sendMessage(msg) {
-          waitForSocketConnection(websocket, function() {
-              websocket.send(msg);
-          });
-      };
-      function waitForSocketConnection(socket, callback){
-          setTimeout(
-              function(){
-                  if (socket.readyState === 1) {
-                      if(callback !== undefined){
-                          callback();
-                      }
-                      return;
-                  } else {
-                      waitForSocketConnection(socket,callback);
-                  }
-              }, 5);
-      };
-      function drawRow(rowData) {
-          var row = $("<tr />")
-          $("#query").append(row); //this will append tr element to table... keep its reference for a while since we will add cels into it
-          row.append($("<td align='left'>" + rowData.query + "</td>"));
-          row.append($("<td align='left'>" + rowData.api_type + "</td>"));
-      }
-    </script>
 
 
 <div id="solutions" class="nofade fadechildren"><noscript>&lt;p class="noscript"&gt;To see full output on this page you need to enable JavaScript in your browser. &lt;a href="nojs.jsp"&gt;More info &amp;raquo;&lt;/a&gt;&lt;/p&gt;</noscript><form method="get" action="/input/" id="assumptions" class="fade"><fieldset id="assumingSimple" class="assuming"><input type="hidden" name="i" id="iAssum" value="number of prime divisors of (9^9^9^9^9^9)^(9^9^9^9^9^9^9^9^9)">

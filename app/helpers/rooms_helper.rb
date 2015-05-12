@@ -75,7 +75,7 @@ module RoomsHelper
 		when 'schedule_suggest'
 			puts 'We will find a time that works'
 			json_event = schedule_json(json_hash)
-		when 'docs'
+		when 'google_docs'
 			puts "We will access the google docs api!"
 		when 'wolfram'
 			puts "We will access the wolfram alpha api!"
