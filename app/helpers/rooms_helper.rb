@@ -187,8 +187,8 @@ module RoomsHelper
 
 		puts "@@@@@@@@@@@@wolfram url: " + wolfram_url
 		doc = Nokogiri::XML(open(wolfram_url))
-		# check to see if the freakin pods exist in the wolfram. if yes, then make 
-		# JSON object out of wolfram_html, but add the attribute "valid: yes/no" 
+		# check to see if the freakin pods exist in the wolfram. if yes, then make
+		# JSON object out of wolfram_html, but add the attribute "valid: yes/no"
 
 		# <queryresult success='false' OR # <pod title='Definition' means we should do wiki instead of wolfram
 		api_html = ""
@@ -209,7 +209,7 @@ module RoomsHelper
 			api_html = api_html.split("\n").join()
 			# api_html.gsub! 'http://',''
 		#end
-	end
+
 		puts "@@@@@@@@@@@@@@@@@@@html" + api_html
 		puts "@@@@@@@@@@@@@@@@@@@real_api_type" + real_api_type
 		# store wolfram or wiki api_html in redis
