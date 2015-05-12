@@ -2,12 +2,10 @@
 
 function create_new_document(myData){
 
-  var developerKey = 'AIzaSyD9JtT_kVZ0S0vKsskgxrK_WtIE1G7FAjY';
-  var clientId = "165043768486-h54df8d1s3id58p9c603q3cq90pe60it.apps.googleusercontent.com"
+  var clientId = "<%= google_yml['app_id']  %>";
   var scope = ['https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/drive.file',
   'https://www.googleapis.com/auth/drive.appdata', 'https://www.googleapis.com/auth/drive.apps.readonly'];
-  var returnable_link;
-  //console.log("WERE HERE AND NEWKEY IS " + item['some_new_thing']);
+
   
   gapi.load('auth', {'callback': onAuthApiLoad});
   function onAuthApiLoad() {
@@ -56,7 +54,7 @@ function create_new_document(myData){
     var url = (window.location.pathname).split("/");
     var id = String(url[url.length - 2]);
     
-    var group_name = 'Group #' + String(url[url.length - 1]) + '\'s meeting on ' + goodDate();
+    var group_name = 'Group #' + String(url[url.length - 1]) + '\'s meeting on ' + Date();
 
 
     var request = gapi.client.request({
