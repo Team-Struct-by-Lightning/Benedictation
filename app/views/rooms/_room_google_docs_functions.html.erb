@@ -9,6 +9,7 @@ function create_new_document(myData){
   
   gapi.load('auth', {'callback': onAuthApiLoad});
   function onAuthApiLoad() {
+    console.log("loading the api");
     gapi.auth.authorize(
         {
           'client_id': clientId,

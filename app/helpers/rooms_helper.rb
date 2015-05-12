@@ -71,7 +71,7 @@ module RoomsHelper
 			create_calendar_event(json_event)
 		when 'calendar_show'
 			puts "We will show the calendar"
-			json_event = calendar_json(json_hash)
+			#json_event = calendar_show_json(json_hash)
 		when 'schedule_suggest'
 			puts 'We will find a time that works'
 			json_event = schedule_json(json_hash)
@@ -92,15 +92,15 @@ module RoomsHelper
 
 	def calendar_json(json_hash)
 		attendee_array = []
-		
+
 		full_group = json_hash['group_flag']
-		
+
 		if full_group == "True"
 			attendee_array = json_hash['attendees_array']
 		else
 			attendee_array = current_user.email
 		end
-		
+
 		json_event = {
 				'summary' => json_hash['summary'],
 				'location' => json_hash['location'],
@@ -116,11 +116,18 @@ module RoomsHelper
 			}
 	end
 
+	# def calendar_show_json(json_hash)
+	# 	json_show = {
+	# 		'summary' => 'Displaying calendar',
+	# 		'api_type' => 'calendar_show'
+	# 	}
+	# end
+
 	def schedule_json(json_hash)
 
 		get_available_times(json_hash['start'],json_hash['end'])
 
-	end 
+	end
 
 	def get_available_times(starttime, endtime)
 
@@ -147,7 +154,7 @@ module RoomsHelper
                         					'timeMin' => starttime_string,
                         					'timeMax' => endtime_string })
 
-	
+
 	events = result.data.items
 	#puts result.data.items
 
@@ -166,7 +173,7 @@ module RoomsHelper
 		puts e
 		puts e.start.dateTime , e.end.dateTime, e.summary
 
-		end	
+		end
 	end
 
 	def query_wolfram_alpha(json_hash)
@@ -177,22 +184,37 @@ module RoomsHelper
 		puts "&&&&&&&&&&&&&&&&: " + query_string
 		app_id = WolframAPIKey["app_id"]
 		wolfram_url = URI.parse("http://api.wolframalpha.com/v2/query?appid=P3P4W5-LGWA2A3RU2&input=" + URI.encode(query_string.strip) + "&format=html,image").to_s
+
 		puts "@@@@@@@@@@@@wolfram url: " + wolfram_url
 		doc = Nokogiri::XML(open(wolfram_url))
-		markups = []
-		doc.xpath("//markup").each do |markup|
-			markups << markup.text
+		# check to see if the freakin pods exist in the wolfram. if yes, then make 
+		# JSON object out of wolfram_html, but add the attribute "valid: yes/no" 
+
+		# <queryresult success='false' OR # <pod title='Definition' means we should do wiki instead of wolfram
+		api_html = ""
+		real_api_type = ""
+		if doc.xpath("//queryresult").attr("success").to_s == 'false' or doc.xpath('//*[@title="Definition"]').length != 0
+			# get wiki hash
+			real_api_type = "wikipedia"
+			wikihash = query_wikipedia(json_hash)
+			# return relevant html for wiki somehow by setting api_html in redis to the right stuff
+		# otherwise the api type is definitely wolfram
+		else
+			# grab the wolfram html
+			real_api_type = "wolfram"
+			markups = []
+			doc.xpath("//markup").each do |markup|
+				markups << markup.text
+			api_html = markups.join.to_s.split('"').join("'")
+			api_html = api_html.split("\n").join()
+			# api_html.gsub! 'http://',''
 		end
-
-		wolfram_html = markups.join.to_s.split('"').join("'")
-		wolfram_html = wolfram_html.split("\n").join()
-		puts "@@@@@@@@@@@@@@@@@@@html" + wolfram_html
-		
-
-		$redis.set("wolfram_html",wolfram_html.to_s)
-
-
-
+	end
+		puts "@@@@@@@@@@@@@@@@@@@html" + api_html
+		puts "@@@@@@@@@@@@@@@@@@@real_api_type" + real_api_type
+		# store wolfram or wiki api_html in redis
+		$redis.set("#{current_user.id}:api_html",api_html.to_s)
+		$redis.set("#{current_user.id}:real_api_type", real_api_type)
 	end
 
 
@@ -217,7 +239,6 @@ module RoomsHelper
 	end
 
 	def create_calendar_event(json)
-
 		client = Google::APIClient.new
 		client.authorization.client_id = GoogleAPIKeys["app_id"]
 		client.authorization.client_secret = GoogleAPIKeys["secret"]

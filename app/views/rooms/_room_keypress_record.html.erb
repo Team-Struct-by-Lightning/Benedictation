@@ -3,7 +3,7 @@
 */
 function tell(evt) {
     // if user presses & holds ctrl-b
-    if (evt.which === 2) {
+    if (evt.which === 2 && text_query_flag == 0) {
         count_b += 1;
         if (count_b == 1) {
             ready_to_record = 2; //lets the user know we are recording

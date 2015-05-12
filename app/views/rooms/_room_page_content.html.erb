@@ -4,6 +4,10 @@
 <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 <div class="room-page-div-wrapper" id="page-wrapper">
 
+
+<!-- VIDEO SIDEBARS -->
+<!-- This section is the sidebar for the local and peer video connections -->
+<!-- to be dragged and dropped -->
    <div id = 'video-sidebar'>
       <div class="small-vids" id = "video-spot-1">
          <video class="video-center" id="localVideo" autoplay></video>
@@ -21,83 +25,26 @@
 
   </div>
 
-   <div id="benedict-sidebar-wrapper">
-      <ul class="benedict-sidebar-nav">
-         <li class="sidebar-brand">
-            <!--<a style="color:red;font-size:20px; font-weight: bold;" id="loading"></a>-->
-         </li>
-      </ul>
-      <div id='chat-body' valign='top'>
-         <div class='panel panel-primary' id="chat-box">
-            <div class='panel-heading' id="chat-heading">
-               <a class="chat-header">Chat</a>
-               <a class ="glyphicon glyphicon-chevron-down" id = "minimize-chat-down" href = "javascript:minimize('#js-chat-body','#minimize-chat-down', '#minimize-chat-right');"></a>
-               <a class ="glyphicon glyphicon-chevron-right" id = "minimize-chat-right" href = "javascript:minimize('#js-chat-body','#minimize-chat-right', '#minimize-chat-down');"></a>
-            </div>
-            <div class='panel-body' id='js-chat-body'></div>
-         </div>
-         <div class='input-group' id="chat-location">
-            <input class='form-control' id='js-input-im' placeholder="Send a message">
-            <span class='input-group-btn'>
-            <button class='btn btn-primary' id='js-send-button-im'>
-            </button>
-            </span>
-         </div>
-         <div class='panel-heading' id="mic-header">
-          <a class="mic-header-text"> Speak to Benedict </a>
-               <a class ="glyphicon glyphicon-chevron-down" id = "minimize-mic-down" href = "javascript:minimize('#microphone-spot', '#minimize-mic-down', '#minimize-mic-right');"> </a>
-               <a class ="glyphicon glyphicon-chevron-right" id = "minimize-mic-right" href = "javascript:minimize('#microphone-spot', '#minimize-mic-right', '#minimize-mic-down');"> </a>
-         </div>
-         <div id="microphone-spot">
-          <div class="svg-box">
-          <%= image_tag("black-mic-svg.svg", id: "mic-glyph") %>
-        </div>
-          <button class="btn btn-primary" id="record-query-button">Click to record</button>
-          <button class="btn btn-primary" id="stop-query-button">Click to stop</button>
-          <div id = "progressbar"><div class = "progress-label">Loading...</div></div>
-          <%= image_tag("red-mic-pic.png", class: "record-button", id: "red-flash-button", align: "left") %>
-        </div>
-         <div id = "benedict-list">
-            <div class='panel-heading' id="benedict-query-header">
-               <div "notification">
-                 <p class="notification-number">
-                 </p>
-               </div>
-               <a class="benedict-query-header-text"> Benedict Queries </a>
-               <a class ="glyphicon glyphicon-chevron-down" id = "minimize-query-down" href = "javascript:minimize('.benny-list-body', '#minimize-query-down', '#minimize-query-right');"> </a>
-               <a class ="glyphicon glyphicon-chevron-right" id = "minimize-query-right" href = "javascript:minimize('.benny-list-body', '#minimize-query-right', '#minimize-query-down');"> </a>
-            </div>
-            <div class="benny-list-body">
-               <div class="benny-item" id="benny-help-temp">
-                  <%= image_tag("favicon.ico", class: "favicon", id: "lightning-favicon", align: "left") %>
-                  <a class="benny-query" id="benny-temp-message">To query Benedict, click and hold the button above, and ask Benedict your question. For suggested queries, click  <a class="popup-link" id="help-in-query" href="#help-room-popup">here</a></a>
-                  </div>
-                  <!--<div class= "benny-item">
-                  <%= image_tag("wolfram.jpg", class: "favicon") %>
-                  <a class="benny-query">What is the square root of 100?</a>
-                  </div>
-                  <div class= "benny-item">
-                  <%= image_tag("wikipedia.ico", class: "favicon") %>
-                  <a class="benny-query">What's a dog?</a>
-                  </div> -->
-              <%= render 'rooms/room_center_renders' %>
-            </div>
-         </div>
-         <!--<div id='speech-rec' >
-            <div class='panel panel-primary'>
-                                    <div class='panel-heading'>
-                                                                Speech Recognition
-                                    </div>
-                                    <div class='panel-body' id='speech-rec-body'></div>
-            </div>
-            </div>
-            -->
-      </div>
-   </div>
-   <!-- Page Content -->
-</div>
+
+<!-- END OF VIDEO SIDEBARS -->
+
+
+
+<!-- ROOM RIGHT HAND SIDEBAR -->
+
+
+<%= render 'rooms/room_right_hand_sidebar' %>
+
+
+<!-- END OF ROOM RIGHT HAND SIDEBAR -->
+
+
+
+
+
 <script type="text/javascript" src="https://apis.google.com/js/api.js"></script>
 <script src="https://www.google.com/jsapi" type="text/javascript"></script>
+
 <script language="Javascript" type="text/javascript">
 
 google.load('search', '1');
@@ -106,10 +53,8 @@ google.load('search', '1');
 <script>
 
 
-// function blinker2() {
-//   $('.glyphicon-volume-up').fadeTo( 850 , .1, function() {});
-//   $('.glyphicon-volume-up').fadeTo( 850 , 1.0, function() {});
-// }
+// Progress loading bar function for user feedback that
+// the queries are being analyzed
 
 $(function() {
   var progressbar = $( "#progressbar" ),
@@ -120,48 +65,38 @@ $(function() {
   });
 });
 
+
+// This is a function that flashes the red microphone
+// glyph so that users are given feedback to when audio
+// is being recorded
+
 function blink_red() {
   $('.record-button').fadeTo(800, .1, function(){});
   $('.record-button').fadeTo(800, 1, function() {});
 }
 
 
+// the variable for the interval so that it can be set
+// and removed in this scope
 
-//var toggle_mic_color = 0;
 var red_record_interval;
-// $('#record-query-button').click(function() {
-//   toggle_mic_color++;
-//   if(toggle_mic_color === 1){
-//     $('#record-query-button').html("Click to stop");
-//     $('.svg-box').hide();
-//     $('.record-button').show();
-//     blink_red();
-//     red_record_interval = setInterval(blink_red, 1600);
-//     var e1 = jQuery.Event("keydown");
-//     e1.which = 2;
-//     $("input").trigger(e1);
-// }
-// else
-//   {
-//     $('#record-query-button').hide();
-//     $('.record-button').hide();
-//     clearInterval(red_record_interval);
-//     $('#progressbar').show();
-//     $('.progress-label').show();
-//     toggle_mic_color = 0;
-//     var e2 = jQuery.Event("keyup");
-//     e2.which = 17;
-//     console.log("hello!")
-//     $("input").trigger(e2);
-//   }
-// });
 
+
+
+// this is a function that is triggered upon users
+// clicking the record button
 
 $('#record-query-button').click(function() {
   var e1 = jQuery.Event("keydown");
   e1.which = 2;
   $("input").trigger(e1);
 });
+
+// this is a function that is triggered upon users
+// clicking the stop button when they are finished
+// recording
+
+
 $('#stop-query-button').click(function() {
   toggle_mic_color = 0;
   var e2 = jQuery.Event("keyup");
@@ -171,97 +106,105 @@ $('#stop-query-button').click(function() {
 });
 
 
-  $(document).on('click','#remove_item_id',function(){
-    $('.render_spot').remove();
-    $('.calendar-border').fadeOut(300);
-    $('.wolfram-border').fadeOut(300);
-    inter = setInterval(blinker, 3000);
-  });
+// this function that listens for users clicking on the
+// black x glyph in center renders so that we can
+// remove them
+
+$(document).on('click','#remove_item_id',function(){
+  $('.render_spot').remove();
+  $('.calendar-border').fadeOut(300);
+  $('.wolfram-border').fadeOut(300);
+  inter = setInterval(blinker, 3000);
+});
 
 
-   var video_spots = [0,0,0,0,0,0];
-   $(function() {
-       $( "#localVideo" ).draggable({
-      revert: function(socketObj) {
-        if (socketObj === false) {
-            // Drop was rejected, revert the helper.
-            var $helper = $("#localVideo");
-            $helper.animate($helper.originalPosition);
-            $helper.animate({ width: "100%", height: "100%" });
-            return true;
-        } else {
-            // Drop was accepted, don't revert.
-            return false;
-        }},
-      opacity: .7,
-       create: function(event, ui) {
-           $(this).draggable("option", "cursorAt", {
-               left: Math.floor(80),
-               top: Math.floor(60)
-           });
-       },
-       start: function(event, ui){
-           if($(this).width() > 160){
-           $(this).css("width", "160px" );
-           $(this).css("height", "120px");
-           }
+// respective drag andn droppable functions for
+// the video sidebar
+
+
+var video_spots = [0,0,0,0,0,0];
+$(function() {
+   $( "#localVideo" ).draggable({
+  revert: function(socketObj) {
+    if (socketObj === false) {
+        // Drop was rejected, revert the helper.
+        var $helper = $("#localVideo");
+        $helper.animate($helper.originalPosition);
+        $helper.animate({ width: "100%", height: "100%" });
+        return true;
+    } else {
+        // Drop was accepted, don't revert.
+        return false;
+    }},
+  opacity: .7,
+   create: function(event, ui) {
+       $(this).draggable("option", "cursorAt", {
+           left: Math.floor(80),
+           top: Math.floor(60)
+       });
+   },
+   start: function(event, ui){
+       if($(this).width() > 160){
+       $(this).css("width", "160px" );
+       $(this).css("height", "120px");
        }
-       });
-       take_spot(0, $( "#localVideo" ));
-       $( "#video-spot-1" ).droppable({
-           activeClass: "active-video-spot",
-           drop: function( event, ui ) {
-           take_spot(0, $("#" + ui.draggable.prop('id')), $("#video-spot-1"));
-           $("#video-spot-1").append( $("#" + ui.draggable.prop('id')) ) ;
-           $("#" + ui.draggable.prop('id')).css("top", "0%");
-           $("#" + ui.draggable.prop('id')).css("left", "0%");
-           $("#" + ui.draggable.prop('id')).css("width", "100%");
-           $("#" + ui.draggable.prop('id')).get(0).play();
-           }
-       });
-       $( "#video-spot-2" ).droppable({
-           activeClass: "active-video-spot",
-           drop: function( event, ui ) {
-           take_spot(1, $("#" + ui.draggable.prop('id')));
-           $("#video-spot-2").append( $("#" + ui.draggable.prop('id')) );
-           $("#" + ui.draggable.prop('id')).css("top", "0%");
-           $("#" + ui.draggable.prop('id')).css("left", "0%");
-           $("#" + ui.draggable.prop('id')).css("width", "100%");
-           $("#" + ui.draggable.prop('id')).get(0).play();
-           }
-       });
-       $( "#video-spot-3" ).droppable({
-           activeClass: "active-video-spot",
-           drop: function( event, ui ) {
-           take_spot(2, $("#" + ui.draggable.prop('id')));
-           $("#video-spot-3").append( $("#" + ui.draggable.prop('id')));
-           $("#" + ui.draggable.prop('id')).css("top", "0%");
-           $("#" + ui.draggable.prop('id')).css("left", "0%");
-           $("#" + ui.draggable.prop('id')).css("width", "100%");
-           $("#" + ui.draggable.prop('id')).get(0).play();
-           }
-       });
-       $( "#video-spot-4" ).droppable({
-           activeClass: "active-video-spot",
-           drop: function( event, ui ) {
-           take_spot(3, $("#" + ui.draggable.prop('id')));
-           $("#video-spot-4").append( $("#" + ui.draggable.prop('id')));
-           $("#" + ui.draggable.prop('id')).css("top", "0%");
-           $("#" + ui.draggable.prop('id')).css("left", "0%");
-           $("#" + ui.draggable.prop('id')).css("width", "100%");
-           $("#" + ui.draggable.prop('id')).get(0).play();
-           }
-       });
-       $( "#video-spot-5" ).droppable({
-           activeClass: "active-video-spot",
-           drop: function( event, ui ) {
-           take_spot(4, $("#" + ui.draggable.prop('id')));
-           $("#video-spot-5").append( $("#" + ui.draggable.prop('id')));
-           $("#" + ui.draggable.prop('id')).css("top", "0%");
-           $("#" + ui.draggable.prop('id')).css("left", "0%");
-           $("#" + ui.draggable.prop('id')).css("width", "100%");
-           $("#" + ui.draggable.prop('id')).get(0).play();
-           }
-       });
+   }
    });
+   take_spot(0, $( "#localVideo" ));
+   $( "#video-spot-1" ).droppable({
+       activeClass: "active-video-spot",
+       drop: function( event, ui ) {
+       take_spot(0, $("#" + ui.draggable.prop('id')), $("#video-spot-1"));
+       $("#video-spot-1").append( $("#" + ui.draggable.prop('id')) ) ;
+       $("#" + ui.draggable.prop('id')).css("top", "0%");
+       $("#" + ui.draggable.prop('id')).css("left", "0%");
+       $("#" + ui.draggable.prop('id')).css("width", "100%");
+       $("#" + ui.draggable.prop('id')).get(0).play();
+       }
+   });
+   $( "#video-spot-2" ).droppable({
+       activeClass: "active-video-spot",
+       drop: function( event, ui ) {
+       take_spot(1, $("#" + ui.draggable.prop('id')));
+       $("#video-spot-2").append( $("#" + ui.draggable.prop('id')) );
+       $("#" + ui.draggable.prop('id')).css("top", "0%");
+       $("#" + ui.draggable.prop('id')).css("left", "0%");
+       $("#" + ui.draggable.prop('id')).css("width", "100%");
+       $("#" + ui.draggable.prop('id')).get(0).play();
+       }
+   });
+   $( "#video-spot-3" ).droppable({
+       activeClass: "active-video-spot",
+       drop: function( event, ui ) {
+       take_spot(2, $("#" + ui.draggable.prop('id')));
+       $("#video-spot-3").append( $("#" + ui.draggable.prop('id')));
+       $("#" + ui.draggable.prop('id')).css("top", "0%");
+       $("#" + ui.draggable.prop('id')).css("left", "0%");
+       $("#" + ui.draggable.prop('id')).css("width", "100%");
+       $("#" + ui.draggable.prop('id')).get(0).play();
+       }
+   });
+   $( "#video-spot-4" ).droppable({
+       activeClass: "active-video-spot",
+       drop: function( event, ui ) {
+       take_spot(3, $("#" + ui.draggable.prop('id')));
+       $("#video-spot-4").append( $("#" + ui.draggable.prop('id')));
+       $("#" + ui.draggable.prop('id')).css("top", "0%");
+       $("#" + ui.draggable.prop('id')).css("left", "0%");
+       $("#" + ui.draggable.prop('id')).css("width", "100%");
+       $("#" + ui.draggable.prop('id')).get(0).play();
+       }
+   });
+   $( "#video-spot-5" ).droppable({
+       activeClass: "active-video-spot",
+       drop: function( event, ui ) {
+       take_spot(4, $("#" + ui.draggable.prop('id')));
+       $("#video-spot-5").append( $("#" + ui.draggable.prop('id')));
+       $("#" + ui.draggable.prop('id')).css("top", "0%");
+       $("#" + ui.draggable.prop('id')).css("left", "0%");
+       $("#" + ui.draggable.prop('id')).css("width", "100%");
+       $("#" + ui.draggable.prop('id')).get(0).play();
+       }
+   });
+});
 </script>

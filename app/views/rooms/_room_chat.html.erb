@@ -1,14 +1,157 @@
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////====CHAT====////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
+
+//variables for the chat box
 var $sendButton = $("#js-send-button-im");
 var $inputIM = $("#js-input-im");
 var $chatBody = $("#js-chat-body");
+
+
 var $speechRecBody = $("#speech-rec-body");
 var localId = comm.getLocalID();
 
+var $bennySendButton = $("#benny-send-button-im");
+var $bennyInputIM = $("#benny-input-text");
+
 $sendButton.on('click', sendIM);
-$inputIM.on('keypress', checkEnterKey);
+$bennySendButton.on('click', sendMessage);
+
+// click the send button when enter key is pressed
+$inputIM.keydown(function (event) {
+    var keypressed = event.keyCode || event.which;
+    if (keypressed == 13) {
+        $sendButton.click();
+    }
+});
+
+var text_query_flag = 0;
+
+$bennyInputIM.keydown(function (event) {
+    var keypressed = event.keyCode || event.which;
+    if (keypressed == 13) {
+        $bennySendButton.click();
+        $('#record-query-button').hide();
+        $('.svg-box').hide();
+        $('#progressbar').show();
+        $('.progress-label').show();
+        text_query_flag = 1;
+    }
+});
+
+
+
+// Set up the WebSocket
+var myLocation = location.host.split(":")[0];
+var port = "8888";
+var uri = "/recognize_test";
+var websocketprotocol = "wss://";
+
+if (location.protocol !== "https:") {
+    websocketprotocol = "ws://";
+    myLocation = myLocation.split(":")[0];
+}
+
+var bennySocket = new WebSocket(websocketprotocol + myLocation + ":" + port + uri); // initialize
+
+
+
+function sendMessage() {
+  waitForSocketConnection(bennySocket, function() {
+      bennySocket.send($bennyInputIM.val());
+      $bennyInputIM.val("");
+  });
+};
+
+function waitForSocketConnection(socket, callback){
+  setTimeout(
+      function(){
+          if (socket.readyState === 1) {
+              if(callback !== undefined){
+                  callback();
+              }
+              return;
+          } else {
+              waitForSocketConnection(socket,callback);
+          }
+      }, 5);
+};
+
+
+bennySocket.onmessage = function(e) {
+    console.log("data from server: ", e.data);
+    // reset flags so that ctrl-b will work again
+    ready_to_record = 1;
+    recordSpeech.recording = 0;
+    count_b = 0;
+    if (e.data != "") {
+        try {
+            var url = (window.location.pathname).split("/");
+            var id = String(url[url.length - 2]);
+            var name = String(url[url.length - 1]);
+            var emails_key = name + ":" + id + ":emails";
+            var attendees_to_send = [];
+            $.ajax({
+                type: "GET",
+                url: "/get_redis",
+                dataType: "json",
+                data: {
+                    'redis_key': emails_key
+                },
+                success: function(emails) {
+                    if (emails.length != 0) {
+                        for (var i = 0; i < emails.length; i++) {
+                            attendees_to_send.push({
+                                email: emails[i]
+                            });
+                        }
+                    }
+                    var myData = JSON.parse(e.data);
+                    myData["attendees_array"] = attendees_to_send;
+                    $.ajax({
+                        type: "POST",
+                        url: "/check_api",
+                        data: {
+                            jsonData: JSON.stringify(myData)
+                        },
+                        success: function() {
+                            if (myData.api_type === 'wolfram') {
+                                // append wolfram api html reply to the json we are saving in redis (so we can click again)
+                                $.ajax({
+                                    type: "GET",
+                                    url: "/get_api_html",
+                                    dataType: "json",
+                                    success: function(api) {
+                                        // add wolfram html to the json object so we can save it later
+                                        myData['api_html'] = api['result'];
+                                        console.log("real api type: ",myData['api_type']);
+                                        myData['api_type'] = api['real_api_type'];
+                                        sendBennyReply(JSON.stringify(myData));
+                                    }
+                                });
+                            }
+                            else if(myData.api_type === 'google_docs'){
+                                create_new_document(myData);
+                            }
+                             else {
+                                sendBennyReply(e.data);
+                            }
+                        }
+                    });
+                }
+            });
+        } catch (e) {
+            console.log("data from server not JSON");
+        }
+    }
+    ready_to_record = 1;
+    recordSpeech.recording = 0;
+    count_b = 0;
+}
+
+
+
+
 // With Turbolinks pages will change without a full reload, so you can't rely on the usual window.beforepageunload event. Instead Turbolinks fires events on document to provide hooks into the lifecycle of the page.
 $(document).on("page:fetch", function() {
     console.log('turbolinks page fetch event');
@@ -77,7 +220,6 @@ function sendBennyReply(json_api_reply) {
                     }
                 });
                 if (json_api_reply['api_type'] != "No Result" && json_api_reply['api_type'] != "Blank Query") {
-                    console.log("saving this json to redis: ", json_api_reply)
                     appendNewBennyReply({
                         name: "<%= current_user.name %>",
                         data: json_api_reply,
@@ -89,12 +231,7 @@ function sendBennyReply(json_api_reply) {
     });
 
 }
-// click the send button when enter key is pressed
-function checkEnterKey(event) {
-    if (event.keyCode == 13) {
-        $sendButton.click();
-    }
-}
+
 
 function appendNewIM_text_only(message_string) {
     $chatBody.append(message_string);
@@ -120,12 +257,8 @@ function appendNewBennyReply(options) {
     <% image_name = "" %>
 
     json_murph = JSON.parse(options.data);
-    console.log(json_murph.api_type);
+    console.log("json_murph api type: ",json_murph.api_type);
     var name = truncation(options.name, 14);
-    $('#progressbar').hide();
-    $('.progress-label').hide();
-    $('#record-query-button').show();
-    $('.svg-box').show();
 
     var query;
     if (json_murph.query) {
@@ -134,10 +267,14 @@ function appendNewBennyReply(options) {
         query = query.split(" \u0027").join("'")
     }
 
-    if (json_murph.api_type != 'Blank Query') {
-        benny_note_number = benny_note_number + 1;
-        $('#benny-help-temp').remove();
-    }
+    // if (json_murph.api_type != 'Blank Query') {
+    //     benny_note_number = benny_note_number + 1;
+    //     $('#benny-help-temp').remove();
+    // }
+
+    benny_note_number = benny_note_number + 1;
+    $('#benny-help-temp').remove();
+
     if (json_murph.api_type == 'calendar' || json_murph.api_type == 'calendar_show'){
 
         <% image_name = "googz.ico" %>
@@ -146,8 +283,9 @@ function appendNewBennyReply(options) {
             summary = "No summary."
         }
         else {
-            summary = truncation(json_murph.summary, 40);
-
+            if (json_murph.api_type != 'calendar_show') {
+                summary = truncation(json_murph.summary, 40);
+            }
         }
         var key_array = options.key.split(":");
         var key_array_slice = key_array.slice(0, 4);
@@ -208,7 +346,7 @@ function appendNewBennyReply(options) {
             query = truncation(json_murph.query, 40);
 
         }
-        
+
         var key_array = options.key.split(":");
         var key_array_slice = key_array.slice(0, 4);
         var key = key_array_slice.join(":");
@@ -246,9 +384,11 @@ function appendNewBennyReply(options) {
                             benny_item_link_id + '> Document created by Benedict at '+ json_murph['current_time'] + 
                             ' </a>' +
                             '</div>');
-
     }
-    else if (json_murph.api_type == 'No Result') {
+    else if(json_murph.api_type == 'wikipedia'){
+        console.log("woooo, wolfram to wikipedia transition worked!");
+    }
+    else if (json_murph.api_type == 'No Result' || json_murph.api_type == 'Blank Query') {
 
         $('.benny-list-body').append('<div class="benny-item benny-no-result" id=' + benny_item_id +'>' +
                         '<a class="glyphicon glyphicon-question-sign" id="benny-query-question-mark" onmouseover="hoverHelp()"></a>' +
@@ -277,6 +417,12 @@ function appendNewBennyReply(options) {
         scrollTop: height
     }, 'fast');
 
+
+    $('#progressbar').hide();
+    $('.progress-label').hide();
+    $('#record-query-button').show();
+    $('.svg-box').show();
+    text_query_flag = 0;
 }
 
 // media object to append to the page each time there's a new chat
@@ -298,7 +444,9 @@ function mediaObjectIM(user, uid, token, message) {
     });
 }
 
-
+// this is a function to mirror the ruby truncate
+// function so that queries do not overflow the benny
+// query divs
 function truncation(string, len){
     if (string.length > len + 3){
         var new_string;
@@ -315,6 +463,8 @@ function truncation(string, len){
     }
 }
 
+// this is a function that lights up the question mark in
+// the blank and no query divs
 function hoverHelp(){
     $('#help-icon2').css('color', '#FFFFFF');
     $("#benny-query-question-mark").hover( function(){
@@ -324,10 +474,13 @@ function hoverHelp(){
         });
 }
 
-
+// This is the interval that checks whether or not benny
+// notifications need to be hidden
 var benny_notification_interval = setInterval(bennyNotificationNumber, 300);
 
-
+// this is the function that is called by the interval
+// that actually does the hiding of the benny notification
+// number
 function bennyNotificationNumber(){
     if (benny_note_number <= 0 ) {
          $('.notification-number').hide();
