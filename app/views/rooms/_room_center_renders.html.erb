@@ -203,6 +203,8 @@ function clickable(me) {
 
 
 
+
+
                     // adds the word render to the unique id of the div based on
                     // the info stored in its redis key
                     var render_item_id = "render" + div_id;
@@ -224,7 +226,7 @@ function clickable(me) {
                     // appends the wolframdiv to the room layout table.
                     // this makes it appear in the center of the page
                     $('.room-layout-table').append(wolframdiv);
-                    var blah = '<style>{content:url("http://www.wolframalpha.com/compress/css/Alpha-201504231127-concatenated-min.css");}</style>'
+
                     $('#wolfram-iframe').contents().find('html').html(api_html);
                     $('#wolfram-iframe').contents().find('body').prepend('<form action="#"><fieldset id="input" class="wolfram-text-box"' +
                       ' style="position: relative;margin-bottom: 48px;margin-top: 10px;"><input id="i" name="i" maxlength="200"' +
@@ -244,7 +246,7 @@ function clickable(me) {
                     // first taking wolfram's css from their page
                     // note: this has to be dynamic, because our styling does not
                     // apply to these elements (iframe bs)
-                    $('#wolfram-iframe').contents().find('head').html('<link href="http://www.wolframalpha.com/compress/css/Alpha-201504231127-concatenated-min.css" rel="stylesheet" />');
+                    $('#wolfram-iframe').contents().find('head').html('<%= stylesheet_link_tag "#{Rails.root}/vendor/assets/stylesheets/wolfram_css.css" %>');
                     $('#wolfram-iframe').contents().find('#logo-wrapper').css('top','4px');
                     $('#wolfram-iframe').contents().find('#logo-wrapper').css('position','relative');
                     $('#wolfram-iframe').contents().find('html').css('min-width', '300px');
@@ -340,7 +342,8 @@ function wolfram_text(render_item_id) {
   // first taking wolfram's css from their page
   // note: this has to be dynamic, because our styling does not
   // apply to these elements (iframe bs)
-  $('#wolfram-iframe').contents().find('head').html('<link href="http://www.wolframalpha.com/compress/css/Alpha-201504231127-concatenated-min.css" rel="stylesheet" />');
+  
+  $('#wolfram-iframe').contents().find('head').html('<%= stylesheet_link_tag "#{Rails.root}/vendor/assets/stylesheets/wolfram_css.css" %>');
   $('#wolfram-iframe').contents().find('#logo-wrapper').css('top','4px');
   $('#wolfram-iframe').contents().find('#logo-wrapper').css('position','relative');
   $('#wolfram-iframe').contents().find('html').css('min-width', '300px');

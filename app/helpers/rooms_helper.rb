@@ -219,9 +219,7 @@ module RoomsHelper
 
 
 	def query_wikipedia(json_hash)
-
 		page = Wikipedia.find( json_hash['query'] )
-
 		wiki_hash = Hash.new
 		wiki_hash['title'] = page.title
 		wiki_hash['content'] = page.content
@@ -233,7 +231,6 @@ module RoomsHelper
 		wiki_hash['image_descriptionurls'] = page.image_descriptionurls
 		wiki_hash['coordinates'] = page.coordinates
 		wiki_hash['templates'] = page.templates
-
 		puts wiki_hash
 		wiki_hash
 	end

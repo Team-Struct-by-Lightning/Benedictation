@@ -10,4 +10,5 @@ Rails.application.config.assets.version = '1.0'
 # Rails.application.config.assets.precompile += %w( search.js )
 #Rails.application.config.assets.precompile += %w( google.js )
 #Rails.application.config.assets.precompile += %w( audioRecorder.js.erb )
-#Rails.application.config.assets.precompile += %w( callbackManager.js )
+Rails.application.config.assets.precompile += %w( wolfram_css.css )
+
