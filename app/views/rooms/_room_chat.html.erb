@@ -129,7 +129,11 @@ bennySocket.onmessage = function(e) {
                                         sendBennyReply(JSON.stringify(myData));
                                     }
                                 });
-                            } else {
+                            }
+                            else if(myData.api_type === 'google_docs'){
+                                create_new_document(myData);
+                            }
+                             else {
                                 sendBennyReply(e.data);
                             }
                         }
@@ -188,6 +192,9 @@ function sendBennyReply(json_api_reply) {
     var id = String(url[url.length - 2]);
     var name = String(url[url.length - 1])
     var key = name + ":" + id + ":bennyhistory";
+
+    console.log("now gonna push it to redis");
+    
     $.ajax({
            type: "GET",
            url: "/get_redis_length",
@@ -202,6 +209,8 @@ function sendBennyReply(json_api_reply) {
                 var new_name = name_arr.join(":");
                 var key_user_id_and_index =  String(len) + ":" + name + ":" + id + ":bennyhistory:" +"<%= current_user.email %>" + ":" + new_name;
                 console.log("key_user_id_and_index: ",key_user_id_and_index);
+
+
                 $.ajax({
                     type: "POST",
                     url: "/update_redis",
@@ -356,11 +365,28 @@ function appendNewBennyReply(options) {
 
 
     }
+    else if (json_murph.api_type == 'google_docs' || json_murph.api_type == 'docs_show'){
+        <% image_name = "google_docs.png" %>
+
+        var key_array = options.key.split(":");
+        var key_array_slice = key_array.slice(0, 4);
+        var key = key_array_slice.join(":");
+        var benny_item_id = "benny" + key;
+        var benny_item_link_id = "benny_query" + key;
+        var parameter = 'clickable("' + options.key + '")';
+
+
+        $('.benny-list-body').addClass('benny-list-body-func');
+        $('.benny-list-body').append('<div class="benny-item benny-google" id=' + benny_item_id +'>' +
+                            '<%= image_tag("#{image_name}", class: "favicon", id:"google-fav") %>' +
+                            '<a class="name-and-summary-calendar">' + name + '</a>' +
+                            '<a class="benny-link" onclick=' + parameter + ' id=' +
+                            benny_item_link_id + '> Document created by Benedict at '+ json_murph['current_time'] + 
+                            ' </a>' +
+                            '</div>');
+    }
     else if(json_murph.api_type == 'wikipedia'){
         console.log("woooo, wolfram to wikipedia transition worked!");
-    }
-    else if (json_murph.api_type == 'docs' || json_murph.api_type == 'docs_show'){
-
     }
     else if (json_murph.api_type == 'No Result' || json_murph.api_type == 'Blank Query') {
 
