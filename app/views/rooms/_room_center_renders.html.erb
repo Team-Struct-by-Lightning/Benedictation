@@ -246,7 +246,7 @@ function clickable(me) {
                     // first taking wolfram's css from their page
                     // note: this has to be dynamic, because our styling does not
                     // apply to these elements (iframe bs)
-                    $('#wolfram-iframe').contents().find('head').html('<%= stylesheet_link_tag "#{Rails.root}/vendor/assets/stylesheets/wolfram_css.css" %>');
+                    $('#wolfram-iframe').contents().find('head').html('<%= stylesheet_link_tag "#{Rails.root}/vendor/assets/stylesheets/wolfram_css" %>');
                     $('#wolfram-iframe').contents().find('#logo-wrapper').css('top','4px');
                     $('#wolfram-iframe').contents().find('#logo-wrapper').css('position','relative');
                     $('#wolfram-iframe').contents().find('html').css('min-width', '300px');
@@ -334,7 +334,7 @@ function wolfram_text(render_item_id) {
                       '     </li><li class="inputtab inputtab-genfiles" data-tab="genfiles"><a href="#"></a>   ' +
                       '  </li></ul></div><noscript>&amp;lt;input type="hidden" name="asynchronous" value="false" /&amp;gt;</noscript> ' +
                       ' <a id="star-inputfield" class="star-input star-disabled" href="#" style="display: none;"></a><div id="equal" title="compute"></div></fieldset></form>');
-
+   
   // this prepends the title/logo to the body of the iframe
   $('#wolfram-iframe').contents().find('body').prepend('<div id="logo-wrapper" class="ir normalLogo"><a href="/" class="ir normalLogo" id="logo" title="Wolfram|Alpha Computational Knowledge Engine">Wolfram|Alpha Computational Knowledge Engine</a></div>');
 
@@ -342,7 +342,7 @@ function wolfram_text(render_item_id) {
   // first taking wolfram's css from their page
   // note: this has to be dynamic, because our styling does not
   // apply to these elements (iframe bs)
-  
+
   $('#wolfram-iframe').contents().find('head').html('<%= stylesheet_link_tag "#{Rails.root}/vendor/assets/stylesheets/wolfram_css.css" %>');
   $('#wolfram-iframe').contents().find('#logo-wrapper').css('top','4px');
   $('#wolfram-iframe').contents().find('#logo-wrapper').css('position','relative');
