@@ -243,7 +243,8 @@ function appendNewBennyReply(options) {
                             '<%= image_tag("#{image_name}", class: "favicon", id:"google-fav") %>' +
                             '<a class="name-and-summary-calendar">' + name + '</a>' +
                             '<a class="benny-link" onclick=' + parameter + ' id=' +
-                            benny_item_link_id + '> View new document </a>' +
+                            benny_item_link_id + '> Document created by Benedict at '+ json_murph['current_time'] + 
+                            ' </a>' +
                             '</div>');
 
     }

@@ -46,7 +46,7 @@ function create_new_document(myData){
         mm='0'+mm
     } 
 
-    today = mm+'/'+dd+'/'+yyyy;
+    today = mm+'/'+dd+'/'+yyyy + ' ' + today.getHours() + ":" + today.getMinutes();
     return today;
   }
   function makeRequest(){
@@ -54,7 +54,7 @@ function create_new_document(myData){
     var url = (window.location.pathname).split("/");
     var id = String(url[url.length - 2]);
     
-    var group_name = 'Group #' + String(url[url.length - 1]) + '\'s meeting on ' + Date();
+    var group_name = 'Group #' + String(url[url.length - 1]) + '\'s meeting on ' + goodDate();
 
 
     var request = gapi.client.request({
@@ -70,6 +70,8 @@ function create_new_document(myData){
     request.execute(function(resp) { 
       //console.log(resp.alternateLink);
       myData['doc_link'] = resp.alternateLink;
+      var today = new Date();
+      myData['current_time'] = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
       sendBennyReply(JSON.stringify(myData));
     });
   }
