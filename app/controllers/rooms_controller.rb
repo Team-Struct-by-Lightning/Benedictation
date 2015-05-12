@@ -9,8 +9,8 @@ include RoomsHelper
 
   def api_help
   	json_string = params[:jsonData]
-    blah = choose_api(json_string)
-    render :json => blah
+    return_json= choose_api(json_string)
+    render :json => return_json
   end
 
   # do we need an additional function so that we always get wolfram due to requerying wolfram via

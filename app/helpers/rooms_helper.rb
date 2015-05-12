@@ -60,6 +60,8 @@ module RoomsHelper
 		json_hash = string_to_json(json)
 		puts "@@@Original hash from python server: " + json_hash['api_type']
 
+		return_json = "{}"
+
 		case json_hash['api_type']
 		when 'google'
 			puts "We will do a google search"
@@ -75,8 +77,12 @@ module RoomsHelper
 			json_hash #return unmodified json hash 
 		when 'schedule_suggest'
 			logger.error 'We will find a time that works'
+<<<<<<< HEAD
 			json_event = schedule_json(json_hash)
 			json_hash # return unmodified json hash (for now, EVAN edit this)
+=======
+			return_json = schedule_json(json_hash)
+>>>>>>> rough div and center render for suggested times
 		when 'google_docs'
 			puts "We will access the google docs api!"
 			json_hash #return unmodified json hash
@@ -93,6 +99,8 @@ module RoomsHelper
 		else
 			"NOTHING HAPPENED!?!?!?!?!??!?!??!?!"
 		end
+
+		return return_json
 	end
 
 	def query_wolfram_alpha(json_hash)
