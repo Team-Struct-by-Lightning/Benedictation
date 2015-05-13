@@ -82,7 +82,11 @@ module RoomsHelper
 			json_hash # return unmodified json hash (for now, EVAN edit this)
 =======
 			return_json = schedule_json(json_hash)
+<<<<<<< HEAD
 >>>>>>> rough div and center render for suggested times
+=======
+			$redis.set("#{current_user.id}:schedule_suggestions",return_json.to_s)
+>>>>>>> Redis-ify schedule suggestion
 		when 'google_docs'
 			puts "We will access the google docs api!"
 			json_hash #return unmodified json hash

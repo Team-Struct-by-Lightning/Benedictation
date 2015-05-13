@@ -154,6 +154,13 @@ function clickable(me) {
                       var title = "Suggested times";
                       var suggestions = item['suggested_times'];
 
+                      //suggestionOptions = '<div>'
+                      //for(suggestion in suggestions) {
+                      //  if suggestions.hasOwnProperty(suggestion) {
+                      //    suggestionOptions += '<>'
+                      //  }
+                      //}
+
                       $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id +'>' +
                         '  <div class="calendar-border"> <h1 class="calendar-title">' + title + '</h1> <a class="glyphicon glyphicon-remove" id="remove_item_id"></a>' +
                         '  <div> ' + JSON.stringify(suggestions) + '</div></div></div>');

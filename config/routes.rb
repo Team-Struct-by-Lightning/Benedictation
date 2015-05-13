@@ -20,6 +20,11 @@ Rails.application.routes.draw do
   get '/get_redis_item' => "groups#get_redis_item"
   get '/get_redis_length' => "groups#get_redis_length"
   post '/clear_redis_item' => "groups#clear_redis_item"
+<<<<<<< HEAD
+=======
+  get '/get_api_html' => "rooms#get_api_html"
+  get '/get_suggested_times' => "rooms#get_suggested_times"
+>>>>>>> Redis-ify schedule suggestion
 
   resources :sessions, only: [:create, :destroy]
   resource :home, only: [:show]
