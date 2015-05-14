@@ -1,7 +1,7 @@
 /*  records speech while user holds down ctrl-b
     98 = b, ctrlKey = ctrl, 17 = ctrl
 */
-var recognizer, recorder, speechRegRec, callbackManager, audioContext;
+var recognizer, speechRecorder, callbackManager, audioContext;
 var recorderReady = recognizerReady = false;
 
 // This is the variable that listens for the button being in the
@@ -49,11 +49,9 @@ $('#stop-query-button').click(function() {
 
 
 
-// Record speech for 10s and export it as .wav to a server every 1s.
+// This function starts the speech recorder, and wraps it to ensure
+// that speechRecorder.record() is not called when it is already recording.
 function recordSpeech() {
-    // Some JavaScript trickery: functions are objects, so they can have variables.
-    // In this case we simulate a "private static" variable indicating whether recording is already started or not;
-    // if it is, we don't do anything.
     if (typeof recordSpeech.recording === 'undefined') { // If it's not yet initialized:
         recordSpeech.recording = 0; // Initialize it.
     }
@@ -62,13 +60,11 @@ function recordSpeech() {
     }
 
     // starts speechrec recorder
-    speechRegRec.record();
+    speechRecorder.record();
 
     // sets the flag indicating we're recording.
     recordSpeech.recording = 1;
 }
-
-
 
 
 function tell(evt) {
@@ -155,12 +151,12 @@ function tell(evt) {
             count_trigger = 2;
 
             // stops recording
-            speechRegRec.stop();
+            speechRecorder.stop();
 
             // send the speech as a wav blob
-            speechRegRec.exportWAV(function(blob) {
-                speechRegRec.clear();
-                websocket.send(blob);
+            speechRecorder.exportWAV(function(blob) {
+                speechRecorder.clear();
+                speechRecSocket.send(blob);
                 console.log("sending blob: ", blob);
             });
         }
