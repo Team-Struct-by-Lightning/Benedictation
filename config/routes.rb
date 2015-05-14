@@ -8,7 +8,6 @@ Rails.application.routes.draw do
   get 'video' => 'static_pages#video'
   get 'newgroup' => 'groups#new'
   get 'giraffe' => 'static_pages#giraffe'
-  get 'speechrec' => 'static_pages#speechrec'
   get '/room/:id/:name' => 'rooms#room'
   get 'newuser/:id/' => 'groups#newuser'
   post 'newuser/:id/', :to => "groups#adduser"

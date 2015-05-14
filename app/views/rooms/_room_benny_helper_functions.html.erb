@@ -2,9 +2,10 @@
 // and the API request handler in the Rooms controller.
 // These are moved here to help keep _room_icecomm and _room_chat specific to icecomm and chat, respectively.
 
-// This function takes a (modified) JSON object as returned from the Python server,
-// and sends it to 
-var postAPIRequest = function(data) {
+// This function takes a JSON object as returned from the Python server,
+// and sends it to the API request handler in the Rooms controller.
+// In some cases (wolfram, schedule suggest) it must modify the JSON before sending it, with data fetched from Redis.
+var postAPIRequest = function(myData) {
     $.ajax({
         type: "POST",
         url: "/check_api",
@@ -27,8 +28,20 @@ var postAPIRequest = function(data) {
                     }
                 });
             }
-            else if(myData.api_type === 'google_docs'){
+            else if(myData.api_type === 'google_docs') {
                 create_new_document(myData);
+            }
+            else if(myData.api_type === 'schedule_suggest') {
+                $.ajax({
+                    type: "GET",
+                    url: "/get_suggested_times",
+                    dataType: "json",
+                    success: function(api) {
+                        // add wolfram html to the json object so we can save it later
+                        myData['suggested_times'] = api['result'];
+                        sendBennyReply(JSON.stringify(myData));
+                    }
+                });
             }
             else {
                 sendBennyReply(e.data);
@@ -74,7 +87,7 @@ var onBennyReply = function(e) {
                 var myData = JSON.parse(e.data);
                 myData["attendees_array"] = attendees_to_send;
 
-                postAPIRequest(JSON.stringify(myData));
+                postAPIRequest(myData);
             }
         });
     } catch (e) {

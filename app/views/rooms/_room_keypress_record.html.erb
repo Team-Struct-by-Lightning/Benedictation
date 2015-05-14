@@ -156,7 +156,7 @@ function tell(evt) {
             // send the speech as a wav blob
             speechRecorder.exportWAV(function(blob) {
                 speechRecorder.clear();
-                speechRecRwebsocket.send(blob);
+                speechRecSocket.send(blob);
                 console.log("sending blob: ", blob);
             });
         }

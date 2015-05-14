@@ -76,7 +76,7 @@ comm.on('local', function(options) {
     }, 'fast');
     // Initialize our new recorder with its own copy of the local media stream
     var input = audioContext.createMediaStreamSource(localAudioStream);
-    speechRegRec = new Recorder(input);
+    speechRecorder = new Recorder(input);
 });
 
 comm.on('connected', function(options) {
