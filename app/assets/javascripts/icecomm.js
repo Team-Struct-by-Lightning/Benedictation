@@ -5904,7 +5904,7 @@ Caller.prototype._onmessage = function(data) {
 Caller.prototype.createStreamOptions = function() {
   var stream = this.stream;
   if (b.isChrome() && this.source === 'local') {
-    stream = new MediaStream(this.stream.getVideoTracks());
+    stream = new MediaStream(this.stream);
   }
 
   return {
