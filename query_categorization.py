@@ -49,6 +49,14 @@ import matplotlib.path as path
 #index 4: where is in query
 #index 5: who is in query
 #index 6: has fewer than 5 words
+#index 7: FILL THESE IN BECAUSE WE USE THEM
+#index 8:
+#index 9:
+#index 10:
+#index 11:
+#index 12:
+#index 13:
+
 
 
 #training set of strings
@@ -136,7 +144,7 @@ def percent_to_index(percentage, length_of_array):
 
 
 def query_to_array(query):
-	temp_array = np.array([0 for i in range(7)])
+	temp_array = np.array([0 for i in range(14)])
 #call list of functions to populate the array
 ####
 #NEW
@@ -147,7 +155,25 @@ def query_to_array(query):
 #index 4: where is in query
 #index 5: who is in query
 #index 6: has fewer than 5 words
-	#print query + "\n"
+#print query + "\n"
+# makes it into an array
+	query_array = query.split(' ')
+	for i in range(len(query_array)):
+		if query_array[i] in schedule_nouns:
+			temp_array[7] = 1
+		if query_array[i] in schedule_verbs:
+			temp_array[8] = 1
+		if query_array[i] in doc_nouns:
+			temp_array[9] = 1
+		if query_array[i] in doc_verbs:
+			temp_array[10] = 1
+		if query_array[i] in calendar_nouns:
+			temp_array[11] = 1
+		if query_array[i] in group_prps:
+			temp_array[12] = 1
+		if query_array[i] in group_nouns:
+			temp_array[13] = 1
+#checks substings and length
 	if "what" in query:
 		temp_array[0] = 1
 	if "what" in query:
@@ -247,12 +273,13 @@ def predictor_validation_list_to_plot(num_tests, training_set, test_set_percenta
 # update the view limits
 	ax.set_xlim(left[0], right[-1])
 	ax.set_ylim(bottom.min(), top.max())
+	plt.show()
 
 
-predictor_validation_list_to_plot(100, training_set, .8)
+predictor_validation_list_to_plot(1000, training_set, .7)
 
 
-make_single_predictor(training_set, .8)
+#make_single_predictor(training_set, .8)
 
 #EXAMPLE usage of BernoulliNB
 # X = np.random.randint(2, size=(6, 100))
