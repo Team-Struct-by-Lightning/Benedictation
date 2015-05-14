@@ -36,6 +36,7 @@ module ScheduleHelper
 		url = request.referrer.split("/")	# Get the URL of where the request CAME from, not the url that was requested.
         redis_key = url[-1].to_s + ":" + url[-2].to_s + ":emails";
 		attendees = $redis.lrange(redis_key,0,-1)
+		logger.error "@@@@@@@@@@@@ ATTENDEES: " + attendees.to_s
 
 		# Get the availability array for all users.
 		# It seems like the easiest/fastest way is setting it to the availability of the first user and then ANDing that with all the others
