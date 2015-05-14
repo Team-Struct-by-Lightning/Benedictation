@@ -200,6 +200,7 @@ def schedule(element, tree):
 def schedule_suggest(cal_parse, words):
 	starttime = None
 	endtime = None
+	print "In schedule_suggest"
 	if cal_parse[1] == 0:		# No date or time
 		if "this week" in words:
 			starttime = datetime.today()

@@ -31,12 +31,44 @@ module ScheduleHelper
 	end
 
 	def schedule_json(json_hash)
-		user_availability = get_user_availability(json_hash['start']['datetime'],json_hash['end']['datetime'])
+
+		# Get the list of all users currently in the room from Redis.
+		url = request.referrer.split("/")	# Get the URL of where the request CAME from, not the url that was requested.
+        redis_key = url[-1].to_s + ":" + url[-2].to_s + ":emails";
+		attendees = $redis.lrange(redis_key,0,-1)
+
+		# Get the availability array for all users.
+		# It seems like the easiest/fastest way is setting it to the availability of the first user and then ANDing that with all the others
+		# Since they're nested arrays you have to do a nested iteration, which is annoying.
+		# Bit vectors may be better/faster, though less readable - put that on the backlog
+		user_availabilities = {}
+		user_availabilities[attendees[0]] = get_user_availability(User.find_by_email(attendees[0]), json_hash['start']['datetime'],json_hash['end']['datetime'])
+		overall_availability = user_availabilities[attendees[0]]
+		attendees.drop(1).each do |attendee| 
+			user = User.find_by_email(attendee)
+			user_availability = get_user_availability(user, json_hash['start']['datetime'],json_hash['end']['datetime'])
+			user_availabilities[attendee] = user_availability
+
+
+			overall_availability.each_with_index do |day, day_index|
+				day.each_with_index do |timeslot, time_index|
+					overall_availability[day_index][time_index] &&= timeslot
+				end	
+			end	
+		end
+		logger.error user_availabilities
+		logger.error "Overall availability: " + overall_availability.inspect
+		
+		# Convert this array to a list of free-time blocks, in JSON format, for returning to the view.
 		start_range = DateTime.parse(json_hash['start']['datetime'])
-		return available_times_json(user_availability, start_range)
+		return available_times_json(overall_availability, start_range)
 	end 
 
-	def get_user_availability(start_str, end_str)
+	# Get the availability for one user as an array of booleans.
+	# user: Rails user object
+	# start_str: DateTime formatted as string
+	# end_str: DateTime formatted as string
+	def get_user_availability(user, start_str, end_str)
 		logger.error "=== In get_available_times ==="
 
 		time_resolution = 30.minutes	# this is a cool Rails thing
@@ -48,8 +80,9 @@ module ScheduleHelper
 		client.authorization.client_id = GoogleAPIKeys["app_id"]
 		client.authorization.client_secret = GoogleAPIKeys["secret"]
 		client.authorization.scope = "https://www.googleapis.com/auth/calendar"
-		client.authorization.refresh_token = current_user.refresh_token
-		client.authorization.access_token = current_user.oauth_token
+
+		client.authorization.refresh_token = user.refresh_token
+		client.authorization.access_token = user.oauth_token
 		if client.authorization.refresh_token && client.authorization.expired?
 		  client.authorization.fetch_access_token!
 		end
