@@ -142,22 +142,107 @@ def change_api_type_to_int(class_type):
 def percent_to_index(percentage, length_of_array):
 	return int(percentage*length_of_array)
 
+def interpret_for_scikit(sentences, temp_array):
+	try:
+		for sentence in sentences:
+			if(len(sentence.split()) <= 1):
+				words = sentences[0]
+				text = '{"api_type": "google", \
+			 		"query": "' + words + '"}'
+				return text
+
+			sentence = oclock_remover(sentence)
+
+			tree = parser.parse(sentence)
+			print tree
+
+			for element in [tree] + [e for e in tree]: # Include the root element in the for loop
+
+				if 'VP' in element.label() or 'SQ' in element.label():
+					for verb_subtree in element.subtrees():
+
+						if 'VB' in verb_subtree.label() \
+						and any(x in verb_subtree.leaves() for x in doc_verbs):
+							for subtree in element.subtrees():
+									if 'NP' in subtree.label() and any(x in subtree.leaves() for x in doc_nouns):
+										print 'Interpreting as doc request'
+										temp_array[0] = 1
+										return
+
+									if 'NP' in subtree.label() and any(x in subtree.leaves() for x in calendar_nouns):
+										print 'Interpreting as calendar request'
+										temp_array[1] = 1
+										return
+
+						if 'VB' in verb_subtree.label() \
+						and any(x in verb_subtree.leaves() for x in schedule_verbs):
+
+							print "Interpreting as schedule request"
+							return schedule_for_scikit(element, tree)
+
+
+				if "SBAR" in element.label():
+					for subtree in element.subtrees():
+						if "W" in subtree.label():
+
+							# TODO: Implement logic here to catch "when"-questions related to scheduling.
+
+							print "Interpreting as Wolfram query"
+							return wolfram_for_scikit(element,temp_array)
+
+def schedule_for_scikit(element, tree, temp_array):
+# Find the "schedule word" in a NP, if one exists
+	schedule_word = "Meeting"
+	for subtree in element.subtrees():
+		if 'NP' in subtree.label() and any(x in subtree.leaves() for x in schedule_nouns):
+			for x in subtree.leaves():
+				if x in schedule_nouns:
+					schedule_word = x
+
+
+
+	words = ' '.join(element.leaves())
+	words = am_pm_adder(words)
+
+	cal_parse = cal.parse(words)
+	print cal_parse
+	if cal_parse[1] == 0 or cal_parse[1] == 1:
+		starttime, endtime = schedule_suggest(cal_parse, words)
+		starttime = starttime.strftime('%Y-%m-%dT%H:%M:%S')
+		endtime   = endtime.strftime('%Y-%m-%dT%H:%M:%S')
+		api_type  = "schedule_suggest"
+		temp_array[3] = 1
+	else:
+		starttime, endtime = time_converter(cal_parse[0])
+		api_type = "calendar"
+		temp_array[4] = 1
+
+	return
+
+def wolfram_for_scikit(element, temp_array):
+	words = ' '.join(element.leaves())
+
+	temp_array[2] = 1
+	return
 
 def query_to_array(query):
 	temp_array = np.array([0 for i in range(14)])
-#call list of functions to populate the array
+# call list of functions to populate the array
 ####
-#NEW
-#index 0: what is in query
-#index 1: when is in query
-#index 2: why is in query
-#index 3: how is in query
-#index 4: where is in query
-#index 5: who is in query
-#index 6: has fewer than 5 words
-#print query + "\n"
+# NEW
+# index 0: what is in query
+# index 1: when is in query
+# index 2: why is in query
+# index 3: how is in query
+# index 4: where is in query
+# index 5: who is in query
+# index 6: has fewer than 5 words
+# print query + "\n"
 # makes it into an array
 	query_array = query.split(' ')
+
+	interpret_for_scikit([query])
+	'''
 	for i in range(len(query_array)):
 		if query_array[i] in schedule_nouns:
 			temp_array[7] = 1
@@ -188,6 +273,7 @@ def query_to_array(query):
 		temp_array[5] = 1
 	if len(query) < 5:
 		temp_array[6] = 1
+		'''
 	return temp_array
 
 
