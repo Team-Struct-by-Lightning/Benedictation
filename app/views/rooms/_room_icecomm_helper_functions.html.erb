@@ -28,7 +28,6 @@ comm.on('local', function(options) {
     localAudioStream = options.rawStream;
     console.log("options: ",options);
     localVideo.muted = true;
-    console.log(localAudioStream.getAudioTracks());
     console.log("Obtained user camera/microphone approval");
     // fill in chat history from redis
     var chat_history;
