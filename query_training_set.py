@@ -167,5 +167,6 @@ training_set = [("Let's meet up on Friday at 3 p.m.", "calendar"),
 								("how often should I go to the dentist", "google"),
 								("how do I make friends", "google"),
 								("do girls fart", "google"),
+								("best hangover cures", "google"),
 								("how do I ask out Becky from fourth period", "google")]
 
