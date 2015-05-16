@@ -9,8 +9,7 @@ include RoomsHelper
 
   def api_help
   	json_string = params[:jsonData]
-  	choose_api(json_string)
-  	render nothing: true
+  	render :json => choose_api(json_string)
   end
 
   # this function returns a json object containing the wolfram/wiki html to put in the div, and the augmented api type
