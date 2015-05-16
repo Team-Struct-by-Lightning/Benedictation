@@ -168,5 +168,10 @@ training_set = [("Let's meet up on Friday at 3 p.m.", "calendar"),
 								("how do I make friends", "google"),
 								("do girls fart", "google"),
 								("best hangover cures", "google"),
+								("what is the meaning of wife", "google"),
+								("why do men have nipples", "google"),
+								("why does it hurt when I pee", "google"),
+								("what is Jennifer Lawrence's relationship status", "google"),
+								("where in the world is Carmen Sandiego", "google"),
 								("how do I ask out Becky from fourth period", "google")]
 
