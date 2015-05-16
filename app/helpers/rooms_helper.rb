@@ -60,32 +60,34 @@ module RoomsHelper
 		hash
 	end
 
+	# each of these cases must return either the json originally passed in from the python server, or a modified version of it reflecting any needed api_type changes and additional attributes such as api_html for rendering wolfram and wiki. This way we don't have to mess with redis or ajax get/posts.
 	def choose_api(json)
 		json_hash = string_to_json(json)
-		puts json_hash['api_type']
+		puts "@@@Original hash from python server: " + json_hash['api_type']
 
 		case json_hash['api_type']
 		when 'calendar'
 			puts "We will access the calendar api!"
 			json_event = calendar_json(json_hash)
 			create_calendar_event(json_event)
+			json_hash #return unmodified json hash
 		when 'calendar_show'
 			puts "We will show the calendar"
 			#json_event = calendar_show_json(json_hash)
+			json_hash #return unmodified json hash 
 		when 'schedule_suggest'
 			puts 'We will find a time that works'
 			json_event = schedule_json(json_hash)
+			json_hash # return unmodified json hash (for now, EVAN edit this)
 		when 'google_docs'
 			puts "We will access the google docs api!"
+			json_hash #return unmodified json hash
 		when 'wolfram'
-			# puts "We will access the wolfram alpha api!"
-			# query_wolfram_alpha(json_hash)
-			query_wikipedia(json_hash)
-		when 'youtube'
-			puts "We will access the youtube api!"
+			puts "We will access the wolfram alpha api!"
+			query_wolfram_alpha(json_hash) # returns modified json hash
 		when 'wikipedia'
 			puts "We will access the wikipedia api!"
-			query_wikipedia(json_hash)
+			query_wikipedia(json_hash) # returns modified json hash
 		else
 			"NOTHING HAPPENED!?!?!?!?!??!?!??!?!"
 		end
@@ -191,7 +193,7 @@ module RoomsHelper
 		if doc.xpath("//queryresult").attr("success").to_s == 'false' or doc.xpath('//*[@title="Definition"]').length != 0
 			#get wiki hash if any of the above were true
 			json_hash = query_wikipedia(json_hash)
-			# json_hash['api_type'] = 'wikipedia'
+			json_hash['api_type'] = 'wikipedia'
 		# otherwise the api type is definitely wolfram
 		else
 			# grab the wolfram html
@@ -222,8 +224,8 @@ module RoomsHelper
 			api_html = api_html.split("\n").join() # get rid of newline characters
 			json_hash['api_html'] = api_html
 		end
-		json_hash
 		puts "@@@@@@@@@WIKI@@@@@@@@@@@@@@@@@@" + json_hash['api_html'].to_s
+		json_hash
 	end
 
 	def create_calendar_event(json)
