@@ -25,3 +25,14 @@ training_set = [("Let's meet up on Friday at 3 p.m.", "calendar"),
 								("Where is a good place to get Chinese food", "google"),
 								("Random pokemon curve", "wolfram"),
 								("Open up a document", "google_doc")]
+
+
+								("what is the weather", "wolfram")
+								("what is the weather in New York", "wolfram")
+								("what is the weather here", "wolfram")
+								("what is the weather tomorrow", "wolfram")
+								("what is the weather next week", "wolfram")
+
+								("what is the phase of the moon", "wolfram")
+								("what is the phase of the moon tomorrow", "wolfram")
+								("what is the phase of the moon next week", "wolfram")
