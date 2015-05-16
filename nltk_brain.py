@@ -245,6 +245,22 @@ def run_tests(filename):
 		i += 1
 	testfile.close()
 
+
+def check_apis(filename):
+	testfile = open(filename, 'r')
+	i = 0
+	for line in testfile:
+		
+		result = interpret([line])
+		word_list = result.split(' ')
+		index = word_list.index('{"api_type":')
+		line = line.replace('\n', ' ')
+		print 
+		print "Test ", i, ": ", line , word_list[index + 1]
+		print
+		i += 1
+	testfile.close()
+
 if __name__ == "__main__":
 	#run_tests('example_sentences.txt')
 	#schedule_JJ("schedule meeting for tomorrow at 4 pm")
@@ -252,4 +268,4 @@ if __name__ == "__main__":
 	#run_tests('example_sentences.txt')
 	#print interpret(['schedule next week at 9 a.m.'])
 	
-	run_tests("example_questions.txt")
+	check_apis("example_questions.txt")
