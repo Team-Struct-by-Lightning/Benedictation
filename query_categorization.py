@@ -175,7 +175,7 @@ def interpret_for_scikit(sentences, temp_array):
 			 		"query": "' + words + '"}'
 			 	temp_array[7] = 1
 				return 
-
+			
 			sentence = oclock_remover(sentence)
 
 			tree = parser.parse(sentence)
@@ -241,7 +241,7 @@ def schedule_for_scikit(element, tree, temp_array):
 	words = am_pm_adder(words)
 
 	cal_parse = cal.parse(words)
-	print cal_parse
+	#print cal_parse
 	if cal_parse[1] == 0 or cal_parse[1] == 1:
 		starttime, endtime = schedule_suggest(cal_parse, words)
 		starttime = starttime.strftime('%Y-%m-%dT%H:%M:%S')

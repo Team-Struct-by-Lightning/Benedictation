@@ -114,11 +114,11 @@ def interpret(sentences):
 								 	noun_phrase[0] == 'an' or noun_phrase[0] == 'the'):
 									del noun_phrase[0]
 
-							print noun_phrase
+							
 							# TODO: Implement logic here to catch "when"-questions related to scheduling.
 
 							print "Interpreting as Wolfram or Wikipedia query"
-							return wolfram(element)
+							return wolfram(element, noun_phrase)
 
 
 
@@ -211,10 +211,11 @@ def schedule_suggest(cal_parse, words):
 
 	return starttime, endtime
 
-def wolfram(element):
+def wolfram(element, nouns):
 	words = ' '.join(element.leaves())
-
+	noun_phrase = ' '.join(nouns)
 	text = '{"api_type": "wolfram", \
+			 "noun_phrase": "' + noun_phrase + '", \
 			 "query": "' + words + '"}'
 
 	return text
@@ -234,6 +235,6 @@ if __name__ == "__main__":
 	#schedule_JJ("schedule meeting for tomorrow at 4 pm")
 	#print schedule_meeting(["schedule a meeting for tomorrow at 3 pm"])
 	#run_tests('example_sentences.txt')
-	print interpret(["What is the Milky Way" ])
+	#print interpret(["What is the Milky Way" ])
 	
-	#run_tests("example_questions.txt")
+	run_tests("example_questions.txt")
