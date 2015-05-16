@@ -63,27 +63,51 @@ import matplotlib.path as path
 #it is a list of query, api_type
 
 training_set = [("Let's meet up on Friday at 3 p.m.", "calendar"),
-								("Can we have a meeting next week", "calendar"),
-								("Benedict, schedule a meeting for next Tuesday", "calendar"),
-								("Next Wednesday let's have a conference", "calendar"),
-								("Can you schedule me a meeting for tomorrow", "calendar"),
-								("Could you find a time that works for all of us", "calendar"),
-								("Can we have a weekly meeting on Thursdays", "calendar"),
-								("Would you be available after 2pm on Wednesday", "calendar"),
-								("Lets meet tomorrow at 12", "calendar"),
-								("Set up a meeting for tomorrow at 12", "calendar"),
-								("Let's meet later", "calendar"),
-								("Schedule a meeting tomorrow.", "calendar"),
-								("What is the phase of the moon", "wolfram"),
-								("Why are dogs", "google"),
-								("What is the rate of expansion of the universe", "wolfram"),
-								("When is my birthday", "google"),
-								("Why do dogs have feet", "google"),
-								("What are the biggest problems facing humanity", "google"),
-								("When can I see my children again", "google"),
-								("What are these spots on my genitals", "google"),
-								("Why do birds suddenly appear", "google"),
-								("Where is a good place to get Chinese food", "google")]
+				("Can we have a meeting next week", "calendar"),
+				("Benedict, schedule a meeting for next Tuesday", "calendar"),
+				("Next Wednesday let's have a conference", "calendar"),
+				("Can you schedule me a meeting for tomorrow", "calendar"),
+				("Could you find a time that works for all of us", "calendar"),
+				("Can we have a weekly meeting on Thursdays", "calendar"),
+				("Lets meet tomorrow at 12", "calendar"),
+				("Set up a meeting for tomorrow at 12", "calendar"),
+				("Let's meet later", "calendar"),
+				("Can we meet tomorrow at 5 pm", "calendar"),
+				("Can you schedule us a meeting for tomorrow at 3", "calendar"),
+				("Lets meet tomorrow at 8 am", "calendar"),
+				("Schedule a meeting tomorrow.", "calendar"),
+
+				("What is the phase of the moon", "wolfram"),
+				("twenty two plus five", "wolfram"),
+				("What's the weather in Isla Vista", "wolfram"),
+				("What is a galaxy", "wolfram"),
+				("Where is Mexico", "wolfram"),
+				("Where is Chicago", "wolfram"),
+				("Where is Louisiana", "wolfram"),
+				("Where Los Angeles", "wolfram"),
+				("Who Obama", "wolfram"),
+				("Who is Kendrick Lamar", "wolfram"),
+				("Who is the president of France", "wolfram"),
+				("Who is the leader of Russia", "wolfram"),
+				("What is the phase of the moon", "wolfram"),
+				("What is the rate of expansion of the universe", "wolfram"),
+
+
+				("Eiffel Tower", "wikipedia"),
+				("Obama", "wikipedia"),
+				("Black Hole", "wikipedia"),
+				("General Relativity", "wikipedia"),
+				("", "wikipedia"),
+				("Eiffel Tower", "wikipedia"),
+
+				("Why are dogs", "google"),
+				("When is my birthday", "google"),
+				("Why do dogs have feet", "google"),
+				("What are the biggest problems facing humanity", "google"),
+				("When can I see my children again", "google"),
+				("What are these spots on my genitals", "google"),
+				("Why do birds suddenly appear", "google"),
+				("Where is a good place to get Chinese food", "google")]
 
 
 def train_predictor(set_to_train_on, classes, predictor):
@@ -149,12 +173,13 @@ def interpret_for_scikit(sentences, temp_array):
 				words = sentences[0]
 				text = '{"api_type": "google", \
 			 		"query": "' + words + '"}'
-				return text
+			 	temp_array[7] = 1
+				return 
 
 			sentence = oclock_remover(sentence)
 
 			tree = parser.parse(sentence)
-			print tree
+			#print tree
 
 			for element in [tree] + [e for e in tree]: # Include the root element in the for loop
 
@@ -178,7 +203,7 @@ def interpret_for_scikit(sentences, temp_array):
 						and any(x in verb_subtree.leaves() for x in schedule_verbs):
 
 							print "Interpreting as schedule request"
-							return schedule_for_scikit(element, tree)
+							return schedule_for_scikit(element, tree, temp_array)
 
 
 				if "SBAR" in element.label():
@@ -189,6 +214,17 @@ def interpret_for_scikit(sentences, temp_array):
 
 							print "Interpreting as Wolfram query"
 							return wolfram_for_scikit(element,temp_array)
+
+		# If we hit here and haven't returned, then the query didn't match any of our patterns,
+		# so default to Google Search.
+	
+		temp_array[5] = 1
+		return 
+
+	except Exception as e:
+		print "Error in NLTK Brain: ", e.message
+
+	return '{"api_type": "blank_query"}'
 
 def schedule_for_scikit(element, tree, temp_array):
 # Find the "schedule word" in a NP, if one exists
@@ -241,7 +277,7 @@ def query_to_array(query):
 # makes it into an array
 	query_array = query.split(' ')
 
-	interpret_for_scikit([query])
+	interpret_for_scikit([query], temp_array)
 	'''
 	for i in range(len(query_array)):
 		if query_array[i] in schedule_nouns:
@@ -270,10 +306,11 @@ def query_to_array(query):
 	if "where" in query:
 		temp_array[4] = 1
 	if "who" in query:
-		temp_array[5] = 1
+		temp_array[5] = 1'''
+
 	if len(query) < 5:
 		temp_array[6] = 1
-		'''
+		
 	return temp_array
 
 
@@ -362,7 +399,7 @@ def predictor_validation_list_to_plot(num_tests, training_set, test_set_percenta
 	plt.show()
 
 
-predictor_validation_list_to_plot(1000, training_set, .7)
+predictor_validation_list_to_plot(50, training_set, .7)
 
 
 #make_single_predictor(training_set, .8)

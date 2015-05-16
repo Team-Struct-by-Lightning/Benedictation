@@ -36,6 +36,12 @@ def oclock_remover(sentence):
 			sentence = sentence.replace("o'clock", "p.m.")
 	return sentence
 
+def benedict_remover(sentence):
+	if "benedict" in sentence:
+		return sentence.remove("benedict")
+	if "Benedict" in sentence:
+		return sentence.remove("Benedict")
+
 def am_pm_adder(words):
 	for word in words.split():
 		if word.isdigit() and not('pm' in words or 'p.m.' in words \
@@ -92,10 +98,26 @@ def interpret(sentences):
 				if "SBAR" in element.label():
 					for subtree in element.subtrees():
 						if "W" in subtree.label():
+							noun_phrase = []
+							# this is code for finding the noun phrase 
+							for noun_subtree in element.subtrees():
+								if not "SBAR" in noun_subtree.label() \
+								and not "W" in noun_subtree.label() \
+								and "NP" in noun_subtree.label() \
+								and len(noun_subtree.leaves()) > len(noun_phrase):
 
+									noun_phrase = noun_subtree.leaves() 
+
+							# this code removes the article from the beginning
+							if noun_phrase:
+								if (noun_phrase[0] == 'a' or \
+								 	noun_phrase[0] == 'an' or noun_phrase[0] == 'the'):
+									del noun_phrase[0]
+
+							print noun_phrase
 							# TODO: Implement logic here to catch "when"-questions related to scheduling.
 
-							print "Interpreting as Wolfram query"
+							print "Interpreting as Wolfram or Wikipedia query"
 							return wolfram(element)
 
 
@@ -212,4 +234,6 @@ if __name__ == "__main__":
 	#schedule_JJ("schedule meeting for tomorrow at 4 pm")
 	#print schedule_meeting(["schedule a meeting for tomorrow at 3 pm"])
 	#run_tests('example_sentences.txt')
-	print interpret(["Can we find a time to meet next Thursday"])
+	print interpret(["What is the Milky Way" ])
+	
+	#run_tests("example_questions.txt")
