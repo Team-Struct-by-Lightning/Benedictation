@@ -77,6 +77,8 @@ training_set = [("Let's meet up on Friday at 3 p.m.", "calendar"),
 				("Lets meet tomorrow at 8 am", "calendar"),
 				("Schedule a meeting tomorrow.", "calendar"),
 
+
+
 				("What is the phase of the moon", "wolfram"),
 				("twenty two plus five", "wolfram"),
 				("What's the weather in Isla Vista", "wolfram"),
@@ -93,12 +95,15 @@ training_set = [("Let's meet up on Friday at 3 p.m.", "calendar"),
 				("What is the rate of expansion of the universe", "wolfram"),
 
 
+
 				("Eiffel Tower", "wikipedia"),
 				("Obama", "wikipedia"),
 				("Black Hole", "wikipedia"),
 				("General Relativity", "wikipedia"),
 				("", "wikipedia"),
 				("Eiffel Tower", "wikipedia"),
+
+
 
 				("Why are dogs", "google"),
 				("When is my birthday", "google"),
@@ -174,8 +179,8 @@ def interpret_for_scikit(sentences, temp_array):
 				text = '{"api_type": "google", \
 			 		"query": "' + words + '"}'
 			 	temp_array[7] = 1
-				return 
-			
+				return
+
 			sentence = oclock_remover(sentence)
 
 			tree = parser.parse(sentence)
@@ -217,9 +222,9 @@ def interpret_for_scikit(sentences, temp_array):
 
 		# If we hit here and haven't returned, then the query didn't match any of our patterns,
 		# so default to Google Search.
-	
+
 		temp_array[5] = 1
-		return 
+		return
 
 	except Exception as e:
 		print "Error in NLTK Brain: ", e.message
@@ -310,7 +315,7 @@ def query_to_array(query):
 
 	if len(query) < 5:
 		temp_array[6] = 1
-		
+
 	return temp_array
 
 
