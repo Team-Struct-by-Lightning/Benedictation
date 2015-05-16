@@ -42,6 +42,8 @@ def benedict_remover(sentence):
 		return sentence.replace("benedict", "")
 	if "Benedict" in sentence:
 		return sentence.replace("Benedict", "")
+	else:
+		return sentence
 
 def am_pm_adder(words):
 	for word in words.split():
@@ -78,10 +80,11 @@ def interpret(sentences):
 
 			for element in [tree] + [e for e in tree]: # Include the root element in the for loop
 
-				if 'VP' in element.label() or 'SQ' in element.label():
+				# RRC for case of "open a document" where open is interpeted as adjective
+				if 'VP' in element.label() or 'SQ' in element.label() or 'RRC' in element.label():
 					for verb_subtree in element.subtrees():
 
-						if 'VB' in verb_subtree.label() \
+						if 'VB' in verb_subtree.label() or 'JJ' in verb_subtree.label() \
 						and any(x in verb_subtree.leaves() for x in doc_verbs):
 							for subtree in element.subtrees():
 									if 'NP' in subtree.label() and any(x in subtree.leaves() for x in doc_nouns):
@@ -240,6 +243,6 @@ if __name__ == "__main__":
 	#schedule_JJ("schedule meeting for tomorrow at 4 pm")
 	#print schedule_meeting(["schedule a meeting for tomorrow at 3 pm"])
 	#run_tests('example_sentences.txt')
-	print interpret(["Benedict schedule a meeting for next Tuesday" ])
+	print interpret(['open a document'])
 	
 	#run_tests("example_questions.txt")
