@@ -63,64 +63,71 @@ import matplotlib.path as path
 #it is a list of query, api_type
 
 training_set = [("Let's meet up on Friday at 3 p.m.", "calendar"),
-				("Can we have a meeting next week", "calendar"),
-				("Benedict, schedule a meeting for next Tuesday", "calendar"),
-				("Next Wednesday let's have a conference", "calendar"),
-				("Can you schedule me a meeting for tomorrow", "calendar"),
-				("Could you find a time that works for all of us", "calendar"),
-				("Can we have a weekly meeting on Thursdays", "calendar"),
+				("Can we have a meeting next week", "schedule_suggest"),
+				#("Benedict, schedule a meeting for next Tuesday", "schedule_suggest"),
+				("Next Wednesday let's have a conference", "schedule_suggest"),
+				("Can you schedule me a meeting for tomorrow", "schedule_suggest"),
+				("Could you find a time that works for all of us", "schedule_suggest"),
+				("Can we have a weekly meeting on Thursdays", "schedule_suggest"),
 				("Lets meet tomorrow at 12", "calendar"),
 				("Set up a meeting for tomorrow at 12", "calendar"),
-				("Let's meet later", "calendar"),
+				("Let's meet later", "schedule_suggest"),
 				("Can we meet tomorrow at 5 pm", "calendar"),
 				("Can you schedule us a meeting for tomorrow at 3", "calendar"),
 				("Lets meet tomorrow at 8 am", "calendar"),
-				("Schedule a meeting tomorrow.", "calendar"),
+				("Schedule a meeting tomorrow.", "schedule_suggest"),
+
+				("could you open up a document", "google_docs"),
+				("open up a document", "google_docs"),
+				("open up a document please", "google_docs"),
+				("create a document", "google_docs"),
+				("view a document", "google_docs"),
+
 
 				("What is the phase of the moon", "wolfram"),
-				("twenty two plus five", "wolfram"),
 				("What's the weather in Isla Vista", "wolfram"),
 				("What is a galaxy", "wolfram"),
 				("Where is Mexico", "wolfram"),
 				("Where is Chicago", "wolfram"),
 				("Where is Louisiana", "wolfram"),
-				("Where Los Angeles", "wolfram"),
-				("Who Obama", "wolfram"),
+				("Where is Los Angeles", "wolfram"),
 				("Who is Kendrick Lamar", "wolfram"),
 				("Who is the president of France", "wolfram"),
 				("Who is the leader of Russia", "wolfram"),
 				("What is the phase of the moon", "wolfram"),
 				("What is the rate of expansion of the universe", "wolfram"),
+				("What is the speed of light", "wolfram"),
 
-
-				("Eiffel Tower", "wikipedia"),
-				("Obama", "wikipedia"),
-				("Black Hole", "wikipedia"),
-				("General Relativity", "wikipedia"),
-				("", "wikipedia"),
-				("Eiffel Tower", "wikipedia"),
-
-				("Why are dogs", "google"),
-				("When is my birthday", "google"),
-				("Why do dogs have feet", "google"),
-				("What are the biggest problems facing humanity", "google"),
-				("When can I see my children again", "google"),
-				("What are these spots on my genitals", "google"),
-				("Why do birds suddenly appear", "google"),
-				("Where is a good place to get Chinese food", "google")]
+				("Who Obama", "google"),
+				("the world's biggest pie fair", "google"),
+				("the best pizza place near me", "google"),
+				("current time", "google"),
+				("define webrtc", "google"),
+				("synonyms for ejaculate", "google"),
+				("western countries in order of attractiveness", "google"),
+				("recipes for pasta", "google"),
+				("local coffee shops", "google"),
+				("is Goleta beach open right now", "google"),
+				#("good places to get chinese food", "google"),
+				("dog biscuits actually good for humans", "google")]
 
 
 def train_predictor(set_to_train_on, classes, predictor):
 	predictor.fit(set_to_train_on, classes)
 
 
-def validate_predictor(set_to_validate_on, classes, predictor, probability_matrix):
+def validate_predictor(set_to_validate_on, classes, predictor, probability_matrix, querylist):
 	number_valid = 0
 	probability_array = []
 	for i in range (len(set_to_validate_on)):
 		probability_array.append(predictor.predict_proba(set_to_validate_on[i:i+1]))
+
 		if predictor.predict(set_to_validate_on[i:i+1]) == classes[i:i+1]:
 			number_valid += 1
+		else:
+			print "query, prediction, expected : ", querylist[i][0], \
+			change_int_to_api_type(predictor.predict(set_to_validate_on[i:i+1])[0]), \
+			change_int_to_api_type(classes[i:i+1][0])
 	probability_matrix.append(probability_array)
 	return number_valid
 
@@ -163,6 +170,22 @@ def change_api_type_to_int(class_type):
 	else:# Defaults the google search if something messes up
 		return 7
 
+def change_int_to_api_type(class_type):
+# this is a switch statement on the api type
+	if class_type == 1:
+		return "calendar"
+	elif class_type == 2:
+		return "calendar_show"
+	elif class_type == 3:
+		return "schedule_suggest"
+	elif class_type == 4:
+		return "google_doc"
+	elif class_type == 5:
+		return "wolfram"
+	elif class_type == 6:
+		return "wikipedia"
+	else:# Defaults the google search if something messes up
+		return "google"
 def percent_to_index(percentage, length_of_array):
 	return int(percentage*length_of_array)
 
@@ -175,7 +198,7 @@ def interpret_for_scikit(sentences, temp_array):
 			 		"query": "' + words + '"}'
 			 	temp_array[7] = 1
 				return 
-			
+
 			sentence = oclock_remover(sentence)
 
 			tree = parser.parse(sentence)
@@ -209,7 +232,24 @@ def interpret_for_scikit(sentences, temp_array):
 				if "SBAR" in element.label():
 					for subtree in element.subtrees():
 						if "W" in subtree.label():
+							noun_phrase = []
+							# this is code for finding the noun phrase 
+							for noun_subtree in element.subtrees():
+								if not "SBAR" in noun_subtree.label() \
+								and not "W" in noun_subtree.label() \
+								and "NP" in noun_subtree.label() \
+								and len(noun_subtree.leaves()) > len(noun_phrase):
 
+									noun_phrase = noun_subtree.leaves() 
+
+							# this code removes the article from the beginning
+							if noun_phrase:
+								if (noun_phrase[0] == 'a' or \
+								 	noun_phrase[0] == 'an' or noun_phrase[0] == 'the'):
+									del noun_phrase[0]
+
+							if len(noun_phrase) <= 2:
+								temp_array[8] = 1
 							# TODO: Implement logic here to catch "when"-questions related to scheduling.
 
 							print "Interpreting as Wolfram query"
@@ -359,7 +399,7 @@ def multiple_predictors_for_testing(training_set, test_set_percentage, probabili
 		valid_num = -1
 	else:
 		train_predictor(training_feature_arrays[:index + 1], training_class_array[:index + 1], api_predictor)
-		valid_num = validate_predictor(training_feature_arrays[index + 1:], training_class_array[index + 1:], api_predictor, probability_matrix)
+		valid_num = validate_predictor(training_feature_arrays[index + 1:], training_class_array[index + 1:], api_predictor, probability_matrix,training_set[index+1:])
 	return valid_num
 
 
@@ -399,7 +439,7 @@ def predictor_validation_list_to_plot(num_tests, training_set, test_set_percenta
 	plt.show()
 
 
-predictor_validation_list_to_plot(50, training_set, .7)
+predictor_validation_list_to_plot(150, training_set, .8)
 
 
 #make_single_predictor(training_set, .8)

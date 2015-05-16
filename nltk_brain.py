@@ -37,10 +37,11 @@ def oclock_remover(sentence):
 	return sentence
 
 def benedict_remover(sentence):
+
 	if "benedict" in sentence:
-		return sentence.remove("benedict")
+		return sentence.replace("benedict", "")
 	if "Benedict" in sentence:
-		return sentence.remove("Benedict")
+		return sentence.replace("Benedict", "")
 
 def am_pm_adder(words):
 	for word in words.split():
@@ -68,8 +69,11 @@ def interpret(sentences):
 				return text
 				
 			sentence = oclock_remover(sentence)
+			sentence = benedict_remover(sentence)
 
 			tree = parser.parse(sentence)
+
+
 			print tree
 
 			for element in [tree] + [e for e in tree]: # Include the root element in the for loop
@@ -162,6 +166,7 @@ def schedule(element, tree):
 		starttime, endtime = schedule_suggest(cal_parse, words)
 		starttime = starttime.strftime('%Y-%m-%dT%H:%M:%S')
 		endtime   = endtime.strftime('%Y-%m-%dT%H:%M:%S')
+		print("@@@@@@@@@@@@@@@@@SCHEDULE SUGGEST")
 		api_type  = "schedule_suggest"
 	else:
 		starttime, endtime = time_converter(cal_parse[0])
@@ -235,6 +240,6 @@ if __name__ == "__main__":
 	#schedule_JJ("schedule meeting for tomorrow at 4 pm")
 	#print schedule_meeting(["schedule a meeting for tomorrow at 3 pm"])
 	#run_tests('example_sentences.txt')
-	#print interpret(["What is the Milky Way" ])
+	print interpret(["Benedict schedule a meeting for next Tuesday" ])
 	
-	run_tests("example_questions.txt")
+	#run_tests("example_questions.txt")
