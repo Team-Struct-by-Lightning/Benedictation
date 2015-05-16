@@ -1,13 +1,23 @@
-Let's schedule a meeting for tomorrow
-Can we meet Thursday at noon
-Let's meet up on Friday at 3 p.m.
-Can we have a meeting next week
-Benedict, schedule a meeting for next Tuesday
-Next Wednesday let's have a conference
-Can you schedule me a meeting for tomorrow?
-Can we have a weekly meeting on Thursdays?
-Would you be available after 2pm on Wednesday?
-Lets meet tomorrow at 12.
-Set up a meeting for tomorrow at 12.
-Lets meet Friday at noon.
-Can you schedule a meeting for tomorrow at 3 pm?
+ Eiffel tower  
+ the beatles  
+ Mickey mouse  
+ coca cola  
+ Obama  
+ Black Hole  
+ General Relativity  
+ mathematical set  
+ the trivial topology  
+ Eiffel Tower  
+ the Magna Carta  
+ Albert Einstein  
+ Michael Jackson  
+ New York City  
+ meteorology  
+ webRTC  
+ Amazon AWS  
+ Star Trek  
+ Monty python's flying circus  
+ the golden gate bridge  
+ the statue of liberty  
+ the movie pulp fiction  
+ dogs  

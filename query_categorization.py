@@ -210,10 +210,10 @@ def interpret_for_scikit(sentences, temp_array):
 
 			for element in [tree] + [e for e in tree]: # Include the root element in the for loop
 
-				if 'VP' in element.label() or 'SQ' in element.label():
+				if 'VP' in element.label() or 'SQ' in element.label() or 'RRC' in element.label():
 					for verb_subtree in element.subtrees():
 
-						if 'VB' in verb_subtree.label() \
+						if 'VB' in verb_subtree.label() or 'JJ' in verb_subtree.label() \
 						and any(x in verb_subtree.leaves() for x in doc_verbs):
 							for subtree in element.subtrees():
 									if 'NP' in subtree.label() and any(x in subtree.leaves() for x in doc_nouns):

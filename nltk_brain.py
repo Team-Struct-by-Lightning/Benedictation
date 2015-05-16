@@ -66,7 +66,7 @@ def interpret(sentences):
 		for sentence in sentences:
 			if(len(sentence.split()) <= 1):
 				words = sentences[0]
-				text = '{"api_type": "google", \
+				text = '{"api_type": "wikipedia", \
 			 		"query": "' + words + '"}'
 				return text
 				
@@ -77,6 +77,13 @@ def interpret(sentences):
 
 
 			print tree
+
+			# first just check if its just a noun phrase, then go to wiki
+			if 'NP' in tree.label() or 'NX' in tree.label():
+				words = sentence 
+				text = '{"api_type": "wikipedia", \
+			 		"query": "' + words + '"}'
+				return text
 
 			for element in [tree] + [e for e in tree]: # Include the root element in the for loop
 
@@ -243,6 +250,6 @@ if __name__ == "__main__":
 	#schedule_JJ("schedule meeting for tomorrow at 4 pm")
 	#print schedule_meeting(["schedule a meeting for tomorrow at 3 pm"])
 	#run_tests('example_sentences.txt')
-	print interpret(['open a document'])
+	#print interpret(['schedule next week at 9 a.m.'])
 	
-	#run_tests("example_questions.txt")
+	run_tests("example_questions.txt")
