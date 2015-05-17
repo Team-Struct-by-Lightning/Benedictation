@@ -52,10 +52,11 @@ module ScheduleHelper
 		days = (end_range - start_range).to_i
 
 		# Get the availability array for all users.
-		# Reminder: 0 is free, 1 is busy. So initialize to all free
+		# A spot is free if it's free in ALL attendees (so AND)
+		# Implies 1 should be free
 		attendees = get_attendees()
 		user_availabilities = {}
-		overall_availability = Array.new(days+1) { 2**18 }	# Initialize all slots to 0 aka free
+		overall_availability = Array.new(days+1) { 2**18 - 1}	# Initialize all slots to 1 aka free
 
 		attendees.each do |attendee| 
 			user = User.find_by_email(attendee)
@@ -63,7 +64,7 @@ module ScheduleHelper
 			user_availabilities[attendee] = user_availability
 
 			overall_availability.each_with_index do |x, i|
-				overall_availability[i] = x | user_availability[i]
+				overall_availability[i] = x & user_availability[i]
 			end
 		end
 		logger.error user_availabilities
@@ -118,7 +119,7 @@ module ScheduleHelper
 		end_range   = DateTime.parse(end_str)		
 		days = (end_range - start_range).to_i
 		# userAvailabilityArray = Array.new(days+1) { Array.new(18, true) }
-		userAvailabilityArray = Array.new(days+1) { 2**18 }	# Array of Fixnums of 18-bit width
+		userAvailabilityArray = Array.new(days+1) { 2**18 - 1}	# Array of Fixnums of 18-bit width
 
 		# Loop over events; fill the corresponding slots in the availability array for each one.
 		events.each do |e|
@@ -141,7 +142,7 @@ module ScheduleHelper
 				while stime < etime
 					# logger.error "time: " + stime.to_s + ", index: " + time_index.to_s
 					bitmask = 1 << time_index
-					userAvailabilityArray[day_index] = userAvailabilityArray[day_index] | bitmask
+					userAvailabilityArray[day_index] = userAvailabilityArray[day_index] ^ bitmask
 					stime += time_resolution
 					time_index += 1 
 				end
@@ -170,7 +171,7 @@ module ScheduleHelper
 		availabilityArray.each_with_index do |bits, day|
 			# For each of the bits do this. For reference: 0, the LSB, is 8:00 AM
 			(0..17).each do |n|
-				free = bits[n].zero?
+				free = !(bits[n].zero?)
 				if free and not flag
 					start_time = (start_range + day) + (30*n).minutes
 					flag = true
