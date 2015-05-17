@@ -48,19 +48,10 @@ module RoomsHelper
 ##############################################################################################################
 ##############################################################################################################
 
-	def string_to_json(json_string)
-		puts json_string
-		hash = JSON.parse(json_string)
-		puts hash
-		hash
-	end
-
 	# each of these cases must return either the json originally passed in from the python server, or a modified version of it reflecting any needed api_type changes and additional attributes such as api_html for rendering wolfram and wiki. This way we don't have to mess with redis or ajax get/posts.
 	def choose_api(json)
-		json_hash = string_to_json(json)
+		json_hash = JSON.parse(json)
 		puts "@@@Original hash from python server: " + json_hash['api_type']
-
-		return_json = "{}"
 
 		case json_hash['api_type']
 		when 'google'
@@ -77,16 +68,9 @@ module RoomsHelper
 			json_hash #return unmodified json hash 
 		when 'schedule_suggest'
 			logger.error 'We will find a time that works'
-<<<<<<< HEAD
 			json_event = schedule_json(json_hash)
-			json_hash # return unmodified json hash (for now, EVAN edit this)
-=======
-			return_json = schedule_json(json_hash)
-<<<<<<< HEAD
->>>>>>> rough div and center render for suggested times
-=======
-			$redis.set("#{current_user.id}:schedule_suggestions",return_json.to_s)
->>>>>>> Redis-ify schedule suggestion
+			json_hash['suggested_times'] = json_event
+			json_hash
 		when 'google_docs'
 			puts "We will access the google docs api!"
 			json_hash #return unmodified json hash
@@ -103,8 +87,6 @@ module RoomsHelper
 		else
 			"NOTHING HAPPENED!?!?!?!?!??!?!??!?!"
 		end
-
-		return return_json
 	end
 
 	def query_wolfram_alpha(json_hash)
