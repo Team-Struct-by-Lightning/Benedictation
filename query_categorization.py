@@ -125,13 +125,19 @@ def validate_predictor(set_to_validate_on, classes, predictor, probability_matri
 	probability_array = []
 	for i in range (len(set_to_validate_on)):
 		probability_array.append(predictor.predict_proba(set_to_validate_on[i:i+1]))
-
-		if predictor.predict(set_to_validate_on[i:i+1]) == classes[i:i+1]:
+#print "$$$$$$$$$$$$$$$ " + str(predictor.predict(set_to_validate_on[i:i+1])) + " " + str(classes[i:i+1])
+		if predictor.predict(set_to_validate_on[i:i+1]) == classes[i:i+1] or (predictor.predict(set_to_validate_on[i:i+1]) == [6] and classes[i:i+1] == [5]) or (predictor.predict(set_to_validate_on[i:i+1]) == [5] and classes[i:i+1] == [6]):
 			number_valid += 1
 		else:
-			print "query, prediction, expected : ", querylist[i][0], \
-			change_int_to_api_type(predictor.predict(set_to_validate_on[i:i+1])[0]), \
-			change_int_to_api_type(classes[i:i+1][0])
+			print "@@@@@    query: " + querylist[i][0]
+			print "@@@@@    expected: " + change_int_to_api_type(classes[i:i+1][0])
+			print "@@@@@    predicted: " + change_int_to_api_type(predictor.predict(set_to_validate_on[i:i+1])[0])
+			print "@@@@@    probabilities: "
+			print	"@@@@@                   calendar: " + str(probability_array[i][0][0] * 100) + " %"
+			print	"@@@@@                   schedule suggest: " + str(probability_array[i][0][1] * 100) + " %"
+			print	"@@@@@                   google docs: " + str(probability_array[i][0][2] * 100) + " %"
+			print	"@@@@@                   wolfram: " + str(probability_array[i][0][3] * 100) + " %"
+			print	"@@@@@                   wikipedia: " + str(probability_array[i][0][4] * 100) + " %"
 	probability_matrix.append(probability_array)
 	return number_valid
 
@@ -165,7 +171,7 @@ def change_api_type_to_int(class_type):
 		return 2
 	elif class_type == "schedule_suggest":
 		return 3
-	elif class_type == "google_doc":
+	elif class_type == "google_docs":
 		return 4
 	elif class_type == "wolfram":
 		return 5
@@ -183,7 +189,7 @@ def change_int_to_api_type(class_type):
 	elif class_type == 3:
 		return "schedule_suggest"
 	elif class_type == 4:
-		return "google_doc"
+		return "google_docs"
 	elif class_type == 5:
 		return "wolfram"
 	elif class_type == 6:
@@ -307,7 +313,7 @@ def wolfram_for_scikit(element, temp_array):
 	return
 
 def query_to_array(query):
-	temp_array = np.array([0 for i in range(14)])
+	temp_array = np.array([0 for i in range(25)])
 # call list of functions to populate the array
 ####
 # NEW
@@ -323,41 +329,56 @@ def query_to_array(query):
 	query_array = query.split(' ')
 
 	interpret_for_scikit([query], temp_array)
-	'''
-	for i in range(len(query_array)):
-		if query_array[i] in schedule_nouns:
-			temp_array[7] = 1
-		if query_array[i] in schedule_verbs:
-			temp_array[8] = 1
-		if query_array[i] in doc_nouns:
-			temp_array[9] = 1
-		if query_array[i] in doc_verbs:
-			temp_array[10] = 1
-		if query_array[i] in calendar_nouns:
-			temp_array[11] = 1
-		if query_array[i] in group_prps:
-			temp_array[12] = 1
-		if query_array[i] in group_nouns:
-			temp_array[13] = 1
-#checks substings and length
-	if "what" in query:
-		temp_array[0] = 1
-	if "what" in query:
-		temp_array[1] = 1
-	if "why" in query:
-		temp_array[2] = 1
-	if "how" in query:
-		temp_array[3] = 1
-	if "where" in query:
-		temp_array[4] = 1
-	if "who" in query:
-		temp_array[5] = 1'''
 
-	if len(query) < 5:
-		temp_array[6] = 1
+# if len(query) < 5:
+# 	temp_array[9] = 1
+	#uses 9, till
+	check_word_lists(query_array, temp_array, 16)
+
+	#uses 6
+	check_for_w_words(query, temp_array, 10)
+
 
 	return temp_array
 
+
+def check_word_lists(query_array, temp_array, index):
+	for i in range(len(query_array)):
+		if query_array[i] in schedule_nouns:
+			temp_array[index] = 1
+		if query_array[i] in schedule_verbs:
+			temp_array[index + 1] = 1
+		if query_array[i] in doc_nouns:
+			temp_array[index + 2] = 1
+		if query_array[i] in doc_verbs:
+			temp_array[index + 3] = 1
+		if query_array[i] in calendar_nouns:
+			temp_array[index + 4] = 1
+		if query_array[i] in group_prps:
+			temp_array[index + 5] = 1
+		if query_array[i] in group_nouns:
+			temp_array[index + 6] = 1
+		if query_array[i] in avail_words:
+			temp_array[index + 7] = 1
+		if query_array[i] in time_words:
+			temp_array[index + 8] = 1
+
+def check_for_w_words(query, temp_array, index):
+#checks substings and length
+#if "what" in query:
+#temp_array[9] = 1
+	if "when" in query:
+		temp_array[index] = 1
+	if "why" in query:
+		temp_array[index + 1] = 1
+	if "how" in query:
+		temp_array[index + 2] = 1
+	if "where" in query:
+		temp_array[index + 3] = 1
+	if "who" in query:
+		temp_array[index + 4] = 1
+	if "which" in query:
+		temp_array[index + 5] = 1
 
 def make_single_predictor(training_set, test_set_percentage):
 	assert(len(training_set) > 1)
@@ -429,10 +450,10 @@ def multiple_predictors_for_testing_and_multiple_training_sets(ts_cal, ts_ss, ts
 # concatenate the test set list
 # TREVOR!!! THIS IS TO GET YOUR ATTENTION HERE.  JUST COMMENT THE FOLLOWING LINES OUT
 # AND TAKE WHATEVER SUBSET OF THE LISTS YOU WANT HERE. FOLLOW THE SYNTAX BELOW
-	training_set = ts_cal[:index_cal + 1] + ts_ss[:index_ss + 1] + ts_gd[:index_gd + 1] + ts_wolf[:index_wolf + 1] +  ts_wiki[:index_wiki + 1] +  ts_gs[:index_gs + 1]
-	validation_set = ts_cal[index_cal + 1:] + ts_ss[index_ss + 1:] + ts_gd[index_gd + 1:] + ts_wolf[index_wolf + 1:] +  ts_wiki[index_wiki + 1:] +  ts_gs[index_gs + 1:]
+	training_set = ts_cal[:index_cal + 1] + ts_ss[:index_ss + 1] + ts_gd[:index_gd + 1] + ts_wolf[:index_wolf + 1] +  ts_wiki[:index_wiki + 1]
+	validation_set = ts_cal[index_cal + 1:] + ts_ss[index_ss + 1:] + ts_gd[index_gd + 1:] + ts_wolf[index_wolf + 1:] +  ts_wiki[index_wiki + 1:]
 
-# now we shuffle ot mix up the list
+# now we shuffle to mix up the list
 	random.shuffle(training_set)
 	random.shuffle(validation_set)
 
@@ -447,7 +468,7 @@ def multiple_predictors_for_testing_and_multiple_training_sets(ts_cal, ts_ss, ts
 	valid_num = -1
 
 	train_predictor(training_feature_arrays_train, training_class_array_train, api_predictor)
-	valid_num = validate_predictor(training_feature_arrays_valid, training_class_array_valid, api_predictor, probability_matrix, training_set)
+	valid_num = validate_predictor(training_feature_arrays_valid, training_class_array_valid, api_predictor, probability_matrix, validation_set)
 	return valid_num
 
 def predictor_validation_list_to_plot_and_multiple_train_sets(num_tests, ts_cal, ts_ss, ts_gd, ts_wolf, ts_wiki, ts_gs, test_set_percentage):
@@ -535,7 +556,7 @@ def predictor_validation_list_to_plot(num_tests, training_set, test_set_percenta
 #predictor_validation_list_to_plot(150, training_set, .8)
 
 
-predictor_validation_list_to_plot_and_multiple_train_sets(150, training_set_calendar, training_set_schedule_suggest, training_set_google_docs, training_set_wolfram, training_set_wikipedia, training_set_google, .9)
+predictor_validation_list_to_plot_and_multiple_train_sets(40, training_set_calendar, training_set_schedule_suggest, training_set_google_docs, training_set_wolfram, training_set_wikipedia, training_set_google, .8)
 
 
 #make_single_predictor(training_set, .8)

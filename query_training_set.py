@@ -11,7 +11,7 @@ training_set_calendar = [
 			("Lets meet tomorrow at 8 am", "calendar"),
 			("Benedict, set an appointment for tomorrow at 7", "calendar"),
 			("schedule a meeting for January 28th at 5 pm", "calendar"),
-			("schedule a meeting for June 4th at 8 ", "calendar"),
+			("schedule a meeting for June 4th at 8", "calendar"),
 			("can we meet on september 22nd at 3 pm", "calendar")]
 
 
@@ -42,7 +42,6 @@ training_set_schedule_suggest = [
 			("find a time that works for all of us", "schedule_suggest"),
 			("find a time that works for us", "schedule_suggest"),
 			("find us time a meeting for next week", "schedule_suggest"),
-			("tell us when we are free tomorrow", "schedule_suggest"),
 			("show us our potential meeting times", "schedule_suggest"),
 			("show us our potential meeting times for next week", "schedule_suggest")]
 
@@ -77,21 +76,33 @@ training_set_google_docs = [
 
 training_set_wolfram = [
 
+
 			("What is the phase of the moon", "wolfram"),
 			("twenty two plus five", "wolfram"),
 			("What's the weather in Isla Vista", "wolfram"),
+			("How long is a foot", "wolfram"),
+			("How many stars are in the sky", "wolfram"),
+			("How strong is an ant", "wolfram"),
+			("How many cups are in a gallon", "wolfram"),
+			("How many atoms are in a mole of Carbon", "wolfram"),
+			("How many days are in a year", "wolfram"),
+			("How many miles are in a lightyear", "wolfram"),
+			("How long is a foot", "wolfram"),
+			("How long is a foot", "wolfram"),
 			("What is a galaxy", "wolfram"),
 			("Where is Mexico", "wolfram"),
 			("Where is Chicago", "wolfram"),
 			("Where is Louisiana", "wolfram"),
 			("Where Los Angeles", "wolfram"),
-			("Who Obama", "wolfram"),
-			("Who is Kendrick Lamar", "wolfram"),
-			("Who is the president of France", "wolfram"),
-			("Who is the leader of Russia", "wolfram"),
+			("Where can I find Bagel Cafe", "wolfram"),
+			("Where is San Francisco", "wolfram"),
+			("Where is the equator", "wolfram"),
+			("Where is Rome", "wolfram"),
+			("Where can I find Stockholm", "wolfram"),
+			("Where does the president live", "wolfram"),
+			("where is the Bermuda triangle", "wolfram"),
 			("What is the phase of the moon", "wolfram"),
 			("What is the rate of expansion of the universe", "wolfram"),
-			("What weather", "wolfram"),
 			("what is the weather", "wolfram"),
 			("what is the weather in New York", "wolfram"),
 			("what is the weather here", "wolfram"),
@@ -101,9 +112,16 @@ training_set_wolfram = [
 			("what is 100 plus 30", "wolfram"),
 			("what is the integral of e to the x", "wolfram"),
 			("what is Stoke's theorem", "wolfram"),
+			("which city is the capital of Italy", "wolfram"),
+			("which country has an eagle as its national bird", "wolfram"),
+			("273 kelvin greater than 100 degrees celcius", "wolfram"),
+			("which taco bell is closest", "wolfram"),
+			("which country has the largest gdp", "wolfram"),
+			("which state is the largest in the united states", "wolfram"),
+			("which islands are in the pacific ocean", "wolfram"),
+			("how many countries are in africa", "wolfram"),
 			("What is the derivative of x squared", "wolfram"),
 			("How long was the one hundred year's war", "wolfram"),
-			("random pokemon curve", "wolfram"),
 			("random integer from 0 to 100", "wolfram"),
 			("when was the declaration of independence signed", "wolfram"),
 			("what is the phase of the moon", "wolfram"),
@@ -122,6 +140,18 @@ training_set_wolfram = [
 
 training_set_wikipedia = [
 
+			("who is the wizard of oz", "wikipedia"),
+			("who plays Ted in how I met your mother", "wikipedia"),
+			("who is Mr. T", "wikipedia"),
+			("who is Samuel L Jackson", "wikipedia"),
+			("who is Azeem", "wikipedia"),
+			("who holds the ring to rule them all", "wikipedia"),
+			("who is Alfred Hitchcock", "wikipedia"),
+			("who Jay Freeman", "wikipedia"),
+			("who plays Captain Picard", "wikipedia"),
+			("who is Gauss", "wikipedia"),
+			("who is Neil deGrass Tyson", "wikipedia"),
+			("What is pi", "wikipedia"),
 			("Eiffel tower", "wikipedia"),
 			("the beatles", "wikipedia"),
 			("Mickey mouse", "wikipedia"),
@@ -144,22 +174,25 @@ training_set_wikipedia = [
 			("the golden gate bridge", "wikipedia"),
 			("the statue of liberty", "wikipedia"),
 			("the movie pulp fiction", "wikipedia"),
-			("dogs", "wikipedia")]
-
+			("dogs", "wikipedia"),
+			("Who Obama", "wikipedia"),
+			("Who is Kendrick Lamar", "wikipedia"),
+			("Who is the president of France", "wikipedia"),
+			("Who is the leader of Russia", "wikipedia"),
+			("Who are the Beastie Boys", "wikipedia")]
 
 training_set_google = [
 
 			("Why are dogs", "google"),
 			("When is my birthday", "google"),
 			("Why do dogs have feet", "google"),
-			("is God real", "google"),
+			("Is God just a slob like one of us", "google"),
 			("Miley Cyrus twerk video", "google"),
 			("where can I find a bible study group in my area", "google"),
 			("at what age do boys start their period", "google"),
 			("why is bing a bad search engine", "google"),
-			("how can I tell my son is on drugs", "google"),
 			("what time is the lakers game on tonight", "google"),
-			("how does the internet work", "google"),
+			("what is the internet", "google"),
 			("where does the Michael Cera fan club meet", "google"),
 			("how do I clean the spots out of my underwear", "google"),
 			("what is Rick rolling", "google"),
