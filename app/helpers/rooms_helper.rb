@@ -87,11 +87,11 @@ module RoomsHelper
 			json_hash #return unmodified json hash
 		when 'wolfram'
 			puts "We will access the wolfram alpha api!"
-			# query_wolfram_alpha(json_hash) # returns modified json hash
+			query_wolfram_alpha(json_hash) # returns modified json hash
 			# # this code is for testing wikipedia till trevor's done
-			query_wikipedia(json_hash) # returns modified json hash
-			json_hash['api_type'] = 'wikipedia'
-			json_hash
+			# query_wikipedia(json_hash) # returns modified json hash
+			# json_hash['api_type'] = 'wikipedia'
+			# json_hash
 		when 'wikipedia'
 			puts "We will access the wikipedia api!"
 			query_wikipedia(json_hash) # returns modified json hash
