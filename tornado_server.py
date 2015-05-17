@@ -116,11 +116,13 @@ application = tornado.web.Application([
 ])
 
 if __name__ == "__main__":
+
     # This line will connect to the website, read its contents
     # and parse the JSON output
 
     data = loads(urlopen("http://httpbin.org/ip ").read())
-    if '172-31-10-207' in str(socket.gethostname()):   # If on AWS
+    if 'ip-172-31-10-207' in str(socket.gethostname()):   # If on AWS
+
         benny_ssl_options = {
             "certfile": os.path.join("/etc/nginx/ssl/benedictation_io/ssl-bundle.crt"),
             "keyfile": os.path.join("/etc/nginx/ssl/benedictation_io/benedictation-private-key-file.pem")
@@ -128,6 +130,5 @@ if __name__ == "__main__":
         http_server = tornado.httpserver.HTTPServer(application,xheaders=True,ssl_options=benny_ssl_options)
     else:
         http_server = tornado.httpserver.HTTPServer(application)
-        
     http_server.listen(8888)
     tornado.ioloop.IOLoop.instance().start()

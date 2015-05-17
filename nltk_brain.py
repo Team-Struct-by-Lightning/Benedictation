@@ -200,33 +200,30 @@ def schedule(element, tree):
 def schedule_suggest(cal_parse, words):
 	starttime = None
 	endtime = None
-	print "In schedule_suggest"
 	if cal_parse[1] == 0:		# No date or time
 		if "this week" in words:
-			starttime = datetime.today()
-			endtime = starttime + relativedelta(weekday=FR, hour=17, minute=0, second=0)
+			starttime = datetime.today() + relativedelta(weekday=MO(-1), hour=8, minute=0, second=0)
+			endtime = starttime + relativedelta(weekday=FR, hour=17)
 		elif "this month" in words:
-			starttime = datetime.today()
-			endtime = starttime + relativedelta(day=31, weekday=FR(-1), hour=17, minute=0, second=0)	# Last Friday of the month.
+			starttime = datetime.today() + relativedelta(day=1, hour=8, minute=0, second=0) 
+			endtime = starttime + relativedelta(day=31, weekday=FR(-1), hour=17)	# Last Friday of the month.
 		else:	# Default to finding a time today.
 			starttime = datetime.today()
 			endtime = starttime + relativedelta(hour=17, minute=0, second=0)
 
 	elif cal_parse[1] == 1:		# Date without a time
-		print words
 		if cal_parse[0][6] == 0 and cal_parse[0][3] == 9 and cal_parse[0][4] == 0:
 			if "next week" in words:
 				starttime = datetime.fromtimestamp(mktime(cal_parse[0])) + relativedelta(hour=8)
-				endtime = starttime + relativedelta(weekday=FR, hour=17)				
-			elif "next month" in words:
-				starttime = datetime.fromtimestamp(mktime(cal_parse[0])) + relativedelta(hour=8)
+				endtime = starttime + relativedelta(weekday=FR, hour=17)
+		elif cal_parse[0][6] == 0 and cal_parse[0][3] == 9 and cal_parse[0][4] == 0:				
+			if "next month" in words:
+				starttime = datetime.fromtimestamp(mktime(cal_parse[0]))	+ relativedelta(hour=8)
 				endtime = starttime + relativedelta(day=31, weekday=FR(-1), hour=17)	# Last Friday of the month.
-				# TODO: change to "last weekday" instead of "last Friday"
 		else:
 			starttime = datetime.fromtimestamp(mktime(cal_parse[0])) + relativedelta(hour=8, minute=0, second=0)
 			endtime = starttime + relativedelta(hour=17)
 
-	print starttime, endtime
 	return starttime, endtime
 
 def wolfram(element, nouns):
