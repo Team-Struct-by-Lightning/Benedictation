@@ -324,6 +324,30 @@ function appendNewBennyReply(options) {
     }
     else if(json_murph.api_type == 'wikipedia'){
         console.log("woooo, wiki-freakin-pedia!!!!");
+
+        <% image_name = "wikipedia.ico" %>
+        if (json_murph.query == ""){
+            query = "No query.";
+        }
+        else {
+            query = truncation(query, 40);
+
+        }
+        var key_array = options.key.split(":");
+        var key_array_slice = key_array.slice(0, 4);
+        var key = key_array_slice.join(":");
+        var benny_item_id = "benny" + key;
+        var benny_item_link_id = "benny_query" + key;
+        console.log("benny item link id in chat: ", benny_item_link_id);
+        var parameter = 'clickable("' + options.key + '")';
+        $('.benny-list-body').addClass('benny-list-body-func');
+        $('.benny-list-body').append('<div class="benny-item benny-wikipedia" id=' + benny_item_id +'>' +
+                            '<%= image_tag("#{image_name}", class: "favicon") %>' +
+                            '<a class="name-and-summary-wikipedia">' + name + '</a>' +
+                            '<a class="benny-link" onclick=' + parameter + ' id=' +
+                            benny_item_link_id + '> Query: ' + query + '?</a>' +
+                            '</div>');
+
     }
     else if (json_murph.api_type == 'No Result' || json_murph.api_type == 'Blank Query') {
 
