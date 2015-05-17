@@ -120,11 +120,7 @@ if __name__ == "__main__":
     # and parse the JSON output
 
     data = loads(urlopen("http://httpbin.org/ip ").read())
-<<<<<<< HEAD
-    if 'ip-172-31-10-207' in str(socket.gethostname()):   # If on AWS
-=======
     if '172-31-10-207' in str(socket.gethostname()):   # If on AWS
->>>>>>> tryin to fix group schedule suggest bugs
         benny_ssl_options = {
             "certfile": os.path.join("/etc/nginx/ssl/benedictation_io/ssl-bundle.crt"),
             "keyfile": os.path.join("/etc/nginx/ssl/benedictation_io/benedictation-private-key-file.pem")
