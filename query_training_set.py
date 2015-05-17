@@ -1,8 +1,9 @@
 #training set of strings
 #it is a list of query, api_type
 
-training_set = [("Let's meet up on Friday at 3 p.m.", "calendar"),
-			
+training_set_calendar = [
+
+			("Let's meet up on Friday at 3 p.m.", "calendar"),
 			("Lets meet tomorrow at 12", "calendar"),
 			("Set up a meeting for tomorrow at 12", "calendar"),
 			("Can we meet tomorrow at 5 pm", "calendar"),
@@ -11,7 +12,11 @@ training_set = [("Let's meet up on Friday at 3 p.m.", "calendar"),
 			("Benedict, set an appointment for tomorrow at 7", "calendar"),
 			("schedule a meeting for January 28th at 5 pm", "calendar"),
 			("schedule a meeting for June 4th at 8 ", "calendar"),
-			("can we meet on september 22nd at 3 pm", "calendar"),
+			("can we meet on september 22nd at 3 pm", "calendar")]
+
+
+
+training_set_schedule_suggest = [
 
 			("Let's meet later", "schedule_suggest"),
 			("Schedule a meeting tomorrow.", "schedule_suggest"),
@@ -39,9 +44,10 @@ training_set = [("Let's meet up on Friday at 3 p.m.", "calendar"),
 			("find us time a meeting for next week", "schedule_suggest"),
 			("tell us when we are free tomorrow", "schedule_suggest"),
 			("show us our potential meeting times", "schedule_suggest"),
-			("show us our potential meeting times for next week", "schedule_suggest"),
+			("show us our potential meeting times for next week", "schedule_suggest")]
 
 
+training_set_google_docs = [
 
 			("open up a doc", "google_docs"),
 			("open up a document", "google_docs"),
@@ -66,9 +72,10 @@ training_set = [("Let's meet up on Friday at 3 p.m.", "calendar"),
 			("open up a document", "google_docs"),
 			("open up a document please", "google_docs"),
 			("create a document", "google_docs"),
-			("view a document", "google_docs"),
+			("view a document", "google_docs")]
 
 
+training_set_wolfram = [
 
 			("What is the phase of the moon", "wolfram"),
 			("twenty two plus five", "wolfram"),
@@ -99,9 +106,9 @@ training_set = [("Let's meet up on Friday at 3 p.m.", "calendar"),
 			("random pokemon curve", "wolfram"),
 			("random integer from 0 to 100", "wolfram"),
 			("when was the declaration of independence signed", "wolfram"),
-			("what is the phase of the moon", "wolfram")
-			("what is the phase of the moon tomorrow", "wolfram")
-			("what is the phase of the moon next week", "wolfram")
+			("what is the phase of the moon", "wolfram"),
+			("what is the phase of the moon tomorrow", "wolfram"),
+			("what is the phase of the moon next week", "wolfram"),
 			("Graph x squared", "wolfram"),
 			("Graph the function sign", "wolfram"),
 			("What is cosine of pie", "wolfram"),
@@ -110,9 +117,10 @@ training_set = [("Let's meet up on Friday at 3 p.m.", "calendar"),
 			("What is the largest state in the United States", "wolfram"),
 			("What is Italy's GDP", "wolfram"),
 			("how many grams are in ounce", "wolfram"),
-			("what is the conversion of pounds to kilograms", "wolfram"),
+			("what is the conversion of pounds to kilograms", "wolfram")]
 
 
+training_set_wikipedia = [
 
 			("Eiffel tower", "wikipedia"),
 			("the beatles", "wikipedia"),
@@ -136,9 +144,10 @@ training_set = [("Let's meet up on Friday at 3 p.m.", "calendar"),
 			("the golden gate bridge", "wikipedia"),
 			("the statue of liberty", "wikipedia"),
 			("the movie pulp fiction", "wikipedia"),
-			("dogs", "wikipedia"),
+			("dogs", "wikipedia")]
 
 
+training_set_google = [
 
 			("Why are dogs", "google"),
 			("When is my birthday", "google"),
