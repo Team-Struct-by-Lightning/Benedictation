@@ -1,3 +1,7 @@
+# TODO: The time range parameters (8:00 AM to 5:00 PM, 30-minute increments) are semi-hardcoded right now,
+# especially in the use of 18 as a hardcoded number of timeslots per day. Change this.
+# These parameters should be user-specifiable by options on the website.
+
 module ScheduleHelper
 	require 'json'
 	require 'google/api_client'
@@ -5,12 +9,21 @@ module ScheduleHelper
 
 	GoogleAPIKeys = YAML.load_file("#{::Rails.root}/config/google.yml")[::Rails.env]
 
+	# Get the list of all users currently in the room from Redis.
+	def get_attendees() 
+		url = request.referrer.split("/")	# Get the URL of where the request CAME from, not the url that was requested.
+        redis_key = url[-1].to_s + ":" + url[-2].to_s + ":emails";
+		attendees = $redis.lrange(redis_key,0,-1)
+		logger.error "@@@@@@@@@@@@ ATTENDEES: " + attendees.to_s
+		return attendees
+	end	
+
 	def calendar_json(json_hash)
-		attendee_array = []
 		full_group = json_hash['group_flag']
 		
 		if full_group == "True"
-			attendee_array = json_hash['attendees_array']
+			attendee_array = get_attendees()
+			attendee_array.map! { |attendee_email| {'email' => attendee_email} }
 		else
 			attendee_array = current_user.email
 		end
@@ -32,40 +45,44 @@ module ScheduleHelper
 
 	def schedule_json(json_hash)
 
-		# Get the list of all users currently in the room from Redis.
-		url = request.referrer.split("/")	# Get the URL of where the request CAME from, not the url that was requested.
-        redis_key = url[-1].to_s + ":" + url[-2].to_s + ":emails";
-		attendees = $redis.lrange(redis_key,0,-1)
-		logger.error "@@@@@@@@@@@@ ATTENDEES: " + attendees.to_s
+		start_str = json_hash['start']['datetime']
+		end_str = json_hash['end']['datetime']
+		start_range = DateTime.parse(start_str)
+		end_range   = DateTime.parse(end_str)		
+		days = (end_range - start_range).to_i
 
 		# Get the availability array for all users.
-		# It seems like the easiest/fastest way is setting it to the availability of the first user and then ANDing that with all the others
-		# Since they're nested arrays you have to do a nested iteration, which is annoying.
-		# Bit vectors may be better/faster, though less readable - put that on the backlog
+		# Reminder: 0 is free, 1 is busy. So initialize to all free
+		attendees = get_attendees()
 		user_availabilities = {}
-		user_availabilities[attendees[0]] = get_user_availability(User.find_by_email(attendees[0]), json_hash['start']['datetime'],json_hash['end']['datetime'])
-		overall_availability = user_availabilities[attendees[0]]
-		attendees.drop(1).each do |attendee| 
+		overall_availability = Array.new(days+1) { 2**18 }	# Initialize all slots to 0 aka free
+
+		attendees.each do |attendee| 
 			user = User.find_by_email(attendee)
-			user_availability = get_user_availability(user, json_hash['start']['datetime'],json_hash['end']['datetime'])
+			user_availability = get_user_availability(user, start_str, end_str)
 			user_availabilities[attendee] = user_availability
 
-
-			overall_availability.each_with_index do |day, day_index|
-				day.each_with_index do |timeslot, time_index|
-					overall_availability[day_index][time_index] &&= timeslot
-				end	
-			end	
+			overall_availability.each_with_index do |x, i|
+				overall_availability[i] = x | user_availability[i]
+			end
 		end
 		logger.error user_availabilities
 		logger.error "Overall availability: " + overall_availability.inspect
 		
-		# Convert this array to a list of free-time blocks, in JSON format, for returning to the view.
-		start_range = DateTime.parse(json_hash['start']['datetime'])
+		# Convert this array to a list of free-time blocks, in JSON format, for returning to the view.x[]
 		return available_times_json(overall_availability, start_range)
-	end 
+	end
 
-	# Get the availability for one user as an array of booleans.
+
+	### ON BIT VECTORS ###
+	# The user availability array is an array of bit vectors, one for each day in the range,
+	# each representing the availability for that day.
+	# A bit set at position n, on day d, represents the user *busy* on that day at that time index;
+	# the time index is the number of [time_resolution]-long intervals since [lower_bound] o'clock.
+	# (So, at default values, the number of 30-minute intervals since 8:00:00 AM)
+	# With bit vectors, bitvector[0] is the LSB. So the LSB represents 8:00 AM.
+
+	# Get the availability for one user as an array of bit vectors.
 	# user: Rails user object
 	# start_str: DateTime formatted as string
 	# end_str: DateTime formatted as string
@@ -100,7 +117,8 @@ module ScheduleHelper
 		start_range = DateTime.parse(start_str)
 		end_range   = DateTime.parse(end_str)		
 		days = (end_range - start_range).to_i
-		userAvailabilityArray = Array.new(days+1) { Array.new(18, true) }
+		# userAvailabilityArray = Array.new(days+1) { Array.new(18, true) }
+		userAvailabilityArray = Array.new(days+1) { 2**18 }	# Array of Fixnums of 18-bit width
 
 		# Loop over events; fill the corresponding slots in the availability array for each one.
 		events.each do |e|
@@ -122,37 +140,48 @@ module ScheduleHelper
 				# Loop over the time this event covers, in 30 minute increments.
 				while stime < etime
 					# logger.error "time: " + stime.to_s + ", index: " + time_index.to_s
-					userAvailabilityArray[day_index][time_index] = false
+					bitmask = 1 << time_index
+					userAvailabilityArray[day_index] = userAvailabilityArray[day_index] | bitmask
 					stime += time_resolution
 					time_index += 1 
 				end
 				day_index += 1	
 			end	
+		end
+
+		# Make sure the bitwise bullshit is working
+		logger.error "===userAvailabilityArray==="
+		userAvailabilityArray.each_with_index do |day, day_index|
+			logger.error "Day " + day_index.to_s + ": " + day.to_s(2)
 		end	
+
 		return userAvailabilityArray
 	end
 
 	# Create a JSON object representing the times the current user is available, for display purposes
-	# This involves converting array indices *back* to datetimes, the reverse of the above.
-	# If anyone thinks of a more efficient way let me know
+	# Current functionality creates one JSON object in the array per *block* of contiguous available time,
+	# regardless of that block's length (though broken up on day boundaries).
+	# 
 	def available_times_json(availabilityArray, start_range)
 		available_times = []
 		flag = false
 		start_time = start_range
 		end_time   = start_range
-		availabilityArray.each_with_index do |day, day_index|
-			day.each_with_index do |free, time_index|
+		availabilityArray.each_with_index do |bits, day|
+			# For each of the bits do this. For reference: 0, the LSB, is 8:00 AM
+			(0..17).each do |n|
+				free = bits[n].zero?
 				if free and not flag
-					start_time = (start_range + day_index) + (30*time_index).minutes
+					start_time = (start_range + day) + (30*n).minutes
 					flag = true
 				end
-				if flag and time_index == 17	# cut off at the end of day
-					end_time = (start_range + day_index) + (30*(time_index+1)).minutes
+				if flag and n == 17	# cut off at the end of day
+					end_time = (start_range + day) + (30*(n+1)).minutes
 					flag = false
 					available_times.append({"start" => start_time, "end" => end_time})
 				end
 				if not free and flag
-					end_time = (start_range + day_index) + (30*time_index).minutes
+					end_time = (start_range + day) + (30*n).minutes
 					flag = false
 					available_times.append({"start" => start_time, "end" => end_time})
 				end

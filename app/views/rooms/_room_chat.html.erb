@@ -50,7 +50,7 @@ if (location.protocol !== "https:") {
     myLocation = myLocation.split(":")[0];
 }
 var bennySocket = new WebSocket(websocketprotocol + myLocation + ":" + port + uri); // initialize
-bennySocket.onmessage = onBennyReply;
+bennySocket.onmessage = onBennyReply;   // defined in _room_benny_helper_functions
 
 function sendMessage() {
   waitForSocketConnection(bennySocket, function() {
