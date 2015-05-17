@@ -66,6 +66,9 @@ module RoomsHelper
 		puts "@@@Original hash from python server: " + json_hash['api_type']
 
 		case json_hash['api_type']
+		when 'google'
+			puts "We will do a google search"
+			json_hash #return unmodified json hash
 		when 'calendar'
 			puts "We will access the calendar api!"
 			json_event = calendar_json(json_hash)
