@@ -13,7 +13,6 @@ var postAPIRequest = function(myData) {
         },
         success: function(json_hash) {
             console.log("json_hash received: ",json_hash);
-            json_hash = JSON.stringify(json_hash);
             if (json_hash.api_type === 'google_docs') {
                 create_new_document(json_hash);
             // hey evan! you can do this part in the rooms helper :D Just modify
@@ -29,7 +28,6 @@ var postAPIRequest = function(myData) {
                     }
                 });
             } else {
-                console.log("blah");
                 // for wolfram and wiki, the json_hash was modified to hold the required/correct api_type attribute according to the heiarchy, in addition to containing a new api_html attribute for renders. For calendar, the json is unmodified from the python server's version.
                 sendBennyReply(json_hash);
             }
