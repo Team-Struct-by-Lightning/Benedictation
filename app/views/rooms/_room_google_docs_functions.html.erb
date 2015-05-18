@@ -2,35 +2,49 @@
 
 function create_new_document(myData){
 
-  var clientId = "<%= google_yml['app_id']  %>";
-  var scope = ['https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/drive.file',
-  'https://www.googleapis.com/auth/drive.appdata', 'https://www.googleapis.com/auth/drive.apps.readonly'];
+  //var clientId = "<%= google_yml['app_id']  %>";
+  //var scope = ['https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/drive.file',
+  //'https://www.googleapis.com/auth/drive.appdata', 'https://www.googleapis.com/auth/drive.apps.readonly'];
 
   
   gapi.load('auth', {'callback': onAuthApiLoad});
   function onAuthApiLoad() {
-    console.log("loading the api");
-    gapi.auth.authorize(
-        {
-          'client_id': clientId,
-          'scope': scope,
-          'immediate': true
-        },
-        handleAuthResult);
+
     
-    handleAuthResult();
+    console.log("attempting to create a document");
+
+    // set the gapi client's token to the rails oauth token
+    gapi.auth.setToken({
+      access_token: '<%= current_user.oauth_token %>'
+    });
+
+    //load the client, and then make a file request
+    gapi.load('client', function() { 
+        gapi.client.load('drive', 'v2', makeRequest); 
+      });
+
+    
   }
-    
+  /*  
   function handleAuthResult(authResult) {
-    if (authResult && !authResult.error) {
-      
+    if (authResult) {
       <%= current_user.refresh_token_if_expired %>
       oauthToken = '<%= current_user.oauth_token %>'; 
       gapi.load('client', function() { 
         gapi.client.load('drive', 'v2', makeRequest); 
       });
     }
+    else{
+      gapi.auth.authorize(
+        {
+          'client_id': clientId,
+          'scope': scope,
+          'immediate': false
+        },
+        handleAuthResult);
+    }
   }
+  */
   
   //makeRequest();
   function goodDate(){
@@ -70,6 +84,8 @@ function create_new_document(myData){
 
     request.execute(function(resp) { 
       //console.log(resp.alternateLink);
+      console.log(resp);
+
       myData['doc_link'] = resp.alternateLink;
       var today = new Date();
       myData['current_time'] = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
