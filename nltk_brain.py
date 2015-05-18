@@ -14,17 +14,25 @@ schedule_verbs = ['add', 'set', 'make', 'create', 'get', 'schedule', 'appoint',
 				 'establish', 'form', 'formulate', 'run', 'compose', 'have', 'meet',
 				 'reschedule', 'find'] #'find' is for schedule-suggesting; be careful
 
+schedule_suggest_verbs = ['suggest', 'recommend', 'propose', 'proffer', 'show']
+
 schedule_nouns = ['appointment', 'meeting','meetup', 'reservation', 'session'
 				 'talk', 'call', 'powwow', 'meet', 'rendezvous', 'event', 'conference']
 
-doc_verbs = ['open', 'view', 'launch', 'look','display', 'check', 'start',
-				'begin','create', 'make', 'get', 'have', 'set', 'generate', 'show']
+doc_verbs = ['open', 'open up', 'view', 'launch', 'look','display', 'check', 'start',
+				'begin','create', 'make', 'get', 'have', 'set', 'generate', 'show', 'pull']
 
-doc_nouns = ['doc', 'dog', 'dock' , 'document', 'script', 'record', 'report', 'page']
+avail_words = ['free', 'available', 'works', 'potential', 'options']
+
+time_words = ['tomorrow', 'today', 'Monday', 'Tuesday', 'Wednesday', 'Thursday',
+							'Friday', 'Saturday', 'Sunday','a.m.', 'am', 'p.m.', 'pm', 'week',
+							'month', 'day', 'time', 'year', 'date']
+
+doc_nouns = ['doc', 'dog', 'dock' , 'document', 'script', 'record', 'report', 'page', 'notepad']
 
 calendar_nouns = ['calendar', 'agenda', 'schedule', 'itinerary']
 
-group_prps  = ['we', 'us', 'our'] 
+group_prps  = ['we', 'us', 'our']
 group_nouns = ['everyone', 'everybody']
 
 def oclock_remover(sentence):
@@ -69,7 +77,7 @@ def interpret(sentences):
 				text = '{"api_type": "wikipedia", \
 			 		"query": "' + words + '"}'
 				return text
-				
+
 			sentence = oclock_remover(sentence)
 			sentence = benedict_remover(sentence)
 
@@ -79,8 +87,8 @@ def interpret(sentences):
 			print tree
 
 			# first just check if its just a noun phrase, then go to wiki
-			if 'NP' in tree.label() or 'NX' in tree.label():
-				words = sentence 
+			if 'NP' == tree.label() or 'NX' == tree.label():
+				words = sentence
 				text = '{"api_type": "wikipedia", \
 			 		"query": "' + words + '"}'
 				return text
@@ -113,14 +121,14 @@ def interpret(sentences):
 					for subtree in element.subtrees():
 						if "W" in subtree.label():
 							noun_phrase = []
-							# this is code for finding the noun phrase 
+							# this is code for finding the noun phrase
 							for noun_subtree in element.subtrees():
 								if not "SBAR" in noun_subtree.label() \
 								and not "W" in noun_subtree.label() \
 								and "NP" in noun_subtree.label() \
 								and len(noun_subtree.leaves()) > len(noun_phrase):
 
-									noun_phrase = noun_subtree.leaves() 
+									noun_phrase = noun_subtree.leaves()
 
 							# this code removes the article from the beginning
 							if noun_phrase:
@@ -128,7 +136,7 @@ def interpret(sentences):
 								 	noun_phrase[0] == 'an' or noun_phrase[0] == 'the'):
 									del noun_phrase[0]
 
-							
+
 							# TODO: Implement logic here to catch "when"-questions related to scheduling.
 
 							print "Interpreting as Wolfram or Wikipedia query"
@@ -205,7 +213,7 @@ def schedule_suggest(cal_parse, words):
 			starttime = datetime.today() + relativedelta(weekday=MO(-1), hour=8, minute=0, second=0)
 			endtime = starttime + relativedelta(weekday=FR, hour=17)
 		elif "this month" in words:
-			starttime = datetime.today() + relativedelta(day=1, hour=8, minute=0, second=0) 
+			starttime = datetime.today() + relativedelta(day=1, hour=8, minute=0, second=0)
 			endtime = starttime + relativedelta(day=31, weekday=FR(-1), hour=17)	# Last Friday of the month.
 		else:	# Default to finding a time today.
 			starttime = datetime.today()
@@ -216,7 +224,7 @@ def schedule_suggest(cal_parse, words):
 			if "next week" in words:
 				starttime = datetime.fromtimestamp(mktime(cal_parse[0])) + relativedelta(hour=8)
 				endtime = starttime + relativedelta(weekday=FR, hour=17)
-		elif cal_parse[0][6] == 0 and cal_parse[0][3] == 9 and cal_parse[0][4] == 0:				
+		elif cal_parse[0][6] == 0 and cal_parse[0][3] == 9 and cal_parse[0][4] == 0:
 			if "next month" in words:
 				starttime = datetime.fromtimestamp(mktime(cal_parse[0]))	+ relativedelta(hour=8)
 				endtime = starttime + relativedelta(day=31, weekday=FR(-1), hour=17)	# Last Friday of the month.
@@ -250,12 +258,12 @@ def check_apis(filename):
 	testfile = open(filename, 'r')
 	i = 0
 	for line in testfile:
-		
+
 		result = interpret([line])
 		word_list = result.split(' ')
 		index = word_list.index('{"api_type":')
 		line = line.replace('\n', ' ')
-		print 
+		print
 		print "Test ", i, ": ", line , word_list[index + 1]
 		print
 		i += 1
@@ -267,5 +275,5 @@ if __name__ == "__main__":
 	#print schedule_meeting(["schedule a meeting for tomorrow at 3 pm"])
 	#run_tests('example_sentences.txt')
 	#print interpret(['schedule next week at 9 a.m.'])
-	
+
 	check_apis("example_questions.txt")
