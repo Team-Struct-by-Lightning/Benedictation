@@ -120,7 +120,7 @@ def train_predictor(set_to_train_on, classes, predictor):
 	predictor.fit(set_to_train_on, classes)
 
 
-def validate_predictor(set_to_validate_on, classes, predictor, probability_matrix, querylist):
+def validate_predictor(set_to_validate_on, classes, predictor, probability_matrix, querylist, f):
 	number_valid = 0
 	probability_array = []
 	for i in range (len(set_to_validate_on)):
@@ -138,6 +138,16 @@ def validate_predictor(set_to_validate_on, classes, predictor, probability_matri
 			print	"@@@@@                   google docs: " + str(probability_array[i][0][2] * 100) + " %"
 			print	"@@@@@                   wolfram: " + str(probability_array[i][0][3] * 100) + " %"
 			print	"@@@@@                   wikipedia: " + str(probability_array[i][0][4] * 100) + " %"
+			f.write("@@@@@    query: " + querylist[i][0] + "\n")
+			f.write("@@@@@    expected: " + change_int_to_api_type(classes[i:i+1][0]) + "\n")
+			f.write("@@@@@    predicted: " + change_int_to_api_type(predictor.predict(set_to_validate_on[i:i+1])[0]) + "\n")
+			f.write("@@@@@    probabilities: " + "\n")
+			f.write("@@@@@                   calendar: " + str(probability_array[i][0][0] * 100) + " %" + "\n")
+			f.write("@@@@@                   schedule suggest: " + str(probability_array[i][0][1] * 100) + " %" + "\n")
+			f.write("@@@@@                   google docs: " + str(probability_array[i][0][2] * 100) + " %" + "\n")
+			f.write("@@@@@                   wolfram: " + str(probability_array[i][0][3] * 100) + " %" + "\n")
+			f.write("@@@@@                   wikipedia: " + str(probability_array[i][0][4] * 100) + " %" + "\n")
+			f.write('\n');
 	probability_matrix.append(probability_array)
 	return number_valid
 
@@ -313,7 +323,7 @@ def wolfram_for_scikit(element, temp_array):
 	return
 
 def query_to_array(query):
-	temp_array = np.array([0 for i in range(25)])
+	temp_array = np.array([0 for i in range(26)])
 # call list of functions to populate the array
 ####
 # NEW
@@ -332,7 +342,7 @@ def query_to_array(query):
 
 # if len(query) < 5:
 # 	temp_array[9] = 1
-	#uses 9, till
+	#uses 10, till
 	check_word_lists(query_array, temp_array, 16)
 
 	#uses 6
@@ -362,6 +372,8 @@ def check_word_lists(query_array, temp_array, index):
 			temp_array[index + 7] = 1
 		if query_array[i] in time_words:
 			temp_array[index + 8] = 1
+		if query_array[i] in schedule_suggest_verbs:
+			temp_array[index + 9] = 1
 
 def check_for_w_words(query, temp_array, index):
 #checks substings and length
@@ -428,7 +440,7 @@ def multiple_predictors_for_testing(training_set, test_set_percentage, probabili
 		valid_num = validate_predictor(training_feature_arrays[index + 1:], training_class_array[index + 1:], api_predictor, probability_matrix,training_set[index+1:])
 	return valid_num
 
-def multiple_predictors_for_testing_and_multiple_training_sets(ts_cal, ts_ss, ts_gd, ts_wolf, ts_wiki, ts_gs, test_set_percentage, probability_matrix):
+def multiple_predictors_for_testing_and_multiple_training_sets(ts_cal, ts_ss, ts_gd, ts_wolf, ts_wiki, ts_gs, test_set_percentage, probability_matrix, f):
 # api predicting bernoulli naive bayesian classifier
 	api_predictor = BernoulliNB()
 # random shuffles of training_sets
@@ -468,10 +480,11 @@ def multiple_predictors_for_testing_and_multiple_training_sets(ts_cal, ts_ss, ts
 	valid_num = -1
 
 	train_predictor(training_feature_arrays_train, training_class_array_train, api_predictor)
-	valid_num = validate_predictor(training_feature_arrays_valid, training_class_array_valid, api_predictor, probability_matrix, validation_set)
+	valid_num = validate_predictor(training_feature_arrays_valid, training_class_array_valid, api_predictor, probability_matrix, validation_set, f)
 	return valid_num
 
 def predictor_validation_list_to_plot_and_multiple_train_sets(num_tests, ts_cal, ts_ss, ts_gd, ts_wolf, ts_wiki, ts_gs, test_set_percentage):
+	f = open('failed_predictions', 'w')
 	num_valid_list = []
 	percentage_valid_list = []
 # this is the array of the probability confidence of picking a
@@ -491,7 +504,7 @@ def predictor_validation_list_to_plot_and_multiple_train_sets(num_tests, ts_cal,
 
 	total_validated_on = len(validation_set)
 	for i in range(num_tests):
-		num_valid_temp = multiple_predictors_for_testing_and_multiple_training_sets(ts_cal, ts_ss, ts_gd, ts_wolf, ts_wiki, ts_gs, test_set_percentage, probability_matrix)
+		num_valid_temp = multiple_predictors_for_testing_and_multiple_training_sets(ts_cal, ts_ss, ts_gd, ts_wolf, ts_wiki, ts_gs, test_set_percentage, probability_matrix, f)
 		num_valid_list.append(num_valid_temp)
 		percentage_valid_list.append(float(num_valid_temp)/total_validated_on)
 # plots
@@ -556,7 +569,91 @@ def predictor_validation_list_to_plot(num_tests, training_set, test_set_percenta
 #predictor_validation_list_to_plot(150, training_set, .8)
 
 
-predictor_validation_list_to_plot_and_multiple_train_sets(40, training_set_calendar, training_set_schedule_suggest, training_set_google_docs, training_set_wolfram, training_set_wikipedia, training_set_google, .8)
+def generate_questions_schedule_suggest():
+	f = open('generated_questions_schedule_suggest', 'w')
+	for i in range(len(schedule_verbs)):
+		for j in range(len(schedule_nouns)):
+			f.write("('" + schedule_verbs[i] + " " + schedule_nouns[j] + "', 'schedule_suggest'),\n")
+			f.write("('" + schedule_verbs[i] + " a " + schedule_nouns[j] + "', 'schedule_suggest'),\n")
+			f.write("('" + schedule_verbs[i] + " a " + schedule_nouns[j] + " for tomorrow', 'schedule_suggest'),\n")
+			f.write("('" + schedule_verbs[i] + " a " + schedule_nouns[j] + " for next week', 'schedule_suggest'),\n")
+			f.write("('" + schedule_verbs[i] + " a " + schedule_nouns[j] + " for next month', 'schedule_suggest'),\n")
+			f.write("('" + schedule_verbs[i] + " a " + schedule_nouns[j] + " for next year', 'schedule_suggest'),\n")
+			f.write("('" + schedule_verbs[i] + " a " + schedule_nouns[j] + " for us', 'schedule_suggest'),\n")
+			f.write("('" + schedule_verbs[i] + " a " + schedule_nouns[j] + " for all of us', 'schedule_suggest'),\n")
+			f.write("('" + schedule_verbs[i] + " a " + schedule_nouns[j] + " for all of us', 'schedule_suggest'),\n")
+			f.write("('Benedict " + schedule_verbs[i] + " " + schedule_nouns[j] + "', 'schedule_suggest'),\n")
+			f.write("('Benedict " + schedule_verbs[i] + " a " + schedule_nouns[j] + "', 'schedule_suggest'),\n")
+			f.write("('Benedict " + schedule_verbs[i] + " a " + schedule_nouns[j] + " for tomorrow', 'schedule_suggest'),\n")
+			f.write("('Benedict " + schedule_verbs[i] + " a " + schedule_nouns[j] + " for next week', 'schedule_suggest'),\n")
+			f.write("('Benedict " + schedule_verbs[i] + " a " + schedule_nouns[j] + " for next month', 'schedule_suggest'),\n")
+			f.write("('Benedict " + schedule_verbs[i] + " a " + schedule_nouns[j] + " for next year', 'schedule_suggest'),\n")
+			f.write("('Benedict " + schedule_verbs[i] + " a " + schedule_nouns[j] + " for us', 'schedule_suggest'),\n")
+			f.write("('Benedict " + schedule_verbs[i] + " a " + schedule_nouns[j] + " for all of us', 'schedule_suggest'),\n")
+	for i in range(len(schedule_suggest_verbs)):
+		for j in range(len(schedule_nouns)):
+			f.write("('" + schedule_verbs[i] + " " + schedule_nouns[j] + "', 'schedule_suggest'),\n")
+			f.write("('" + schedule_verbs[i] + " a " + schedule_nouns[j] + "', 'schedule_suggest'),\n")
+			f.write("('" + schedule_verbs[i] + " a " + schedule_nouns[j] + " for tomorrow', 'schedule_suggest'),\n")
+			f.write("('" + schedule_verbs[i] + " a " + schedule_nouns[j] + " for next week', 'schedule_suggest'),\n")
+			f.write("('" + schedule_verbs[i] + " a " + schedule_nouns[j] + " for next month', 'schedule_suggest'),\n")
+			f.write("('" + schedule_verbs[i] + " a " + schedule_nouns[j] + " for next year', 'schedule_suggest'),\n")
+			f.write("('" + schedule_verbs[i] + " a " + schedule_nouns[j] + " for us', 'schedule_suggest'),\n")
+			f.write("('" + schedule_verbs[i] + " a " + schedule_nouns[j] + " for all of us', 'schedule_suggest'),\n")
+			f.write("('Benedict " + schedule_verbs[i] + " " + schedule_nouns[j] + "', 'schedule_suggest'),\n")
+			f.write("('Benedict " + schedule_verbs[i] + " a " + schedule_nouns[j] + "', 'schedule_suggest'),\n")
+			f.write("('Benedict " + schedule_verbs[i] + " a " + schedule_nouns[j] + " for tomorrow', 'schedule_suggest'),\n")
+			f.write("('Benedict " + schedule_verbs[i] + " a " + schedule_nouns[j] + " for next week', 'schedule_suggest'),\n")
+			f.write("('Benedict " + schedule_verbs[i] + " a " + schedule_nouns[j] + " for next month', 'schedule_suggest'),\n")
+			f.write("('Benedict " + schedule_verbs[i] + " a " + schedule_nouns[j] + " for next year', 'schedule_suggest'),\n")
+			f.write("('Benedict " + schedule_verbs[i] + " a " + schedule_nouns[j] + " for us', 'schedule_suggest'),\n")
+			f.write("('Benedict " + schedule_verbs[i] + " a " + schedule_nouns[j] + " for all of us', 'schedule_suggest'),\n")
+
+def generate_questions_google_docs():
+	f = open('generated_questions_google_docs', 'w')
+	for i in range(len(doc_verbs)):
+		for j in range(len(doc_nouns)):
+			f.write("('" + doc_verbs[i] + " " + doc_nouns[j] + "', 'google_docs'),\n")
+			f.write("('" + doc_verbs[i] + " a " + doc_nouns[j] + "', 'google_docs'),\n")
+			f.write("('" + doc_verbs[i] + " a Google " + doc_nouns[j] + "', 'google_docs'),\n")
+			f.write("('" + doc_verbs[i] + " Google " + doc_nouns[j] + "', 'google_docs'),\n")
+			f.write("('" + doc_verbs[i] + " me " + doc_nouns[j] + "', 'google_docs'),\n")
+			f.write("('" + doc_verbs[i] + " me a" + doc_nouns[j] + "', 'google_docs'),\n")
+			f.write("('" + doc_verbs[i] + " us a" + doc_nouns[j] + "', 'google_docs'),\n")
+			f.write("('" + doc_verbs[i] + " us " + doc_nouns[j] + "', 'google_docs'),\n")
+
+# def generate_questions_wolfram():
+# 	f = open('generated_questions_wolfram', 'w')
+# 	for i in range(len(doc_verbs)):
+# 		for j in range(len(doc_nouns)):
+# 			f.write("('" + doc_verbs[i] + " " + doc_nouns[j] + "', 'google_docs'),\n")
+# 			f.write("('" + doc_verbs[i] + " a " + doc_nouns[j] + "', 'google_docs'),\n")
+# 			f.write("('" + doc_verbs[i] + " a Google " + doc_nouns[j] + "', 'google_docs'),\n")
+# 			f.write("('" + doc_verbs[i] + " Google " + doc_nouns[j] + "', 'google_docs'),\n")
+# 			f.write("('" + doc_verbs[i] + " me " + doc_nouns[j] + "', 'google_docs'),\n")
+# 			f.write("('" + doc_verbs[i] + " me a" + doc_nouns[j] + "', 'google_docs'),\n")
+# 			f.write("('" + doc_verbs[i] + " us a" + doc_nouns[j] + "', 'google_docs'),\n")
+# 			f.write("('" + doc_verbs[i] + " us " + doc_nouns[j] + "', 'google_docs'),\n")
+
+
+# def generate_questions_wikipedia():
+# 	f = open('generated_questions_wikipedia', 'w')
+# 	for i in range(len(doc_verbs)):
+# 		for j in range(len(doc_nouns)):
+# 			f.write("('" + doc_verbs[i] + " " + doc_nouns[j] + "', 'google_docs'),\n")
+# 			f.write("('" + doc_verbs[i] + " a " + doc_nouns[j] + "', 'google_docs'),\n")
+# 			f.write("('" + doc_verbs[i] + " a Google " + doc_nouns[j] + "', 'google_docs'),\n")
+# 			f.write("('" + doc_verbs[i] + " Google " + doc_nouns[j] + "', 'google_docs'),\n")
+# 			f.write("('" + doc_verbs[i] + " me " + doc_nouns[j] + "', 'google_docs'),\n")
+# 			f.write("('" + doc_verbs[i] + " me a" + doc_nouns[j] + "', 'google_docs'),\n")
+# 			f.write("('" + doc_verbs[i] + " us a" + doc_nouns[j] + "', 'google_docs'),\n")
+# 			f.write("('" + doc_verbs[i] + " us " + doc_nouns[j] + "', 'google_docs'),\n")
+
+
+
+#generate_questions_google_docs()
+
+predictor_validation_list_to_plot_and_multiple_train_sets(10, training_set_calendar, training_set_schedule_suggest, training_set_google_docs, training_set_wolfram, training_set_wikipedia, training_set_google, .8)
 
 
 #make_single_predictor(training_set, .8)

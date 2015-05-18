@@ -14,10 +14,12 @@ schedule_verbs = ['add', 'set', 'make', 'create', 'get', 'schedule', 'appoint',
 				 'establish', 'form', 'formulate', 'run', 'compose', 'have', 'meet',
 				 'reschedule', 'find'] #'find' is for schedule-suggesting; be careful
 
+schedule_suggest_verbs = ['suggest', 'recommend', 'propose', 'proffer', 'show']
+
 schedule_nouns = ['appointment', 'meeting','meetup', 'reservation', 'session'
 				 'talk', 'call', 'powwow', 'meet', 'rendezvous', 'event', 'conference']
 
-doc_verbs = ['open', 'view', 'launch', 'look','display', 'check', 'start',
+doc_verbs = ['open', 'open up', 'view', 'launch', 'look','display', 'check', 'start',
 				'begin','create', 'make', 'get', 'have', 'set', 'generate', 'show', 'pull']
 
 avail_words = ['free', 'available', 'works', 'potential', 'options']
