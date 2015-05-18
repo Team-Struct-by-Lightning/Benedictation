@@ -144,12 +144,17 @@ function sendBennyReply(json_api_reply) {
                     }
                 });
                 if (json_api_reply['api_type'] != "No Result" && json_api_reply['api_type'] != "Blank Query") {
-                    appendNewBennyReply({
+                    benny_json = {
                         name: "<%= current_user.name %>",
                         data: json_api_reply,
                         key: key_user_id_and_index,
                         callerID: "<%= current_user.name %>"
-                    });
+                    };
+                    // send benny reply to everyone else
+                    console.log("sending this through comm.send: ",benny_json);
+                    comm.send(benny_json);
+                    // append benny reply to your own page
+                    appendNewBennyReply(benny_json);
                 }
             }
     });
@@ -161,7 +166,8 @@ function appendNewIM_text_only(message_string) {
 
 // stick new instant message onto the chat body
 function appendNewIM(options) {
-    var message_data = options.data.split("@@@");
+    var data = JSON.parse(options.data);
+    var message_data = data.split("@@@");
     var caller_name = message_data[0];
     var caller_uid = message_data[1];
     var caller_token = message_data[2];
@@ -179,8 +185,15 @@ function appendNewIM(options) {
 var benny_note_number = 0;
 function appendNewBennyReply(options) {
     <% image_name = "" %>
+    var json_murph;
+    try {
+        json_murph = JSON.parse(options.data);
+    } catch (e) {
+        json_murph = options.data;
+    }
+    console.log("json_murph: ", json_murph);
 
-    json_murph = JSON.parse(options.data);
+    
     console.log("json_murph api type: ",json_murph.api_type);
     var name = truncation(options.name, 14);
 
@@ -310,7 +323,31 @@ function appendNewBennyReply(options) {
                             '</div>');
     }
     else if(json_murph.api_type == 'wikipedia'){
-        console.log("woooo, wolfram to wikipedia transition worked!");
+        console.log("woooo, wiki-freakin-pedia!!!!");
+
+        <% image_name = "wikipedia.ico" %>
+        if (json_murph.query == ""){
+            query = "No query.";
+        }
+        else {
+            query = truncation(query, 40);
+
+        }
+        var key_array = options.key.split(":");
+        var key_array_slice = key_array.slice(0, 4);
+        var key = key_array_slice.join(":");
+        var benny_item_id = "benny" + key;
+        var benny_item_link_id = "benny_query" + key;
+        console.log("benny item link id in chat: ", benny_item_link_id);
+        var parameter = 'clickable("' + options.key + '")';
+        $('.benny-list-body').addClass('benny-list-body-func');
+        $('.benny-list-body').append('<div class="benny-item benny-wikipedia" id=' + benny_item_id +'>' +
+                            '<%= image_tag("#{image_name}", class: "favicon") %>' +
+                            '<a class="name-and-summary-wikipedia">' + name + '</a>' +
+                            '<a class="benny-link" onclick=' + parameter + ' id=' +
+                            benny_item_link_id + '> Query: ' + query + '?</a>' +
+                            '</div>');
+
     }
     else if (json_murph.api_type == 'No Result' || json_murph.api_type == 'Blank Query') {
 

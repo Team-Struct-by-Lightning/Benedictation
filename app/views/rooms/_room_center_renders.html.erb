@@ -199,11 +199,35 @@ function clickable(me) {
                   '<iframe class="calendar-frame" src=' + document_link + ' style=" border-width:0 " width="800" height="600" frameborder="0" scrolling="no"></iframe></div>' +
                                           '</div>');
                   }
+                  else if (api_type == 'wikipedia'){
+                  console.log("room center renders html: ",item['api_html']);
+
+                    // adds the word render to the unique id of the div based on
+                    // the info stored in its redis key
+                    var render_item_id = "render" + div_id;
+                    api_html = item['api_html'];
+                    var query =  item['query'];
+
+                    // these two lines makes sure the space added before the apostrophes
+                    // from nltk is removed
+                    query = query.split(" '").join("'");
+                    query = query.split(" \u0027").join("'");
+
+                    // this is the raw html for the wolfram render spot containing
+                    // the border, the iframe, and the remove x glyph
+                    var wikidiv = '<div class="render-spot" id=' + render_item_id +'>' +
+                            '  <div class="wikipedia-border"> <a class="glyphicon glyphicon-remove wikipedia-remove" id="remove_item_id"></a>' +
+                            '<iframe id="wikipedia-iframe" style=" border-width:0" width="609" height="500" max-height="470" position="relative" ' +
+                            ' top="11" left="-3" frameborder="0"></iframe></div>' +'</div>'
+
+                    // appends the wikidiv to the room layout table.
+                    // this makes it appear in the center of the page
+                    $('.room-layout-table').append(wikidiv);
+                    $('#wikipedia-iframe').contents().find('html').html(api_html);
+
+                  }
                   else if (api_type == 'wolfram'){
-
-
-
-
+                  console.log("room center renders html: ",item['api_html']);
 
                     // adds the word render to the unique id of the div based on
                     // the info stored in its redis key
