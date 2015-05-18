@@ -50,7 +50,7 @@ if (location.protocol !== "https:") {
     myLocation = myLocation.split(":")[0];
 }
 var bennySocket = new WebSocket(websocketprotocol + myLocation + ":" + port + uri); // initialize
-bennySocket.onmessage = onBennyReply;
+bennySocket.onmessage = onBennyReply;   // defined in _room_benny_helper_functions
 
 function sendMessage() {
   waitForSocketConnection(bennySocket, function() {
@@ -166,7 +166,7 @@ function appendNewIM_text_only(message_string) {
 
 // stick new instant message onto the chat body
 function appendNewIM(options) {
-    var data = JSON.parse(options.data);
+    console.log("In appendNewIM: " + options.data)
     var message_data = data.split("@@@");
     var caller_name = message_data[0];
     var caller_uid = message_data[1];
@@ -248,6 +248,25 @@ function appendNewBennyReply(options) {
                 '</div>');
         }
     }
+
+    else if(json_murph.api_type == 'schedule_suggest') {
+        <% image_name = "googz.ico" %>
+        var key_array = options.key.split(":");
+        var key_array_slice = key_array.slice(0, 4);
+        var key = key_array_slice.join(":");
+        var benny_item_id = "benny" + key;
+        var benny_item_link_id = "benny_query" + key;
+        var parameter = 'clickable("' + options.key + '")';
+        $('.benny-list-body').addClass('benny-list-body-func');
+        
+        $('.benny-list-body').append('<div class="benny-item benny-calendar" id=' + benny_item_id +'>' +
+                            '<%= image_tag("#{image_name}", class: "favicon") %>' +
+                            '<a class="name-and-summary-calendar">' + name + '</a>' +
+                            '<a class="benny-link" onclick=' + parameter + ' id=' +
+                            benny_item_link_id + '> Suggested times </a>' +
+                            '</div>');          
+    }
+
     else if (json_murph.api_type == 'wolfram'){
         <% image_name = "wolfram.jpg" %>
         if (json_murph.query == ""){

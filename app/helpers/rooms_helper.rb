@@ -6,12 +6,10 @@ module RoomsHelper
 	require 'open-uri'
 	require 'fileutils'
 	require 'nokogiri'
-	require 'date'
 
+	include ScheduleHelper
 
-	GoogleAPIKeys = YAML.load_file("#{::Rails.root}/config/google.yml")[::Rails.env]
 	WolframAPIKey = YAML.load_file("#{::Rails.root}/config/wolfram.yml")[::Rails.env]
-
 
 	def redirect_user
 		url_string = request.original_url
@@ -38,31 +36,21 @@ module RoomsHelper
 	end
 
 
-
-
 ##############################################################################################################
 ##############################################################################################################
 ##############################################################################################################
 ##############################################################################################################
 
-																	#API CODE!  ADD STUFF HERE PLEASE
+									#API CODE!  ADD STUFF HERE PLEASE
 
 ##############################################################################################################
 ##############################################################################################################
 ##############################################################################################################
 ##############################################################################################################
-
-
-	def string_to_json(json_string)
-		puts json_string
-		hash = JSON.parse(json_string)
-		puts hash
-		hash
-	end
 
 	# each of these cases must return either the json originally passed in from the python server, or a modified version of it reflecting any needed api_type changes and additional attributes such as api_html for rendering wolfram and wiki. This way we don't have to mess with redis or ajax get/posts.
 	def choose_api(json)
-		json_hash = string_to_json(json)
+		json_hash = JSON.parse(json)
 		puts "@@@Original hash from python server: " + json_hash['api_type']
 
 		case json_hash['api_type']
@@ -70,18 +58,19 @@ module RoomsHelper
 			puts "We will do a google search"
 			json_hash #return unmodified json hash
 		when 'calendar'
-			puts "We will access the calendar api!"
+			logger.error "We will access the calendar api!"
 			json_event = calendar_json(json_hash)
 			create_calendar_event(json_event)
 			json_hash #return unmodified json hash
 		when 'calendar_show'
-			puts "We will show the calendar"
+			logger.error "We will show the calendar"
 			#json_event = calendar_show_json(json_hash)
 			json_hash #return unmodified json hash 
 		when 'schedule_suggest'
-			puts 'We will find a time that works'
+			logger.error 'We will find a time that works'
 			json_event = schedule_json(json_hash)
-			json_hash # return unmodified json hash (for now, EVAN edit this)
+			json_hash['suggested_times'] = json_event
+			json_hash
 		when 'google_docs'
 			puts "We will access the google docs api!"
 			json_hash #return unmodified json hash
@@ -97,92 +86,6 @@ module RoomsHelper
 			query_wikipedia(json_hash) # returns modified json hash
 		else
 			"NOTHING HAPPENED!?!?!?!?!??!?!??!?!"
-		end
-	end
-
-	def calendar_json(json_hash)
-		attendee_array = []
-
-		full_group = json_hash['group_flag']
-
-		if full_group == "True"
-			attendee_array = json_hash['attendees_array']
-		else
-			attendee_array = current_user.email
-		end
-
-		json_event = {
-				'summary' => json_hash['summary'],
-				'location' => json_hash['location'],
-				'start' => {
-					'dateTime' => json_hash['start']['datetime'],
-					'timeZone' => json_hash['start']['timezone']
-				},
-				'end' => {
-					'dateTime' => json_hash['end']['datetime'],
-					'timeZone' => json_hash['end']['timezone']
-				},
-				'attendees' => attendee_array
-			}
-	end
-
-	# def calendar_show_json(json_hash)
-	# 	json_show = {
-	# 		'summary' => 'Displaying calendar',
-	# 		'api_type' => 'calendar_show'
-	# 	}
-	# end
-
-	def schedule_json(json_hash)
-
-		get_available_times(json_hash['start'],json_hash['end'])
-
-	end
-
-	def get_available_times(starttime, endtime)
-
-	client = Google::APIClient.new
-	client.authorization.client_id = GoogleAPIKeys["app_id"]
-	client.authorization.client_secret = GoogleAPIKeys["secret"]
-	client.authorization.scope = "https://www.googleapis.com/auth/calendar"
-	client.authorization.refresh_token = current_user.refresh_token
-	client.authorization.access_token = current_user.oauth_token
-
-	if client.authorization.refresh_token && client.authorization.expired?
-	  client.authorization.fetch_access_token!
-	end
-
-	service = client.discovered_api('calendar', 'v3')
-
-	puts '@@@@@@@@@ Entering Schedule Suggest @@@@@@@@@'
-	starttime_string = starttime['datetime'] + "-0000"
-	endtime_string = endtime['datetime'] + "-0000"
-	puts starttime_string, endtime_string
-	# This will list all busy times within the week of April 13 - 17
-	result = client.execute(:api_method => service.events.list,
-                        	:parameters => {'calendarId' => 'primary',
-                        					'timeMin' => starttime_string,
-                        					'timeMax' => endtime_string })
-
-
-	events = result.data.items
-	#puts result.data.items
-
-
-	puts "@@@@@@@@@@@@@@@@@@@@@@"
-	#starttime = DateTime.parse(starttime)
-	#endtime = DateTime.parse(endtime)
-	#days = (starttime - endtime)/(60*60*24)
-
-	# Create a boolean array of length (days * 48) if using 30min increments; init all to True (free)
-	#event_array = Array.new(days*48, true)
-	puts '@@@@@@@@@@ LIST OF EVENTS @@@@@@@@@@@@'
-	puts events.length
-
-	events.each do |e|
-		puts e
-		puts e.start.dateTime , e.end.dateTime, e.summary
-
 		end
 	end
 
@@ -215,7 +118,6 @@ module RoomsHelper
 		json_hash
 	end
 
-
 	def query_wikipedia(json_hash)
 		query_string = json_hash['noun_phrase'].to_s
 		# check if we should change to google search
@@ -235,32 +137,4 @@ module RoomsHelper
 		json_hash
 	end
 
-	def create_calendar_event(json)
-		client = Google::APIClient.new
-		client.authorization.client_id = GoogleAPIKeys["app_id"]
-		client.authorization.client_secret = GoogleAPIKeys["secret"]
-		client.authorization.scope = "https://www.googleapis.com/auth/calendar"
-		client.authorization.refresh_token = current_user.refresh_token
-		client.authorization.access_token = current_user.oauth_token
-
-		if client.authorization.refresh_token && client.authorization.expired?
-		  client.authorization.fetch_access_token!
-		end
-
-		service = client.discovered_api('calendar', 'v3')
-
-		result = client.execute(:api_method => service.events.insert,
-														:parameters => {'calendarId' => 'primary'},
-														:body 			=> JSON.dump(json),
-														:headers		=> {'Content-Type' =>
-																						'application/json'})
-
-		print result.data.id
-	end
-
-	def undo_calendar_event(id)
-		result = client.execute(:api_method => service.events.delete,
-                        		:parameters => {'calendarId' => 'primary',
-                        										'eventId' => id})
-	end
 end

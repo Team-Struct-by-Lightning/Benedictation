@@ -36,6 +36,12 @@ Rails.application.configure do
   # Raises helpful error messages.
   config.assets.raise_runtime_errors = true
 
+  # Only print messages whose log-level is :error or greater.
+  # If you want to print some info from a function user "logger.error" instead of "puts"
+  # (even if it's not actually an error)
+  # This way it's a hell of a lot easier to find things and we don't need @@@@@@@@@ everywhere
+  config.log_level = :error
+
   #config.force_ssl = true
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true

@@ -1,6 +1,8 @@
 // This file contains functions specific to sending data to and from the Python NLP interpreter
 // and the API request handler in the Rooms controller.
 // These are moved here to help keep _room_icecomm and _room_chat specific to icecomm and chat, respectively.
+
+
 // This function takes a JSON object as returned from the Python server,
 // and sends it to the API request handler in the Rooms controller. The rooms controller sends the hash to a rooms helper called choose_api, which modifies the hash and adds new attributes as needed, and then returns the modified hash (called json_hash in the code below.) This removes the need for redis here.
 var postAPIRequest = function(myData) {
@@ -12,28 +14,19 @@ var postAPIRequest = function(myData) {
             jsonData: JSON.stringify(myData)
         },
         success: function(json_hash) {
-            console.log("json_hash received: ",json_hash);
+            console.log("JSON returned from /check_api: ",json_hash);
             if (json_hash.api_type === 'google_docs') {
                 create_new_document(json_hash);
-            // hey evan! you can do this part in the rooms helper :D Just modify
-            // the json object as needed and return it. Then json_hash here in onsuccess will have the modified version, so you can just fall into the below else statement to sendBennyReply(json_hash).
-            } else if (json_hash.api_type === 'schedule_suggest') {
-                $.ajax({
-                    type: "GET",
-                    url: "/get_suggested_times",
-                    dataType: "json",
-                    success: function(api) {
-                        json_hash['suggested_times'] = api['result'];
-                        sendBennyReply(json_hash);
-                    }
-                });
             } else {
-                // for wolfram and wiki, the json_hash was modified to hold the required/correct api_type attribute according to the heiarchy, in addition to containing a new api_html attribute for renders. For calendar, the json is unmodified from the python server's version.
+                // for wolfram and wiki, the json_hash was modified to hold the required/correct api_type attribute according to the heiarchy, 
+                // in addition to containing a new api_html attribute for renders. 
+                // For calendar, the json is unmodified from the python server's version.
                 sendBennyReply(json_hash);
             }
         }
     });
 }
+
 // Called when a websocket (either speechrec or text) receives a reply from the Python server.
 var onBennyReply = function(e) {
     console.log("data from server: ", e.data);
@@ -41,6 +34,7 @@ var onBennyReply = function(e) {
     recordSpeech.recording = 0;
     count_b = 0;
     if (e.data === "") return
+
     try {
         // Get the list of everyone currently in the room from Redis.
         var url = (window.location.pathname).split("/");
@@ -74,6 +68,7 @@ var onBennyReply = function(e) {
     } catch (e) {
         console.error("Malformed or nonexistent data received from Benny server");
     }
+
     recordSpeech.recording = 0;
     count_b = 0;
 }
