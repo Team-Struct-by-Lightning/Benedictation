@@ -87,7 +87,7 @@ def interpret(sentences):
 			print tree
 
 			# first just check if its just a noun phrase, then go to wiki
-			if 'NP' in tree.label() or 'NX' in tree.label():
+			if 'NP' == tree.label() or 'NX' == tree.label():
 				words = sentence
 				text = '{"api_type": "wikipedia", \
 			 		"query": "' + words + '"}'
