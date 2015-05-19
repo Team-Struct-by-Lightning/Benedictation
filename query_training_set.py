@@ -4606,7 +4606,6 @@ training_set_schedule_suggest = [
 			("coordinate our schedules", "schedule_suggest"),
 			("suggest meeting", "schedule_suggest"),
 			("offer a meeting", "schedule_suggest"),
-			("proffer meeting", "schedule_suggest"),
 			("Schedule an appointment", "schedule_suggest"),
 			("Schedule an appointment today", "schedule_suggest"),
 			("Schedule an appointment for tomorrow", "schedule_suggest"),
