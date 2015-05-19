@@ -166,7 +166,6 @@ function appendNewIM_text_only(message_string) {
 
 // stick new instant message onto the chat body
 function appendNewIM(options) {
-    console.log("In appendNewIM: " + options.data)
     var message_data = data.split("@@@");
     var caller_name = message_data[0];
     var caller_uid = message_data[1];
@@ -191,8 +190,6 @@ function appendNewBennyReply(options) {
     } catch (e) {
         json_murph = options.data;
     }
-    console.log("json_murph: ", json_murph);
-
     
     console.log("json_murph api type: ",json_murph.api_type);
     var name = truncation(options.name, 14);

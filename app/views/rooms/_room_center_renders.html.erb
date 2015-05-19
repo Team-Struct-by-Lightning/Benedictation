@@ -152,14 +152,13 @@ function clickable(me) {
                   else if (api_type == 'schedule_suggest') {
                       var render_item_id = "render" + div_id;
                       var title = "Suggested times";
-                      var suggestions = item['suggested_times'];
+                      var suggestions = item['suggested_times'];  // is this JSON or string?
 
-                      //suggestionOptions = '<div>'
-                      //for(suggestion in suggestions) {
-                      //  if suggestions.hasOwnProperty(suggestion) {
-                      //    suggestionOptions += '<>'
-                      //  }
-                      //}
+                      // var suggestionOptions = "<div><ul>"
+                      // for(suggestion in suggestions) {
+                      //   suggestionOptions += "<li>" +   
+                      // }
+                      // suggestionOptions += "</ul></div>"
 
                       $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id +'>' +
                         '  <div class="calendar-border"> <h1 class="calendar-title">' + title + '</h1> <a class="glyphicon glyphicon-remove" id="remove_item_id"></a>' +
