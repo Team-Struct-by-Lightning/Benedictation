@@ -96,7 +96,6 @@ function clickable(me) {
         // through the URL "/get_redis_item" through the groups
         // controller to the function get_redis_item, whose params
         // are the 'redis_key' and the 'index'
-
         $.ajax({
              type: "GET",
              url: "/get_redis_item",
@@ -111,7 +110,6 @@ function clickable(me) {
                 // Redis which is a JSON object.  We first check the api type
                 // and we have an if statement that let's us determine which
                 // api the Redis item corresponds to
-
 
                 api_type = item['api_type'];
 
@@ -320,7 +318,7 @@ function clickable(me) {
                     });
                   }
                 }
-              });
+            });
 }
 
 
