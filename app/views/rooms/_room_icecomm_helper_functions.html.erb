@@ -3,7 +3,6 @@ var app_id = "<%= icecomm['app_id'] %>";
 var comm = new Icecomm(app_id, {
     debug: true
 });
-
 // Set up the websocket connection to the speechrec/NLTK server.
 var speechRecSocket;
 var myLocation = location.host;
@@ -15,18 +14,15 @@ if (location.protocol !== "https:") {
 }
 var uri = "/recognize";
 speechRecSocket = new WebSocket(websocketprotocol + myLocation + ":" + port + uri);
-
 speechRecSocket.onmessage = onBennyReply;
-
 comm.connect(window.location.pathname);
 console.log("Initialized Icecomm, waiting for user media permissions...");
-
 comm.on('local', function(options) {
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
     audioContext = new AudioContext();
     localVideo.src = options.stream;
     localAudioStream = options.rawStream;
-    console.log("options: ",options);
+    console.log("options: ", options);
     localVideo.muted = true;
     console.log("Obtained user camera/microphone approval");
     // fill in chat history from redis
@@ -77,7 +73,6 @@ comm.on('local', function(options) {
     var input = audioContext.createMediaStreamSource(localAudioStream);
     speechRecorder = new Recorder(input);
 });
-
 comm.on('connected', function(options) {
     document.getElementById(get_free_spot()).appendChild(options.getVideo());
     slot_num = get_free_spot().slice(-1) - 1;
@@ -119,12 +114,10 @@ comm.on('connected', function(options) {
         }
     });
 });
-
 comm.on('disconnect', function(options) {
     console.log('disconnect happening');
     document.getElementById(options.ID).remove();
 });
-
 // clear the chat history for random rooms
 jQuery(window).bind("beforeunload", function() {
     var url = (window.location.pathname).split("/");
@@ -152,18 +145,14 @@ jQuery(window).bind("beforeunload", function() {
         }
     });
 });
-
 comm.on('data', function(options) {
-    console.log("data: ", options.data);
-    var message_data = options.data.split("@@@");
-    if (message_data[0] === "benny") {
-        appendNewBennyReply(options);
+    console.log("receiving these options: ", options);
+    console.log("options.data: ", options.data);
+    if (typeof options.data == 'object') {
+        //It is JSON, so benny
+        console.log("its a benny!");
+        appendNewBennyReply(options.data);
     } else {
         appendNewIM(options);
     }
 });
-
-
-
-
-
