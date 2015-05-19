@@ -2,49 +2,26 @@
 // and the API request handler in the Rooms controller.
 // These are moved here to help keep _room_icecomm and _room_chat specific to icecomm and chat, respectively.
 
+
 // This function takes a JSON object as returned from the Python server,
-// and sends it to the API request handler in the Rooms controller.
-// In some cases (wolfram, schedule suggest) it must modify the JSON before sending it, with data fetched from Redis.
+// and sends it to the API request handler in the Rooms controller. The rooms controller sends the hash to a rooms helper called choose_api, which modifies the hash and adds new attributes as needed, and then returns the modified hash (called json_hash in the code below.) This removes the need for redis here.
 var postAPIRequest = function(myData) {
+    console.log("in postAPIRequest");
     $.ajax({
         type: "POST",
         url: "/check_api",
         data: {
             jsonData: JSON.stringify(myData)
         },
-        success: function() {
-            if (myData.api_type === 'wolfram') {
-                // append wolfram api html reply to the json we are saving in redis (so we can click again)
-                $.ajax({
-                    type: "GET",
-                    url: "/get_api_html",
-                    dataType: "json",
-                    success: function(api) {
-                        // add wolfram html to the json object so we can save it later
-                        myData['api_html'] = api['result'];
-                        console.log("real api type: ",myData['api_type']);
-                        myData['api_type'] = api['real_api_type'];
-                        sendBennyReply(JSON.stringify(myData));
-                    }
-                });
-            }
-            else if(myData.api_type === 'google_docs') {
-                create_new_document(myData);
-            }
-            else if(myData.api_type === 'schedule_suggest') {
-                $.ajax({
-                    type: "GET",
-                    url: "/get_suggested_times",
-                    dataType: "json",
-                    success: function(api) {
-                        // add wolfram html to the json object so we can save it later
-                        myData['suggested_times'] = api['result'];
-                        sendBennyReply(JSON.stringify(myData));
-                    }
-                });
-            }
-            else {
-                sendBennyReply(e.data);
+        success: function(json_hash) {
+            console.log("JSON returned from /check_api: ",json_hash);
+            if (json_hash.api_type === 'google_docs') {
+                create_new_document(json_hash);
+            } else {
+                // for wolfram and wiki, the json_hash was modified to hold the required/correct api_type attribute according to the heiarchy, 
+                // in addition to containing a new api_html attribute for renders. 
+                // For calendar, the json is unmodified from the python server's version.
+                sendBennyReply(json_hash);
             }
         }
     });
@@ -57,8 +34,8 @@ var onBennyReply = function(e) {
     recordSpeech.recording = 0;
     count_b = 0;
     if (e.data === "") return
-    try {
 
+    try {
         // Get the list of everyone currently in the room from Redis.
         var url = (window.location.pathname).split("/");
         var id = String(url[url.length - 2]);
@@ -72,7 +49,6 @@ var onBennyReply = function(e) {
             data: {
                 'redis_key': emails_key
             },
-
             // Callback when Redis returns: extract the emails and put them in an array,
             // add this array to the JSON received from the Python server, 
             // and send it to the API request handler.
@@ -86,13 +62,13 @@ var onBennyReply = function(e) {
                 }
                 var myData = JSON.parse(e.data);
                 myData["attendees_array"] = attendees_to_send;
-
                 postAPIRequest(myData);
             }
         });
     } catch (e) {
         console.error("Malformed or nonexistent data received from Benny server");
     }
+
     recordSpeech.recording = 0;
     count_b = 0;
 }

@@ -18,23 +18,15 @@ def get_available_times(starttime, endtime)
 	service = client.discovered_api('calendar', 'v3')
 
 	# This will list all busy times within the week of April 13 - 17
-	result = client.execute(:api_method => service.events.freebusy,
+	result = client.execute(:api_method => service.events.list,
 							:parameters => {'calendarId' => 'primary',
 											'timeMin'	 => starttime,
-											'timeMax'	 => endtime})
-	events = result.data.calendars
-
-	starttime = DateTime.parse(starttime)
-	endtime = DateTime.parse(endtime)
-	days = (starttime - endtime)/(60*60*24)
-
-	# Create a boolean array of length (days * 48) if using 30min increments; init all to True (free)
-	event_array = Array.new(days*48, true)
-	events.busy.each do |e|
-		print e.start + " to " + e.end
-		# convert its start and end times into ints representing offset from range start in 30m increments
-		# (round start down and end up)
-		# set all array values between those two (inclusive) to False (not free)
-		# you now have an array of when the user is free. now you need one for each user
+											'timeMax'	 => endtime,
+											'orderBy' 	 => 'startTime',
+											'singleEvents' => true})
+	events = result.data.items
+	events.each do |e|
+		puts e.summary
+		puts e.start + " to " + e.end
 	end	
 end

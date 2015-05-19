@@ -6,12 +6,10 @@ module RoomsHelper
 	require 'open-uri'
 	require 'fileutils'
 	require 'nokogiri'
-	require 'date'
 
+	include ScheduleHelper
 
-	GoogleAPIKeys = YAML.load_file("#{::Rails.root}/config/google.yml")[::Rails.env]
 	WolframAPIKey = YAML.load_file("#{::Rails.root}/config/wolfram.yml")[::Rails.env]
-
 
 	def redirect_user
 		url_string = request.original_url
@@ -38,141 +36,56 @@ module RoomsHelper
 	end
 
 
-
-
 ##############################################################################################################
 ##############################################################################################################
 ##############################################################################################################
 ##############################################################################################################
 
-																	#API CODE!  ADD STUFF HERE PLEASE
+									#API CODE!  ADD STUFF HERE PLEASE
 
 ##############################################################################################################
 ##############################################################################################################
 ##############################################################################################################
 ##############################################################################################################
 
-
-	def string_to_json(json_string)
-		puts json_string
-		hash = JSON.parse(json_string)
-		puts hash
-		hash
-	end
-
+	# each of these cases must return either the json originally passed in from the python server, or a modified version of it reflecting any needed api_type changes and additional attributes such as api_html for rendering wolfram and wiki. This way we don't have to mess with redis or ajax get/posts.
 	def choose_api(json)
-		json_hash = string_to_json(json)
-		puts json_hash['api_type']
+		json_hash = JSON.parse(json)
+		puts "@@@Original hash from python server: " + json_hash['api_type']
 
 		case json_hash['api_type']
+		when 'google'
+			puts "We will do a google search"
+			json_hash #return unmodified json hash
 		when 'calendar'
-			puts "We will access the calendar api!"
+			logger.error "We will access the calendar api!"
 			json_event = calendar_json(json_hash)
 			create_calendar_event(json_event)
+			json_hash #return unmodified json hash
 		when 'calendar_show'
-			puts "We will show the calendar"
+			logger.error "We will show the calendar"
 			#json_event = calendar_show_json(json_hash)
+			json_hash #return unmodified json hash 
 		when 'schedule_suggest'
-			puts 'We will find a time that works'
+			logger.error 'We will find a time that works'
 			json_event = schedule_json(json_hash)
+			json_hash['suggested_times'] = json_event
+			json_hash
 		when 'google_docs'
 			puts "We will access the google docs api!"
+			json_hash #return unmodified json hash
 		when 'wolfram'
 			puts "We will access the wolfram alpha api!"
-			query_wolfram_alpha(json_hash)
-		when 'youtube'
-			puts "We will access the youtube api!"
+			query_wolfram_alpha(json_hash) # returns modified json hash
+			# # this code is for testing wikipedia till trevor's done
+			# query_wikipedia(json_hash) # returns modified json hash
+			# json_hash['api_type'] = 'wikipedia'
+			# json_hash
 		when 'wikipedia'
 			puts "We will access the wikipedia api!"
-			query_wikipedia(json_hash)
+			query_wikipedia(json_hash) # returns modified json hash
 		else
 			"NOTHING HAPPENED!?!?!?!?!??!?!??!?!"
-		end
-	end
-
-	def calendar_json(json_hash)
-		attendee_array = []
-
-		full_group = json_hash['group_flag']
-
-		if full_group == "True"
-			attendee_array = json_hash['attendees_array']
-		else
-			attendee_array = current_user.email
-		end
-
-		json_event = {
-				'summary' => json_hash['summary'],
-				'location' => json_hash['location'],
-				'start' => {
-					'dateTime' => json_hash['start']['datetime'],
-					'timeZone' => json_hash['start']['timezone']
-				},
-				'end' => {
-					'dateTime' => json_hash['end']['datetime'],
-					'timeZone' => json_hash['end']['timezone']
-				},
-				'attendees' => attendee_array
-			}
-	end
-
-	# def calendar_show_json(json_hash)
-	# 	json_show = {
-	# 		'summary' => 'Displaying calendar',
-	# 		'api_type' => 'calendar_show'
-	# 	}
-	# end
-
-	def schedule_json(json_hash)
-
-		get_available_times(json_hash['start'],json_hash['end'])
-
-	end
-
-	def get_available_times(starttime, endtime)
-
-	client = Google::APIClient.new
-	client.authorization.client_id = GoogleAPIKeys["app_id"]
-	client.authorization.client_secret = GoogleAPIKeys["secret"]
-	client.authorization.scope = "https://www.googleapis.com/auth/calendar"
-	client.authorization.refresh_token = current_user.refresh_token
-	client.authorization.access_token = current_user.oauth_token
-
-	if client.authorization.refresh_token && client.authorization.expired?
-	  client.authorization.fetch_access_token!
-	end
-
-	service = client.discovered_api('calendar', 'v3')
-
-	puts '@@@@@@@@@ Entering Schedule Suggest @@@@@@@@@'
-	starttime_string = starttime['datetime'] + "-0000"
-	endtime_string = endtime['datetime'] + "-0000"
-	puts starttime_string, endtime_string
-	# This will list all busy times within the week of April 13 - 17
-	result = client.execute(:api_method => service.events.list,
-                        	:parameters => {'calendarId' => 'primary',
-                        					'timeMin' => starttime_string,
-                        					'timeMax' => endtime_string })
-
-
-	events = result.data.items
-	#puts result.data.items
-
-
-	puts "@@@@@@@@@@@@@@@@@@@@@@"
-	#starttime = DateTime.parse(starttime)
-	#endtime = DateTime.parse(endtime)
-	#days = (starttime - endtime)/(60*60*24)
-
-	# Create a boolean array of length (days * 48) if using 30min increments; init all to True (free)
-	#event_array = Array.new(days*48, true)
-	puts '@@@@@@@@@@ LIST OF EVENTS @@@@@@@@@@@@'
-	puts events.length
-
-	events.each do |e|
-		puts e
-		puts e.start.dateTime , e.end.dateTime, e.summary
-
 		end
 	end
 
@@ -181,86 +94,47 @@ module RoomsHelper
 		query_string = json_hash['query'].to_s
 		query_string = query_string.split(" '").join
 		query_string = query_string.split("'").join
-		puts "&&&&&&&&&&&&&&&&: " + query_string
+		# puts "&&&&&&&&&&&&&&&&: " + query_string
 		app_id = WolframAPIKey["app_id"]
-		wolfram_url = URI.parse("http://api.wolframalpha.com/v2/query?appid=P3P4W5-LGWA2A3RU2&input=" + URI.encode(query_string.strip) + "&format=html,image").to_s
-
-		puts "@@@@@@@@@@@@wolfram url: " + wolfram_url
+		wolfram_url = URI.parse("http://api.wolframalpha.com/v2/query?appid=P3P4W5-LGWA2A3RU2&input=" + URI.encode(query_string.strip) + "&format=html").to_s
 		doc = Nokogiri::XML(open(wolfram_url))
-		# check to see if the freakin pods exist in the wolfram. if yes, then make
-		# JSON object out of wolfram_html, but add the attribute "valid: yes/no"
-
 		# <queryresult success='false' OR # <pod title='Definition' means we should do wiki instead of wolfram
 		api_html = ""
-		real_api_type = ""
-		# if doc.xpath("//queryresult").attr("success").to_s == 'false' or doc.xpath('//*[@title="Definition"]').length != 0
-			# get wiki hash
-			#real_api_type = "wikipedia"
-			#wikihash = query_wikipedia(json_hash)
-			# return relevant html for wiki somehow by setting api_html in redis to the right stuff
+		if doc.xpath("//queryresult").attr("success").to_s == 'false' or doc.xpath('//*[@title="Definition"]').length != 0
+			#get wiki hash if any of the above were true
+			json_hash = query_wikipedia(json_hash)
+			json_hash['api_type'] = 'wikipedia'
 		# otherwise the api type is definitely wolfram
-		# else
+		else
 			# grab the wolfram html
-			real_api_type = "wolfram"
 			markups = []
 			doc.xpath("//markup").each do |markup|
 				markups << markup.text
+			end
 			api_html = markups.join.to_s.split('"').join("'")
 			api_html = api_html.split("\n").join()
-			# api_html.gsub! 'http://',''
+			json_hash['api_html'] = api_html
 		end
-
-		puts "@@@@@@@@@@@@@@@@@@@html" + api_html
-		puts "@@@@@@@@@@@@@@@@@@@real_api_type" + real_api_type
-		# store wolfram or wiki api_html in redis
-		$redis.set("#{current_user.id}:api_html",api_html.to_s)
-		$redis.set("#{current_user.id}:real_api_type", real_api_type)
+		json_hash
 	end
-
 
 	def query_wikipedia(json_hash)
-		page = Wikipedia.find( json_hash['query'] )
-		wiki_hash = Hash.new
-		wiki_hash['title'] = page.title
-		wiki_hash['content'] = page.content
-		wiki_hash['categories'] = page.categories
-		wiki_hash['links'] = page.links
-		wiki_hash['extlinks'] = page.extlinks
-		wiki_hash['images'] = page.images
-		wiki_hash['image_urls'] = page.image_urls
-		wiki_hash['image_descriptionurls'] = page.image_descriptionurls
-		wiki_hash['coordinates'] = page.coordinates
-		wiki_hash['templates'] = page.templates
-		puts wiki_hash
-		wiki_hash
-	end
-
-	def create_calendar_event(json)
-		client = Google::APIClient.new
-		client.authorization.client_id = GoogleAPIKeys["app_id"]
-		client.authorization.client_secret = GoogleAPIKeys["secret"]
-		client.authorization.scope = "https://www.googleapis.com/auth/calendar"
-		client.authorization.refresh_token = current_user.refresh_token
-		client.authorization.access_token = current_user.oauth_token
-
-		if client.authorization.refresh_token && client.authorization.expired?
-		  client.authorization.fetch_access_token!
+		query_string = json_hash['noun_phrase'].to_s
+		# check if we should change to google search
+		page = Wikipedia.find(query_string)
+		if page.content.nil?
+			# need to switch api type to google search
+			json_hash['api_type'] = 'google'
+		else
+			# its definitely wikipedia
+			wikipedia_url = URI.parse("https://en.wikipedia.org/wiki/" + URI.encode(query_string.strip) + "?action=render").to_s
+			page = Nokogiri::HTML(open(wikipedia_url))
+			api_html = page.inner_html.split('"').join("'") # change to using single quotes
+			api_html = api_html.split("\n").join() # get rid of newline characters
+			json_hash['api_html'] = api_html
 		end
-
-		service = client.discovered_api('calendar', 'v3')
-
-		result = client.execute(:api_method => service.events.insert,
-														:parameters => {'calendarId' => 'primary'},
-														:body 			=> JSON.dump(json),
-														:headers		=> {'Content-Type' =>
-																						'application/json'})
-
-		print result.data.id
+		puts "@@@@@@@@@WIKI@@@@@@@@@@@@@@@@@@" + json_hash['api_html'].to_s
+		json_hash
 	end
 
-	def undo_calendar_event(id)
-		result = client.execute(:api_method => service.events.delete,
-                        		:parameters => {'calendarId' => 'primary',
-                        										'eventId' => id})
-	end
 end
