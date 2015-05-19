@@ -14,7 +14,7 @@ schedule_verbs = ['add', 'set', 'make', 'create', 'get', 'schedule', 'appoint',
 				 'establish', 'form', 'formulate', 'run', 'compose', 'have', 'meet',
 				 'reschedule', 'find'] #'find' is for schedule-suggesting; be careful
 
-schedule_suggest_verbs = ['suggest', 'recommend', 'propose', 'proffer', 'show']
+schedule_suggest_verbs = ['suggest', 'recommend', 'propose', 'show']
 
 schedule_nouns = ['appointment', 'meeting','meetup', 'reservation', 'session'
 				 'talk', 'call', 'powwow', 'meet', 'rendezvous', 'event', 'conference']
