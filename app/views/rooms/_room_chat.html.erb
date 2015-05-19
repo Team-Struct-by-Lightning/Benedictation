@@ -166,7 +166,8 @@ function appendNewIM_text_only(message_string) {
 
 // stick new instant message onto the chat body
 function appendNewIM(options) {
-    var message_data = options.split("@@@");
+    console.log(options);
+    var message_data = options.data.split("@@@");
     var caller_name = message_data[0];
     var caller_uid = message_data[1];
     var caller_token = message_data[2];
