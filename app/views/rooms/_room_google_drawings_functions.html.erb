@@ -83,7 +83,8 @@ function create_new_drawing(myData){
           "title" : group_name,
           "mimeType" : "application/vnd.google-apps.drawing",
           "description" : "Drawing created by Benedict",
-          "owners" : myData["attendees_array"]
+          "permissions" : [{"emailaddress": 'team.struct.by.lightning@gmail.com' }]
+
        }
    });
 
@@ -101,6 +102,26 @@ function create_new_drawing(myData){
       if(sec < 10){
         sec = '0'+sec;
       }
+
+      file_id = resp.id;
+
+      for(var i = 0; i < myData['attendees_array'].length; i++){
+        var permission_body = {
+        'value': myData['attendees_array'][i]['email'],
+        'type': 'user',
+        'role': 'owner'
+        };
+        var p_request = gapi.client.drive.permissions.insert({
+          'fileId': file_id,
+          'resource': permission_body
+        });
+        p_request.execute(function(p_resp) { 
+            console.log("permission response");
+            console.log(p_resp);
+        });
+      }
+      
+
       myData['current_time'] = today.getHours() + ":" + min + ":" + sec;
       sendBennyReply(JSON.stringify(myData));
     });
