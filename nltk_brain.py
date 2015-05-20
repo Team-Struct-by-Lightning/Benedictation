@@ -87,9 +87,32 @@ def interpret(sentences):
 			print tree
 
 			# first just check if its just a noun phrase, then go to wiki
-			if 'NP' == tree.label() or 'NX' == tree.label():
+			if 'NP' == tree.label() or \
+			'NP+NP'== tree.label() or \
+			'NX' == tree.label():
+				print 'interpreting as just a noun phrase'
 				words = sentence
+				noun_phrase = []
+				# this is code for finding the noun phrase
+				for noun_subtree in tree.subtrees():
+					if not "SBAR" in noun_subtree.label() \
+					and not "W" in noun_subtree.label() \
+					and "NP" in noun_subtree.label() \
+					and len(noun_subtree.leaves()) > len(noun_phrase):
+
+						noun_phrase = noun_subtree.leaves()
+
+				# this code removes the article from the beginning
+				if noun_phrase:
+					if (noun_phrase[0] == 'a' or \
+					 	noun_phrase[0] == 'an' or noun_phrase[0] == 'the'):
+						del noun_phrase[0]
+
+				#print noun_phrase
+				noun_phrase = ' '.join(noun_phrase)
+
 				text = '{"api_type": "wikipedia", \
+					"noun_phrase": "' + noun_phrase + '", \
 			 		"query": "' + words + '"}'
 				return text
 
@@ -274,6 +297,6 @@ if __name__ == "__main__":
 	#schedule_JJ("schedule meeting for tomorrow at 4 pm")
 	#print schedule_meeting(["schedule a meeting for tomorrow at 3 pm"])
 	#run_tests('example_sentences.txt')
-	#print interpret(['schedule next week at 9 a.m.'])
+	print interpret(['The big dog'])
 
-	check_apis("example_questions.txt")
+	#check_apis("example_questions.txt")
