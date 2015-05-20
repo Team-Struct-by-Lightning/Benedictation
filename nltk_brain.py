@@ -30,6 +30,9 @@ time_words = ['tomorrow', 'today', 'Monday', 'Tuesday', 'Wednesday', 'Thursday',
 
 doc_nouns = ['doc', 'dog', 'dock' , 'document', 'script', 'record', 'report', 'page', 'notepad']
 
+drawing_nouns = ['drawing','picture','markerboard', 'board', 'whiteboard', 'painting',
+				'sketch', 'layout', 'design', 'depiction', 'chalkboard']
+
 calendar_nouns = ['calendar', 'agenda', 'schedule', 'itinerary']
 
 group_prps  = ['we', 'us', 'our']
@@ -128,6 +131,10 @@ def interpret(sentences):
 									if 'NP' in subtree.label() and any(x in subtree.leaves() for x in doc_nouns):
 										print 'Interpreting as doc request'
 										return '{"api_type": "google_docs"}'
+
+									if 'NP' in subtree.label() and any(x in subtree.leaves() for x in drawing_nouns):
+										print 'Interpreting as drawing request'
+										return '{"api_type": "google_drawings"}'
 
 									if 'NP' in subtree.label() and any(x in subtree.leaves() for x in calendar_nouns):
 										print 'Interpreting as calendar request'
@@ -297,6 +304,6 @@ if __name__ == "__main__":
 	#schedule_JJ("schedule meeting for tomorrow at 4 pm")
 	#print schedule_meeting(["schedule a meeting for tomorrow at 3 pm"])
 	#run_tests('example_sentences.txt')
-	print interpret(['The big dog'])
+	print interpret(['can you open up a drawing'])
 
 	#check_apis("example_questions.txt")
