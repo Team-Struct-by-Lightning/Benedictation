@@ -18,47 +18,6 @@ import matplotlib.patches as patches
 import matplotlib.path as path
 
 
-#OLD!!!!!
-#Features array is created here
-#index 0: contains a schedule verb
-#index 1: contains a schedule noun
-#index 2: schedule verb modifies schedule noun
-#index 3: time is in query
-#index 4: what is in query
-#index 5: when is in query
-#index 6: why is in query
-#index 7: how is in query
-#index 8: where is in query
-#index 9: who is in query
-#index 10: is it a categorical question?
-#index 11: document noun is in query
-#index 12: document verb is in query
-#index 13: document verb modifies document noun
-#index 14: show verb is in query
-#index 15: show verb along with calendar noun is in query
-#index 16: has only 1 word
-#index 17: has fewer than 5 words
-#index 18: has fewer than 10 words
-#index 19: has fewer than 20 words
-#index 20: has more than 20 words
-
-#NEW
-#index 0: what is in query
-#index 1: when is in query
-#index 2: why is in query
-#index 3: how is in query
-#index 4: where is in query
-#index 5: who is in query
-#index 6: has fewer than 5 words
-#index 7: FILL THESE IN BECAUSE WE USE THEM
-#index 8:
-#index 9:
-#index 10:
-#index 11:
-#index 12:
-#index 13:
-
-
 
 #training set of strings
 #it is a list of query, api_type
@@ -204,8 +163,10 @@ def change_int_to_api_type(class_type):
 		return "wolfram"
 	elif class_type == 6:
 		return "wikipedia"
-	else:# Defaults the google search if something messes up
+	elif class_type == 7:
 		return "google"
+	else: #shit fucked up
+		return "WHAT HAPPENED?!"
 def percent_to_index(percentage, length_of_array):
 	return int(percentage*length_of_array)
 
@@ -654,13 +615,3 @@ def generate_questions_google_docs():
 #generate_questions_google_docs()
 
 predictor_validation_list_to_plot_and_multiple_train_sets(10, training_set_calendar, training_set_schedule_suggest, training_set_google_docs, training_set_wolfram, training_set_wikipedia, training_set_google, .8)
-
-
-#make_single_predictor(training_set, .8)
-
-#EXAMPLE usage of BernoulliNB
-# X = np.random.randint(2, size=(6, 100))
-# Y = np.array([1, 2, 3, 4, 4, 5])
-# clf = BernoulliNB()
-# clf.fit(X, Y)
-# print(clf.predict(X[2]))
