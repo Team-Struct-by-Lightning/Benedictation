@@ -82,7 +82,8 @@ function create_new_drawing(myData){
       'body':{
           "title" : group_name,
           "mimeType" : "application/vnd.google-apps.drawing",
-          "description" : "Drawing created by Benedict"
+          "description" : "Drawing created by Benedict",
+          "owners" : myData["attendees_array"]
        }
    });
 

@@ -19,7 +19,6 @@ var postAPIRequest = function(myData) {
                 create_new_document(json_hash);
             }
             else if(json_hash.api_type === 'google_drawings'){
-                console.log("getting here");
                 create_new_drawing(json_hash);
             } 
             else {
