@@ -160,32 +160,19 @@ module ScheduleHelper
 	end
 
 	# Create a JSON object representing the times the current user is available, for display purposes
-	# Current functionality creates one JSON object in the array per *block* of contiguous available time,
-	# regardless of that block's length (though broken up on day boundaries).
-	# 
-	def available_times_json(availabilityArray, start_range)
+	# Find all contiguous blocks of a given duration. (Default is 1 hour?)
+	# Return a JSON object of the form [{"start": time, "end": time}, {...} ...]
+	def available_times_json(availabilityArray, start_range, duration)
 		available_times = []
-		flag = false
-		start_time = start_range
-		end_time   = start_range
-		availabilityArray.each_with_index do |bits, day|
-			# For each of the bits do this. For reference: 0, the LSB, is 8:00 AM
-			(0..17).each do |n|
-				free = !(bits[n].zero?)
-				if free and not flag
+		d = duration / 30.minutes
+		availabilityArray.each_with_index do |availability, day|
+			bits = availability.to_s(2).split("").map {|x| !x.to_i.zero? }
+			bits.each_with_index do |bit, n|
+				if bit and bits[n ... n+d].any?
 					start_time = (start_range + day) + (30*n).minutes
-					flag = true
-				end
-				if flag and n == 17	# cut off at the end of day
 					end_time = (start_range + day) + (30*(n+1)).minutes
-					flag = false
 					available_times.append({"start" => start_time, "end" => end_time})
-				end
-				if not free and flag
-					end_time = (start_range + day) + (30*n).minutes
-					flag = false
-					available_times.append({"start" => start_time, "end" => end_time})
-				end
+				end	
 			end
 		end
 		return available_times.to_json

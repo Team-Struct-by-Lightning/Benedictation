@@ -85,7 +85,7 @@ module RoomsHelper
 			puts "We will access the wikipedia api!"
 			query_wikipedia(json_hash) # returns modified json hash
 		else
-			"NOTHING HAPPENED!?!?!?!?!??!?!??!?!"
+			json_hash	# In the event of blank queries/no result, return the unmodified hash
 		end
 	end
 
