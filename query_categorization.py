@@ -146,8 +146,10 @@ def change_api_type_to_int(class_type):
 		return 5
 	elif class_type == "wikipedia":
 		return 6
-	else:# Defaults the google search if something messes up
+	elif class_type == "google_drawings":
 		return 7
+	else:# Defaults the google search if something messes up
+		return 8
 
 def change_int_to_api_type(class_type):
 # this is a switch statement on the api type
@@ -164,6 +166,8 @@ def change_int_to_api_type(class_type):
 	elif class_type == 6:
 		return "wikipedia"
 	elif class_type == 7:
+		return "google_drawings"
+	elif class_type == 8:
 		return "google"
 	else: #shit fucked up
 		return "WHAT HAPPENED?!"
@@ -197,6 +201,11 @@ def interpret_for_scikit(sentences, temp_array):
 									if 'NP' in subtree.label() and any(x in subtree.leaves() for x in doc_nouns):
 										print 'Interpreting as doc request'
 										temp_array[0] = 1
+										return
+
+									if 'NP' in subtree.label() and any(x in subtree.leaves() for x in drawing_nouns):
+										print 'Interpreting as drawing request'
+										temp_array[9] = 1
 										return
 
 									if 'NP' in subtree.label() and any(x in subtree.leaves() for x in calendar_nouns):
