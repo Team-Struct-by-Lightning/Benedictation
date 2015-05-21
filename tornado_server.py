@@ -2,19 +2,19 @@ import tornado.ioloop
 import tornado.web
 import tornado.websocket
 import tornado.httpserver
+import json
 from json import loads
 from urllib2 import urlopen
 import httplib
-# from nltk_test import find_nouns
-import speechrec    # Put speechrec.py in the same folder
 import email_class
 import wave
 import os
 import random
-from nltk_brain import interpret
-import speechrec
 import socket
-import json
+
+# Import the brain!
+import brain.speechrec as speechrec
+from brain.nlp import interpret
 
 class EmailWSHandler(tornado.websocket.WebSocketHandler):
     def open(self):
