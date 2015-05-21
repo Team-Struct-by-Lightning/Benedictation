@@ -189,6 +189,66 @@ def interpret_for_scikit(sentences, temp_array):
 
 			tree = parser.parse(sentence)
 			#print tree
+			# first just check if its just a noun phrase, then go to wiki
+			if 'NP' == tree.label() or \
+			'NP+NP'== tree.label() or \
+			'NX+NX'== tree.label() or \
+			'NX+NP'== tree.label() or \
+			'NP+NX'== tree.label() or \
+			'FRAG'== tree.label() or \
+			'NX' == tree.label():
+				print 'interpreting as just a noun phrase'
+				words = sentence
+				noun_phrase = []
+				# this is code for finding the noun phrase
+				for noun_subtree in tree.subtrees():
+					if not "SBAR" in noun_subtree.label() \
+					and not "W" in noun_subtree.label() \
+					and "NP" in noun_subtree.label() \
+					and len(noun_subtree.leaves()) > len(noun_phrase):
+
+						noun_phrase = noun_subtree.leaves()
+
+				# this code removes the article from the beginning
+				if noun_phrase:
+					if (noun_phrase[0] == 'a' or \
+					 	noun_phrase[0] == 'an' or noun_phrase[0] == 'the'):
+						del noun_phrase[0]
+
+				#print noun_phrase
+				noun_phrase = ' '.join(noun_phrase)
+
+				text = '{"api_type": "wikipedia", \
+					"noun_phrase": "' + noun_phrase + '", \
+			 		"query": "' + words + '"}'
+			 		temp_array[10] = 1
+			 	return
+				#return text
+
+			# If the sentence starts with one of these parts of speech
+			if 'VP' in tree.label():
+				temp_array[11] = 1
+			if 'RRC' in tree.label():
+				temp_array[12] = 1
+			if 'SQ' in tree.label():
+				temp_array[13] = 1
+			if 'ADJP' in tree.label():
+				temp_array[14] = 1
+			if 'ADVP' in tree.label():
+				temp_array[15] = 1
+			if 'INTJ' in tree.label():
+				temp_array[16] = 1
+			if 'SBAR' == tree.label():
+				temp_array[17] = 1
+			if 'SBARQ' in tree.label():
+				temp_array[18] = 1
+			if 'S' == tree.label():
+				temp_array[19] = 1
+			if 'SINV' in tree.label():
+				temp_array[20] = 1
+
+
+
 
 			for element in [tree] + [e for e in tree]: # Include the root element in the for loop
 
@@ -293,7 +353,7 @@ def wolfram_for_scikit(element, temp_array):
 	return
 
 def query_to_array(query):
-	temp_array = np.array([0 for i in range(26)])
+	temp_array = np.array([0 for i in range(50)])
 # call list of functions to populate the array
 ####
 # NEW
@@ -316,7 +376,7 @@ def query_to_array(query):
 	check_word_lists(query_array, temp_array, 16)
 
 	#uses 6
-	check_for_w_words(query, temp_array, 10)
+	check_for_w_words(query, temp_array, 20)
 
 
 	return temp_array
