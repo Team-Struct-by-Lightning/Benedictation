@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   get 'signout', to: 'sessions#destroy', as: 'signout'
   get 'chat' => 'static_pages#chat'
   get 'video' => 'static_pages#video'
+  get 'custom_404' => 'static_pages#custom_404'
   get 'newgroup' => 'groups#new'
   get 'giraffe' => 'static_pages#giraffe'
   get '/room/:id/:name' => 'rooms#room'
