@@ -221,7 +221,34 @@ def interpret_for_scikit(sentences, temp_array):
 				text = '{"api_type": "wikipedia", \
 					"noun_phrase": "' + noun_phrase + '", \
 			 		"query": "' + words + '"}'
-				return text
+			 		temp_array[10] = 1
+			 	return
+				#return text
+
+			# If the sentence starts with one of these parts of speech
+			if 'VP' in tree.label():
+				temp_array[11] = 1
+			if 'RRC' in tree.label():
+				temp_array[12] = 1
+			if 'SQ' in tree.label():
+				temp_array[13] = 1
+			if 'ADJP' in tree.label():
+				temp_array[14] = 1
+			if 'ADVP' in tree.label():
+				temp_array[15] = 1
+			if 'INTJ' in tree.label():
+				temp_array[16] = 1
+			if 'SBAR' == tree.label():
+				temp_array[17] = 1
+			if 'SBARQ' in tree.label():
+				temp_array[18] = 1
+			if 'S' == tree.label():
+				temp_array[19] = 1
+			if 'SINV' in tree.label():
+				temp_array[20] = 1
+
+
+
 
 			for element in [tree] + [e for e in tree]: # Include the root element in the for loop
 
@@ -326,7 +353,7 @@ def wolfram_for_scikit(element, temp_array):
 	return
 
 def query_to_array(query):
-	temp_array = np.array([0 for i in range(26)])
+	temp_array = np.array([0 for i in range(50)])
 # call list of functions to populate the array
 ####
 # NEW
@@ -349,7 +376,7 @@ def query_to_array(query):
 	check_word_lists(query_array, temp_array, 16)
 
 	#uses 6
-	check_for_w_words(query, temp_array, 10)
+	check_for_w_words(query, temp_array, 20)
 
 
 	return temp_array
