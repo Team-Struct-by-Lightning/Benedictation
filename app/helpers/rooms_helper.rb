@@ -74,6 +74,9 @@ module RoomsHelper
 		when 'google_docs'
 			puts "We will access the google docs api!"
 			json_hash #return unmodified json hash
+		when 'google_drawings'
+			puts "We will access the google drawings api!"
+			json_hash #return unmodified json hash
 		when 'wolfram'
 			puts "We will access the wolfram alpha api!"
 			query_wolfram_alpha(json_hash) # returns modified json hash

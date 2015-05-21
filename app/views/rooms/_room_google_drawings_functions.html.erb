@@ -1,6 +1,6 @@
 <% google_yml = YAML.load_file("#{::Rails.root}/config/google.yml")[::Rails.env] %>
 
-function create_new_document(myData){
+function create_new_drawing(myData){
 
   //var clientId = "<%= google_yml['app_id']  %>";
   //var scope = ['https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/drive.file',
@@ -11,7 +11,7 @@ function create_new_document(myData){
   function onAuthApiLoad() {
 
     
-    console.log("attempting to create a document");
+    console.log("attempting to create a drawing");
 
     // set the gapi client's token to the rails oauth token
     gapi.auth.setToken({
@@ -69,7 +69,7 @@ function create_new_document(myData){
     return today;
   }
   function makeRequest(){
-    console.log("making a file request now");
+    console.log("about to create the drawing file now");
     var url = (window.location.pathname).split("/");
     var id = String(url[url.length - 2]);
     
@@ -81,8 +81,10 @@ function create_new_document(myData){
       'method': 'POST',
       'body':{
           "title" : group_name,
-          "mimeType" : "application/vnd.google-apps.document",
-          "description" : "Document created by Benedict"
+          "mimeType" : "application/vnd.google-apps.drawing",
+          "description" : "Drawing created by Benedict",
+          "permissions" : [{"emailaddress": 'team.struct.by.lightning@gmail.com' }]
+
        }
    });
 
@@ -100,7 +102,7 @@ function create_new_document(myData){
       if(sec < 10){
         sec = '0'+sec;
       }
-      
+
       file_id = resp.id;
 
       for(var i = 0; i < myData['attendees_array'].length; i++){
@@ -114,10 +116,11 @@ function create_new_document(myData){
           'resource': permission_body
         });
         p_request.execute(function(p_resp) { 
-            console.log("permission response");
-            console.log(p_resp);
+            console.log("Adding permission");
+            //console.log(p_resp);
         });
       }
+      
 
       myData['current_time'] = today.getHours() + ":" + min + ":" + sec;
       sendBennyReply(JSON.stringify(myData));

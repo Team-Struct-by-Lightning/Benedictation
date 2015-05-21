@@ -17,7 +17,11 @@ var postAPIRequest = function(myData) {
             console.log("JSON returned from /check_api: ",json_hash);
             if (json_hash.api_type === 'google_docs') {
                 create_new_document(json_hash);
-            } else {
+            }
+            else if(json_hash.api_type === 'google_drawings'){
+                create_new_drawing(json_hash);
+            } 
+            else {
                 // for wolfram and wiki, the json_hash was modified to hold the required/correct api_type attribute according to the heiarchy, 
                 // in addition to containing a new api_html attribute for renders. 
                 // For calendar, the json is unmodified from the python server's version.
