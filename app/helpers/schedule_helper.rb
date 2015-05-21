@@ -71,7 +71,7 @@ module ScheduleHelper
 		logger.error "Overall availability: " + overall_availability.inspect
 		
 		# Convert this array to a list of free-time blocks, in JSON format, for returning to the view.x[]
-		return available_times_json(overall_availability, start_range)
+		return available_times_json(overall_availability, start_range, 1.hour)
 	end
 
 
@@ -151,10 +151,7 @@ module ScheduleHelper
 		end
 
 		# Make sure the bitwise bullshit is working
-		logger.error "===userAvailabilityArray==="
-		userAvailabilityArray.each_with_index do |day, day_index|
-			logger.error "Day " + day_index.to_s + ": " + day.to_s(2)
-		end	
+		logger.error userAvailabilityArray.inspect
 
 		return userAvailabilityArray
 	end
@@ -164,13 +161,13 @@ module ScheduleHelper
 	# Return a JSON object of the form [{"start": time, "end": time}, {...} ...]
 	def available_times_json(availabilityArray, start_range, duration)
 		available_times = []
-		d = duration / 30.minutes
+		d = 2	#hardcode for testing
 		availabilityArray.each_with_index do |availability, day|
 			bits = availability.to_s(2).split("").map {|x| !x.to_i.zero? }
 			bits.each_with_index do |bit, n|
 				if bit and bits[n ... n+d].any?
 					start_time = (start_range + day) + (30*n).minutes
-					end_time = (start_range + day) + (30*(n+1)).minutes
+					end_time = (start_range + day) + (30*(n+d)).minutes
 					available_times.append({"start" => start_time, "end" => end_time})
 				end	
 			end
