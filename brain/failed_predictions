@@ -1,204 +1,70 @@
-@@@@@    query: when are all of us free today
-@@@@@    expected: schedule_suggest
-@@@@@    predicted: wolfram
-@@@@@    probabilities: 
-@@@@@                   calendar: 7.85236281746 %
-@@@@@                   schedule suggest: 1.72801280931e-05 %
-@@@@@                   google docs: 1.22331116167e-07 %
-@@@@@                   wolfram: 78.5100304033 %
-@@@@@                   wikipedia: 13.6375893768 %
-
-@@@@@    query: suggest meeting
-@@@@@    expected: schedule_suggest
-@@@@@    predicted: wikipedia
-@@@@@    probabilities: 
-@@@@@                   calendar: 3.06042928588 %
-@@@@@                   schedule suggest: 13.4095370965 %
-@@@@@                   google docs: 0.0802646247563 %
-@@@@@                   wolfram: 3.71009631229 %
-@@@@@                   wikipedia: 79.7396726806 %
-
-@@@@@    query: show us our potential meeting times for next week
-@@@@@    expected: schedule_suggest
-@@@@@    predicted: calendar
-@@@@@    probabilities: 
-@@@@@                   calendar: 99.8382853998 %
-@@@@@                   schedule suggest: 0.0411502658777 %
-@@@@@                   google docs: 0.0245759960697 %
-@@@@@                   wolfram: 0.00144953318165 %
-@@@@@                   wikipedia: 0.0945388050762 %
-
-@@@@@    query: Benedict, set an appointment for tomorrow at 7
+@@@@@    query: schedule a meeting for January 28th at 5 pm
 @@@@@    expected: calendar
 @@@@@    predicted: schedule_suggest
 @@@@@    probabilities: 
-@@@@@                   calendar: 37.0529848874 %
-@@@@@                   schedule suggest: 62.9466355451 %
-@@@@@                   google docs: 1.92712470126e-05 %
-@@@@@                   wolfram: 9.09927690277e-05 %
-@@@@@                   wikipedia: 0.000269303514979 %
+@@@@@                   calendar: 14.3690676894 %
+@@@@@                   schedule suggest: 85.5168278411 %
+@@@@@                   google docs: 0.00847276317061 %
+@@@@@                   wolfram: 0.0125910613885 %
+@@@@@                   wikipedia: 0.0930406449054 %
 
-@@@@@    query: when are all of us free tomorrow
+@@@@@    query: Benedict, schedule a meeting for next Tuesday
 @@@@@    expected: schedule_suggest
-@@@@@    predicted: wolfram
+@@@@@    predicted: calendar
 @@@@@    probabilities: 
-@@@@@                   calendar: 7.85236281746 %
-@@@@@                   schedule suggest: 1.72801280931e-05 %
-@@@@@                   google docs: 1.22331116167e-07 %
-@@@@@                   wolfram: 78.5100304033 %
-@@@@@                   wikipedia: 13.6375893768 %
+@@@@@                   calendar: 53.7880813434 %
+@@@@@                   schedule suggest: 46.1973961552 %
+@@@@@                   google docs: 0.00407781011692 %
+@@@@@                   wolfram: 0.00308329072764 %
+@@@@@                   wikipedia: 0.00736140050133 %
 
 @@@@@    query: when are all of us free
 @@@@@    expected: schedule_suggest
 @@@@@    predicted: wolfram
 @@@@@    probabilities: 
-@@@@@                   calendar: 0.0374481365189 %
-@@@@@                   schedule suggest: 6.73626340211e-07 %
-@@@@@                   google docs: 5.81020099231e-06 %
-@@@@@                   wolfram: 82.6711669625 %
-@@@@@                   wikipedia: 17.2913784171 %
+@@@@@                   calendar: 0.00424543828697 %
+@@@@@                   schedule suggest: 39.4610271725 %
+@@@@@                   google docs: 0.00695370893197 %
+@@@@@                   wolfram: 58.336582169 %
+@@@@@                   wikipedia: 2.19119151135 %
 
-@@@@@    query: suggest meeting
-@@@@@    expected: schedule_suggest
+@@@@@    query: open doc
+@@@@@    expected: google_docs
 @@@@@    predicted: wikipedia
 @@@@@    probabilities: 
-@@@@@                   calendar: 1.11238196603 %
-@@@@@                   schedule suggest: 15.5440741692 %
-@@@@@                   google docs: 0.0599304532403 %
-@@@@@                   wolfram: 2.81812758315 %
-@@@@@                   wikipedia: 80.4654858284 %
+@@@@@                   calendar: 0.000698946057186 %
+@@@@@                   schedule suggest: 0.035975987035 %
+@@@@@                   google docs: 38.5006215731 %
+@@@@@                   wolfram: 0.112304782583 %
+@@@@@                   wikipedia: 61.3503987112 %
 
-@@@@@    query: when are all of us free tomorrow
-@@@@@    expected: schedule_suggest
-@@@@@    predicted: wolfram
-@@@@@    probabilities: 
-@@@@@                   calendar: 2.14237340013 %
-@@@@@                   schedule suggest: 8.45321790399e-06 %
-@@@@@                   google docs: 7.38658327811e-08 %
-@@@@@                   wolfram: 91.3921028198 %
-@@@@@                   wikipedia: 6.46551525298 %
-
-@@@@@    query: proffer meeting
-@@@@@    expected: schedule_suggest
+@@@@@    query: open doc
+@@@@@    expected: google_docs
 @@@@@    predicted: wikipedia
 @@@@@    probabilities: 
-@@@@@                   calendar: 2.17349835928 %
-@@@@@                   schedule suggest: 13.1207353703 %
-@@@@@                   google docs: 0.0528535013751 %
-@@@@@                   wolfram: 3.73381867326 %
-@@@@@                   wikipedia: 80.9190940958 %
+@@@@@                   calendar: 0.000434793258949 %
+@@@@@                   schedule suggest: 0.0354284086879 %
+@@@@@                   google docs: 37.5380772612 %
+@@@@@                   wolfram: 0.308828454086 %
+@@@@@                   wikipedia: 62.1172310828 %
 
-@@@@@    query: show us our potential meeting times
-@@@@@    expected: schedule_suggest
-@@@@@    predicted: calendar
-@@@@@    probabilities: 
-@@@@@                   calendar: 70.7187368339 %
-@@@@@                   schedule suggest: 0.100751472978 %
-@@@@@                   google docs: 25.9315073056 %
-@@@@@                   wolfram: 0.0519055886424 %
-@@@@@                   wikipedia: 3.19709879884 %
-
-@@@@@    query: mathematical set
-@@@@@    expected: wikipedia
-@@@@@    predicted: google_docs
-@@@@@    probabilities: 
-@@@@@                   calendar: 0.00055874733667 %
-@@@@@                   schedule suggest: 2.32590892951 %
-@@@@@                   google docs: 97.6507705032 %
-@@@@@                   wolfram: 0.00195972083992 %
-@@@@@                   wikipedia: 0.0208020991223 %
-
-@@@@@    query: show us our potential meeting times for next week
-@@@@@    expected: schedule_suggest
-@@@@@    predicted: calendar
-@@@@@    probabilities: 
-@@@@@                   calendar: 99.9120972212 %
-@@@@@                   schedule suggest: 0.0427880160328 %
-@@@@@                   google docs: 0.0079884891738 %
-@@@@@                   wolfram: 0.00122387461193 %
-@@@@@                   wikipedia: 0.035902399011 %
-
-@@@@@    query: when are all of us free
-@@@@@    expected: schedule_suggest
-@@@@@    predicted: wolfram
-@@@@@    probabilities: 
-@@@@@                   calendar: 0.0777649232793 %
-@@@@@                   schedule suggest: 1.59869325641e-06 %
-@@@@@                   google docs: 5.38801792417e-06 %
-@@@@@                   wolfram: 80.011550377 %
-@@@@@                   wikipedia: 19.9106777131 %
-
-@@@@@    query: mathematical set
-@@@@@    expected: wikipedia
-@@@@@    predicted: google_docs
-@@@@@    probabilities: 
-@@@@@                   calendar: 0.000278893571065 %
-@@@@@                   schedule suggest: 1.64111064906 %
-@@@@@                   google docs: 98.3327594758 %
-@@@@@                   wolfram: 0.00099192869421 %
-@@@@@                   wikipedia: 0.0248590529036 %
-
-@@@@@    query: Benedict, set an appointment for tomorrow at 7
+@@@@@    query: schedule a meeting for January 28th at 5 pm
 @@@@@    expected: calendar
 @@@@@    predicted: schedule_suggest
 @@@@@    probabilities: 
-@@@@@                   calendar: 37.2460100379 %
-@@@@@                   schedule suggest: 62.7538069025 %
-@@@@@                   google docs: 2.12076806339e-05 %
-@@@@@                   wolfram: 7.43075749658e-05 %
-@@@@@                   wikipedia: 8.75443162673e-05 %
-
-@@@@@    query: suggest meeting
-@@@@@    expected: schedule_suggest
-@@@@@    predicted: wikipedia
-@@@@@    probabilities: 
-@@@@@                   calendar: 2.14014939168 %
-@@@@@                   schedule suggest: 10.2905208295 %
-@@@@@                   google docs: 0.0490683973895 %
-@@@@@                   wolfram: 1.67769772597 %
-@@@@@                   wikipedia: 85.8425636554 %
-
-@@@@@    query: proffer meeting
-@@@@@    expected: schedule_suggest
-@@@@@    predicted: wikipedia
-@@@@@    probabilities: 
-@@@@@                   calendar: 2.14014939168 %
-@@@@@                   schedule suggest: 10.2905208295 %
-@@@@@                   google docs: 0.0490683973895 %
-@@@@@                   wolfram: 1.67769772597 %
-@@@@@                   wikipedia: 85.8425636554 %
-
-@@@@@    query: show us our potential meeting times
-@@@@@    expected: schedule_suggest
-@@@@@    predicted: calendar
-@@@@@    probabilities: 
-@@@@@                   calendar: 64.8873853392 %
-@@@@@                   schedule suggest: 0.0248143590497 %
-@@@@@                   google docs: 28.7886133204 %
-@@@@@                   wolfram: 0.0242412187524 %
-@@@@@                   wikipedia: 6.2749457626 %
-
-@@@@@    query: proffer meeting
-@@@@@    expected: schedule_suggest
-@@@@@    predicted: wikipedia
-@@@@@    probabilities: 
-@@@@@                   calendar: 2.27660731013 %
-@@@@@                   schedule suggest: 7.68610260486 %
-@@@@@                   google docs: 0.0607512057696 %
-@@@@@                   wolfram: 1.99065767682 %
-@@@@@                   wikipedia: 87.9858812024 %
-
-@@@@@    query: show us our potential meeting times for next week
-@@@@@    expected: schedule_suggest
-@@@@@    predicted: calendar
-@@@@@    probabilities: 
-@@@@@                   calendar: 99.9174334992 %
-@@@@@                   schedule suggest: 0.00863981038921 %
-@@@@@                   google docs: 0.00985120208888 %
-@@@@@                   wolfram: 0.000921680550697 %
-@@@@@                   wikipedia: 0.0631538078207 %
+@@@@@                   calendar: 20.2851532649 %
+@@@@@                   schedule suggest: 79.5104556048 %
+@@@@@                   google docs: 0.0116289449212 %
+@@@@@                   wolfram: 0.047894237456 %
+@@@@@                   wikipedia: 0.144867947893 %
 
 @@@@@    query: when are all of us free
 @@@@@    expected: schedule_suggest
 @@@@@    predicted: wolfram
-@@@@@    proba
+@@@@@    probabilities: 
+@@@@@                   calendar: 0.00341818678278 %
+@@@@@                   schedule suggest: 4.58060861117 %
+@@@@@                   google docs: 0.00810154179063 %
+@@@@@                   wolfram: 93.3622576795 %
+@@@@@                   wikipedia: 2.04561398071 %
+

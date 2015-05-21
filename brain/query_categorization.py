@@ -10,7 +10,7 @@ from dateutil.relativedelta import *
 import numpy as np
 import random
 from sklearn.naive_bayes import BernoulliNB
-from nltk_brain import *
+from nlp import *
 from query_training_set import *
 
 import matplotlib.pyplot as plt
@@ -221,7 +221,7 @@ def interpret_for_scikit(sentences, temp_array):
 				text = '{"api_type": "wikipedia", \
 					"noun_phrase": "' + noun_phrase + '", \
 			 		"query": "' + words + '"}'
-			 		temp_array[10] = 1
+			 	temp_array[10] = 1
 			 	return
 				#return text
 
@@ -314,6 +314,7 @@ def interpret_for_scikit(sentences, temp_array):
 
 	except Exception as e:
 		print "Error in NLTK Brain: ", e.message
+		print sentence 
 
 	return '{"api_type": "blank_query"}'
 
@@ -373,7 +374,7 @@ def query_to_array(query):
 # if len(query) < 5:
 # 	temp_array[9] = 1
 	#uses 10, till
-	check_word_lists(query_array, temp_array, 16)
+	check_word_lists(query_array, temp_array, 26)
 
 	#uses 6
 	check_for_w_words(query, temp_array, 20)
@@ -648,8 +649,8 @@ def generate_questions_google_docs():
 			f.write("('" + doc_verbs[i] + " a Google " + doc_nouns[j] + "', 'google_docs'),\n")
 			f.write("('" + doc_verbs[i] + " Google " + doc_nouns[j] + "', 'google_docs'),\n")
 			f.write("('" + doc_verbs[i] + " me " + doc_nouns[j] + "', 'google_docs'),\n")
-			f.write("('" + doc_verbs[i] + " me a" + doc_nouns[j] + "', 'google_docs'),\n")
-			f.write("('" + doc_verbs[i] + " us a" + doc_nouns[j] + "', 'google_docs'),\n")
+			f.write("('" + doc_verbs[i] + " me a " + doc_nouns[j] + "', 'google_docs'),\n")
+			f.write("('" + doc_verbs[i] + " us a " + doc_nouns[j] + "', 'google_docs'),\n")
 			f.write("('" + doc_verbs[i] + " us " + doc_nouns[j] + "', 'google_docs'),\n")
 
 # def generate_questions_wolfram():

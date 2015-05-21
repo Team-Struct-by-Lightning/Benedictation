@@ -208,10 +208,20 @@ function clickable(me) {
                   
                   //console.log("WERE HERE AND NEWKEY IS " + item['some_new_thing']);
                   var document_link = item['doc_link'];
-                  $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id +'>' +
-                  '  <div class="calendar-border"> <h1 class="calendar-title" style = "margin-bottom: 22px;">' + user_name +'\'s Google Document</h1> <a class="glyphicon glyphicon-remove" id="remove_item_id"></a>' +
-                  '<iframe class="calendar-frame" src=' + document_link + ' style=" border-width:0 " width="800" height="600" frameborder="0" scrolling="no"></iframe></div>' +
+                  document_link = undefined;
+                  if(document_link == undefined){
+                    $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id +'>' +
+                    '  <div class="calendar-border"> <h1 class="calendar-title" style = "margin-bottom: 22px;">' + user_name +'\'s Google Document</h1> <a class="glyphicon glyphicon-remove" id="remove_item_id"></a>' +
+                    '<iframe class="calendar-frame" src=' + document_link + ' style=" border-width:0 " width="800" height="600" frameborder="0" scrolling="no"></iframe></div>' +
                                           '</div>');
+                  }
+                  else{
+                    $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id +'>' +
+                    '  <div class="calendar-border"> <h1 class="calendar-title" style = "margin-bottom: 22px;">' + user_name +'\'s Google Document</h1> <a class="glyphicon glyphicon-remove" id="remove_item_id"></a>' +
+                    '<iframe class="calendar-frame" src=' + document_link + ' style=" border-width:0 " width="800" height="600" frameborder="0" scrolling="no"></iframe></div>' +
+                                          '</div>');
+                  }
+                  
                   }
                   else if(api_type == 'google_drawings'){
                   
