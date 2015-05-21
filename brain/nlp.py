@@ -303,7 +303,7 @@ if __name__ == "__main__":
 	#run_tests('example_sentences.txt')
 	#schedule_JJ("schedule meeting for tomorrow at 4 pm")
 	#print schedule_meeting(["schedule a meeting for tomorrow at 3 pm"])
-	#run_tests('example_sentences.txt')
-	print interpret(['can you open up a drawing'])
+	run_tests('example_questions.txt')
+	#print interpret(['can you open up a drawing'])
 
 	#check_apis("example_questions.txt")
