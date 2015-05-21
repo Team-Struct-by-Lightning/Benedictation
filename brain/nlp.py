@@ -92,6 +92,10 @@ def interpret(sentences):
 			# first just check if its just a noun phrase, then go to wiki
 			if 'NP' == tree.label() or \
 			'NP+NP'== tree.label() or \
+			'NX+NX'== tree.label() or \
+			'NX+NP'== tree.label() or \
+			'NP+NX'== tree.label() or \
+			'FRAG'== tree.label() or \
 			'NX' == tree.label():
 				print 'interpreting as just a noun phrase'
 				words = sentence
@@ -303,7 +307,7 @@ if __name__ == "__main__":
 	#run_tests('example_sentences.txt')
 	#schedule_JJ("schedule meeting for tomorrow at 4 pm")
 	#print schedule_meeting(["schedule a meeting for tomorrow at 3 pm"])
-	run_tests('example_questions.txt')
+	run_tests('example_sentences.txt')
 	#print interpret(['can you open up a drawing'])
 
-	#check_apis("example_questions.txt")
+	#check_apis("example_sentences.txt")
