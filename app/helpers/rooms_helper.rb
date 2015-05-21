@@ -65,7 +65,7 @@ module RoomsHelper
 		when 'calendar_show'
 			logger.error "We will show the calendar"
 			#json_event = calendar_show_json(json_hash)
-			json_hash #return unmodified json hash 
+			json_hash #return unmodified json hash
 		when 'schedule_suggest'
 			logger.error 'We will find a time that works'
 			json_event = schedule_json(json_hash)
@@ -79,20 +79,20 @@ module RoomsHelper
 			json_hash #return unmodified json hash
 		when 'wolfram'
 			puts "We will access the wolfram alpha api!"
-			query_wolfram_alpha(json_hash) # returns modified json hash
+			query_wolfram_alpha(json_hash, "origin") # returns modified json hash
 			# # this code is for testing wikipedia till trevor's done
 			# query_wikipedia(json_hash) # returns modified json hash
 			# json_hash['api_type'] = 'wikipedia'
 			# json_hash
 		when 'wikipedia'
 			puts "We will access the wikipedia api!"
-			query_wikipedia(json_hash) # returns modified json hash
+			query_wikipedia(json_hash, "origin") # returns modified json hash
 		else
 			json_hash	# In the event of blank queries/no result, return the unmodified hash
 		end
 	end
 
-	def query_wolfram_alpha(json_hash)
+	def query_wolfram_alpha(json_hash, call_from)
 		coder = HTMLEntities.new
 		query_string = json_hash['query'].to_s
 		query_string = query_string.split(" '").join
@@ -105,8 +105,12 @@ module RoomsHelper
 		api_html = ""
 		if doc.xpath("//queryresult").attr("success").to_s == 'false' or doc.xpath('//*[@title="Definition"]').length != 0
 			#get wiki hash if any of the above were true
-			json_hash = query_wikipedia(json_hash)
-			json_hash['api_type'] = 'wikipedia'
+			if call_from == "origin"
+				json_hash['api_type'] = 'wikipedia'
+				json_hash = query_wikipedia(json_hash, "wolfram")
+			else
+				json_hash['api_type'] = 'google'
+			end
 		# otherwise the api type is definitely wolfram
 		else
 			# grab the wolfram html
@@ -121,13 +125,26 @@ module RoomsHelper
 		json_hash
 	end
 
-	def query_wikipedia(json_hash)
+	def query_wikipedia(json_hash, call_from)
 		query_string = json_hash['noun_phrase'].to_s
 		# check if we should change to google search
+		if query_string == ""
+			query_string = json_hash['query'].to_s
+		else
+			puts "Non-trivial noun phrase found"
+		end
+
 		page = Wikipedia.find(query_string)
+
 		if page.content.nil?
-			# need to switch api type to google search
-			json_hash['api_type'] = 'google'
+
+			if call_from == "origin"
+				json_hash['api_type'] = 'wolfram'
+				json_hash = query_wikipedia(json_hash, "wiki")
+			else
+				json_hash['api_type'] = 'google'
+			end
+
 		else
 			# its definitely wikipedia
 			wikipedia_url = URI.parse("https://en.wikipedia.org/wiki/" + URI.encode(query_string.strip) + "?action=render").to_s
