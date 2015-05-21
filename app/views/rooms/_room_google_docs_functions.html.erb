@@ -89,7 +89,6 @@ function create_new_document(myData){
     request.execute(function(resp) { 
       //console.log(resp.alternateLink);
       console.log(resp);
-
       myData['doc_link'] = resp.alternateLink;
       var today = new Date();
       min = today.getMinutes();

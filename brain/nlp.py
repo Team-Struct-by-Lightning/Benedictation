@@ -89,6 +89,7 @@ def interpret(sentences):
 
 			print tree
 
+			print tree.leaves()
 			# first just check if its just a noun phrase, then go to wiki
 			if 'NP' == tree.label() or \
 			'NP+NP'== tree.label() or \
@@ -101,13 +102,7 @@ def interpret(sentences):
 				words = sentence
 				noun_phrase = []
 				# this is code for finding the noun phrase
-				for noun_subtree in tree.subtrees():
-					if not "SBAR" in noun_subtree.label() \
-					and not "W" in noun_subtree.label() \
-					and "NP" in noun_subtree.label() \
-					and len(noun_subtree.leaves()) > len(noun_phrase):
-
-						noun_phrase = noun_subtree.leaves()
+				noun_phrase = tree.leaves()
 
 				# this code removes the article from the beginning
 				if noun_phrase:
@@ -155,6 +150,7 @@ def interpret(sentences):
 					for subtree in element.subtrees():
 						if "W" in subtree.label():
 							noun_phrase = []
+							print noun_phrase
 							# this is code for finding the noun phrase
 							for noun_subtree in element.subtrees():
 								if not "SBAR" in noun_subtree.label() \
@@ -234,6 +230,8 @@ def schedule(element, tree):
     		"summary": "' + str(schedule_word).capitalize() +' scheduled by Benedict",\
     		"group_flag": "' + str(group_flag) + '"}'
 
+	print text
+
 	return text
 
 # Currently supports: "this week", "next week", "this month", "next month",
@@ -307,7 +305,7 @@ if __name__ == "__main__":
 	#run_tests('example_sentences.txt')
 	#schedule_JJ("schedule meeting for tomorrow at 4 pm")
 	#print schedule_meeting(["schedule a meeting for tomorrow at 3 pm"])
-	run_tests('example_sentences.txt')
-	#print interpret(['can you open up a drawing'])
+	#run_tests('example_sentences.txt')
+	print interpret(['the eiffel tower'])
 
 	#check_apis("example_sentences.txt")
