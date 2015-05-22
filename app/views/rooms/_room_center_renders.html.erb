@@ -159,18 +159,12 @@ function clickable(me) {
                 query = query.split(" \u0027").join("'");
                 // this is the raw html for the wiki render spot containing
                 // the border, the iframe, and the remove x glyph
-                var wikidiv = '<div class="render-spot" id=' + render_item_id + '>' + '  <div class="wikipedia-border"> <a class="glyphicon glyphicon-remove wikipedia-remove" id="remove_item_id"></a>' + '<iframe id="wikipedia-iframe" style=" border-width:0" width="609" height="500" max-height="470" position="relative" ' + ' top="11" left="-3" frameborder="0"></iframe></div>' + '</div>'
+                var wikidiv = '<div class="render-spot" id=' + render_item_id + '>' + '  <div class="wikipedia-border"> <a class="glyphicon glyphicon-remove wikipedia-remove" id="remove_item_id"></a>' + '<iframe id="wikipedia-iframe" style=" border-width:0" width="609" height="500" max-height="470" position="relative" ' + ' top="11" left="-3" frameborder="0"></iframe></div>' + '</div>';
                 // appends the wikidiv to the room layout table.
                 // this makes it appear in the center of the page
                 $('.room-layout-table').append(wikidiv);
                 $('#wikipedia-iframe').contents().find('html').html(api_html);
             } else if (api_type == 'wolfram') {
-                // get the pathname right for the wolfram css file
-                var aws = true;
-                var myLocation = location.host;
-                if (location.protocol !== "https:") {
-                    aws = false;
-                }
                 // adds the word render to the unique id of the div based on
                 // the info stored in its redis key
                 var render_item_id = "render" + div_id;
@@ -182,7 +176,7 @@ function clickable(me) {
                 query = query.split(" \u0027").join("'");
                 // this is the raw html for the wolfram render spot containing
                 // the border, the iframe, and the remove x glyph
-                var wolframdiv = '<div class="render-spot" id=' + render_item_id + '>' + '  <div class="wolfram-border"> <a class="glyphicon glyphicon-remove wolfram-remove" id="remove_item_id"></a>' + '<iframe id="wolfram-iframe" style=" border-width:0" width="609" height="500" max-height="470" position="relative" ' + ' top="11" left="-3" frameborder="0"></iframe></div>' + '</div>'
+                var wolframdiv = '<div class="render-spot" id=' + render_item_id + '>' + '  <div class="wolfram-border"> <a class="glyphicon glyphicon-remove wolfram-remove" id="remove_item_id"></a>' + '<iframe id="wolfram-iframe" style=" border-width:0" width="609" height="500" max-height="470" position="relative" ' + ' top="11" left="-3" frameborder="0"></iframe></div>' + '</div>';
                 // appends the wolframdiv to the room layout table.
                 // this makes it appear in the center of the page
                 $('.room-layout-table').append(wolframdiv);
@@ -194,7 +188,7 @@ function clickable(me) {
                 // first taking wolfram's css from their page
                 // note: this has to be dynamic, because our styling does not
                 // apply to these elements (iframe bs)
-                if (aws) {
+                if (location.host === "benedictation.io") {
                     $('#wolfram-iframe').contents().find('head').html('<%= stylesheet_link_tag "wolfram_css.css" %>');
                 } else {
                     $('#wolfram-iframe').contents().find('head').html('<%= stylesheet_link_tag "#{Rails.root}/vendor/assets/stylesheets/wolfram_css.css" %>');
@@ -234,6 +228,9 @@ function clickable(me) {
 // This function is called to simulate a wolfram request in the text box,
 // it removes the original iframe, replaces it with a loading gif,
 // and then rerenders the new query in the same spot
+// This function is called to simulate a wolfram request in the text box,
+// it removes the original iframe, replaces it with a loading gif,
+// and then rerenders the new query in the same spot
 function wolfram_text(render_item_id) {
     // this creates a JSON object where we change the query from the original query from benny
     // to the one entered in the text box
@@ -263,7 +260,7 @@ function wolfram_text(render_item_id) {
     // first taking wolfram's css from their page
     // note: this has to be dynamic, because our styling does not
     // apply to these elements (iframe bs)
-    if (aws) {
+    if (location.host === "benedictation.io") {
         $('#wolfram-iframe').contents().find('head').html('<%= stylesheet_link_tag "wolfram_css.css" %>');
     } else {
         $('#wolfram-iframe').contents().find('head').html('<%= stylesheet_link_tag "#{Rails.root}/vendor/assets/stylesheets/wolfram_css.css" %>');
@@ -293,82 +290,68 @@ function wolfram_text(render_item_id) {
         data: {
             jsonData: JSON.stringify(myData)
         },
-        success: function() {
-            // this is an AJAX RESTful GET request that is routed
-            // through the URL "/get_wolfram" through the rooms
-            // controller to the function 'get_wolfram'
-            // it is passed back aJSON object upon success which
-            // contains the html for the new render of the iframe based on
-            // the query given in the text box
-            $.ajax({
-                type: "GET",
-                url: "/get_api_html",
-                dataType: "json",
-                success: function(wolfram) {
-                    // add wolfram html to the json object so that we can render the text
-                    // box results on the same page
-                    myData['wolfram_html'] = wolfram['result'];
-                    query = myData['query'];
-                    wolfram_html = myData['wolfram_html'];
-                    // these two lines makes sure the space added before the apostrophes
-                    // from nltk is removed
-                    query = query.split(" '").join("'");
-                    query = query.split(" \u0027").join("'");
-                    // this is the raw html for the wolfram render spot containing
-                    // the border, the iframe, and the remove x glyph
-                    var wolframdiv = '<div class="render-spot" id=' + render_item_id + '>' + '  <div class="wolfram-border"> <a class="glyphicon glyphicon-remove wolfram-remove" id="remove_item_id"></a>' + '<iframe id="wolfram-iframe" style=" border-width:0" width="609" height="500" max-height="470" position="relative" top="11" left="-3" frameborder="0"></iframe></div>' + '</div>'
-                    // we remove the wolfram iframe so that we can process the next query
-                    // or in this particular case, removes the loading gif
-                    $('#wolfram-iframe').remove();
-                    // appends the wolframdiv to the room layout table.
-                    // this makes it appear in the center of the page
-                    $('.room-layout-table').append(wolframdiv);
-                    // appends the raw wolfram html to the iframe
-                    // notice this is the syntax we use and will have to use throughout
-                    // in order to change the contents of an iframe after instantiation
-                    $('#wolfram-iframe').contents().find('html').html(wolfram_html);
-                    // this prepends the text box to the body of the iframe (whose text we highjack *teehee*)
-                    $('#wolfram-iframe').contents().find('body').prepend('<form action="#"><fieldset id="input" class="wolfram-text-box"' + ' style="position: relative;margin-bottom: 48px;margin-top: 10px;"><input id="i" name="i" maxlength="200"' + ' type="text" autocomplete="off" value="' + query + '" class=""><input id="dataset-input" name="dataset" ' + 'value="" type="hidden"><div id="imath" style="display: none;"><div class="im" style="display: none;"> ' + '</div><div class="ac"></div><ul class="moreInput">       <li class="inputtab inputtab-keyboard" data-tab="keyboard">' + '<a href="#"></a>       </li><li class="inputtab inputtab-images" data-tab="images"><a href="#"></a>   ' + '      </li><li class="inputtab inputtab-datainput" data-tab="datainput"><a href="#"></a>   ' + '     </li><li class="inputtab inputtab-genfiles" data-tab="genfiles"><a href="#"></a>   ' + '  </li></ul></div><noscript>&amp;lt;input type="hidden" name="asynchronous" value="false" /&amp;gt;</noscript> ' + ' <a id="star-inputfield" class="star-input star-disabled" href="#" style="display: none;"></a><div id="equal" title="compute"></div></fieldset></form>');
-                    // this prepends the title/logo to the body of the iframe
-                    $('#wolfram-iframe').contents().find('body').prepend('<div id="logo-wrapper" class="ir normalLogo"><a href="/" class="ir normalLogo" id="logo" title="Wolfram|Alpha Computational Knowledge Engine">Wolfram|Alpha Computational Knowledge Engine</a></div>');
-                    // dynamically adds the css to the elements in the iframe,
-                    // first taking wolfram's css from their page
-                    // note: this has to be dynamic, because our styling does not
-                    // apply to these elements (iframe bs)
-                    if (aws) {
-                        $('#wolfram-iframe').contents().find('head').html('<%= stylesheet_link_tag "wolfram_css.css" %>');
-                    } else {
-                        $('#wolfram-iframe').contents().find('head').html('<%= stylesheet_link_tag "#{Rails.root}/vendor/assets/stylesheets/wolfram_css.css" %>');
-                    }
-                    $('#wolfram-iframe').contents().find('#logo-wrapper').css('top', '4px');
-                    $('#wolfram-iframe').contents().find('#logo-wrapper').css('position', 'relative');
-                    $('#wolfram-iframe').contents().find('html').css('min-width', '300px');
-                    $('#wolfram-iframe').contents().find('html').css('width', '584px');
-                    $('#wolfram-iframe').contents().find('body').css('min-width', '300px');
-                    $('#wolfram-iframe').css('position', 'relative');
-                    $('#wolfram-iframe').css('max-height', '471px');
-                    $('#wolfram-iframe').css('top', '10px');
-                    $('#wolfram-iframe').css('left', '-3px');
-                    // this disables all links within the wolfram div so that we do not have
-                    // any redirects from our iframe
-                    $('#wolfram-iframe').contents().find('a').click(function(event) {
-                        event.preventDefault();
-                    });
-                    // this is a function that listens for the enter key press within the
-                    // text-box and then calls the wolfram_text function (explained below)
-                    $('#wolfram-iframe').contents().find('.wolfram-text-box').keydown(function(event) {
-                        var keypressed = event.keyCode || event.which;
-                        if (keypressed == 13) {
-                            wolfram_text(render_item_id);
-                        }
-                    });
-                    // this is the function that listens for the equal submit button to be
-                    // clicked within the text-box and then calls the wolfram_text function
-                    // (explained below), note:  this is an alternative to pressing enter
-                    $('#wolfram-iframe').contents().find('#equal').click(function() {
-                        wolfram_text(render_item_id);
-                    });
+        success: function(wolfram_json) {
+            // add wolfram html to the json object so that we can render the text
+            // box results on the same page
+            query = wolfram_json['query'];
+            wolfram_html = wolfram_json['api_html'];
+            // these two lines makes sure the space added before the apostrophes
+            // from nltk is removed
+            query = query.split(" '").join("'");
+            query = query.split(" \u0027").join("'");
+            // this is the raw html for the wolfram render spot containing
+            // the border, the iframe, and the remove x glyph
+            var wolframdiv = '<div class="render-spot" id=' + render_item_id + '>' + '  <div class="wolfram-border"> <a class="glyphicon glyphicon-remove wolfram-remove" id="remove_item_id"></a>' + '<iframe id="wolfram-iframe" style=" border-width:0" width="609" height="500" max-height="470" position="relative" top="11" left="-3" frameborder="0"></iframe></div>' + '</div>'
+            // we remove the wolfram iframe so that we can process the next query
+            // or in this particular case, removes the loading gif
+            $('#wolfram-iframe').remove();
+            // appends the wolframdiv to the room layout table.
+            // this makes it appear in the center of the page
+            $('.room-layout-table').append(wolframdiv);
+            // appends the raw wolfram html to the iframe
+            // notice this is the syntax we use and will have to use throughout
+            // in order to change the contents of an iframe after instantiation
+            $('#wolfram-iframe').contents().find('html').html(wolfram_html);
+            // this prepends the text box to the body of the iframe (whose text we highjack *teehee*)
+            $('#wolfram-iframe').contents().find('body').prepend('<form action="#"><fieldset id="input" class="wolfram-text-box"' + ' style="position: relative;margin-bottom: 48px;margin-top: 10px;"><input id="i" name="i" maxlength="200"' + ' type="text" autocomplete="off" value="' + query + '" class=""><input id="dataset-input" name="dataset" ' + 'value="" type="hidden"><div id="imath" style="display: none;"><div class="im" style="display: none;"> ' + '</div><div class="ac"></div><ul class="moreInput">       <li class="inputtab inputtab-keyboard" data-tab="keyboard">' + '<a href="#"></a>       </li><li class="inputtab inputtab-images" data-tab="images"><a href="#"></a>   ' + '      </li><li class="inputtab inputtab-datainput" data-tab="datainput"><a href="#"></a>   ' + '     </li><li class="inputtab inputtab-genfiles" data-tab="genfiles"><a href="#"></a>   ' + '  </li></ul></div><noscript>&amp;lt;input type="hidden" name="asynchronous" value="false" /&amp;gt;</noscript> ' + ' <a id="star-inputfield" class="star-input star-disabled" href="#" style="display: none;"></a><div id="equal" title="compute"></div></fieldset></form>');
+            // this prepends the title/logo to the body of the iframe
+            $('#wolfram-iframe').contents().find('body').prepend('<div id="logo-wrapper" class="ir normalLogo"><a href="/" class="ir normalLogo" id="logo" title="Wolfram|Alpha Computational Knowledge Engine">Wolfram|Alpha Computational Knowledge Engine</a></div>');
+            // dynamically adds the css to the elements in the iframe,
+            // first taking wolfram's css from their page
+            // note: this has to be dynamic, because our styling does not
+            // apply to these elements (iframe bs)
+            if (location.host === "benedictation.io") {
+                $('#wolfram-iframe').contents().find('head').html('<%= stylesheet_link_tag "wolfram_css.css" %>');
+            } else {
+                $('#wolfram-iframe').contents().find('head').html('<%= stylesheet_link_tag "#{Rails.root}/vendor/assets/stylesheets/wolfram_css.css" %>');
+            }
+            $('#wolfram-iframe').contents().find('#logo-wrapper').css('top', '4px');
+            $('#wolfram-iframe').contents().find('#logo-wrapper').css('position', 'relative');
+            $('#wolfram-iframe').contents().find('html').css('min-width', '300px');
+            $('#wolfram-iframe').contents().find('html').css('width', '584px');
+            $('#wolfram-iframe').contents().find('body').css('min-width', '300px');
+            $('#wolfram-iframe').css('position', 'relative');
+            $('#wolfram-iframe').css('max-height', '471px');
+            $('#wolfram-iframe').css('top', '10px');
+            $('#wolfram-iframe').css('left', '-3px');
+            // this disables all links within the wolfram div so that we do not have
+            // any redirects from our iframe
+            $('#wolfram-iframe').contents().find('a').click(function(event) {
+                event.preventDefault();
+            });
+            // this is a function that listens for the enter key press within the
+            // text-box and then calls the wolfram_text function (explained below)
+            $('#wolfram-iframe').contents().find('.wolfram-text-box').keydown(function(event) {
+                var keypressed = event.keyCode || event.which;
+                if (keypressed == 13) {
+                    wolfram_text(render_item_id);
                 }
+            });
+            // this is the function that listens for the equal submit button to be
+            // clicked within the text-box and then calls the wolfram_text function
+            // (explained below), note:  this is an alternative to pressing enter
+            $('#wolfram-iframe').contents().find('#equal').click(function() {
+                wolfram_text(render_item_id);
             });
         }
     });

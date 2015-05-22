@@ -89,6 +89,7 @@ module RoomsHelper
 	end
 
 	def query_wolfram_alpha(json_hash, call_from)
+		puts "json_hash: ",json_hash.inspect
 		coder = HTMLEntities.new
 		query_string = json_hash['query'].to_s
 		query_string = query_string.split(" '").join
@@ -99,7 +100,7 @@ module RoomsHelper
 		doc = Nokogiri::XML(open(wolfram_url))
 		# <queryresult success='false' OR # <pod title='Definition' means we should do wiki instead of wolfram
 		api_html = ""
-		if doc.xpath("//queryresult").attr("success").to_s == 'false' or doc.xpath('//*[@title="Definition"]').length != 0
+		if doc.xpath("//queryresult").attr("success").to_s == 'false' or doc.xpath("//queryresult").attr("numpods").to_s == '0' or doc.xpath('//*[@title="Definition"]').length != 0
 			#get wiki hash if any of the above were true
 			if call_from == "origin"
 				json_hash['api_type'] = 'wikipedia'
