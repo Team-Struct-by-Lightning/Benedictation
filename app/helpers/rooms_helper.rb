@@ -80,10 +80,6 @@ module RoomsHelper
 		when 'wolfram'
 			puts "We will access the wolfram alpha api!"
 			query_wolfram_alpha(json_hash, "origin") # returns modified json hash
-			# # this code is for testing wikipedia till trevor's done
-			# query_wikipedia(json_hash) # returns modified json hash
-			# json_hash['api_type'] = 'wikipedia'
-			# json_hash
 		when 'wikipedia'
 			puts "We will access the wikipedia api!"
 			query_wikipedia(json_hash, "origin") # returns modified json hash
@@ -137,10 +133,9 @@ module RoomsHelper
 		page = Wikipedia.find(query_string)
 
 		if page.content.nil?
-
 			if call_from == "origin"
 				json_hash['api_type'] = 'wolfram'
-				json_hash = query_wikipedia(json_hash, "wiki")
+				json_hash = query_wolfram_alpha(json_hash, "wiki")
 			else
 				json_hash['api_type'] = 'google'
 			end
