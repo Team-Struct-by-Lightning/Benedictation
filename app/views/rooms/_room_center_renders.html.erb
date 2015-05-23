@@ -105,7 +105,7 @@ function clickable(me) {
                 var suggestions = item['suggested_times']; // is this JSON or string?
                 // var suggestionOptions = "<div><ul>"
                 // for(suggestion in suggestions) {
-                //   suggestionOptions += "<li>" +   
+                //   suggestionOptions += "<li>" +
                 // }
                 // suggestionOptions += "</ul></div>"
                 $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="calendar-border"> <h1 class="calendar-title">' + title + '</h1> <a class="glyphicon glyphicon-remove" id="remove_item_id"></a>' + '  <div> ' + suggestions + '</div></div></div>');
@@ -157,13 +157,27 @@ function clickable(me) {
                 // from nltk is removed
                 query = query.split(" '").join("'");
                 query = query.split(" \u0027").join("'");
+                var noun_phrase = item['noun_phrase'];
+
+                if (noun_phrase != "") {
+                    noun_phrase = noun_phrase.split(" ").join("_");
+                    wiki_url = "https://en.wikipedia.org/wiki/" + noun_phrase;
+                }
+                else {
+                    noun_phrase = query.split(" ").join("_");
+                    wiki_url = "https://en.wikipedia.org/wiki/" + noun_phrase;
+                }
                 // this is the raw html for the wiki render spot containing
                 // the border, the iframe, and the remove x glyph
-                var wikidiv = '<div class="render-spot" id=' + render_item_id + '>' + '  <div class="wikipedia-border"> <a class="glyphicon glyphicon-remove wikipedia-remove" id="remove_item_id"></a>' + '<iframe id="wikipedia-iframe" style=" border-width:0" width="609" height="500" max-height="470" position="relative" ' + ' top="11" left="-3" frameborder="0"></iframe></div>' + '</div>';
+                var wikidiv = '<div class="render-spot" id=' + render_item_id + '>' + '  <div class="wikipedia-border"> <a class="glyphicon glyphicon-remove wikipedia-remove" id="remove_item_id"></a>' + '<iframe src="' + wiki_url +'" id="wikipedia-iframe" style=" border-width:0" width="609" height="500" max-height="470" position="relative" ' + ' top="11" left="-3" frameborder="0"></iframe></div>' + '</div>';
                 // appends the wikidiv to the room layout table.
                 // this makes it appear in the center of the page
                 $('.room-layout-table').append(wikidiv);
-                $('#wikipedia-iframe').contents().find('html').html(api_html);
+                //$('#wikipedia-iframe').contents().find('html').html(api_html);
+
+                $('#wikipedia-iframe').contents().find('#pt-createaccount').hide();
+                $('#wikipedia-iframe').contents().find('#pt-login').hide();
+
             } else if (api_type == 'wolfram') {
                 // adds the word render to the unique id of the div based on
                 // the info stored in its redis key

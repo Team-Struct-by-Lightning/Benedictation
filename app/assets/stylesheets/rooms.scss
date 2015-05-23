@@ -76,8 +76,8 @@
   border-radius: 4px;
   position: fixed;
   top: 100px;
-  height: 510px;
-  width: 650px;
+  width: 65%;
+  height: 80%;
   left: 190px;
   padding: 10px;
   padding-bottom: 10px;
@@ -115,10 +115,13 @@
 
 #wikipedia-iframe {
   position: relative;
-  width: 103%;
+  width: 102%;
+  height: 103%;
   top: -27px;
   left: -10px;
 }
+
+
 
 
 .wolfram-min-width {
