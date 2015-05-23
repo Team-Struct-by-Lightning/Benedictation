@@ -190,7 +190,7 @@ function clickable(me) {
                 query = query.split(" \u0027").join("'");
                 // this is the raw html for the wolfram render spot containing
                 // the border, the iframe, and the remove x glyph
-                var wolframdiv = '<div class="render-spot" id=' + render_item_id + '>' + '  <div class="wolfram-border"> <a class="glyphicon glyphicon-remove wolfram-remove" id="remove_item_id"></a>' + '<iframe id="wolfram-iframe" style=" border-width:0" width="609" height="500" max-height="470" position="relative" ' + ' top="11" left="-3" frameborder="0"></iframe></div>' + '</div>';
+                var wolframdiv = '<div class="render-spot" id=' + render_item_id + '>' + '  <div class="wolfram-border"> <a class="glyphicon glyphicon-remove wolfram-remove" id="remove_item_id"></a>' + '<iframe id="wolfram-iframe" style=" border-width:0" width="100%" height="94%" max-height="470" position="relative" ' + ' top="11" left="-3" frameborder="0"></iframe></div>' + '</div>';
                 // appends the wolframdiv to the room layout table.
                 // this makes it appear in the center of the page
                 $('.room-layout-table').append(wolframdiv);
@@ -213,7 +213,7 @@ function clickable(me) {
                 $('#wolfram-iframe').contents().find('html').css('width', '584px');
                 $('#wolfram-iframe').contents().find('body').css('min-width', '300px');
                 $('#wolfram-iframe').css('position', 'relative');
-                $('#wolfram-iframe').css('max-height', '471px');
+                $('#wolfram-iframe').css('max-height', '90%');
                 $('#wolfram-iframe').css('top', '10px');
                 $('#wolfram-iframe').css('left', '-3px');
                 // this disables all links within the wolfram div so that we do not have
