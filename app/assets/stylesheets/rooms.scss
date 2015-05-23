@@ -76,11 +76,13 @@
   border-radius: 4px;
   position: fixed;
   top: 100px;
-  width: 65%;
+  width: 58%;
   height: 80%;
   left: 190px;
-  padding: 10px;
-  padding-bottom: 10px;
+  padding-left: 27px;
+  padding-right: 20px;
+  padding-bottom: 25px;
+  padding-top: 30px;
   background-color: white;
 }
 
@@ -100,7 +102,7 @@
 .wolfram-remove {
   position: relative;
   top: 0% !important;
-  left: 98% !important;
+  left: 98.25% !important;
   color: black;
   z-index: 20;
 
@@ -108,10 +110,10 @@
 
 .wikipedia-remove {
   position: relative;
-  top: -460px !important;
+  top: -20px!important;
+  left: 99.35% !important;
   color: black;
   z-index: 20;
-  left: 620px !important;
 }
 
 #wikipedia-iframe {
