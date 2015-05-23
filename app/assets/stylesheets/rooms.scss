@@ -26,7 +26,7 @@
   background-color: #CCCCCC;
 }
 
-.calendar-frame {
+.google-frame {
   position: relative;
   transform: scale(0.78);
   top: -120px;
@@ -59,16 +59,29 @@
   left: -3px;
 }
 
-.calendar-border {
+.center-border {
+  min-height: 200px !important;
+}
+
+
+.google-border {
   box-shadow: 0px 0px 10px #777777;
   border-radius: 4px;
   position: fixed;
   top: 100px;
-  height: 510px;
-  width: 650px;
+  width: 58%;
+  height: 80%;
   left: 190px;
-  padding: 10px;
+  padding-left: 27px;
+  padding-right: 20px;
+  padding-bottom: 25px;
+  padding-top: 5px;
   background-color: white;
+}
+
+.search-border {
+  max-height: 525px;
+  /*padding-bottom: 0px !important;*/
 }
 
 .wikipedia-border {
@@ -94,15 +107,17 @@
   height: 80%;
   width: 58%;
   left: 190px;
-  padding: 10px;
-  padding-bottom: 10px;
+  padding-left: 27px;
+  padding-right: 20px;
+  padding-bottom: 25px;
+  padding-top: 5px;
   background-color: white;
 }
 
 .wolfram-remove {
   position: relative;
-  top: 0% !important;
-  left: 98.25% !important;
+  top: 5px!important;
+  left: 99.35% !important;
   color: black;
   z-index: 20;
 
@@ -112,6 +127,14 @@
   position: relative;
   top: -20px!important;
   left: 99.35% !important;
+  color: black;
+  z-index: 20;
+}
+
+.google-remove {
+  position: relative;
+  top: -50px !important;
+  left: 99.25% !important;
   color: black;
   z-index: 20;
 }
@@ -135,7 +158,7 @@
   min-width: 300px !important;
 }
 
-div.calendar-frame body{
+div.google-frame body{
   transform: scale(.95);
 }
 
@@ -214,16 +237,16 @@ div.wikipedia-frame body{
   color: #777777;
 }
 
-.calendar-title{
+.google-title{
   position: relative;
   z-index: 10;
   letter-spacing: -.5px !important;
   font-size: 22px;
-  width: 643px;
-  left: -10px;
+  left: 0%;
   top: -12px;
   text-align: center;
 }
+
 
 .blink_me {
   position: fixed;
@@ -845,7 +868,7 @@ transform: scale(.05);
   text-decoration: none !important;
 }
 
-.name-and-summary-calendar:hover {
+.name-and-summary-google:hover {
   color: black;
 }
 
@@ -1080,11 +1103,23 @@ transform: scale(.05);
   overflow-y: hidden;
 }
 
+.gsc-control {
+  position: relative;
+  top: -20px;
+  padding: 20px;
+  padding-bottom: 0px;
+  margin-bottom: -20px;
 
+}
 
 div.gsc-webResult.gsc-result{
   height: 80px;
   font-size: 13px;
+}
+
+#searchcontrol {
+  max-height: 90%;
+  overflow-y: scroll;
 }
 
 #searchcontrol > div > div > div.gsc-tabsArea{

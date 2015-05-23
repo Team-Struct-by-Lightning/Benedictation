@@ -98,7 +98,7 @@ function clickable(me) {
                 var render_item_id = "render" + div_id;
                 // this appends the calendar iframe, title, remove x glyph, and the border
                 // to the room layout table
-                $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="calendar-border"> <h1 class="calendar-title">' + user_name_title + '</h1> <a class="glyphicon glyphicon-remove" id="remove_item_id"></a>' + '<iframe class="calendar-frame" src=' + email_url + ' style=" border-width:0 " width="800" height="600" frameborder="0" scrolling="no"></iframe></div>' + '</div>');
+                $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border google-border"> <h1 class="google-title">' + user_name_title + '</h1> <a class="glyphicon glyphicon-remove google-remove" id="remove_item_id"></a>' + '<iframe class="googleframe" src=' + email_url + ' style=" border-width:0 " width="800" height="600" frameborder="0" scrolling="no"></iframe></div>' + '</div>');
             } else if (api_type == 'schedule_suggest') {
                 var render_item_id = "render" + div_id;
                 var title = "Suggested times";
@@ -108,10 +108,10 @@ function clickable(me) {
                 //   suggestionOptions += "<li>" +
                 // }
                 // suggestionOptions += "</ul></div>"
-                $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="calendar-border"> <h1 class="calendar-title">' + title + '</h1> <a class="glyphicon glyphicon-remove" id="remove_item_id"></a>' + '  <div> ' + suggestions + '</div></div></div>');
+                $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border google-border"> <h1 class="google-title">' + title + '</h1> <a class="glyphicon glyphicon-remove google-remove" id="remove_item_id"></a>' + '  <div> ' + suggestions + '</div></div></div>');
             } else if (api_type == 'google') {
                 // title of the center render
-                var title = "Search Results";
+                var title = "Google Search Results";
                 // adds the word render to the unique id of the div based on
                 // the info stored in its redis key
                 var render_item_id = "render" + div_id;
@@ -119,7 +119,7 @@ function clickable(me) {
                 var search_query = item['query'];
                 // this appends the google search border, remove x glyph, and
                 // search results to the room layout table
-                $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="calendar-border" style="height:540px;"> <h1 class="calendar-title">' + title + '</h1> <a class="glyphicon glyphicon-remove" id="remove_item_id"></a>' + '<div id="searchcontrol">Loading</div>' + '</div>' + '</div>');
+                $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border google-border search-border"> <h1 class="google-title">' + title + '</h1> <a class="glyphicon glyphicon-remove google-remove" id="remove_item_id"></a>' + '<div id="searchcontrol">Loading</div>' + '</div>' + '</div>');
                 var searchControl = new google.search.SearchControl();
                 // Add in a full set of searchers
                 searchControl.addSearcher(new google.search.WebSearch());
@@ -138,14 +138,14 @@ function clickable(me) {
                 //console.log("WERE HERE AND NEWKEY IS " + item['some_new_thing']);
                 var document_link = item['doc_link'];
                 if (document_link == undefined) {
-                    $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="calendar-border"> <h1 class="calendar-title" style = "margin-bottom: 22px;">' + user_name + '\'s Google Document</h1> <a class="glyphicon glyphicon-remove" id="remove_item_id"></a>' + '<iframe class="calendar-frame" src=' + "/custom_404" + ' style=" border-width:0 " width="800" height="600" frameborder="0" scrolling="no"></iframe></div>' + '</div>');
+                    $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border google-border"> <h1 class="google-title" style = "margin-bottom: 22px;">' + user_name + '\'s Google Document</h1> <a class="glyphicon glyphicon-remove google-remove" id="remove_item_id"></a>' + '<iframe class="google-frame" src=' + "/custom_404" + ' style=" border-width:0 " width="800" height="600" frameborder="0" scrolling="no"></iframe></div>' + '</div>');
                 } else {
-                    $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="calendar-border"> <h1 class="calendar-title" style = "margin-bottom: 22px;">' + user_name + '\'s Google Document</h1> <a class="glyphicon glyphicon-remove" id="remove_item_id"></a>' + '<iframe class="calendar-frame" src=' + document_link + ' style=" border-width:0 " width="800" height="600" frameborder="0" scrolling="no"></iframe></div>' + '</div>');
+                    $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border google-border"> <h1 class="google-title" style = "margin-bottom: 22px;">' + user_name + '\'s Google Document</h1> <a class="glyphicon glyphicon-remove google-remove" id="remove_item_id"></a>' + '<iframe class="google-frame" src=' + document_link + ' style=" border-width:0 " width="800" height="600" frameborder="0" scrolling="no"></iframe></div>' + '</div>');
                 }
             } else if (api_type == 'google_drawings') {
                 //console.log("WERE HERE AND NEWKEY IS " + item['some_new_thing']);
                 var document_link = item['doc_link'];
-                $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="calendar-border"> <h1 class="calendar-title" style = "margin-bottom: 22px;">' + user_name + '\'s Google Drawing</h1> <a class="glyphicon glyphicon-remove" id="remove_item_id"></a>' + '<iframe class="calendar-frame" src=' + document_link + ' style=" border-width:0 " width="800" height="600" frameborder="0" scrolling="no"></iframe></div>' + '</div>');
+                $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border google-border"> <h1 class="google-title" style = "margin-bottom: 22px;">' + user_name + '\'s Google Drawing</h1> <a class="glyphicon glyphicon-remove google-remove" id="remove_item_id"></a>' + '<iframe class="google-frame" src=' + document_link + ' style=" border-width:0 " width="800" height="600" frameborder="0" scrolling="no"></iframe></div>' + '</div>');
             } else if (api_type == 'wikipedia') {
                 console.log("room center renders html: ", item['api_html']);
                 // adds the word render to the unique id of the div based on
@@ -169,7 +169,7 @@ function clickable(me) {
                 }
                 // this is the raw html for the wiki render spot containing
                 // the border, the iframe, and the remove x glyph
-                var wikidiv = '<div class="render-spot" id=' + render_item_id + '>' + '  <div class="wikipedia-border"> <a class="glyphicon glyphicon-remove wikipedia-remove" id="remove_item_id"></a>' + '<iframe src="' + wiki_url +'" id="wikipedia-iframe" style=" border-width:0" width="609" height="500" max-height="470" position="relative" ' + ' top="11" left="-3" frameborder="0"></iframe></div>' + '</div>';
+                var wikidiv = '<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border wikipedia-border"> <a class="glyphicon glyphicon-remove wikipedia-remove" id="remove_item_id"></a>' + '<iframe src="' + wiki_url +'" id="wikipedia-iframe" style=" border-width:0" width="609" height="500" max-height="470" position="relative" ' + ' top="11" left="-3" frameborder="0"></iframe></div>' + '</div>';
                 // appends the wikidiv to the room layout table.
                 // this makes it appear in the center of the page
                 $('.room-layout-table').append(wikidiv);
@@ -190,7 +190,7 @@ function clickable(me) {
                 query = query.split(" \u0027").join("'");
                 // this is the raw html for the wolfram render spot containing
                 // the border, the iframe, and the remove x glyph
-                var wolframdiv = '<div class="render-spot" id=' + render_item_id + '>' + '  <div class="wolfram-border"> <a class="glyphicon glyphicon-remove wolfram-remove" id="remove_item_id"></a>' + '<iframe id="wolfram-iframe" style=" border-width:0" width="100%" height="94%" max-height="470" position="relative" ' + ' top="11" left="-3" frameborder="0"></iframe></div>' + '</div>';
+                var wolframdiv = '<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border wolfram-border"> <a class="glyphicon glyphicon-remove wolfram-remove" id="remove_item_id"></a>' + '<iframe id="wolfram-iframe" style=" border-width:0" width="100%" height="94%" max-height="470" position="relative" ' + ' top="11" left="-3" frameborder="0"></iframe></div>' + '</div>';
                 // appends the wolframdiv to the room layout table.
                 // this makes it appear in the center of the page
                 $('.room-layout-table').append(wolframdiv);
@@ -254,7 +254,7 @@ function wolfram_text(render_item_id) {
     $('#wolfram-iframe').remove();
     // this is the raw html for the wolfram render spot containing
     // the border, the iframe, and the remove x glyph
-    var wolframdiv = '<div class="render-spot" id=' + render_item_id + '>' + '  <div class="wolfram-border"> <a class="glyphicon glyphicon-remove wolfram-remove" id="remove_item_id"></a>' + '<iframe id="wolfram-iframe" style=" border-width:0" width="100%" height="94%" max-height="470" position="relative" ' + ' top="11" left="-3" frameborder="0"></iframe></div>' + '</div>';
+    var wolframdiv = '<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border wolfram-border"> <a class="glyphicon glyphicon-remove wolfram-remove" id="remove_item_id"></a>' + '<iframe id="wolfram-iframe" style=" border-width:0" width="100%" height="94%" max-height="470" position="relative" ' + ' top="11" left="-3" frameborder="0"></iframe></div>' + '</div>';
     // appends the wolframdiv to the room layout table.
     // this makes it appear in the center of the page
     $('.room-layout-table').append(wolframdiv);
@@ -315,7 +315,7 @@ function wolfram_text(render_item_id) {
             query = query.split(" \u0027").join("'");
             // this is the raw html for the wolfram render spot containing
             // the border, the iframe, and the remove x glyph
-            var wolframdiv = '<div class="render-spot" id=' + render_item_id + '>' + '  <div class="wolfram-border"> <a class="glyphicon glyphicon-remove wolfram-remove" id="remove_item_id"></a>' + '<iframe id="wolfram-iframe" style=" border-width:0" width="609" height="500" max-height="470" position="relative" top="11" left="-3" frameborder="0"></iframe></div>' + '</div>'
+            var wolframdiv = '<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border wolfram-border"> <a class="glyphicon glyphicon-remove wolfram-remove" id="remove_item_id"></a>' + '<iframe id="wolfram-iframe" style=" border-width:0" width="100%" height="94%" max-height="470" position="relative" ' + ' top="11" left="-3" frameborder="0"></iframe></div>' + '</div>';
             // we remove the wolfram iframe so that we can process the next query
             // or in this particular case, removes the loading gif
             $('#wolfram-iframe').remove();
