@@ -31,6 +31,18 @@
   top: -65px;
 }
 
+.doc-frame {
+  position:relative;
+  top: -55px;
+  height: 96%;
+}
+
+.drawing-frame {
+  position:relative;
+  top: -55px;
+  height: 96%;
+}
+
 .google-frame {
   position: relative;
   transform: scale(0.78);
@@ -91,6 +103,36 @@
   background-color: white;
 }
 
+.doc-border {
+  box-shadow: 0px 0px 10px #777777;
+  border-radius: 4px;
+  position: fixed;
+  top: 100px;
+  width: 58%;
+  height: 80%;
+  left: 190px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 27px;
+  padding-top: 5px;
+  background-color: white;
+}
+
+.drawing-border {
+  box-shadow: 0px 0px 10px #777777;
+  border-radius: 4px;
+  position: fixed;
+  top: 100px;
+  width: 58%;
+  height: 80%;
+  left: 190px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 27px;
+  padding-top: 5px;
+  background-color: white;
+}
+
 .search-border {
   max-height: 525px;
   /*padding-bottom: 0px !important;*/
@@ -135,6 +177,7 @@
 
 }
 
+
 .wikipedia-remove {
   position: relative;
   top: -20px!important;
@@ -147,6 +190,14 @@
   position: relative;
   top: -50px !important;
   left: 99.25% !important;
+  color: black;
+  z-index: 20;
+}
+
+.drive-remove {
+  position: relative;
+  top: -62px !important;
+  left: 99.35% !important;
   color: black;
   z-index: 20;
 }

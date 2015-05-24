@@ -142,14 +142,19 @@ function clickable(me) {
                 //console.log("WERE HERE AND NEWKEY IS " + item['some_new_thing']);
                 var document_link = item['doc_link'];
                 if (document_link == undefined) {
-                    $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border google-border"> <h1 class="google-title" style = "margin-bottom: 22px;">' + user_name + '\'s Google Document</h1> <a class="glyphicon glyphicon-remove google-remove" id="remove_item_id"></a>' + '<iframe class="google-frame" src=' + "/custom_404" + ' style=" border-width:0 " width="800" height="600" frameborder="0" scrolling="no"></iframe></div>' + '</div>');
+                    $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border 404-border"> <h1 class="google-title" style = "margin-bottom: 22px;">' + user_name + '\'s Google Document</h1> <a class="glyphicon glyphicon-remove 404-remove" id="remove_item_id"></a>' + '<iframe class="404-frame" src=' + "/custom_404" + ' style=" border-width:0 " width="100%" height="100%" frameborder="0" scrolling="no"></iframe></div>' + '</div>');
                 } else {
-                    $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border google-border"> <h1 class="google-title" style = "margin-bottom: 22px;">' + user_name + '\'s Google Document</h1> <a class="glyphicon glyphicon-remove google-remove" id="remove_item_id"></a>' + '<iframe class="google-frame" src=' + document_link + ' style=" border-width:0 " width="800" height="600" frameborder="0" scrolling="no"></iframe></div>' + '</div>');
+                    $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border doc-border"> <h1 class="google-title" style = "margin-bottom: 22px;">' + user_name + '\'s Google Document</h1> <a class="glyphicon glyphicon-remove drive-remove" id="remove_item_id"></a>' + '<iframe class="doc-frame" src=' + document_link + ' style=" border-width:0 " width="100%" height="100%" frameborder="0" scrolling="no"></iframe></div>' + '</div>');
                 }
             } else if (api_type == 'google_drawings') {
                 //console.log("WERE HERE AND NEWKEY IS " + item['some_new_thing']);
                 var document_link = item['doc_link'];
-                $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border google-border"> <h1 class="google-title" style = "margin-bottom: 22px;">' + user_name + '\'s Google Drawing</h1> <a class="glyphicon glyphicon-remove google-remove" id="remove_item_id"></a>' + '<iframe class="google-frame" src=' + document_link + ' style=" border-width:0 " width="800" height="600" frameborder="0" scrolling="no"></iframe></div>' + '</div>');
+                if (document_link == undefined) {
+                    $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border 404-border"> <h1 class="google-title" style = "margin-bottom: 22px;">' + user_name + '\'s Google Drawing</h1> <a class="glyphicon glyphicon-remove 404-remove" id="remove_item_id"></a>' + '<iframe class="404-frame" src=' + "/custom_404" + ' style=" border-width:0 " width="100%" height="100%" frameborder="0" scrolling="no"></iframe></div>' + '</div>');
+                }
+                else {
+                    $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border drawing-border"> <h1 class="google-title" style = "margin-bottom: 22px;">' + user_name + '\'s Google Drawing</h1> <a class="glyphicon glyphicon-remove drive-remove" id="remove_item_id"></a>' + '<iframe class="drawing-frame" src=' + document_link + ' style=" border-width:0 " width="100%" height="100%" frameborder="0" scrolling="no"></iframe></div>' + '</div>');
+                }
             } else if (api_type == 'wikipedia') {
                 console.log("room center renders html: ", item['api_html']);
                 // adds the word render to the unique id of the div based on
