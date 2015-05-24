@@ -125,7 +125,11 @@ function clickable(me) {
                 //   suggestionOptions += "<li>" +
                 // }
                 // suggestionOptions += "</ul></div>"
-                $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border suggestion-border"> <h1 class="suggestion-title">' + title + '</h1> <h2 class="suggested-time-list-title">Select the time you wish to schedule</h2><p class="num-results">' + result_val_string + ' ' + result_name + '</p><a class="glyphicon glyphicon-remove suggestion-remove" id="remove_item_id"></a>' + '  <div class="suggestions-list"> ' + suggestions + '</div></div></div>');
+                $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' +
+                                                '  <div class="center-border suggestion-border"> <h1 class="suggestion-title">' +
+                                                title + '</h1> <h2 class="suggested-time-list-title">Select the time you wish to schedule</h2><p class="num-results">' +
+                                                result_val_string + ' ' + result_name + '</p><a class="glyphicon glyphicon-remove suggestion-remove" id="remove_item_id"></a>' +
+                                                '  <div class="suggestions-list"> ' + suggestions + '</div></div></div>');
             } else if (api_type == 'google') {
                 // title of the center render
                 var title = "Google Search Results";
