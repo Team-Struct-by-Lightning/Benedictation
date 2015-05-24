@@ -47,20 +47,25 @@ module ScheduleHelper
 
 		start_str = json_hash['start']['datetime']
 		end_str = json_hash['end']['datetime']
+
+		duration = json_hash['duration'] || 1.hour
+		time_resolution = json_hash['time_resolution'] || 30.minutes
+		lower_bound = json_hash['lower_bound'] || 8
+		upper_bound = json_hash['upper_bound'] || 17
+		nslots = (1.hour / time_resolution) * (upper_bound - lower_bound)
+
 		start_range = DateTime.parse(start_str)
-		end_range   = DateTime.parse(end_str)		
+		end_range   = DateTime.parse(end_str)
 		days = (end_range - start_range).to_i
 
 		# Get the availability array for all users.
-		# A spot is free if it's free in ALL attendees (so AND)
-		# Implies 1 should be free
 		attendees = get_attendees()
 		user_availabilities = {}
-		overall_availability = Array.new(days+1) { 2**18 - 1}	# Initialize all slots to 1 aka free
+		overall_availability = Array.new(days+1) { 2**nslots - 1}	# Initialize all slots to 1 aka free
 
 		attendees.each do |attendee| 
 			user = User.find_by_email(attendee)
-			user_availability = get_user_availability(user, start_str, end_str)
+			user_availability = get_user_availability(user, start_str, end_str, lower_bound, upper_bound, time_resolution)
 			user_availabilities[attendee] = user_availability
 
 			overall_availability.each_with_index do |x, i|
@@ -70,8 +75,7 @@ module ScheduleHelper
 		logger.error user_availabilities
 		logger.error "Overall availability: " + overall_availability.inspect
 		
-		# Convert this array to a list of free-time blocks, in JSON format, for returning to the view.x[]
-		return available_times_json(overall_availability, start_range, 1.hour)
+		return available_times_json(overall_availability, start_range, duration, time_resolution)
 	end
 
 
@@ -87,13 +91,10 @@ module ScheduleHelper
 	# user: Rails user object
 	# start_str: DateTime formatted as string
 	# end_str: DateTime formatted as string
-	def get_user_availability(user, start_str, end_str)
-		logger.error "=== In get_available_times ==="
+	def get_user_availability(user, start_str, end_str, lower_bound, upper_bound, time_resolution)
 
-		time_resolution = 30.minutes	# this is a cool Rails thing
-		lower_bound = 8
-		upper_bound = 17
 		tz_offset = "-0700"
+		nslots = (1.hour / time_resolution) * (upper_bound - lower_bound)
 
 		client = Google::APIClient.new
 		client.authorization.client_id = GoogleAPIKeys["app_id"]
@@ -119,7 +120,7 @@ module ScheduleHelper
 		end_range   = DateTime.parse(end_str)		
 		days = (end_range - start_range).to_i
 		# userAvailabilityArray = Array.new(days+1) { Array.new(18, true) }
-		userAvailabilityArray = Array.new(days+1) { 2**18 - 1}	# Array of Fixnums of 18-bit width
+		userAvailabilityArray = Array.new(days+1) { 2**nslots - 1}	# Array of Fixnums of 18-bit width
 
 		# Loop over events; fill the corresponding slots in the availability array for each one.
 		events.each do |e|
@@ -159,15 +160,16 @@ module ScheduleHelper
 	# Create a JSON object representing the times the current user is available, for display purposes
 	# Find all contiguous blocks of a given duration. (Default is 1 hour?)
 	# Return a JSON object of the form [{"start": time, "end": time}, {...} ...]
-	def available_times_json(availabilityArray, start_range, duration)
+	def available_times_json(availabilityArray, start_range, duration, time_resolution)
 		available_times = []
-		d = 2	#hardcode for testing
+		d = duration / time_resolution
+		tr = (time_resolution.to_i) / 60
 		availabilityArray.each_with_index do |availability, day|
 			bits = availability.to_s(2).split("").map {|x| !x.to_i.zero? }
 			bits.each_with_index do |bit, n|
 				if bit and bits[n ... n+d].any?
-					start_time = (start_range + day) + (30*n).minutes
-					end_time = (start_range + day) + (30*(n+d)).minutes
+					start_time = (start_range + day) + (tr*n).minutes
+					end_time = (start_range + day) + (tr*(n+d)).minutes
 					available_times.append({"start" => start_time, "end" => end_time})
 				end	
 			end
