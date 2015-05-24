@@ -94,9 +94,9 @@ function clickable(me) {
                 // this is hardcoded to our time zone but this needs to be scaled so that we handle
                 // different timezones
 
-                var tz = jstz.determine(); // Determines the time zone of the browser client
-                var user_timezone = tz.name(); // Returns the name of the time zone eg "Europe/Berlin"
-                // var user_timezone = '<%= user_timezone = "America/Los_Angeles" %>';
+                //var tz = jstz.determine(); // Determines the time zone of the browser client
+                //var user_timezone = tz.name(); // Returns the name of the time zone eg "Europe/Berlin"
+                 var user_timezone = '<%= user_timezone = "America/Los_Angeles" %>';
                 // this is the url string dependent on the user that will be put into
                 // the iframe src field
                 var email_url = "https://www.google.com/calendar/embed?showPrint=0&amp;showTz=0&amp;mode=WEEK&amp;height=600&amp;wkst=1&amp;bgcolor=%23ffffff&amp;src=" + email_name + "%40gmail.com&amp;color=%234E5D6C&amp;ctz=" + user_timezone;
