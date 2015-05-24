@@ -127,12 +127,16 @@ function sendBennyReply(json_api_reply) {
                'redis_key': key
            },
            success: function(item) {
+            console.log("@@@success (item) in sendBennyReply: ",item);
                 var len = parseInt(item['result'], 10);
                 var user_name =  "<%= current_user.name %>";
                 var name_arr = user_name.split(" ");
                 var new_name = name_arr.join(":");
                 var key_user_id_and_index =  String(len) + ":" + name + ":" + id + ":bennyhistory:" +"<%= current_user.email %>" + ":" + new_name;
-                console.log("key_user_id_and_index: ",key_user_id_and_index);
+
+                json_api_reply['name'] = "<%= current_user.name %>"
+                json_api_reply['key'] = key_user_id_and_index;
+                console.log("json_api_reply in sendBennyReply: ",json_api_reply);
 
 
                 $.ajax({
@@ -140,21 +144,21 @@ function sendBennyReply(json_api_reply) {
                     url: "/update_redis",
                     data: {
                         redis_key: key,
-                        message: json_api_reply
+                        message: JSON.stringify(json_api_reply)
                     }
                 });
                 if (json_api_reply['api_type'] != "No Result" && json_api_reply['api_type'] != "Blank Query") {
-                    benny_json = {
-                        name: "<%= current_user.name %>",
-                        data: json_api_reply,
-                        key: key_user_id_and_index,
-                        callerID: "<%= current_user.name %>"
-                    };
+                    // benny_json = {
+                    //     name: "<%= current_user.name %>",
+                    //     data: json_api_reply,
+                    //     key: key_user_id_and_index,
+                    //     callerID: "<%= current_user.name %>"
+                    // };
                     // send benny reply to everyone else
-                    console.log("sending this through comm.send: ",benny_json);
-                    comm.send(benny_json);
+                    console.log("sending this through comm.send: ",json_api_reply);
+                    comm.send(json_api_reply);
                     // append benny reply to your own page
-                    appendNewBennyReply(benny_json);
+                    appendNewBennyReply(json_api_reply);
                 }
             }
     });
@@ -183,17 +187,11 @@ function appendNewIM(options) {
 // This function appends a new Benedict query reply onto the sidebar.
 // This is where the sidebar div is created.
 var benny_note_number = 0;
-function appendNewBennyReply(options) {
+function appendNewBennyReply(json_murph) {
     <% image_name = "" %>
-    var json_murph;
-    try {
-        json_murph = JSON.parse(options.data);
-    } catch (e) {
-        json_murph = options.data;
-    }
-    
-    console.log("json_murph api type: ",json_murph.api_type);
-    var name = truncation(options.name, 14);
+    console.log("json_murph: ",json_murph);
+    console.log("json.parse: ",json_murph);
+    var name = truncation(json_murph.name, 14);
 
     var query;
     if (json_murph.query) {
@@ -222,12 +220,12 @@ function appendNewBennyReply(options) {
                 summary = truncation(json_murph.summary, 40);
             }
         }
-        var key_array = options.key.split(":");
+        var key_array = json_murph.key.split(":");
         var key_array_slice = key_array.slice(0, 4);
         var key = key_array_slice.join(":");
         var benny_item_id = "benny" + key;
         var benny_item_link_id = "benny_query" + key;
-        var parameter = 'clickable("' + options.key + '")';
+        var parameter = 'clickable("' + json_murph.key + '")';
         $('.benny-list-body').addClass('benny-list-body-func');
         if (json_murph.api_type === 'calendar') {
             $('.benny-list-body').append('<div class="benny-item benny-calendar" id=' + benny_item_id +'>' +
@@ -249,12 +247,12 @@ function appendNewBennyReply(options) {
 
     else if(json_murph.api_type == 'schedule_suggest') {
         <% image_name = "googz.ico" %>
-        var key_array = options.key.split(":");
+        var key_array = json_murph.key.split(":");
         var key_array_slice = key_array.slice(0, 4);
         var key = key_array_slice.join(":");
         var benny_item_id = "benny" + key;
         var benny_item_link_id = "benny_query" + key;
-        var parameter = 'clickable("' + options.key + '")';
+        var parameter = 'clickable("' + json_murph.key + '")';
         $('.benny-list-body').addClass('benny-list-body-func');
         
         $('.benny-list-body').append('<div class="benny-item benny-calendar" id=' + benny_item_id +'>' +
@@ -274,13 +272,13 @@ function appendNewBennyReply(options) {
             query = truncation(query, 40);
 
         }
-        var key_array = options.key.split(":");
+        var key_array = json_murph.key.split(":");
         var key_array_slice = key_array.slice(0, 4);
         var key = key_array_slice.join(":");
         var benny_item_id = "benny" + key;
         var benny_item_link_id = "benny_query" + key;
         console.log("benny item link id in chat: ", benny_item_link_id);
-        var parameter = 'clickable("' + options.key + '")';
+        var parameter = 'clickable("' + json_murph.key + '")';
         $('.benny-list-body').addClass('benny-list-body-func');
         $('.benny-list-body').append('<div class="benny-item benny-wolfram" id=' + benny_item_id +'>' +
                             '<%= image_tag("#{image_name}", class: "favicon") %>' +
@@ -301,12 +299,12 @@ function appendNewBennyReply(options) {
 
         }
 
-        var key_array = options.key.split(":");
+        var key_array = json_murph.key.split(":");
         var key_array_slice = key_array.slice(0, 4);
         var key = key_array_slice.join(":");
         var benny_item_id = "benny" + key;
         var benny_item_link_id = "benny_query" + key;
-        var parameter = 'clickable("' + options.key + '")';
+        var parameter = 'clickable("' + json_murph.key + '")';
 
 
         $('.benny-list-body').addClass('benny-list-body-func');
@@ -322,12 +320,12 @@ function appendNewBennyReply(options) {
     else if (json_murph.api_type == 'google_docs' || json_murph.api_type == 'docs_show'){
         <% image_name = "google_docs.png" %>
 
-        var key_array = options.key.split(":");
+        var key_array = json_murph.key.split(":");
         var key_array_slice = key_array.slice(0, 4);
         var key = key_array_slice.join(":");
         var benny_item_id = "benny" + key;
         var benny_item_link_id = "benny_query" + key;
-        var parameter = 'clickable("' + options.key + '")';
+        var parameter = 'clickable("' + json_murph.key + '")';
 
 
         $('.benny-list-body').addClass('benny-list-body-func');
@@ -342,12 +340,12 @@ function appendNewBennyReply(options) {
     else if (json_murph.api_type == 'google_drawings'){
         <% image_name = "google_drawing.ico" %>
 
-        var key_array = options.key.split(":");
+        var key_array = json_murph.key.split(":");
         var key_array_slice = key_array.slice(0, 4);
         var key = key_array_slice.join(":");
         var benny_item_id = "benny" + key;
         var benny_item_link_id = "benny_query" + key;
-        var parameter = 'clickable("' + options.key + '")';
+        var parameter = 'clickable("' + json_murph.key + '")';
 
 
         $('.benny-list-body').addClass('benny-list-body-func');
@@ -370,13 +368,13 @@ function appendNewBennyReply(options) {
             query = truncation(query, 40);
 
         }
-        var key_array = options.key.split(":");
+        var key_array = json_murph.key.split(":");
         var key_array_slice = key_array.slice(0, 4);
         var key = key_array_slice.join(":");
         var benny_item_id = "benny" + key;
         var benny_item_link_id = "benny_query" + key;
         console.log("benny item link id in chat: ", benny_item_link_id);
-        var parameter = 'clickable("' + options.key + '")';
+        var parameter = 'clickable("' + json_murph.key + '")';
         $('.benny-list-body').addClass('benny-list-body-func');
         $('.benny-list-body').append('<div class="benny-item benny-wikipedia" id=' + benny_item_id +'>' +
                             '<%= image_tag("#{image_name}", class: "favicon") %>' +

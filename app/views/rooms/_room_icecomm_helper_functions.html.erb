@@ -32,6 +32,7 @@ comm.on('local', function(options) {
     var id = String(url[url.length - 2]);
     var name = String(url[url.length - 1]);
     var chat_history_key = name + ":" + id + ":chathistory";
+    var benny_history_key = name + ":" + id + ":bennyhistory";
     var emails_key = name + ":" + id + ":emails";
     // get chat history from redis
     $.ajax({
@@ -46,6 +47,23 @@ comm.on('local', function(options) {
                 // append what you send to your own page
                 for (var i = 0; i < messages.length; i++) {
                     appendNewIM_text_only(messages[i]);
+                }
+            }
+        }
+    });
+    // get benny history from redis
+    $.ajax({
+        type: "GET",
+        url: "/get_redis",
+        dataType: "json",
+        data: {
+            'redis_key': benny_history_key
+        },
+        success: function(messages) {
+            if (messages.length != 0) {
+                // append what you send to your own page
+                for (var i = 0; i < messages.length; i++) {
+                    appendNewBennyReply(JSON.parse(messages[i]));
                 }
             }
         }
@@ -124,7 +142,18 @@ jQuery(window).bind("beforeunload", function() {
     var id = String(url[url.length - 2]);
     var name = String(url[url.length - 1]);
     var key = name + ":" + id + ":chathistory";
+    var benny_key = name + ":" + id + ":bennyhistory";
     var emails_key = name + ":" + id + ":emails";
+    // if last person is leaving the room, always clear benny histories.
+    if ((comm.getRoomSize() == 1)) {
+        $.ajax({
+            type: "POST",
+            url: "/clear_redis",
+            data: {
+                redis_key: benny_key
+            }
+        });
+    }
     // if last person is leaving the room and it's a random room, then clear the chat history
     if ((comm.getRoomSize() == 1) && !(parseInt(id) || 0)) {
         console.log("Clearing chat history from redis for temporary room.");
@@ -151,7 +180,7 @@ comm.on('data', function(options) {
     if (typeof options.data == 'object') {
         //It is JSON, so benny
         console.log("its a benny!");
-        appendNewBennyReply(options.data);
+        appendNewBennyReply(JSON.parse(options.data));
     } else {
         appendNewIM(options);
     }

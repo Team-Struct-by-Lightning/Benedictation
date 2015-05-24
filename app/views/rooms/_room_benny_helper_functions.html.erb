@@ -25,7 +25,7 @@ var postAPIRequest = function(myData) {
                 // for wolfram and wiki, the json_hash was modified to hold the required/correct api_type attribute according to the heiarchy, 
                 // in addition to containing a new api_html attribute for renders. 
                 // For calendar, the json is unmodified from the python server's version.
-                sendBennyReply(JSON.stringify(json_hash));
+                sendBennyReply(json_hash);
             }
         }
     });

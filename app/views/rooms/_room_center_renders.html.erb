@@ -10,6 +10,7 @@
 // and then the correct api render is selected,
 // populated, and appended to the center of the page
 function clickable(me) {
+    console.log("me: ",me);
     // here we get the children of the center drop spot
     // and if there is a video in the center of the page
     // we append it back to the sidebar so that we can clear up
@@ -64,6 +65,8 @@ function clickable(me) {
     // through the URL "/get_redis_item" through the groups
     // controller to the function get_redis_item, whose params
     // are the 'redis_key' and the 'index'
+    console.log("key: ",key);
+    console.log("index: ",index);
     $.ajax({
         type: "GET",
         url: "/get_redis_item",
@@ -73,6 +76,7 @@ function clickable(me) {
             'index': index
         },
         success: function(item) {
+            console.log("item: ",item);
             // Upon success of the GET request, we return an item from
             // Redis which is a JSON object.  We first check the api type
             // and we have an if statement that let's us determine which
