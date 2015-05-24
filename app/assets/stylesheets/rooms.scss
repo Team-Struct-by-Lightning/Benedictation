@@ -589,6 +589,16 @@ div.wikipedia-frame body{
 }
 
 
+.sidebar-tight-fit {
+  position: absolute;
+  top: 55px;
+  max-height: 85%;
+  width: 350px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin-bottom: 5%;
+}
+
 #chat-body > div.panel.panel-primary > div.panel-heading{
   padding-top: 5px;
   padding-left: 10px;
@@ -597,8 +607,7 @@ div.wikipedia-frame body{
 }
 
 #chat-body {
-  padding-top: 55px;
-  width: 100%;
+  width: 280px;
 }
 
 #chatty{
@@ -824,7 +833,7 @@ transform: scale(.05);
 
 #mic-glyph {
   transform: scale(0.033) !important;
-  position: relative;
+  position: absolute;
   top: -381px;
   left: -179px;
   background-color: #777777;

@@ -93,7 +93,10 @@ function clickable(me) {
                 var email_name = user_email.split('@')[0];
                 // this is hardcoded to our time zone but this needs to be scaled so that we handle
                 // different timezones
-                var user_timezone = '<%= user_timezone = "America/Los_Angeles" %>';
+
+                var tz = jstz.determine(); // Determines the time zone of the browser client
+                var user_timezone = tz.name(); // Returns the name of the time zone eg "Europe/Berlin"
+                // var user_timezone = '<%= user_timezone = "America/Los_Angeles" %>';
                 // this is the url string dependent on the user that will be put into
                 // the iframe src field
                 var email_url = "https://www.google.com/calendar/embed?showPrint=0&amp;showTz=0&amp;mode=WEEK&amp;height=600&amp;wkst=1&amp;bgcolor=%23ffffff&amp;src=" + email_name + "%40gmail.com&amp;color=%234E5D6C&amp;ctz=" + user_timezone;
@@ -167,8 +170,9 @@ function clickable(me) {
                 query = query.split(" '").join("'");
                 query = query.split(" \u0027").join("'");
                 var noun_phrase = item['noun_phrase'];
+                console.log(noun_phrase);
 
-                if (noun_phrase != "") {
+                if (noun_phrase != "" || noun_phrase != undefined) {
                     noun_phrase = noun_phrase.split(" ").join("_");
                     wiki_url = "https://en.wikipedia.org/wiki/" + noun_phrase;
                 }
