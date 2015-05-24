@@ -26,6 +26,11 @@
   background-color: #CCCCCC;
 }
 
+.calendar-frame {
+  position:relative;
+  top: -65px;
+}
+
 .google-frame {
   position: relative;
   transform: scale(0.78);
@@ -34,10 +39,6 @@
 }
 
 .wolfram-frame {
-/*  position: relative;
-  transform: scale(0.78);
-  top: -120px;
-  left: -85px;*/
   border-width: 0;
   width: 609px;
   max-height: 470px;
@@ -47,10 +48,6 @@
 }
 
 .wikipedia-frame {
-/*  position: relative;
-  transform: scale(0.78);
-  top: -120px;
-  left: -85px;*/
   border-width: 0;
   width: 609px;
   max-height: 470px;
@@ -75,6 +72,21 @@
   padding-left: 27px;
   padding-right: 20px;
   padding-bottom: 25px;
+  padding-top: 5px;
+  background-color: white;
+}
+
+.calendar-border {
+  box-shadow: 0px 0px 10px #777777;
+  border-radius: 4px;
+  position: fixed;
+  top: 100px;
+  width: 58%;
+  height: 80%;
+  left: 190px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 27px;
   padding-top: 5px;
   background-color: white;
 }

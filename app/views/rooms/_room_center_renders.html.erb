@@ -98,7 +98,7 @@ function clickable(me) {
                 var render_item_id = "render" + div_id;
                 // this appends the calendar iframe, title, remove x glyph, and the border
                 // to the room layout table
-                $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border google-border"> <h1 class="google-title">' + user_name_title + '</h1> <a class="glyphicon glyphicon-remove google-remove" id="remove_item_id"></a>' + '<iframe class="googleframe" src=' + email_url + ' style=" border-width:0 " width="800" height="600" frameborder="0" scrolling="no"></iframe></div>' + '</div>');
+                $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border calendar-border"> <h1 class="google-title">' + user_name_title + '</h1> <a class="glyphicon glyphicon-remove google-remove" id="remove_item_id"></a>' + '<iframe class="calendar-frame" src=' + email_url + ' style=" border-width:0 " width="100%" height="100%" frameborder="0" scrolling="no"></iframe></div>' + '</div>');
             } else if (api_type == 'schedule_suggest') {
                 var render_item_id = "render" + div_id;
                 var title = "Suggested times";
