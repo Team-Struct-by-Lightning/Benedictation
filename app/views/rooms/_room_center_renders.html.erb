@@ -110,12 +110,22 @@ function clickable(me) {
                 var render_item_id = "render" + div_id;
                 var title = "Suggested times";
                 var suggestions = item['suggested_times']; // is this JSON or string?
+                var result = suggestions.split('},{').length;
+                var result_name;
+                var result_val_string = String(result);
+
+                if (result == 1) {
+                    result_name = 'result';
+                }
+                else {
+                    result_name = 'results';
+                }
                 // var suggestionOptions = "<div><ul>"
                 // for(suggestion in suggestions) {
                 //   suggestionOptions += "<li>" +
                 // }
                 // suggestionOptions += "</ul></div>"
-                $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border google-border"> <h1 class="google-title">' + title + '</h1> <a class="glyphicon glyphicon-remove google-remove" id="remove_item_id"></a>' + '  <div> ' + suggestions + '</div></div></div>');
+                $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border suggestion-border"> <h1 class="suggestion-title">' + title + '</h1> <h2 class="suggested-time-list-title">Select the time you wish to schedule</h2><p class="num-results">' + result_val_string + ' ' + result_name + '</p><a class="glyphicon glyphicon-remove suggestion-remove" id="remove_item_id"></a>' + '  <div class="suggestions-list"> ' + suggestions + '</div></div></div>');
             } else if (api_type == 'google') {
                 // title of the center render
                 var title = "Google Search Results";
