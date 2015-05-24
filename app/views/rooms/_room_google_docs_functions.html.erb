@@ -119,7 +119,7 @@ function create_new_document(myData){
       }
 
       myData['current_time'] = today.getHours() + ":" + min + ":" + sec;
-      sendBennyReply(JSON.stringify(myData));
+      sendBennyReply(myData);
     });
   }
 }

@@ -180,7 +180,7 @@ comm.on('data', function(options) {
     if (typeof options.data == 'object') {
         //It is JSON, so benny
         console.log("its a benny!");
-        appendNewBennyReply(JSON.parse(options.data));
+        appendNewBennyReply(options.data);
     } else {
         appendNewIM(options);
     }
