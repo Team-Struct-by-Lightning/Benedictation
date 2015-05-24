@@ -123,7 +123,7 @@ function create_new_drawing(myData){
       
 
       myData['current_time'] = today.getHours() + ":" + min + ":" + sec;
-      sendBennyReply(JSON.stringify(myData));
+      sendBennyReply(myData);
     });
   }
 }
