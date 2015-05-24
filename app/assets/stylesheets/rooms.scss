@@ -68,6 +68,12 @@
   left: -3px;
 }
 
+.four-oh-four-frame {
+  position:relative;
+  top: -55px;
+  height: 96%;
+}
+
 .center-border {
   min-height: 200px !important;
 }
@@ -133,6 +139,21 @@
   background-color: white;
 }
 
+.four-oh-four-border {
+  box-shadow: 0px 0px 10px #777777;
+  border-radius: 4px;
+  position: fixed;
+  top: 100px;
+  width: 58%;
+  height: 80%;
+  left: 190px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 27px;
+  padding-top: 5px;
+  background-color: white;
+}
+
 .search-border {
   max-height: 525px;
   /*padding-bottom: 0px !important;*/
@@ -177,8 +198,15 @@
 
 }
 
-
 .wikipedia-remove {
+  position: relative;
+  top: -20px!important;
+  left: 99.35% !important;
+  color: black;
+  z-index: 20;
+}
+
+.four-oh-four-remove {
   position: relative;
   top: -20px!important;
   left: 99.35% !important;
@@ -310,6 +338,43 @@ div.wikipedia-frame body{
   text-align: center;
 }
 
+.four-oh-four-big-text-left {
+  font-size: 6vw;
+  width: 25%;
+  position: relative;
+  top: 18%;
+  left: 5%;
+}
+
+.four-oh-four-big-text-right {
+  font-size: 6vw;
+  width: 25%;
+  position: absolute;
+  top: 21%;
+  left: 65%;
+}
+
+#four-oh-four-container {
+  height: 92% !important;
+}
+
+.four-oh-four-giraffe {
+  width: 25%;
+  position: absolute;
+  left: 38%;
+  top: 3% !important;
+}
+
+.four-oh-four-remove {
+  top: 5px !important;
+  left: 99.35% !important;
+}
+
+.four-oh-four-text {
+  position: absolute;
+  top: 61%;
+  margin-right: 4%;
+}
 
 .blink_me {
   position: fixed;
