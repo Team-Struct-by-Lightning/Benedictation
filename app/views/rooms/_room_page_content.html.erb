@@ -116,26 +116,35 @@ $(document).on('click','#remove_item_id',function(){
 // respective drag andn droppable functions for
 // the video sidebar
 
-  $("#video-list").sortable({
+  $("#video-list").droppable({
+      drop: function() {
+        var children = $("#video-list").children();
+        var i;
+        for (i = 0; i < children.size(); i++) {
+          console.log("child to play drop: ", children[i]);
+          children[i].play();
+          }
+        }
+      }).sortable({
         revert: false,
         connectWith: ".video-tag",
         helper: 'clone',
         appendTo: 'body',
         distance: 20,
         receive: function() {
-            var children = $("#drop-spot").children();
+            var children = $("#video-list").children();
             var i;
             for (i = 0; i < children.size(); i++) {
-              console.log(children[i]);
+              console.log("child to play receive: ", children[i]);
               children[i].play();
             }
-             if (children.size() > 1) {
-                $("#video-list").append(function() {
-                    //$(this).get(0).play();
-                    console.log($(this));
-                    console.log($(this).index());
-                    return children[($(this).index()+ 1) % 2];
-                });
+        },
+        sort: function() {
+            var children = $("#video-list").children();
+            var i;
+            for (i = 0; i < children.size(); i++) {
+              console.log("child to play sort: ", children[i]);
+              children[i].play();
             }
         }
     });
@@ -165,7 +174,7 @@ $(document).on('click','#remove_item_id',function(){
             var children = $("#drop-spot").children();
             var i;
             for (i = 0; i < children.size(); i++) {
-              console.log(children[i]);
+              console.log("children have ben received in the drop: ", children[i]);
               children[i].play();
             }
              if (children.size() > 1) {
