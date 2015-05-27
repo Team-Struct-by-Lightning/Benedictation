@@ -4,6 +4,28 @@
 @import "bootstrap-sprockets";
 @import "bootstrap";
 
+
+.video-tag {
+
+  z-index: 1999 !important;
+}
+
+
+#video-list {
+    position: relative;
+    top: 12px;
+    height: 100%;
+    width: 160px;
+    float: left;
+    background-color: #cccccc;
+    z-index: 1998 !important;
+}
+
+
+
+
+
+
 .room-layout-table {
   position: fixed;
   left:160px;
@@ -1159,6 +1181,10 @@ transform: scale(.05);
   border: 2px dashed black;
 }
 
+.active-drop-spot{
+  border: 2px dashed black;
+}
+
 #localVideo{
   width: 100%;
   height:100%;
@@ -1166,6 +1192,10 @@ transform: scale(.05);
   cursor:move;
 }
 
+html {
+  width: auto;
+  height: 100%;
+}
 
 #tutorial-explanation{
   padding-left: 10%;

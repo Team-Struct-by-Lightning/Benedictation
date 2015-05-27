@@ -8,22 +8,17 @@
 <!-- VIDEO SIDEBARS -->
 <!-- This section is the sidebar for the local and peer video connections -->
 <!-- to be dragged and dropped -->
-   <div id = 'video-sidebar'>
-      <div class="small-vids" id = "video-spot-1">
-         <video class="video-center" id="localVideo" autoplay></video>
-      </div>
-      <div class="small-vids" id = "video-spot-2"> </div>
-      <div class="small-vids" id = "video-spot-3"> </div>
-      <div class="small-vids" id = "video-spot-4"> </div>
-      <div class="small-vids" id = "video-spot-5"> </div>
+  <div class="droppable" id="video-list">
+      <video class="video-tag" id="localVideo" autoplay></video>
    </div>
+
    <div class = "benedict-zone">
       <%= render 'rooms/room_content_table' %>
    </div>
-
+<!--
   <div class="below-sidebar">
 
-  </div>
+  </div> -->
 
 
 <!-- END OF VIDEO SIDEBARS -->
@@ -121,90 +116,104 @@ $(document).on('click','#remove_item_id',function(){
 // respective drag andn droppable functions for
 // the video sidebar
 
+  $("#video-list").droppable({
+      drop: function() {
+        var children = $("#video-list").children();
+        var i;
+        for (i = 0; i < children.size(); i++) {
+          console.log("child to play drop: ", children[i]);
+          children[i].play();
+          }
+        }
+      }).sortable({
+        revert: false,
+        connectWith: ".video-tag",
+        helper: 'clone',
+        appendTo: 'body',
+        distance: 20,
+        receive: function() {
+            var children = $("#video-list").children();
+            var i;
+            for (i = 0; i < children.size(); i++) {
+              console.log("child to play receive: ", children[i]);
+              children[i].play();
+            }
+        },
+        sort: function() {
+            var children = $("#video-list").children();
+            var i;
+            for (i = 0; i < children.size(); i++) {
+              console.log("child to play sort: ", children[i]);
+              children[i].play();
+            }
+        }
+    });
 
-var video_spots = [0,0,0,0,0,0];
-$(function() {
-   $( "#localVideo" ).draggable({
-  revert: function(socketObj) {
-    if (socketObj === false) {
-        // Drop was rejected, revert the helper.
-        var $helper = $("#localVideo");
-        $helper.animate($helper.originalPosition);
-        $helper.animate({ width: "100%", height: "100%" });
-        return true;
-    } else {
-        // Drop was accepted, don't revert.
-        return false;
-    }},
+    $("#drop-spot").droppable({
+        activeClass: "active-drop-spot",
+        drop: function(event, ui) {
+            //ui.draggable is the motha focking video thingy json draggable
+
+            var children = $("#drop-spot").children();
+            console.log("children ", children);
+            $(ui).css('width', '100%');
+            $(ui).css('height', '100%');
+            if (children.size() > 1) {
+                $("#video-list").append(function() {
+                  //$(this).get(0).play();
+                    console.log("inside of the append function" + $(this));
+                    console.log($(this).index());
+                    return children[($(this).index()+ 1) % 2];
+                });
+            }
+        }
+    }).sortable({
+        revert: false,
+        connectWith: ".video-tag",
+        receive: function() {
+            var children = $("#drop-spot").children();
+            var i;
+            for (i = 0; i < children.size(); i++) {
+              console.log("children have ben received in the drop: ", children[i]);
+              children[i].play();
+            }
+             if (children.size() > 1) {
+                $("#video-list").append(function() {
+                    //$(this).get(0).play();
+                    console.log($(this));
+                    console.log($(this).index());
+                    return children[($(this).index()+ 1) % 2];
+                });
+            }
+        }
+    });
+
+
+  $(".droppable").sortable({
+    revert: true,
+    connectWith: ".droppable"
+  });
+
+  /*
+   $( ".video-tag" ).draggable({
+
   opacity: .7,
+
    create: function(event, ui) {
        $(this).draggable("option", "cursorAt", {
            left: Math.floor(80),
            top: Math.floor(60)
        });
-   },
+   }
+
    start: function(event, ui){
        if($(this).width() > 160){
        $(this).css("width", "160px" );
        $(this).css("height", "120px");
        }
    }
+
    });
-   take_spot(0, $( "#localVideo" ));
-   $( "#video-spot-1" ).droppable({
-       activeClass: "active-video-spot",
-       drop: function( event, ui ) {
-       take_spot(0, $("#" + ui.draggable.prop('id')), $("#video-spot-1"));
-       $("#video-spot-1").append( $("#" + ui.draggable.prop('id')) ) ;
-       $("#" + ui.draggable.prop('id')).css("top", "0%");
-       $("#" + ui.draggable.prop('id')).css("left", "0%");
-       $("#" + ui.draggable.prop('id')).css("width", "100%");
-       $("#" + ui.draggable.prop('id')).get(0).play();
-       }
-   });
-   $( "#video-spot-2" ).droppable({
-       activeClass: "active-video-spot",
-       drop: function( event, ui ) {
-       take_spot(1, $("#" + ui.draggable.prop('id')));
-       $("#video-spot-2").append( $("#" + ui.draggable.prop('id')) );
-       $("#" + ui.draggable.prop('id')).css("top", "0%");
-       $("#" + ui.draggable.prop('id')).css("left", "0%");
-       $("#" + ui.draggable.prop('id')).css("width", "100%");
-       $("#" + ui.draggable.prop('id')).get(0).play();
-       }
-   });
-   $( "#video-spot-3" ).droppable({
-       activeClass: "active-video-spot",
-       drop: function( event, ui ) {
-       take_spot(2, $("#" + ui.draggable.prop('id')));
-       $("#video-spot-3").append( $("#" + ui.draggable.prop('id')));
-       $("#" + ui.draggable.prop('id')).css("top", "0%");
-       $("#" + ui.draggable.prop('id')).css("left", "0%");
-       $("#" + ui.draggable.prop('id')).css("width", "100%");
-       $("#" + ui.draggable.prop('id')).get(0).play();
-       }
-   });
-   $( "#video-spot-4" ).droppable({
-       activeClass: "active-video-spot",
-       drop: function( event, ui ) {
-       take_spot(3, $("#" + ui.draggable.prop('id')));
-       $("#video-spot-4").append( $("#" + ui.draggable.prop('id')));
-       $("#" + ui.draggable.prop('id')).css("top", "0%");
-       $("#" + ui.draggable.prop('id')).css("left", "0%");
-       $("#" + ui.draggable.prop('id')).css("width", "100%");
-       $("#" + ui.draggable.prop('id')).get(0).play();
-       }
-   });
-   $( "#video-spot-5" ).droppable({
-       activeClass: "active-video-spot",
-       drop: function( event, ui ) {
-       take_spot(4, $("#" + ui.draggable.prop('id')));
-       $("#video-spot-5").append( $("#" + ui.draggable.prop('id')));
-       $("#" + ui.draggable.prop('id')).css("top", "0%");
-       $("#" + ui.draggable.prop('id')).css("left", "0%");
-       $("#" + ui.draggable.prop('id')).css("width", "100%");
-       $("#" + ui.draggable.prop('id')).get(0).play();
-       }
-   });
-});
+  */
+
 </script>
