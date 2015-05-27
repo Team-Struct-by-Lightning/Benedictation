@@ -80,6 +80,7 @@ $(document).on("page:fetch", function() {
 
 // Send a new chat message to everyone else in the room.
 function sendIM() {
+    <%= puts "FROM CHAT" %>
     "<% current_user.refresh_token_if_expired %>"
     var message = $inputIM.val();
     var content = "<%= current_user.name %>" + "@@@" + "<%= current_user.uid %>" + "@@@" + "<%= current_user.oauth_token %>" + "@@@" + message;

@@ -1,8 +1,12 @@
 
 
 /*===Fonts===*/
-@import url(//fonts.googleapis.com/css?family=Roboto+Slab);
-
+@font-face {
+  font-family: 'Roboto Slab';
+  src: url('RobotoSlab-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
 
 /*===Images===*/
 .cover_image {
