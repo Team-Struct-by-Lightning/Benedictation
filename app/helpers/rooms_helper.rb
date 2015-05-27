@@ -123,7 +123,14 @@ module RoomsHelper
 	end
 
 	def query_wikipedia(json_hash, call_from)
+		# if query is something like "webrtc" there won't be a noun phrase, so just make the noun phrase equal to the query string.
+		puts "@@@@@@ json_hash in wiki: " + json_hash.inspect
+		if json_hash.has_key?("noun_phrase") == false
+			puts "@@@@@@@@@@@@@ oh god no noun phrase nooooo"
+			json_hash['noun_phrase'] = json_hash["query"]
+		end
 		query_string = json_hash['noun_phrase'].to_s
+		
 		# check if we should change to google search
 		if query_string == ""
 			query_string = json_hash['query'].to_s
