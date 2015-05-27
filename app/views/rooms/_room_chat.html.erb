@@ -39,8 +39,8 @@ $bennyInputIM.keydown(function (event) {
     }
 });
 
- 
-// Set up the WebSocket connection to the NLP interpreter. 
+
+// Set up the WebSocket connection to the NLP interpreter.
 var myLocation = location.host.split(":")[0];
 var port = "8888";
 var uri = "/recognize_test";
@@ -255,13 +255,13 @@ function appendNewBennyReply(json_murph) {
         var benny_item_link_id = "benny_query" + key;
         var parameter = 'clickable("' + json_murph.key + '")';
         $('.benny-list-body').addClass('benny-list-body-func');
-        
+
         $('.benny-list-body').append('<div class="benny-item benny-calendar" id=' + benny_item_id +'>' +
                             '<%= image_tag("#{image_name}", class: "favicon") %>' +
                             '<a class="name-and-summary-calendar">' + name + '</a>' +
                             '<a class="benny-link" onclick=' + parameter + ' id=' +
                             benny_item_link_id + '> Suggested times </a>' +
-                            '</div>');          
+                            '</div>');
     }
 
     else if (json_murph.api_type == 'wolfram'){
@@ -282,9 +282,11 @@ function appendNewBennyReply(json_murph) {
         var parameter = 'clickable("' + json_murph.key + '")';
         $('.benny-list-body').addClass('benny-list-body-func');
         $('.benny-list-body').append('<div class="benny-item benny-wolfram" id=' + benny_item_id +'>' +
-                            '<%= image_tag("#{image_name}", class: "favicon") %>' +
+                            '<%= image_tag("#{image_name}", class: "favicon question-favicon") %>' +
+                            '<%= image_tag("wikipedia.ico", class: "favicon left-fav-small") %>' +
+                            '<%= image_tag("google-fav.jpg", class: "favicon right-fav-small") %>' +
                             '<a class="name-and-summary-wolfram">' + name + '</a>' +
-                            '<a class="benny-link" onclick=' + parameter + ' id=' +
+                            '<a class="benny-link question-link" onclick=' + parameter + ' id=' +
                             benny_item_link_id + '> Query: ' + query + '?</a>' +
                             '</div>');
 
@@ -310,9 +312,11 @@ function appendNewBennyReply(json_murph) {
 
         $('.benny-list-body').addClass('benny-list-body-func');
         $('.benny-list-body').append('<div class="benny-item benny-google" id=' + benny_item_id +'>' +
-                            '<%= image_tag("#{image_name}", class: "favicon", id:"google-fav") %>' +
+                            '<%= image_tag("#{image_name}", class: "favicon question-favicon", id:"google-fav") %>' +
+                            '<%= image_tag("wolfram.jpg", class: "favicon left-fav-small") %>' +
+                            '<%= image_tag("wikipedia.ico", class: "favicon right-fav-small") %>' +
                             '<a class="name-and-summary-wolfram">' + name + '</a>' +
-                            '<a class="benny-link" onclick=' + parameter + ' id=' +
+                            '<a class="benny-link google-link" onclick=' + parameter + ' id=' +
                             benny_item_link_id + '> Query: ' + query + '</a>' +
                             '</div>');
 
@@ -378,9 +382,11 @@ function appendNewBennyReply(json_murph) {
         var parameter = 'clickable("' + json_murph.key + '")';
         $('.benny-list-body').addClass('benny-list-body-func');
         $('.benny-list-body').append('<div class="benny-item benny-wikipedia" id=' + benny_item_id +'>' +
-                            '<%= image_tag("#{image_name}", class: "favicon") %>' +
+                            '<%= image_tag("#{image_name}", class: "favicon question-favicon") %>' +
+                            '<%= image_tag("wolfram.jpg", class: "favicon left-fav-small") %>' +
+                            '<%= image_tag("google-fav.jpg", class: "favicon right-fav-small") %>' +
                             '<a class="name-and-summary-wikipedia">' + name + '</a>' +
-                            '<a class="benny-link" onclick=' + parameter + ' id=' +
+                            '<a class="benny-link question-link" onclick=' + parameter + ' id=' +
                             benny_item_link_id + '> Query: ' + query + '?</a>' +
                             '</div>');
 

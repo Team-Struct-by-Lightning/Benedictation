@@ -22,7 +22,42 @@
 }
 
 
+.question-favicon {
+  width: 11%;
+  float: left;
+  position: relative;
+  top: -1px !important;
+  left: 2px !important;
+  cursor: pointer;
+}
 
+.google-link {
+  position: relative;
+  top: -18px !important;
+  left: 14px !important;
+}
+
+.question-link{
+  position: relative;
+  left: 41px !important;
+  top: -20px !important;
+}
+
+.left-fav-small {
+  position: relative;
+  transform: scale(.5) !important;
+  left: -36px !important;
+  top: 24px !important;
+  cursor: pointer;
+}
+
+.right-fav-small {
+  position: relative;
+  transform: scale(.5) !important;
+  left: -42px !important;
+  top: 24px !important;
+  cursor: pointer;
+}
 
 
 
@@ -498,18 +533,26 @@ div.wikipedia-frame body{
   position: relative;
   color: black;
   font-size: 12px;
-  left: 128px;
+  left: 75px;
   top: 30px;
-  text-decoration: none;
+  text-decoration: none !important;
+}
+
+.name-and-summary-wolfram:hover {
+  color: black !important;
 }
 
 .name-and-summary-wikipedia {
   position: relative;
   color: black;
   font-size: 12px;
-  left: 128px;
+  left: 75px;
   top: 30px;
-  text-decoration: none;
+  text-decoration: none !important;
+}
+
+.name-and-summary-wikipedia:hover {
+  color: black !important;
 }
 
 .suggestions-list {
@@ -1016,6 +1059,10 @@ transform: scale(.05);
   text-align: center;
   text-decoration: none !important;
   color: black;
+}
+
+.name-and-summary-calendar:hover {
+  color: black !important;
 }
 
 .benny-no-result {
