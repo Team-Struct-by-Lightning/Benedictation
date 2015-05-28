@@ -199,7 +199,12 @@ $(document).on('click','#remove_item_id',function(){
                     //$(this).get(0).play();
                     console.log($(this));
                     console.log($(this).index());
-                    return children[($(this).index()+ 1) % 2];
+                  for (i = 0; i < children.size(); i++) {
+                    console.log("children have ben received in the drop: ", children[i]);
+                    if (ui != children[i]) {
+                      return children[i];
+                    }
+                  }
                 });
             }
         },
