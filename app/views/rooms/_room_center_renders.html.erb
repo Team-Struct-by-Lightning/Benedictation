@@ -111,7 +111,7 @@ function clickable(me) {
             else if (api_type == 'schedule_suggest') {
                 var render_item_id = "render" + div_id;
                 var title = "Suggested times";
-                var suggestions = item['suggested_times']; // is this JSON or string?
+                var suggestions = item['suggested_times']; // This is a string.
                 var result = suggestions.split('},{').length;
                 var result_name;
                 var result_val_string = String(result);
@@ -123,17 +123,27 @@ function clickable(me) {
                     result_name = 'results';
                 }
                 
-                  suggestion = suggestions[0]
-                  console.log(suggestion)
-                  console.log(typeof(suggestion))
-                  //console.log(DateFormat.format.date(suggestion.start, "E MMM D hh mm p"));
+                // Generate radio button and label elements for each suggestion.
+                // Limit to the first n, and then show more, perhaps?
+                // Minor improvement: Don't show the day twice if it's the same day...
+                suggestions_obj = JSON.parse(suggestions)
+                var suggestions_form = $('<form id="suggestions_form"></form>')
+                for(var i=0; i<suggestions_obj.length; i++) {
+                    suggestion = suggestions_obj[i];
+                    var date_str = DateFormat.format.date(suggestion.start, "E MMM D, h:mm p") + " to " + DateFormat.format.date(suggestion.end, "E MMM D, h:mm p");
+                    //console.log(date_str);
+                    // Create a radio button: value is i, so we can look up the corresponding option
+                    var radio_elem = $('<input type="radio" name="sched-option" value="' + i + '">' + date_str + '</input>');
+                    radio_elem.appendTo(suggestions_form);
+                }                
                 
-
                 $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' +
                                                '  <div class="center-border suggestion-border"> <h1 class="suggestion-title">' +
                                                title + '</h1> <h2 class="suggested-time-list-title">Select the time you wish to schedule</h2><p class="num-results">' +
                                                result_val_string + ' ' + result_name + '</p><a class="glyphicon glyphicon-remove suggestion-remove" id="remove_item_id"></a>' +
-                                              '  <div class="suggestions-list"> ' + suggestions + '</div></div></div>');
+                                              '  <div class="suggestions-list"></div>' +
+                                              '<button id="schedule_submit_btn" onclick="schedule_submit()>Schedule It</button></div></div>');
+                $('.suggestions-list').append(suggestions_form);
             } 
 
             else if (api_type == 'google') {
