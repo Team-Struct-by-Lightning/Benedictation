@@ -9,7 +9,7 @@
 <!-- This section is the sidebar for the local and peer video connections -->
 <!-- to be dragged and dropped -->
   <div class="droppable" id="video-list">
-      <video class="video-tag" id="localVideo" autoplay></video>
+      <video class="video-tag draggable" id="localVideo" ></video>
    </div>
 
    <div class = "benedict-zone">
@@ -122,15 +122,24 @@ $(document).on('click','#remove_item_id',function(){
         var i;
         for (i = 0; i < children.size(); i++) {
           console.log("child to play drop: ", children[i]);
-          children[i].play();
+          children[i].pause();
           }
         }
       }).sortable({
-        revert: false,
         connectWith: ".video-tag",
         helper: 'clone',
         appendTo: 'body',
         distance: 20,
+        revert: false,
+        stop: function(event) {
+          console.log("EVENT in stop:   ", event);
+          var children = $("#video-list").children();
+            var i;
+            for (i = 0; i < children.size(); i++) {
+              console.log("child to play receive: ", children[i]);
+              children[i].play();
+            }
+        },
         receive: function() {
             var children = $("#video-list").children();
             var i;
@@ -143,9 +152,14 @@ $(document).on('click','#remove_item_id',function(){
             var children = $("#video-list").children();
             var i;
             for (i = 0; i < children.size(); i++) {
-              console.log("child to play sort: ", children[i]);
+              //console.log("child to play sort: ", children[i]);
               children[i].play();
             }
+        },
+        start: function(event, ui){
+          $(this).css("width", "160px" );
+          $(this).css("height", "120px");
+          console.log("EVENT in start:   ", event);
         }
     });
 
@@ -156,8 +170,8 @@ $(document).on('click','#remove_item_id',function(){
 
             var children = $("#drop-spot").children();
             console.log("children ", children);
-            $(ui).css('width', '100%');
-            $(ui).css('height', '100%');
+            //$(ui).css('width', '100%');
+            //$(ui).css('height', '100%');
             if (children.size() > 1) {
                 $("#video-list").append(function() {
                   //$(this).get(0).play();
@@ -170,9 +184,16 @@ $(document).on('click','#remove_item_id',function(){
     }).sortable({
         revert: false,
         connectWith: ".video-tag",
-        receive: function() {
+        cursorAt: {
+          left: 80,
+          top: 60
+        },
+
+        receive: function(event, ui) {
             var children = $("#drop-spot").children();
             var i;
+            $(ui).css('width', '100%');
+            $(ui).css('height', '100%');
             for (i = 0; i < children.size(); i++) {
               console.log("children have ben received in the drop: ", children[i]);
               children[i].play();
@@ -185,9 +206,24 @@ $(document).on('click','#remove_item_id',function(){
                     return children[($(this).index()+ 1) % 2];
                 });
             }
-        }
+        },
+        start: function(event, ui){
+          console.log("we started biaaatch");
+          var children = $("#drop-spot").children();
+          console.log("we are in here but shit is fucked.");
+          $(children[0]).css("width", "160px" );
+          $(children[0]).css("height", "120px");
+        },
+        stop: function(event) {
+          console.log("EVENT in stop:   ", event);
+          var children = $("#drop-spot").children();
+            var i;
+            for (i = 0; i < children.size(); i++) {
+              console.log("child to play receive: ", children[i]);
+              children[i].play();
+            }
+        },
     });
-
 
   $(".droppable").sortable({
     revert: true,
