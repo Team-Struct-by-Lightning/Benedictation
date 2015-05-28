@@ -56,9 +56,8 @@
                       </ul>
                     </div>
                   </div>
-
                 </div>
-                <div id='chat-body' valign='top'>
+                <div id='chat-body'>
                   <div class='panel panel-primary' id="chat-box">
                     <div class='panel-heading' id="chat-heading">
                       <a class="chat-header">Chat</a>
@@ -99,11 +98,12 @@
         console.log("chcking");
         var id = this.id;
         var id_array = id.split("menu-group");
+        console.log("id array: ",id_array);
 
         $('.center-div').hide();
         $('.center-div-group').hide();
         $('.random-button').hide();
-        $('#center-div' + id_array[1]).show();
+        $('#center-div' + id_array[1]).show(); 
     });
 
     // $('.delete-button').click(function(e){
