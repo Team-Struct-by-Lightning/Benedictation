@@ -116,19 +116,11 @@ $(document).on('click','#remove_item_id',function(){
 // respective drag andn droppable functions for
 // the video sidebar
 
-  $("#video-list").droppable({
-      drop: function() {
-        var children = $("#video-list").children();
-        var i;
-        for (i = 0; i < children.size(); i++) {
-          console.log("child to play drop: ", children[i]);
-          children[i].pause();
-          }
-        }
-      }).sortable({
+  $("#video-list").sortable({
         connectWith: ".video-tag",
-        helper: 'clone',
+        //helper: 'clone',
         appendTo: 'body',
+        opacity: .7,
         distance: 20,
         revert: false,
         stop: function(event) {
@@ -156,11 +148,7 @@ $(document).on('click','#remove_item_id',function(){
               children[i].play();
             }
         },
-        start: function(event, ui){
-          $(this).css("width", "160px" );
-          $(this).css("height", "120px");
-          console.log("EVENT in start:   ", event);
-        }
+        
     });
 
     $("#drop-spot").droppable({
