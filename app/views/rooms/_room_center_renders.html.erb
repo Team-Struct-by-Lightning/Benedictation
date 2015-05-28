@@ -20,11 +20,11 @@ function clickable(me) {
     // although we hope for only 1 video to be in the center, we
     // create a for loop just in case there was an edge case we missed
     for (i = 0; i < children.length; i++) {
-        if ($(children[i]).hasClass("video-center")) {
+        if ($(children[i]).hasClass("video-tag")) {
             var video = children[i];
-            document.getElementById(get_free_spot()).appendChild(children[i]);
             // we need this line so that the video will be set to play
             // upon appending it back to the video list
+            $("#video-list").append(video);
             $(video).get(0).play();
         }
     }
