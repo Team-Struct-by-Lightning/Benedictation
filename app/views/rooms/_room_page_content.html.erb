@@ -150,7 +150,7 @@ $(document).on('click','#remove_item_id',function(){
               children[i].play();
             }
         },
-        
+
     });
 
     $("#drop-spot").droppable({
@@ -188,7 +188,11 @@ $(document).on('click','#remove_item_id',function(){
               console.log("children have ben received in the drop: ", children[i]);
               children[i].play();
             }
-             if (children.size() > 1) {
+            var children_render = $(".render-spot").children();
+            if (children_render.size() > 0) {
+              children_render[0].remove();
+            }
+            if (children.size() > 1) {
               console.log(" we have more than one children in the drop spot");
                 $("#video-list").append(function() {
                     //$(this).get(0).play();
