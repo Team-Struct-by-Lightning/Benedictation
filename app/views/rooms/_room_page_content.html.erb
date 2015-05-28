@@ -157,11 +157,10 @@ $(document).on('click','#remove_item_id',function(){
         activeClass: "active-drop-spot",
         drop: function(event, ui) {
             //ui.draggable is the motha focking video thingy json draggable
-
+            /*
             var children = $("#drop-spot").children();
             console.log("# of children is : ", children.size());
-            //$(ui).css('width', '100%');
-            //$(ui).css('height', '100%');
+
             if (children.size() > 1 && $(children[0]).id != $(children[1]).id ) {
                 $("#video-list").append(function() {
                   //$(this).get(0).play();
@@ -170,6 +169,7 @@ $(document).on('click','#remove_item_id',function(){
                     return children[($(this).index()+ 1) % 2];
                 });
             }
+            */
         }
     }).sortable({
         revert: false,
@@ -186,7 +186,6 @@ $(document).on('click','#remove_item_id',function(){
             $(ui).css('width', '100%');
             $(ui).css('height', '100%');
             for (i = 0; i < children.size(); i++) {
-              console.log("children have ben received in the drop: ", children[i]);
               children[i].play();
             }
             var children_render = $(".render-spot").children();
@@ -197,8 +196,7 @@ $(document).on('click','#remove_item_id',function(){
               console.log(" we have more than one children in the drop spot");
                 $("#video-list").append(function() {
                     //$(this).get(0).play();
-                    console.log($(this));
-                    console.log($(this).index());
+
                   for (i = 0; i < children.size(); i++) {
                     console.log("children have ben received in the drop: ", children[i]);
                     if (ui != children[i]) {
