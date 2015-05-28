@@ -200,34 +200,35 @@ module RoomsHelper
 		else
 			json_hash[order] = "wikipedia"
 		end
-		puts "@@@@@@@@@@@WIKI@@@@@@@@@@@@@@@@@@" + json_hash['api_html'].to_s
 		json_hash
 	end
 
 	def query_google(json_hash, order)
+		puts "we got into googs"
 		json_hash[order] = "google"
+		json_hash
 	end
 
 
 	def query(json_hash)
 		case json_hash['api_type']
-		primary = 0
 		when 'wolfram'
 			json_hash = query_wolfram_alpha(json_hash, 'first')
 			json_hash = query_wikipedia(json_hash, 'second')
 			json_hash = query_google(json_hash, 'third')
-			return json_hash
+			json_hash
 		when 'wikipedia'
 			json_hash = query_wikipedia(json_hash, 'first')
 			json_hash = query_wolfram_alpha(json_hash, 'second')
 			json_hash = query_google(json_hash, 'third')
-			return json_hash
+			json_hash
 		when 'google'
 			json_hash = query_google(json_hash, 'first')
 			json_hash = query_wolfram_alpha(json_hash, 'second')
 			json_hash = query_wikipedia(json_hash, 'third')
-			return json_hash
+			json_hash
 		end
+		json_hash
 	end
 
 end

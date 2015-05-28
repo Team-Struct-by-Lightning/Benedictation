@@ -289,7 +289,6 @@ function appendNewBennyReply(json_murph) {
                             '<a class="benny-link question-link" onclick=' + parameter + ' id=' +
                             benny_item_link_id + '> Query: ' + query + '?</a>' +
                             '</div>');
-
     }
     else if (json_murph.api_type == 'google') {
         <% image_name = "google-fav.jpg" %>
@@ -381,9 +380,9 @@ function appendNewBennyReply(json_murph) {
         var parameter = 'clickable("' + json_murph.key + '")';
         $('.benny-list-body').addClass('benny-list-body-func');
         $('.benny-list-body').append('<div class="benny-item benny-wikipedia" id=' + benny_item_id +'>' +
-                            '<%= image_tag("#{image_name}", class: "favicon question-favicon") %>' +
-                            '<%= image_tag("wolfram.jpg", class: "favicon left-fav-small") %>' +
-                            '<%= image_tag("google-fav.jpg", class: "favicon right-fav-small") %>' +
+                            '<%= image_tag("#{image_name}", class: "favicon question-favicon", alt: "' + key + '") %>' +
+                            '<%= image_tag("wolfram.jpg", class: "favicon left-fav-small", alt: "' + key + '") %>' +
+                            '<%= image_tag("google-fav.jpg", class: "favicon right-fav-small", alt: "' + key + '") %>' +
                             '<a class="name-and-summary-wikipedia">' + name + '</a>' +
                             '<a class="benny-link question-link" onclick=' + parameter + ' id=' +
                             benny_item_link_id + '> Query: ' + query + '?</a>' +
@@ -494,6 +493,10 @@ function bennyNotificationNumber(){
 }
 
 
+$(".favicon").click(function() {
+    console.log("we are clicking!");
+    console.log($this.alt);
+})
 
 
 
