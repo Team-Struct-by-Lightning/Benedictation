@@ -116,7 +116,9 @@ $(document).on('click','#remove_item_id',function(){
 // respective drag andn droppable functions for
 // the video sidebar
 
-  $("#video-list").sortable({
+  $("#video-list").droppable({
+    activeClass: "active-drop-spot",
+  }).sortable({
         connectWith: ".video-tag",
         //helper: 'clone',
         appendTo: 'body',
@@ -157,10 +159,10 @@ $(document).on('click','#remove_item_id',function(){
             //ui.draggable is the motha focking video thingy json draggable
 
             var children = $("#drop-spot").children();
-            console.log("children ", children);
+            console.log("# of children is : ", children.size());
             //$(ui).css('width', '100%');
             //$(ui).css('height', '100%');
-            if (children.size() > 1) {
+            if (children.size() > 1 && $(children[0]).id != $(children[1]).id ) {
                 $("#video-list").append(function() {
                   //$(this).get(0).play();
                     console.log("inside of the append function" + $(this));
@@ -187,6 +189,7 @@ $(document).on('click','#remove_item_id',function(){
               children[i].play();
             }
              if (children.size() > 1) {
+              console.log(" we have more than one children in the drop spot");
                 $("#video-list").append(function() {
                     //$(this).get(0).play();
                     console.log($(this));
