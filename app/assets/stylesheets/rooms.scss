@@ -4,6 +4,63 @@
 @import "bootstrap-sprockets";
 @import "bootstrap";
 
+
+.video-tag {
+
+  z-index: 1999 !important;
+}
+
+
+#video-list {
+    position: relative;
+    top: 12px;
+    height: 100%;
+    width: 160px;
+    float: left;
+    background-color: #cccccc;
+    z-index: 1998 !important;
+}
+
+
+.question-favicon {
+  width: 11%;
+  float: left;
+  position: relative;
+  top: -1px !important;
+  left: 2px !important;
+  cursor: pointer;
+}
+
+.google-link {
+  position: relative;
+  top: -18px !important;
+  left: 14px !important;
+}
+
+.question-link{
+  position: relative;
+  left: 41px !important;
+  top: -20px !important;
+}
+
+.left-fav-small {
+  position: relative;
+  transform: scale(.5) !important;
+  left: -36px !important;
+  top: 24px !important;
+  cursor: pointer;
+}
+
+.right-fav-small {
+  position: relative;
+  transform: scale(.5) !important;
+  left: -42px !important;
+  top: 24px !important;
+  cursor: pointer;
+}
+
+
+
 .room-layout-table {
   position: fixed;
   left:160px;
@@ -476,18 +533,26 @@ div.wikipedia-frame body{
   position: relative;
   color: black;
   font-size: 12px;
-  left: 128px;
+  left: 75px;
   top: 30px;
-  text-decoration: none;
+  text-decoration: none !important;
+}
+
+.name-and-summary-wolfram:hover {
+  color: black !important;
 }
 
 .name-and-summary-wikipedia {
   position: relative;
   color: black;
   font-size: 12px;
-  left: 128px;
+  left: 75px;
   top: 30px;
-  text-decoration: none;
+  text-decoration: none !important;
+}
+
+.name-and-summary-wikipedia:hover {
+  color: black !important;
 }
 
 .suggestions-list {
@@ -996,6 +1061,10 @@ transform: scale(.05);
   color: black;
 }
 
+.name-and-summary-calendar:hover {
+  color: black !important;
+}
+
 .benny-no-result {
   line-height: 15px;
   font-size: 14px;
@@ -1159,13 +1228,21 @@ transform: scale(.05);
   border: 2px dashed black;
 }
 
-#localVideo{
+.active-drop-spot{
+  border: 2px dashed black;
+}
+
+.video-tag{
   width: 100%;
   height:100%;
   margin: 0;
   cursor:move;
 }
 
+html {
+  width: auto;
+  height: 100%;
+}
 
 #tutorial-explanation{
   padding-left: 10%;

@@ -5,6 +5,11 @@
 
 // This function takes a JSON object as returned from the Python server,
 // and sends it to the API request handler in the Rooms controller. The rooms controller sends the hash to a rooms helper called choose_api, which modifies the hash and adds new attributes as needed, and then returns the modified hash (called json_hash in the code below.) This removes the need for redis here.
+
+// First make sure the users oauth token is up to date
+<%= current_user.refresh_token_if_expired %>
+
+
 var postAPIRequest = function(myData) {
     console.log("in postAPIRequest");
     $.ajax({

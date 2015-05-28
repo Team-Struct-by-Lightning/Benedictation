@@ -24,6 +24,12 @@ comm.on('local', function(options) {
     localAudioStream = options.rawStream;
     console.log("options: ", options);
     localVideo.muted = true;
+    var children = $("#video-list").children();
+    var i;
+    //for (i = 0; i < children.size(); i++) {
+       // console.log("child to play receive: ", children[i]);
+    children[0].play();
+    //}
     console.log("Obtained user camera/microphone approval");
     // fill in chat history from redis
     var chat_history;
@@ -92,45 +98,40 @@ comm.on('local', function(options) {
     speechRecorder = new Recorder(input);
 });
 comm.on('connected', function(options) {
-    document.getElementById(get_free_spot()).appendChild(options.getVideo());
-    slot_num = get_free_spot().slice(-1) - 1;
+    $("#video-list").append(options.getVideo());
     var new_video = document.getElementById(options.callerID);
-    video_spots[slot_num] = $(new_video).attr('id');
-    new_video.style.width = "100%";
-    new_video.style.height = "100%";
-    new_video.style.margin = "0px";
-    new_video.style.cursor = "move";
-    new_video.className = "video-center";
-    $(new_video).draggable({
-        revert: function(socketObj) {
-            if (socketObj === false) {
-                // Drop was rejected, revert the helper.
-                var $helper = $("#localVideo");
-                $helper.animate($helper.originalPosition);
-                $helper.animate({
-                    width: "100%",
-                    height: "100%"
-                });
-                return true;
-            } else {
-                // Drop was accepted, don't revert.
-                return false;
-            }
-        },
-        opacity: .7,
-        create: function(event, ui) {
-            $(this).draggable("option", "cursorAt", {
-                left: Math.floor(80),
-                top: Math.floor(60)
-            });
-        },
-        start: function(event, ui) {
-            if ($(this).width() > 160) {
-                $(this).css("width", "160px");
-                $(this).css("height", "120px");
-            }
-        }
-    });
+
+    new_video.className = "video-tag";
+    // $(new_video).draggable({
+    //     revert: function(socketObj) {
+    //         if (socketObj === false) {
+    //             // Drop was rejected, revert the helper.
+    //             var $helper = $("#localVideo");
+    //             $helper.animate($helper.originalPosition);
+    //             $helper.animate({
+    //                 width: "100%",
+    //                 height: "100%"
+    //             });
+    //             return true;
+    //         } else {
+    //             // Drop was accepted, don't revert.
+    //             return false;
+    //         }
+    //     },
+    //     opacity: .7,
+    //     create: function(event, ui) {
+    //         $(this).draggable("option", "cursorAt", {
+    //             left: Math.floor(80),
+    //             top: Math.floor(60)
+    //         });
+    //     },
+    //     start: function(event, ui) {
+    //         if ($(this).width() > 160) {
+    //             $(this).css("width", "160px");
+    //             $(this).css("height", "120px");
+    //         }
+    //     }
+    // });
 });
 comm.on('disconnect', function(options) {
     console.log('disconnect happening');
