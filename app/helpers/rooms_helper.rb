@@ -56,7 +56,7 @@ module RoomsHelper
 		case json_hash['api_type']
 		when 'google'
 			puts "We will do a google search"
-			json_hash #return unmodified json hash
+			query(json_hash)
 		when 'calendar'
 			logger.error "We will access the calendar api!"
 			json_event = calendar_json(json_hash)
@@ -79,16 +79,81 @@ module RoomsHelper
 			json_hash #return unmodified json hash
 		when 'wolfram'
 			puts "We will access the wolfram alpha api!"
-			query_wolfram_alpha(json_hash, "origin") # returns modified json hash
+			query(json_hash) # returns modified json hash
 		when 'wikipedia'
 			puts "We will access the wikipedia api!"
-			query_wikipedia(json_hash, "origin") # returns modified json hash
+			query(json_hash) # returns modified json hash
 		else
 			json_hash	# In the event of blank queries/no result, return the unmodified hash
 		end
 	end
 
-	def query_wolfram_alpha(json_hash, call_from)
+	# def query_wolfram_alpha(json_hash, order)
+	# 	puts "json_hash: ",json_hash.inspect
+	# 	coder = HTMLEntities.new
+	# 	query_string = json_hash['query'].to_s
+	# 	query_string = query_string.split(" '").join
+	# 	query_string = query_string.split("'").join
+	# 	# puts "&&&&&&&&&&&&&&&&: " + query_string
+	# 	app_id = WolframAPIKey["app_id"]
+	# 	wolfram_url = URI.parse("http://api.wolframalpha.com/v2/query?appid=P3P4W5-LGWA2A3RU2&input=" + URI.encode(query_string.strip) + "&format=html").to_s
+	# 	doc = Nokogiri::XML(open(wolfram_url))
+	# 	# <queryresult success='false' OR # <pod title='Definition' means we should do wiki instead of wolfram
+	# 	api_html = ""
+	# 	if doc.xpath("//queryresult").attr("success").to_s == 'false' or doc.xpath("//queryresult").attr("numpods").to_s == '0' or doc.xpath('//*[@title="Definition"]').length != 0
+	# 		#get wiki hash if any of the above were true
+	# 		if call_from == "origin"
+	# 			json_hash['api_type'] = 'wikipedia'
+	# 			json_hash = query_wikipedia(json_hash, "wolfram")
+	# 		else
+	# 			json_hash['api_type'] = 'google'
+	# 		end
+	# 	# otherwise the api type is definitely wolfram
+	# 	else
+	# 		# grab the wolfram html
+	# 		markups = []
+	# 		doc.xpath("//markup").each do |markup|
+	# 			markups << markup.text
+	# 		end
+	# 		api_html = markups.join.to_s.split('"').join("'")
+	# 		api_html = api_html.split("\n").join()
+	# 		json_hash['api_html'] = api_html
+	# 	end
+	# 	json_hash
+	# end
+
+	# def query_wikipedia(json_hash, call_from)
+	# 	query_string = json_hash['noun_phrase'].to_s
+	# 	# check if we should change to google search
+	# 	if query_string == ""
+	# 		query_string = json_hash['query'].to_s
+	# 	else
+	# 		puts "Non-trivial noun phrase found"
+	# 	end
+
+	# 	page = Wikipedia.find(query_string)
+
+	# 	if page.content.nil?
+	# 		if call_from == "origin"
+	# 			json_hash['api_type'] = 'wolfram'
+	# 			json_hash = query_wolfram_alpha(json_hash, "wiki")
+	# 		else
+	# 			json_hash['api_type'] = 'google'
+	# 		end
+
+	# 	else
+	# 		# its definitely wikipedia
+	# 		wikipedia_url = URI.parse("https://en.wikipedia.org/wiki/" + URI.encode(query_string.strip) + "?action=render").to_s
+	# 		page = Nokogiri::HTML(open(wikipedia_url))
+	# 		api_html = page.inner_html.split('"').join("'") # change to using single quotes
+	# 		api_html = api_html.split("\n").join() # get rid of newline characters
+	# 		json_hash['api_html'] = api_html
+	# 	end
+	# 	puts "@@@@@@@@@@@WIKI@@@@@@@@@@@@@@@@@@" + json_hash['api_html'].to_s
+	# 	json_hash
+	# end
+
+	def query_wolfram_alpha(json_hash, order)
 		puts "json_hash: ",json_hash.inspect
 		coder = HTMLEntities.new
 		query_string = json_hash['query'].to_s
@@ -101,16 +166,11 @@ module RoomsHelper
 		# <queryresult success='false' OR # <pod title='Definition' means we should do wiki instead of wolfram
 		api_html = ""
 		if doc.xpath("//queryresult").attr("success").to_s == 'false' or doc.xpath("//queryresult").attr("numpods").to_s == '0' or doc.xpath('//*[@title="Definition"]').length != 0
-			#get wiki hash if any of the above were true
-			if call_from == "origin"
-				json_hash['api_type'] = 'wikipedia'
-				json_hash = query_wikipedia(json_hash, "wolfram")
-			else
-				json_hash['api_type'] = 'google'
-			end
+			json_hash[order] = ""
 		# otherwise the api type is definitely wolfram
 		else
 			# grab the wolfram html
+			json_hash[order] = "wolfram"
 			markups = []
 			doc.xpath("//markup").each do |markup|
 				markups << markup.text
@@ -122,15 +182,8 @@ module RoomsHelper
 		json_hash
 	end
 
-	def query_wikipedia(json_hash, call_from)
-		# if query is something like "webrtc" there won't be a noun phrase, so just make the noun phrase equal to the query string.
-		puts "@@@@@@ json_hash in wiki: " + json_hash.inspect
-		if json_hash.has_key?("noun_phrase") == false
-			puts "@@@@@@@@@@@@@ oh god no noun phrase nooooo"
-			json_hash['noun_phrase'] = json_hash["query"]
-		end
+	def query_wikipedia(json_hash, order)
 		query_string = json_hash['noun_phrase'].to_s
-		
 		# check if we should change to google search
 		if query_string == ""
 			query_string = json_hash['query'].to_s
@@ -141,23 +194,40 @@ module RoomsHelper
 		page = Wikipedia.find(query_string)
 
 		if page.content.nil?
-			if call_from == "origin"
-				json_hash['api_type'] = 'wolfram'
-				json_hash = query_wolfram_alpha(json_hash, "wiki")
-			else
-				json_hash['api_type'] = 'google'
-			end
+
+			json_hash[order] = ""
 
 		else
-			# its definitely wikipedia
-			wikipedia_url = URI.parse("https://en.wikipedia.org/wiki/" + URI.encode(query_string.strip) + "?action=render").to_s
-			page = Nokogiri::HTML(open(wikipedia_url))
-			api_html = page.inner_html.split('"').join("'") # change to using single quotes
-			api_html = api_html.split("\n").join() # get rid of newline characters
-			json_hash['api_html'] = api_html
+			json_hash[order] = "wikipedia"
 		end
-		puts "@@@@@@@@@WIKI@@@@@@@@@@@@@@@@@@" + json_hash['api_html'].to_s
+		puts "@@@@@@@@@@@WIKI@@@@@@@@@@@@@@@@@@" + json_hash['api_html'].to_s
 		json_hash
+	end
+
+	def query_google(json_hash, order)
+		json_hash[order] = "google"
+	end
+
+
+	def query(json_hash)
+		case json_hash['api_type']
+		primary = 0
+		when 'wolfram'
+			json_hash = query_wolfram_alpha(json_hash, 'first')
+			json_hash = query_wikipedia(json_hash, 'second')
+			json_hash = query_google(json_hash, 'third')
+			return json_hash
+		when 'wikipedia'
+			json_hash = query_wikipedia(json_hash, 'first')
+			json_hash = query_wolfram_alpha(json_hash, 'second')
+			json_hash = query_google(json_hash, 'third')
+			return json_hash
+		when 'google'
+			json_hash = query_google(json_hash, 'first')
+			json_hash = query_wolfram_alpha(json_hash, 'second')
+			json_hash = query_wikipedia(json_hash, 'third')
+			return json_hash
+		end
 	end
 
 end
