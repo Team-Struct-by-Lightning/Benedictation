@@ -3,6 +3,11 @@
   <% flash.each do |message_type, message| %>
       <div class="alert alert-<%= message_type %>" id="chat-alerts"><%= message %></div>
   <% end %>
+
+
+
+  
+
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-12">
@@ -21,11 +26,11 @@
             <% go_to_room_href = '#room-verify' + group_id.to_s %>
             <% go_to_room_href_no_hash = 'room-verify' + group_id.to_s %>
             <% group_name_url_string = "/room/" + "#{group_id}" + "/" + group_name %>
-            <div class='center-div-group' id=<%= "center-div" + group_id.to_s %>>
+            <div class='center-div-group' id=<%= "center-div" + group_id.to_s  %>>
               <div class="chat-div-header">
                 <div class="fixed-header-div">
                   <%= image_tag("glyphicons-44-group.png", id: "group-image") %>
-                  <a id="group-name-in-chat-header"> <%= '#' + group_name %></a>
+                  <a id="group-name-in-chat-header" data-name=<%= '' + group_name_url_string %>> <%= '#' + group_name %></a>
                   <ul class="ul-group-head">
                     <li class="group-header-list-elem" id="add-user-list-head"><%= link_to "<a class='popup-with-form glyphicon glyphicon-plus' id='add-user-in-member-box' href=#{add_href} aria-hidden='true'> <p id='add-user-text'>Add user to group</p></a>".html_safe %></li>
                     <li class="group-header-list-elem" id="room-list-head"><%= link_to "<a class='popup-with-form glyphicon glyphicon-facetime-video' id='go-to-room-in-chat-header' href=#{go_to_room_href}> <p id='go-to-room-text'>Go to video call</p></a>".html_safe %></li>
@@ -86,7 +91,14 @@
 </div>
 <!-- /#page-content-wrapper -->
 
+
 <script>
+<% icecomm = YAML.load_file("#{::Rails.root}/config/icecomm.yml")[::Rails.env] %>
+var app_id = "<%= icecomm['app_id'] %>";
+var comm = new Icecomm(app_id, {
+    debug: true
+});
+var icecomm_roomname = "";
 
     $(".alert").fadeOut(10000);
 
@@ -97,23 +109,84 @@
     $('.menu-group').click(function (e) {
         console.log("chcking");
         var id = this.id;
-        var id_array = id.split("menu-group");
+        var id_array = id.split(":");
         console.log("id array: ",id_array);
 
         $('.center-div').hide();
         $('.center-div-group').hide();
         $('.random-button').hide();
         $('#center-div' + id_array[1]).show(); 
+        icecomm_roomname = id_array[2];
+        comm.connect(icecomm_roomname);
+        console.log("Initialized Icecomm");
     });
 
-    // $('.delete-button').click(function(e){
-    //     var id = this.id;
-    //     var id_array = id.split("menu-group");
+comm.on('local', function(options) {
+  console.log("icecommroomname: ",icecomm_roomname);
+    console.log("options: ", options);
+    // fill in chat history from redis
+    var chat_history;
+    // send to redis
+    var url = (icecomm_roomname).split("/");
+    var id = String(url[url.length - 2]);
+    var name = String(url[url.length - 1]);
+    var chat_history_key = name + ":" + id + ":chathistory";
+    console.log("chathistorykey: ", chat_history_key);
+    // get chat history from redis
+    $.ajax({
+        type: "GET",
+        url: "/get_redis",
+        dataType: "json",
+        data: {
+            'redis_key': chat_history_key
+        },
+        success: function(messages) {
+            if (messages.length != 0) {
+                // append what you send to your own page
+                for (var i = 0; i < messages.length; i++) {
+                    appendNewIM_text_only(messages[i]);
+                }
+            }
+        }
+    });
+    // scroll to bottom of history in chat
+    var height = 0;
+    $('div, #chatty').each(function(i, value) {
+        height += parseInt($(this).height());
+    });
+    height = height + 2;
+    //var d = $('#chat-box');
+    //d.scrollTop(d.prop("scrollHeight"));
+    $('#js-chat-body').animate({
+        scrollTop: height
+    }, 'fast');
+});
+comm.on('connected', function(options) {
+    console.log("on connected options: ", options);
+});
+comm.on('disconnect', function(options) {
+    console.log('disconnect happening');
+});
+comm.on('data', function(options) {
+    console.log("receiving these options in comm.ondata: ", options);
+    console.log("options.data: ", options.data);
+    if (typeof options.data == 'object') {
+        //It is JSON, so benny
+        console.log("its a benny! ignore it.");
+    } else {
+        appendNewIM(options);
+    }
+});
 
-    //     $('.center-div').hide();
-    //     $('.center-div-group').hide();
-    //     $('.center-div').show();
-    // });
 
 
 </script>
+
+<%= javascript_tag do %>
+  <%= render 'chat/chat_chat' %>
+<% end %>
+
+
+
+
+

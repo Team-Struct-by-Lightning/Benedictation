@@ -12,6 +12,7 @@ class GroupsController < ApplicationController
     render nothing: true
   end
 
+
   def get_redis
       # returns chat history string from redis as array of strings
       chat_history = $redis.lrange(params[:redis_key],0,-1)

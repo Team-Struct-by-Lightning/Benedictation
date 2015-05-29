@@ -1,39 +1,13 @@
-<% icecomm = YAML.load_file("#{::Rails.root}/config/icecomm.yml")[::Rails.env] %>
-var app_id = "<%= icecomm['app_id'] %>";
-var comm = new Icecomm(app_id, {
-    debug: true
-});
-// Set up the websocket connection to the speechrec/NLTK server.
-var speechRecSocket;
-var myLocation = location.host;
-var port = "8888";
-var websocketprotocol = "wss://";
-if (location.protocol !== "https:") {
-    websocketprotocol = "ws://";
-    myLocation = myLocation.split(":")[0];
-}
-var uri = "/recognize";
-speechRecSocket = new WebSocket(websocketprotocol + myLocation + ":" + port + uri);
-speechRecSocket.onmessage = onBennyReply;
-comm.connect(window.location.pathname);
-console.log("Initialized Icecomm, waiting for user media permissions...");
 comm.on('local', function(options) {
-    window.AudioContext = window.AudioContext || window.webkitAudioContext;
-    audioContext = new AudioContext();
-    localVideo.src = options.stream;
-    localAudioStream = options.rawStream;
     console.log("options: ", options);
-    localVideo.muted = true;
-    console.log("Obtained user camera/microphone approval");
     // fill in chat history from redis
     var chat_history;
     // send to redis
-    var url = (window.location.pathname).split("/");
+    var url = (icecomm_roomname).split("/");
     var id = String(url[url.length - 2]);
     var name = String(url[url.length - 1]);
     var chat_history_key = name + ":" + id + ":chathistory";
-    var benny_history_key = name + ":" + id + ":bennyhistory";
-    var emails_key = name + ":" + id + ":emails";
+    console.log("chathistorykey: ", chat_history_key);
     // get chat history from redis
     $.ajax({
         type: "GET",
@@ -51,31 +25,6 @@ comm.on('local', function(options) {
             }
         }
     });
-    // get benny history from redis
-    $.ajax({
-        type: "GET",
-        url: "/get_redis",
-        dataType: "json",
-        data: {
-            'redis_key': benny_history_key
-        },
-        success: function(messages) {
-            if (messages.length != 0) {
-                // append what you send to your own page
-                for (var i = 0; i < messages.length; i++) {
-                    appendNewBennyReply(JSON.parse(messages[i]));
-                }
-            }
-        }
-    });
-    $.ajax({
-        type: "POST",
-        url: "/update_redis",
-        data: {
-            redis_key: emails_key,
-            message: "<%= current_user.email %>"
-        }
-    });
     // scroll to bottom of history in chat
     var height = 0;
     $('div, #chatty').each(function(i, value) {
@@ -87,100 +36,19 @@ comm.on('local', function(options) {
     $('#js-chat-body').animate({
         scrollTop: height
     }, 'fast');
-    // Initialize our new recorder with its own copy of the local media stream
-    var input = audioContext.createMediaStreamSource(localAudioStream);
-    speechRecorder = new Recorder(input);
 });
 comm.on('connected', function(options) {
-    document.getElementById(get_free_spot()).appendChild(options.getVideo());
-    slot_num = get_free_spot().slice(-1) - 1;
-    var new_video = document.getElementById(options.callerID);
-    video_spots[slot_num] = $(new_video).attr('id');
-    new_video.style.width = "100%";
-    new_video.style.height = "100%";
-    new_video.style.margin = "0px";
-    new_video.style.cursor = "move";
-    new_video.className = "video-center";
-    $(new_video).draggable({
-        revert: function(socketObj) {
-            if (socketObj === false) {
-                // Drop was rejected, revert the helper.
-                var $helper = $("#localVideo");
-                $helper.animate($helper.originalPosition);
-                $helper.animate({
-                    width: "100%",
-                    height: "100%"
-                });
-                return true;
-            } else {
-                // Drop was accepted, don't revert.
-                return false;
-            }
-        },
-        opacity: .7,
-        create: function(event, ui) {
-            $(this).draggable("option", "cursorAt", {
-                left: Math.floor(80),
-                top: Math.floor(60)
-            });
-        },
-        start: function(event, ui) {
-            if ($(this).width() > 160) {
-                $(this).css("width", "160px");
-                $(this).css("height", "120px");
-            }
-        }
-    });
+    console.log("on connected options: ", options);
 });
 comm.on('disconnect', function(options) {
     console.log('disconnect happening');
-    document.getElementById(options.ID).remove();
-});
-// clear the chat history for random rooms
-jQuery(window).bind("beforeunload", function() {
-    var url = (window.location.pathname).split("/");
-    var id = String(url[url.length - 2]);
-    var name = String(url[url.length - 1]);
-    var key = name + ":" + id + ":chathistory";
-    var benny_key = name + ":" + id + ":bennyhistory";
-    var emails_key = name + ":" + id + ":emails";
-    // if last person is leaving the room, always clear benny histories.
-    if ((comm.getRoomSize() == 1)) {
-        $.ajax({
-            type: "POST",
-            url: "/clear_redis",
-            data: {
-                redis_key: benny_key
-            }
-        });
-    }
-    // if last person is leaving the room and it's a random room, then clear the chat history
-    if ((comm.getRoomSize() == 1) && !(parseInt(id) || 0)) {
-        console.log("Clearing chat history from redis for temporary room.");
-        $.ajax({
-            type: "POST",
-            url: "/clear_redis",
-            data: {
-                redis_key: key
-            }
-        });
-    }
-    $.ajax({
-        type: "POST",
-        url: "/clear_redis_item",
-        data: {
-            redis_key: emails_key,
-            email: "<%= current_user.email %>"
-        }
-    });
 });
 comm.on('data', function(options) {
-    console.log("receiving these options: ", options);
+    console.log("receiving these options in comm.ondata: ", options);
     console.log("options.data: ", options.data);
     if (typeof options.data == 'object') {
         //It is JSON, so benny
-        console.log("its a benny!");
-        appendNewBennyReply(options.data);
+        console.log("its a benny! ignore it.");
     } else {
         appendNewIM(options);
     }
