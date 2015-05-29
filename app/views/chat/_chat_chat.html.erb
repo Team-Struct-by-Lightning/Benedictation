@@ -11,9 +11,7 @@ $sendButton.on('click', sendIM);
 
 // click the send button when enter key is pressed
 $inputIM.keydown(function (event) {
-    console.log("ENTER");
     var keypressed = event.keyCode || event.which;
-    console.log("keypressed: ",keypressed);
     if (keypressed == 13) {
         $sendButton.click();
     }
