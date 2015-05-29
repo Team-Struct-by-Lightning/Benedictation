@@ -154,23 +154,7 @@ $(document).on('click','#remove_item_id',function(){
     });
 
     $("#drop-spot").droppable({
-        activeClass: "active-drop-spot",
-        drop: function(event, ui) {
-            //ui.draggable is the motha focking video thingy json draggable
-            /*
-            var children = $("#drop-spot").children();
-            console.log("# of children is : ", children.size());
-
-            if (children.size() > 1 && $(children[0]).id != $(children[1]).id ) {
-                $("#video-list").append(function() {
-                  //$(this).get(0).play();
-                    console.log("inside of the append function" + $(this));
-                    console.log($(this).index());
-                    return children[($(this).index()+ 1) % 2];
-                });
-            }
-            */
-        }
+        activeClass: "active-drop-spot"
     }).sortable({
         revert: false,
         connectWith: ".video-tag",
@@ -181,6 +165,17 @@ $(document).on('click','#remove_item_id',function(){
         },
 
         receive: function(event, ui) {
+            var children_renders = $(".room-layout-table").children();
+            var i;
+            for (i = 0; i < children_renders.size(); i++) {
+                if ($(children_renders[i]).hasClass("render-spot")) {
+                    $('.render-spot').remove();
+                }
+
+            }
+
+
+
             var children = $("#drop-spot").children();
             var i;
             $(ui).css('width', '100%');
