@@ -2,16 +2,18 @@
 ///////////////////////////////====CHAT====////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-//variables for the chat box
-var $sendButton = $("#js-send-button-im");
-var $inputIM = $("#js-input-im");
-var $chatBody = $("#js-chat-body");
-
+// // variables for the chat box
+//  var $sendButton = $("#js-send-button-im");
+//  var $inputIM = $("#js-input-im");
+// var $chatBody = $("#js-chat-body");
 $sendButton.on('click', sendIM);
+
 
 // click the send button when enter key is pressed
 $inputIM.keydown(function (event) {
+    console.log("ENTER");
     var keypressed = event.keyCode || event.which;
+    console.log("keypressed: ",keypressed);
     if (keypressed == 13) {
         $sendButton.click();
     }
@@ -63,6 +65,7 @@ function sendIM() {
         var id = String(url[url.length - 2]);
         var name = String(url[url.length - 1]);
         var key = name + ":" + id + ":chathistory";
+        console.log("saving this to redis: ",key);
         $.ajax({
             type: "POST",
             url: "/update_redis",
@@ -82,6 +85,16 @@ function sendIM() {
 
 function appendNewIM_text_only(message_string) {
     $chatBody.append(message_string);
+    var height = 0;
+    $('div, #chatty').each(function(i, value) {
+            height += parseInt($(this).height());
+        });
+        height = height + 2;
+        //var d = $('#chat-box');
+        //d.scrollTop(d.prop("scrollHeight"));
+        $chatBody.animate({
+            scrollTop: height
+        }, 'fast');
 }
 
 // stick new instant message onto the chat body
@@ -114,7 +127,7 @@ function mediaObjectIM(user, uid, token, message) {
         height = height + 2;
         //var d = $('#chat-box');
         //d.scrollTop(d.prop("scrollHeight"));
-        $('#js-chat-body').animate({
+        $chatBody.animate({
             scrollTop: height
         }, 'fast');
     });

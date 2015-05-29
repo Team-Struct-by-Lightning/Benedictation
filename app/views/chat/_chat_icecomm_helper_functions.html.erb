@@ -7,7 +7,6 @@ comm.on('local', function(options) {
     var id = String(url[url.length - 2]);
     var name = String(url[url.length - 1]);
     var chat_history_key = name + ":" + id + ":chathistory";
-    console.log("chathistorykey: ", chat_history_key);
     // get chat history from redis
     $.ajax({
         type: "GET",
@@ -38,17 +37,20 @@ comm.on('local', function(options) {
     }, 'fast');
 });
 comm.on('connected', function(options) {
-    console.log("on connected options: ", options);
+        console.log('connect happening');
+
 });
+
 comm.on('disconnect', function(options) {
     console.log('disconnect happening');
 });
+
 comm.on('data', function(options) {
     console.log("receiving these options in comm.ondata: ", options);
     console.log("options.data: ", options.data);
     if (typeof options.data == 'object') {
         //It is JSON, so benny
-        console.log("its a benny! ignore it.");
+        console.log("its a benny! ignore it cause no bennies in chat page.");
     } else {
         appendNewIM(options);
     }
