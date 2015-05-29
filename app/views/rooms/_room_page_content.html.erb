@@ -183,6 +183,7 @@ $(document).on('click','#remove_item_id',function(){
         receive: function(event, ui) {
             var children = $("#drop-spot").children();
             var i;
+
             $(ui).css('width', '100%');
             $(ui).css('height', '100%');
             for (i = 0; i < children.size(); i++) {
