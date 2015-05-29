@@ -213,8 +213,7 @@ def schedule(element, tree):
 		starttime, endtime = time_converter(cal_parse[0])
 		api_type = "calendar"
 
-	text = '{"attendees": [{"email": "trevor.frese@gmail.com" }], \
-    		"api_type": "' + api_type + '", \
+	text = '"api_type": "' + api_type + '", \
     		"start": {"datetime": "' + str(starttime) + '", \
     		"timezone": "America/Los_Angeles"}, \
     		"end": {"datetime": "' + str(endtime) + '",\

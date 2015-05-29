@@ -433,6 +433,54 @@ function scheduleSubmit(event) {
     start_time = start_time.split('+')[0] + '-0700';
     end_time   = end_time.split('+')[0] + '-0700';
 
+    // Get from Redis a list of emails of everyone currently in the room.
+    var url = (window.location.pathname).split("/");
+    var id = String(url[url.length - 2]);
+    var name = String(url[url.length - 1]);
+    var emails_key = name + ":" + id + ":emails";
+    var schedule_options_key = name + ":" + id + ":scheduleagree";
+    // WOO NESTED CALLBACKS FOUR DEEP LETS GO
+    $.ajax({
+        type: "GET",
+        url: "/get_redis",
+        dataType: "json",
+        data: {
+            'redis_key': emails_key
+        },
+        success: function(emails) { console.log("EMAILS: " + emails); }
+        // Push a key to Redis indicating what room this is, who you are & what you picked.
+        // success: function(emails) {
+        //     $.ajax({
+        //         type: "POST",
+        //         url: "/update_redis",
+        //         data: {
+        //             redis_key: name + ":" + id + ":scheduleagree"
+        //             message: i  // This is the index of the option you picked
+        //         }
+
+        //         // Get from Redis the list of everyone's choices.
+        //         // success: function() {
+        //         //     console.log("EMAILS: " + emails)
+        //         //     // $.ajax({
+        //         //     //     type: "GET",
+        //         //     //     url: "/get_redis",
+        //         //     //     dataType: "json",
+        //         //     //     data: {
+        //         //     //         'redis_key': name + ":" + id + ":scheduleagree"
+        //         //     //     },
+
+        //         //     //     // Ensure the length of choices matches the length of emails;
+        //         //     //     // and that all elements of choices are the same.
+        //         //     //     success: function(choices) {
+        //         //     //         alert(emails);
+        //         //     //         alert(choices);
+        //         //     //     }
+        //         //     // });
+        //         // }
+        //     });
+        // }
+    });
+
     // POST this to /check_api.
     // Format just as if it had come back from the Python server.
     var schedule_json = '{"attendees": [], \
@@ -444,8 +492,6 @@ function scheduleSubmit(event) {
                         "location": "", \
                         "summary": "Meeting scheduled by Benedict", \
                         "group_flag": "True"}';
-    console.log(schedule_json);
-
     $.ajax({
         type: "POST",
         url: "/check_api",

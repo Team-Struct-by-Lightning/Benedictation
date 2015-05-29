@@ -66,7 +66,7 @@ module ScheduleHelper
 				overall_availability[i] = x & user_av[i]
 			end	
 		end
-	
+		logger.error "overall_availability: " + overall_availability.inspect
 		return available_times_json(overall_availability, start_range, duration, time_resolution)
 	end
 
@@ -142,7 +142,7 @@ module ScheduleHelper
 	end
 
 	# Create a JSON object representing the times the current user is available, for display purposes
-	# Find all contiguous blocks of a given duration. (Default is 1 hour?)
+	# Find all contiguous blocks of a given duration.
 	# Return a JSON object of the form [{"start": time, "end": time}, {...} ...]
 	# 1 IS FREE 0 IS BUSY
 	def available_times_json(availabilityArray, start_range, duration, time_resolution)
@@ -150,8 +150,9 @@ module ScheduleHelper
 		d = duration / time_resolution
 		tr = (time_resolution.to_i) / 60
 		availabilityArray.each_with_index do |availability, day|
-			bits = availability.to_s(2).split("").map {|x| !x.to_i.zero? }	# True is free False is busy
-			bits.reverse.each_with_index do |bit, n|
+			bits = availability.to_s(2).split("").map {|x| !(x.to_i.zero?) }	# True is free False is busy
+			bits.reverse!
+			bits.each_with_index do |bit, n|
 				if bit and bits[n ... n+d].all?
 					start_time = (start_range + day) + (tr*n).minutes
 					end_time = (start_range + day) + (tr*(n+d)).minutes
