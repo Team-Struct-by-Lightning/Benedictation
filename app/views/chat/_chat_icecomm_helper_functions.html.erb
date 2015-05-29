@@ -1,0 +1,57 @@
+comm.on('local', function(options) {
+    console.log("options: ", options);
+    // fill in chat history from redis
+    var chat_history;
+    // send to redis
+    var url = (icecomm_roomname).split("/");
+    var id = String(url[url.length - 2]);
+    var name = String(url[url.length - 1]);
+    var chat_history_key = name + ":" + id + ":chathistory";
+    // get chat history from redis
+    $.ajax({
+        type: "GET",
+        url: "/get_redis",
+        dataType: "json",
+        data: {
+            'redis_key': chat_history_key
+        },
+        success: function(messages) {
+            if (messages.length != 0) {
+                // append what you send to your own page
+                for (var i = 0; i < messages.length; i++) {
+                    appendNewIM_text_only(messages[i]);
+                }
+            }
+        }
+    });
+    // scroll to bottom of history in chat
+    var height = 0;
+    $('div, #chatty').each(function(i, value) {
+        height += parseInt($(this).height());
+    });
+    height = height + 2;
+    //var d = $('#chat-box');
+    //d.scrollTop(d.prop("scrollHeight"));
+    $chatBody.animate({
+        scrollTop: height
+    }, 'fast');
+});
+comm.on('connected', function(options) {
+        console.log('connect happening');
+
+});
+
+comm.on('disconnect', function(options) {
+    console.log('disconnect happening');
+});
+
+comm.on('data', function(options) {
+    console.log("receiving these options in comm.ondata: ", options);
+    console.log("options.data: ", options.data);
+    if (typeof options.data == 'object') {
+        //It is JSON, so benny
+        console.log("its a benny! ignore it cause no bennies in chat page.");
+    } else {
+        appendNewIM(options);
+    }
+});
