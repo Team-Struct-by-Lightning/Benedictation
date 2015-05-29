@@ -1,106 +1,368 @@
-        <!-- Page Content -->
-        <div id="page-content-wrapper">
-            <% flash.each do |message_type, message| %>
-            <div class="alert alert-<%= message_type %>" id="chat-alerts"><%= message %></div>
-            <% end %>
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class='center-div'>
-                            <h1 id='center-div-header'>Hello <%= current_user.name %>!</h1>
+<!-- Page Content -->
+<div id="page-content-wrapper">
+  <% flash.each do |message_type, message| %>
+      <div class="alert alert-<%= message_type %>" id="chat-alerts"><%= message %></div>
+  <% end %>
 
-                            <p id="center-div-body">Use the sidebar on the left to create a new group or to enter a group
-                                that has already been created. Click below to enter a temporary video chat room.
-                            </div>
-                            <% Relationship.where(user_id: current_user.id).pluck(:id).each do |relationship_id| %>
-                            <% group = Relationship.find_by(id: relationship_id).group %>
-                            <% group_id = group.id %>
-                            <% group_name = group.group_name %>
-                            <% delete_href = '#delete-user' + relationship_id.to_s %>
-                            <% add_href = '#add-user' + group_id.to_s %>
-                            <% go_to_room_href = '#room-verify' + group_id.to_s %>
-                            <% go_to_room_href_no_hash = 'room-verify' + group_id.to_s %>
-                            <% group_name_url_string = "/room/" + "#{group_id}" + "/" + group_name %>
-                            <div class='center-div-group' id=<%="center-div" + group_id.to_s %> >
-                                <div class="chat-div-header">
-                                    <div class="fixed-header-div">
-                                        <%= image_tag("glyphicons-44-group.png", id: "group-image") %>
-                                        <a id="group-name-in-chat-header"> <%= '#' + group_name %></a>
-                                        <ul class="ul-group-head">
-                                            <li class="group-header-list-elem" id="add-user-list-head"><%= link_to "<a class='popup-with-form glyphicon glyphicon-plus' id='add-user-in-member-box' href=#{add_href} aria-hidden='true'> <p id='add-user-text'>Add user to group</p></a>".html_safe %></li>
-                                            <li class="group-header-list-elem" id="room-list-head"><%= link_to "<a class='popup-with-form glyphicon glyphicon-facetime-video' id='go-to-room-in-chat-header' href=#{go_to_room_href}> <p id='go-to-room-text'>Go to video call</p></a>".html_safe %></li>
-                                            <li class="group-header-list-elem" id="leave-list-head"><%= link_to "<a class='popup-with-form glyphicon glyphicon-remove' id='leave-group-chat-header' href=#{delete_href} aria-hidden='true'> <p id='leave-group-text'>Leave group</p></a>".html_safe %></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div id='<%= go_to_room_href_no_hash %>' class="white-popup-block mfp-hide">
-                                   <h1> You are about to join a video call.</h1>
-                                   <br>
-                                   <%= link_to "Continue on", group_name_url_string, class: "btn btn-primary continue-button" %>
-                                </div>
-                                <div "users-online-list-border">
-                                    <div id="users-online-list">
-                                        <a id="members-online">Members online:</a>
-                                        <div id="list-of-users-online">
-                                            <ul id="users-online-ul">
-                                            <% Relationship.where(group_id: group_id).pluck(:user_id).each do |uid| %>
-                                            <li id="user-in-list-li"><span class="user-in-list">
+
+  
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class='center-div'>
+          <h1 id='center-div-header'>Hello <%= current_user.name %>!</h1>
+
+          <p id="center-div-body">Use the sidebar on the left to create a new group or to enter a group
+            that has already been created. Click below to enter a temporary video chat room.
+        </div>
+        <% Relationship.where(user_id: current_user.id).pluck(:id).each do |relationship_id| %>
+            <% group = Relationship.find_by(id: relationship_id).group %>
+            <% group_id = group.id %>
+            <% group_name = group.group_name %>
+            <% delete_href = '#delete-user' + relationship_id.to_s %>
+            <% add_href = '#add-user' + group_id.to_s %>
+            <% go_to_room_href = '#room-verify' + group_id.to_s %>
+            <% go_to_room_href_no_hash = 'room-verify' + group_id.to_s %>
+            <% group_name_url_string = "/room/" + "#{group_id}" + "/" + group_name %>
+            <div class='center-div-group' id=<%= "center-div" + group_id.to_s  %>>
+              <div class="chat-div-header">
+                <div class="fixed-header-div">
+                  <%= image_tag("glyphicons-44-group.png", id: "group-image") %>
+                  <a id="group-name-in-chat-header"> <%= '#' + group_name %></a>
+                  <ul class="ul-group-head">
+                    <li class="group-header-list-elem" id="add-user-list-head"><%= link_to "<a class='popup-with-form glyphicon glyphicon-plus' id='add-user-in-member-box' href=#{add_href} aria-hidden='true'> <p id='add-user-text'>Add user to group</p></a>".html_safe %></li>
+                    <li class="group-header-list-elem" id="room-list-head"><%= link_to "<a class='popup-with-form glyphicon glyphicon-facetime-video' id='go-to-room-in-chat-header' href=#{go_to_room_href}> <p id='go-to-room-text'>Go to video call</p></a>".html_safe %></li>
+                    <li class="group-header-list-elem" id="leave-list-head"><%= link_to "<a class='popup-with-form glyphicon glyphicon-remove' id='leave-group-chat-header' href=#{delete_href} aria-hidden='true'> <p id='leave-group-text'>Leave group</p></a>".html_safe %></li>
+                  </ul>
+                </div>
+                <div id='<%= go_to_room_href_no_hash %>' class="white-popup-block mfp-hide">
+                  <h1> You are about to join a video call.</h1>
+                  <br>
+                  <%= link_to "Continue on", group_name_url_string, class: "btn btn-primary continue-button" %>
+                </div>
+                <div class="users-online-list-border">
+                  <div id="users-online-list">
+                    <a id="members-online">Members online:</a>
+
+                    <div id="list-of-users-online">
+                      <ul id="users-online-ul">
+                        <% Relationship.where(group_id: group_id).pluck(:user_id).each do |uid| %>
+                            <li id="user-in-list-li"><span class="user-in-list">
                                                 <% if user_logged_in(uid) %>
                                                 <%= image_tag("green_circle.png", :class => "circle-jerk") %>
                                                 <% else %>
                                                 <%= image_tag("gray_circle.png", :class => "circle-jerk") %>
                                                 <% end %>
-                                            <span id="user-name-in-list"><%= truncate(User.find_by_id(uid).name, length: 14) %></span>
+                              <span id="user-name-in-list"><%= truncate(User.find_by_id(uid).name, length: 14) %></span>
                                                                                         </span></li>
-                                            <% end %>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <% end %>
-
-                            <!--                             <div id="placeholder-div"></div>
-                                                        <%= link_to  "Join a temporary room",  "/room/" + get_random_string + "/" +
-                                                        get_random_string, class: 'btn btn-primary random-button' %>
-                                                        <div id="participantsDiv"></div> -->
-
-
-                            <!--<p>Make sure to keep all page content within the <code>#page-content-wrapper</code>.</p>-->
-                        </div>
+                        <% end %>
+                      </ul>
                     </div>
+                  </div>
                 </div>
+                <div id='chat-body'>
+                  <div class='panel panel-primary' id="chat-box">
+                    <div class='panel-heading' id="chat-heading">
+                      <a class="chat-header">Chat</a>
+                    </div>
+                    <div class='panel-body' id='js-chat-body'></div>
+                  </div>
+                  <div class='input-group' id="chat-location">
+                    <input class='form-control' id='js-input-im' placeholder="Send a message">
+                                            <span class='input-group-btn'>
+                                            <button class='btn btn-primary' id='js-send-button-im'>
+                                            </button>
+                                            </span>
+                  </div>
+                </div>
+              </div>
             </div>
-            <!-- /#page-content-wrapper -->
-
-            <script>
-
-            $(".alert" ).fadeOut(10000);
-
-            $(".alert-success" ).fadeOut(10000);
-
-            $(".alert-danger" ).fadeOut(10000);
-
-            $('.menu-group').click(function(e){
-                console.log("chcking");
-                var id = this.id;
-                var id_array = id.split("menu-group");
-
-                $('.center-div').hide();
-                $('.center-div-group').hide();
-                $('.random-button').hide();
-                $('#center-div' + id_array[1]).show();
-            });
-
-        // $('.delete-button').click(function(e){
-        //     var id = this.id;
-        //     var id_array = id.split("menu-group");
-
-        //     $('.center-div').hide();
-        //     $('.center-div-group').hide();
-        //     $('.center-div').show();
-        // });
+        <% end %>
 
 
-        </script>
+        <!--<p>Make sure to keep all page content within the <code>#page-content-wrapper</code>.</p>-->
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /#page-content-wrapper -->
+
+
+<script>
+<% icecomm = YAML.load_file("#{::Rails.root}/config/icecomm.yml")[::Rails.env] %>
+var app_id = "<%= icecomm['app_id'] %>";
+var comm = new Icecomm(app_id, {
+    debug: true
+});
+
+// initial variable values to prevent error messages
+var icecomm_roomname = "";
+var group_id = "";
+var $sendButton = $("#js-send-button-im");
+var $inputIM = $("#js-input-im");
+var $chatBody = $("#js-chat-body");
+
+
+    $(".alert").fadeOut(10000);
+    $(".alert-success").fadeOut(10000);
+    $(".alert-danger").fadeOut(10000);
+
+    $('.menu-group').click(function (e) {
+
+        var group_array = this.id.split(":");
+        var group_id = group_array[1];
+        icecomm_roomname = group_array[2]; // so we can connect to the right room
+        console.log('icecommroomnameee: ',icecomm_roomname);
+        // hide everything we don't want to see, and show the center div for the current group
+        $('.center-div').hide();
+        $('.center-div-group').hide();
+        $('.random-button').hide();
+        $('#center-div' + group_id).show(); 
+        comm.connect(icecomm_roomname);
+        console.log("Initialized Icecomm");
+
+        // assign chat box variables to the right elements for the current group chat
+        $sendButton = $("#center-div" + group_id + " #js-send-button-im");
+        $inputIM = $("#center-div" + group_id +" #js-input-im");
+        $chatBody = $("#center-div" + group_id +" #js-chat-body");
+
+        <%= render 'chat/chat_chat.html.erb' %>
+        <%= render 'chat/chat_icecomm_helper_functions.html.erb' %>
+    });
+
+//     console.log("GROUPID: ",group_id);
+//     comm.on('local', function(options) {
+//     console.log("options: ", options);
+//     // fill in chat history from redis
+//     var chat_history;
+//     // send to redis
+//     var url = (icecomm_roomname).split("/");
+//     var id = String(url[url.length - 2]);
+//     var name = String(url[url.length - 1]);
+//     var chat_history_key = name + ":" + id + ":chathistory";
+//     // get chat history from redis
+//     $.ajax({
+//         type: "GET",
+//         url: "/get_redis",
+//         dataType: "json",
+//         data: {
+//             'redis_key': chat_history_key
+//         },
+//         success: function(messages) {
+//             if (messages.length != 0) {
+//                 // append what you send to your own page
+//                 for (var i = 0; i < messages.length; i++) {
+//                     appendNewIM_text_only(messages[i]);
+//                 }
+//             }
+//         }
+//     });
+//     // scroll to bottom of history in chat
+//     var height = 0;
+//     $('div, #chatty').each(function(i, value) {
+//         height += parseInt($(this).height());
+//     });
+//     height = height + 2;
+//     //var d = $('#chat-box');
+//     //d.scrollTop(d.prop("scrollHeight"));
+//     $chatBody.animate({
+//         scrollTop: height
+//     }, 'fast');
+// });
+// comm.on('connected', function(options) {
+//         console.log('connect happening');
+
+// });
+
+// comm.on('disconnect', function(options) {
+//     console.log('disconnect happening');
+// });
+
+// comm.on('data', function(options) {
+//     console.log("receiving these options in comm.ondata: ", options);
+//     console.log("options.data: ", options.data);
+//     if (typeof options.data == 'object') {
+//         //It is JSON, so benny
+//         console.log("its a benny! ignore it cause no bennies in chat page.");
+//     } else {
+//         appendNewIM(options);
+//     }
+// });
+
+// ///////////////////////////////////////////////////////////////////////////////
+// ///////////////////////////////====CHAT====////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////////////////
+
+// // // variables for the chat box
+// //  var $sendButton = $("#js-send-button-im");
+// //  var $inputIM = $("#js-input-im");
+// // var $chatBody = $("#js-chat-body");
+
+
+
+// // click the send button when enter key is pressed
+// $inputIM.keydown(function (event) {
+//     console.log("inputIM id: ",this.id);
+//     var keypressed = event.keyCode || event.which;
+//     if (keypressed == 13) {
+//         $sendButton.click();
+//     }
+// });
+
+// var text_query_flag = 0;
+
+ 
+// // Set up the WebSocket connection to the NLP interpreter. 
+// var myLocation = location.host.split(":")[0];
+// var port = "8888";
+// var uri = "/recognize_test";
+// var websocketprotocol = "wss://";
+// if (location.protocol !== "https:") {
+//     websocketprotocol = "ws://";
+//     myLocation = myLocation.split(":")[0];
+// }
+
+// function waitForSocketConnection(socket, callback){
+//   setTimeout(
+//       function(){
+//           if (socket.readyState === 1) {
+//               if(callback !== undefined){
+//                   callback();
+//               }
+//               return;
+//           } else {
+//               waitForSocketConnection(socket,callback);
+//           }
+//       }, 5);
+// };
+
+// // With Turbolinks pages will change without a full reload, so you can't rely on the usual window.beforepageunload event. Instead Turbolinks fires events on document to provide hooks into the lifecycle of the page.
+// $(document).on("page:fetch", function() {
+//     console.log('turbolinks page fetch event');
+// });
+
+// // Send a new chat message to everyone else in the room.
+// function sendIM() {
+//     "<% current_user.refresh_token_if_expired %>"
+//     var message = $inputIM.val();
+//     var content = "<%= current_user.name %>" + "@@@" + "<%= current_user.uid %>" + "@@@" + "<%= current_user.oauth_token %>" + "@@@" + message;
+//     comm.send(content)
+//     // send to redis if you are the user that originally created this message
+//     var url_string = "https://www.googleapis.com/plus/v1/people/" + "<%= current_user.uid %>" + "?access_token=" + "<%= current_user.oauth_token %>";
+//     $.getJSON(url_string, function(user_object) {
+//         var message_string = "  <div class='media' id='chatty'>" + "    <div class='media-body' id='div-chat-message', style='text-align: " + "left" + "'>" + "      <h4 class='media-heading' id='h4-chat-message'>" + "<span class='chat-message'>" + "      <img class='media-object' id='prof-pic' align='left' src=" + user_object.image.url + ">" + "<a class='chat-user-name' href='#'>" + "<%= current_user.name %>" + "</a>: " + message + "</span></h4>" + "" + "    </div>" + "  </div>";
+//         var url = (icecomm_roomname).split("/");
+//         var id = String(url[url.length - 2]);
+//         var name = String(url[url.length - 1]);
+//         var key = name + ":" + id + ":chathistory";
+//         console.log("saving this to redis: ",key);
+//         $.ajax({
+//             type: "POST",
+//             url: "/update_redis",
+//             data: {
+//                 redis_key: key,
+//                 message: message_string
+//             }
+//         });
+//         // append what you send to your own page
+//         appendNewIM({
+//             data: content,
+//             callerID: "<%= current_user.name %>",
+//         });
+//     });
+//     $inputIM.val("");
+// }
+
+// function appendNewIM_text_only(message_string) {
+//     $chatBody.append(message_string);
+// }
+
+// // stick new instant message onto the chat body
+// function appendNewIM(options) {
+//     console.log(options);
+//     var message_data = options.data.split("@@@");
+//     var caller_name = message_data[0];
+//     var caller_uid = message_data[1];
+//     var caller_token = message_data[2];
+//     message_data.reverse();
+//     message_data.pop();
+//     message_data.pop();
+//     message_data.pop();
+//     message_data.reverse();
+//     message_data.join("@@@");
+//     mediaObjectIM(caller_name, caller_uid, caller_token, message_data);
+// }
+
+
+// // media object to append to the page each time there's a new chat
+// function mediaObjectIM(user, uid, token, message) {
+//     var url_string = "https://www.googleapis.com/plus/v1/people/" + uid + "?access_token=" + token;
+//     $.getJSON(url_string, function(user_object) {
+//         var message_string = "  <div class='media' id='chatty'>" + "    <div class='media-body' id='div-chat-message', style='text-align: " + "left" + "'>" + "      <h4 class='media-heading' id='h4-chat-message'>" + "<span class='chat-message'>" + "      <img class='media-object' id='prof-pic' align='left' src=" + user_object.image.url + ">" + "<a class='chat-user-name' href='#'>" + user + "</a>: " + message + "</span></h4>" + "" + "    </div>" + "  </div>";
+//         $chatBody.append(message_string);
+//         var height = 0;
+//         $('div, #chatty').each(function(i, value) {
+//             height += parseInt($(this).height());
+//         });
+//         height = height + 2;
+//         //var d = $('#chat-box');
+//         //d.scrollTop(d.prop("scrollHeight"));
+//         $chatBody.animate({
+//             scrollTop: height
+//         }, 'fast');
+//     });
+// }
+
+// // this is a function to mirror the ruby truncate
+// // function so that queries do not overflow the benny
+// // query divs
+// function truncation(string, len){
+//     if (string.length > len + 3){
+//         var new_string;
+//         if (string.charAt(len - 1) == ' ') {
+//             new_string = string.substr(0, len-2) + "...";
+//         }
+//         else {
+//             new_string = string.substr(0, len-1) + "...";
+//         }
+//         return new_string;
+//     }
+//     else {
+//         return string;
+//     }
+// }
+
+// // this is a function that lights up the question mark in
+// // the blank and no query divs
+// function hoverHelp(){
+//     $('#help-icon2').css('color', '#FFFFFF');
+//     $("#benny-query-question-mark").hover( function(){
+//             $('#help-icon2').css('color', '#FFFFFF');
+//         }, function(){
+//             $('#help-icon2').css('color', '#777777');
+//         });
+// }
+
+
+
+
+
+
+
+
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+

@@ -38,7 +38,7 @@ var w = new WebSocket(websocketprotocol + myLocation + ":" + port + uri);
          <%= form_for(current_user.active_relationships.find_by(id: relationship_id),
             html: { method: :delete }) do |f| %>
          </a>
-         <a class="menu-group" id=<%= "menu-group" + group_id.to_s%>><%= "#" + group_name%></a>
+         <a class="menu-group" id=<%= "menu-group" + ":" + group_id.to_s + ":" + group_name_url_string.to_s%>><%= "#" + group_name%></a>
 
          </a>
          <% end %>
