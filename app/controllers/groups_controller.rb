@@ -4,6 +4,7 @@ class GroupsController < ApplicationController
 
   skip_before_filter  :verify_authenticity_token
 
+
   # redis chat history stuff
   def update_redis
     #append to end of chat history (key = groupname:groupid:chathistory)
@@ -11,7 +12,6 @@ class GroupsController < ApplicationController
     $redis.rpush(params[:redis_key], params[:message])
     render nothing: true
   end
-
 
   def get_redis
       # returns chat history string from redis as array of strings
