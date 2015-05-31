@@ -141,8 +141,9 @@
 
 .fixed-header-div {
 	position: fixed;
-  width: 800px;
+  width: 100%;
   left: 250px;
+  background-color: #999999;
   height: 50px;
   top: 50px;
 }
