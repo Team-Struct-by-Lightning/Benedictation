@@ -116,7 +116,11 @@ var $chatBody = $("#js-chat-body");
         $('.center-div-group').hide();
         $('.random-button').hide();
         $('#center-div' + group_id).show(); 
-        comm.connect(icecomm_roomname);
+        peer = {
+        audio: false,
+        video: false
+        };
+        comm.connect(icecomm_roomname,peer);
         console.log("Initialized Icecomm");
 
         // assign chat box variables to the right elements for the current group chat
