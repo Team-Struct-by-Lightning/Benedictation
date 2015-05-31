@@ -316,7 +316,7 @@ html{
 }
 .chat-div-header {
   height: 50px !important;
-  width: 800%;
+  width: 100%;
 
 }
 
@@ -504,8 +504,8 @@ html{
 /* Here's the new stuff */
 
 .center-div-group #chat-body {
-  width: 10%;
-
+  width: 100%;
+  left:250px;
   position: relative;
   box-shadow: 0px 0px 20px #222222;
 }

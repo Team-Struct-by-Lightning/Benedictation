@@ -5,82 +5,80 @@
   <% end %>
   
 
-  <div class="container-fluid">
-    <div class="row">
-        <div class='center-div'>
-          <h1 id='center-div-header'>Hello <%= current_user.name %>!</h1>
 
-          <p id="center-div-body">Use the sidebar on the left to create a new group or to enter a group
-            that has already been created. Click below to enter a temporary video chat room.
-        </div>
-        <% Relationship.where(user_id: current_user.id).pluck(:id).each do |relationship_id| %>
-            <% group = Relationship.find_by(id: relationship_id).group %>
-            <% group_id = group.id %>
-            <% group_name = group.group_name %>
-            <% delete_href = '#delete-user' + relationship_id.to_s %>
-            <% add_href = '#add-user' + group_id.to_s %>
-            <% go_to_room_href = '#room-verify' + group_id.to_s %>
-            <% go_to_room_href_no_hash = 'room-verify' + group_id.to_s %>
-            <% group_name_url_string = "/room/" + "#{group_id}" + "/" + group_name %>
-            <div class='center-div-group' id=<%= "center-div" + group_id.to_s  %>>
-              <div class="chat-div-header">
-                <div class="fixed-header-div">
-                  <%= image_tag("glyphicons-44-group.png", id: "group-image") %>
-                  <a id="group-name-in-chat-header"> <%= '#' + group_name %></a>
-                  <ul class="ul-group-head">
-                    <li class="group-header-list-elem" id="add-user-list-head"><%= link_to "<a class='popup-with-form glyphicon glyphicon-plus' id='add-user-in-member-box' href=#{add_href} aria-hidden='true'> <p id='add-user-text'>Add user to group</p></a>".html_safe %></li>
-                    <li class="group-header-list-elem" id="room-list-head"><%= link_to "<a class='popup-with-form glyphicon glyphicon-facetime-video' id='go-to-room-in-chat-header' href=#{go_to_room_href}> <p id='go-to-room-text'>Go to video call</p></a>".html_safe %></li>
-                    <li class="group-header-list-elem" id="leave-list-head"><%= link_to "<a class='popup-with-form glyphicon glyphicon-remove' id='leave-group-chat-header' href=#{delete_href} aria-hidden='true'> <p id='leave-group-text'>Leave group</p></a>".html_safe %></li>
+    <div class='center-div'>
+      <h1 id='center-div-header'>Hello <%= current_user.name %>!</h1>
+
+      <p id="center-div-body">Use the sidebar on the left to create a new group or to enter a group
+        that has already been created. Click below to enter a temporary video chat room.
+    </div>
+    <% Relationship.where(user_id: current_user.id).pluck(:id).each do |relationship_id| %>
+        <% group = Relationship.find_by(id: relationship_id).group %>
+        <% group_id = group.id %>
+        <% group_name = group.group_name %>
+        <% delete_href = '#delete-user' + relationship_id.to_s %>
+        <% add_href = '#add-user' + group_id.to_s %>
+        <% go_to_room_href = '#room-verify' + group_id.to_s %>
+        <% go_to_room_href_no_hash = 'room-verify' + group_id.to_s %>
+        <% group_name_url_string = "/room/" + "#{group_id}" + "/" + group_name %>
+        <div class='center-div-group' id=<%= "center-div" + group_id.to_s  %>>
+          <div class="chat-div-header">
+            <div class="fixed-header-div">
+              <%= image_tag("glyphicons-44-group.png", id: "group-image") %>
+              <a id="group-name-in-chat-header"> <%= '#' + group_name %></a>
+              <ul class="ul-group-head">
+                <li class="group-header-list-elem" id="add-user-list-head"><%= link_to "<a class='popup-with-form glyphicon glyphicon-plus' id='add-user-in-member-box' href=#{add_href} aria-hidden='true'> <p id='add-user-text'>Add user to group</p></a>".html_safe %></li>
+                <li class="group-header-list-elem" id="room-list-head"><%= link_to "<a class='popup-with-form glyphicon glyphicon-facetime-video' id='go-to-room-in-chat-header' href=#{go_to_room_href}> <p id='go-to-room-text'>Go to video call</p></a>".html_safe %></li>
+                <li class="group-header-list-elem" id="leave-list-head"><%= link_to "<a class='popup-with-form glyphicon glyphicon-remove' id='leave-group-chat-header' href=#{delete_href} aria-hidden='true'> <p id='leave-group-text'>Leave group</p></a>".html_safe %></li>
+              </ul>
+            </div>
+            <div id='<%= go_to_room_href_no_hash %>' class="white-popup-block mfp-hide">
+              <h1> You are about to join a video call.</h1>
+              <br>
+              <%= link_to "Continue on", group_name_url_string, class: "btn btn-primary continue-button" %>
+            </div>
+            <div class="users-online-list-border">
+              <div id="users-online-list">
+                <a id="members-online">Members online:</a>
+
+                <div id="list-of-users-online">
+                  <ul id="users-online-ul">
+                    <% Relationship.where(group_id: group_id).pluck(:user_id).each do |uid| %>
+                        <li id="user-in-list-li"><span class="user-in-list">
+                                            <% if user_logged_in(uid) %>
+                                            <%= image_tag("green_circle.png", :class => "circle-jerk") %>
+                                            <% else %>
+                                            <%= image_tag("gray_circle.png", :class => "circle-jerk") %>
+                                            <% end %>
+                          <span id="user-name-in-list"><%= truncate(User.find_by_id(uid).name, length: 14) %></span>
+                                                                                    </span></li>
+                    <% end %>
                   </ul>
-                </div>
-                <div id='<%= go_to_room_href_no_hash %>' class="white-popup-block mfp-hide">
-                  <h1> You are about to join a video call.</h1>
-                  <br>
-                  <%= link_to "Continue on", group_name_url_string, class: "btn btn-primary continue-button" %>
-                </div>
-                <div class="users-online-list-border">
-                  <div id="users-online-list">
-                    <a id="members-online">Members online:</a>
-
-                    <div id="list-of-users-online">
-                      <ul id="users-online-ul">
-                        <% Relationship.where(group_id: group_id).pluck(:user_id).each do |uid| %>
-                            <li id="user-in-list-li"><span class="user-in-list">
-                                                <% if user_logged_in(uid) %>
-                                                <%= image_tag("green_circle.png", :class => "circle-jerk") %>
-                                                <% else %>
-                                                <%= image_tag("gray_circle.png", :class => "circle-jerk") %>
-                                                <% end %>
-                              <span id="user-name-in-list"><%= truncate(User.find_by_id(uid).name, length: 14) %></span>
-                                                                                        </span></li>
-                        <% end %>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-                <div id='chat-body'>
-                  <div class='panel panel-primary' id="chat-box">
-                    <div class='panel-heading' id="chat-heading">
-                      <a class="chat-header">Chat</a>
-                    </div>
-                    <div class='panel-body <%= "center-div-group" + group_id.to_s  %>' id='js-chat-body'></div>
-                  </div>
-                  <div class='input-group' id="chat-location">
-                    <input class='form-control' id='js-input-im' placeholder="Send a message">
-                                            <span class='input-group-btn'>
-                                            <button class='btn btn-primary' id='js-send-button-im'>
-                                            </button>
-                                            </span>
-                  </div>
                 </div>
               </div>
             </div>
-        <% end %>
+            <div id='chat-body'>
+              <div class='panel panel-primary' id="chat-box">
+                <div class='panel-heading' id="chat-heading">
+                  <a class="chat-header">Chat</a>
+                </div>
+                <div class='panel-body <%= "center-div-group" + group_id.to_s  %>' id='js-chat-body'></div>
+              </div>
+              <div class='input-group' id="chat-location">
+                <input class='form-control' id='js-input-im' placeholder="Send a message">
+                                        <span class='input-group-btn'>
+                                        <button class='btn btn-primary' id='js-send-button-im'>
+                                        </button>
+                                        </span>
+              </div>
+            </div>
+          </div>
+        </div>
+    <% end %>
 
 
         <!--<p>Make sure to keep all page content within the <code>#page-content-wrapper</code>.</p>-->
-    </div>
-  </div>
+    
 </div>
 <!-- /#page-content-wrapper -->
 
