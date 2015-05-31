@@ -315,11 +315,9 @@ html{
   background-color: #CCCCCC !important;
 }
 .chat-div-header {
-  position: absolute;
-  top: 50px !important;
   height: 50px !important;
   width: 800%;
-  left: 50px;
+
 }
 
 #group-name-in-chat-header{
@@ -506,10 +504,10 @@ html{
 /* Here's the new stuff */
 
 .center-div-group #chat-body {
-  width: 13%;
-  left: -100px;
-  top: 290px;
+  width: 10%;
+
   position: relative;
+  box-shadow: 0px 0px 20px #222222;
 }
 
 .center-div-group #chat-location {
