@@ -19,8 +19,8 @@ $inputIM.keydown(function (event) {
 
 var text_query_flag = 0;
 
- 
-// Set up the WebSocket connection to the NLP interpreter. 
+
+// Set up the WebSocket connection to the NLP interpreter.
 var myLocation = location.host.split(":")[0];
 var port = "8888";
 var uri = "/recognize_test";
@@ -83,16 +83,6 @@ function sendIM() {
 
 function appendNewIM_text_only(message_string) {
     $chatBody.append(message_string);
-    var height = 0;
-    $('div, #chatty').each(function(i, value) {
-            height += parseInt($(this).height());
-        });
-        height = height + 2;
-        //var d = $('#chat-box');
-        //d.scrollTop(d.prop("scrollHeight"));
-        $chatBody.animate({
-            scrollTop: height
-        }, 'fast');
 }
 
 // stick new instant message onto the chat body
