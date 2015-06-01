@@ -147,7 +147,7 @@ function clickable(me) {
                 var user_name = "<%= current_user.name %>";
                 console.log(user_name);
                 if(user_name != item['name']) {
-                    sched_submit_btn.prop('disabled', true);
+                    sched_submit_btn.hide()
                 }
                 sched_submit_btn.click(scheduleSubmit);
 
