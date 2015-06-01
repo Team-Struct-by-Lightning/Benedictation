@@ -18,7 +18,7 @@ import numpy as np
 import random
 from sklearn.naive_bayes import BernoulliNB
 from brain.nlp import *
-from query_training_set import *
+from brain.query_training_set import *
 
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches

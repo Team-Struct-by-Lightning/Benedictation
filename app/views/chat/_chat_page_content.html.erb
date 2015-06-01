@@ -3,8 +3,29 @@
   <% flash.each do |message_type, message| %>
       <div class="alert alert-<%= message_type %>" id="chat-alerts"><%= message %></div>
   <% end %>
-  
 
+  <style type="text/css">
+    html {
+      top: 0px;
+      background-color: #cccccc;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+    #background-div {
+      height: 100%;
+    }
+    .chat_page_container {
+      padding-top: 60px;
+      width: 100%;
+      height: 100%;
+    }
+    #page-content-wrapper {
+      height: 100%;
+    }
+  </style>
 
     <div class='center-div'>
       <h1 id='center-div-header'>Hello <%= current_user.name %>!</h1>
@@ -59,14 +80,11 @@
             </div>
             <div id='chat-body'>
               <div class='panel panel-primary' id="chat-box">
-                <div class='panel-heading' id="chat-heading">
-                  <a class="chat-header">Chat</a>
-                </div>
                 <div class='panel-body chat-page-chat-body <%= "center-div-group" + group_id.to_s  %>' id='js-chat-body'></div>
               </div>
               <div class='input-group' id="chat-location">
                 <input class='form-control' id='js-input-im' placeholder="Send a message">
-                                        <span class='input-group-btn'>
+                                        <span class='input-group-btn' style="display:none">
                                         <button class='btn btn-primary' id='js-send-button-im'>
                                         </button>
                                         </span>
@@ -78,7 +96,7 @@
 
 
         <!--<p>Make sure to keep all page content within the <code>#page-content-wrapper</code>.</p>-->
-    
+
 </div>
 <!-- /#page-content-wrapper -->
 
@@ -111,7 +129,7 @@ var $chatBody = $("#js-chat-body");
         $('.center-div').hide();
         $('.center-div-group').hide();
         $('.random-button').hide();
-        $('#center-div' + group_id).show(); 
+        $('#center-div' + group_id).show();
         peer = {
         audio: false,
         video: false
@@ -125,7 +143,7 @@ var $chatBody = $("#js-chat-body");
         $chatBody = $("#center-div" + group_id +" #js-chat-body");
 
         <%= render 'chat/chat_chat.html.erb' %>
-        <%= render 'chat/chat_icecomm_helper_functions.html.erb' %>  
+        <%= render 'chat/chat_icecomm_helper_functions.html.erb' %>
 
     });
 

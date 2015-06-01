@@ -155,17 +155,21 @@
 #users-online-list {
   box-shadow: 0px 0px 20px #222222;
   background-color: #999999;
-  position: fixed;
   width: 160px;
   right: 30px;
   height: 300px;
-  top: 130px;
+  top: 15px;
   padding: 15px;
   border-radius: 5px;
 }
 
+.users-online-list-border {
+  float: right;
+  position: relative;
+  right: 20px;
+}
+
 #users-online-list-border {
-	position: relative;
   background-color: #777777;
   left: 550px;
   width: 180px;
@@ -319,7 +323,9 @@ html{
   background-color: #CCCCCC !important;
 }
 .chat-div-header {
-  height: 50px !important;
+  height: 100%;
+  padding-top: 108px;
+  margin-top: -108px;
   width: 100%;
 
 }
@@ -508,19 +514,41 @@ html{
 /* Here's the new stuff */
 
 .center-div-group #chat-body {
-  width: 80%;
-  left:250px;
-  position: relative;
+  margin-right: 206px;
+  margin-left: 275px;
   box-shadow: 0px 0px 20px #222222;
+  width: auto !important;
+  position: relative;
+  height: 100%;
 }
 
-.center-div-group #chat-location {
-  width: 700px;
+#chat-box {
+  height: 100%;
+}
+
+.center-div-group {
+  height: 100%;
+}
+
+.center-div-group #chat-header {
+  left: 50%
 }
 
 .center-div-group #js-input-im {
-  width: 700px !important;
+  width: 100% !important;
+  left: 0px !important;
 }
 
+.center-div-group #chat-location {
+  width: 100%;
+}
+
+
+.center-div-group #js-chat-body {
+  height: 100%;
+  min-height: 0 !important;
+  max-height: none;
+  border-radius: 3px;
+}
 
 
