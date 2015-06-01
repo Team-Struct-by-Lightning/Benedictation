@@ -851,11 +851,11 @@ def make_json(query, api_type, api_number):
 			return '{"api_number": "' + str(api_number) + '", "api_type": "' + api_type + '", "query": "blank", "noun_phrase": ""}'
 
 	#THIS IS THE SPECIFIC SPOT WE NEED TO ADD DATETIME STUFF AND THE ATTENDEES ARRAY
-	if api_type == "calendar" or api_type == "schedule_suggest"
+	if api_type == "calendar" or api_type == "schedule_suggest":
 		return '{"api_number": "' + str(api_number) +'", "api_type": "' + api_type + '", "query": "' + query + '", "noun_phrase": ""}'
 
 	# EVAN WE NEED THE ATTENDEES ARRAY IN THIS ONE
-	if api_type == "calendar_show" or api_type == "google_docs" or api_type == "google_drawings"
+	if api_type == "calendar_show" or api_type == "google_docs" or api_type == "google_drawings":
 		return '{"api_number": "' + str(api_number) +'", "api_type": "' + api_type + '", "query": "' + query + '", "noun_phrase": ""}'
 
 
@@ -884,7 +884,7 @@ def predict_api_type(predictor, query):
 
 
 
-print question_noun_phrase("big dogs eating cabbage")
+#print question_noun_phrase("big dogs eating cabbage")
 #generate_questions_google_calendar_show()
 #generate_questions_google_drawings()
 
