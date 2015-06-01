@@ -16,8 +16,7 @@ from query_training_set import *
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import matplotlib.path as path
-
-
+import cPickle
 
 #training set of strings
 #it is a list of query, api_type
@@ -83,33 +82,49 @@ def validate_predictor(set_to_validate_on, classes, predictor, probability_matri
 	number_valid = 0
 	probability_array = []
 	for i in range (len(set_to_validate_on)):
-		probability_array.append(predictor.predict_proba(set_to_validate_on[i:i+1]))
-#print "$$$$$$$$$$$$$$$ " + str(predictor.predict(set_to_validate_on[i:i+1])) + " " + str(classes[i:i+1])
-		if predictor.predict(set_to_validate_on[i:i+1]) == classes[i:i+1] or (predictor.predict(set_to_validate_on[i:i+1]) == [6] and classes[i:i+1] == [5]) or (predictor.predict(set_to_validate_on[i:i+1]) == [5] and classes[i:i+1] == [6]):
+		probability_predict = predictor.predict_proba(set_to_validate_on[i:i+1])
+		probability_array.append(probability_predict)
+		api_return = threshold_calculator(probability_array[i][0], querylist[i][0])
+
+## print "$$$$$$$$$$$$$$$ " + str(predictor.predict(set_to_validate_on[i:i+1])) + " " + str(classes[i:i+1])
+		# print "api_return: ", api_return[0], " class_expect: ", classes[i:i+1][0]
+		if int(api_return[0]) == int(classes[i]):
 			number_valid += 1
 		else:
-			print "@@@@@    query: " + querylist[i][0]
-			print "@@@@@    expected: " + change_int_to_api_type(classes[i:i+1][0])
-			print "@@@@@    predicted: " + change_int_to_api_type(predictor.predict(set_to_validate_on[i:i+1])[0])
-			print "@@@@@    probabilities: "
-			print	"@@@@@                   calendar: " + str(probability_array[i][0][0] * 100) + " %"
-			print	"@@@@@                   schedule suggest: " + str(probability_array[i][0][1] * 100) + " %"
-			print	"@@@@@                   google docs: " + str(probability_array[i][0][2] * 100) + " %"
-			print	"@@@@@                   wolfram: " + str(probability_array[i][0][3] * 100) + " %"
-			print	"@@@@@                   wikipedia: " + str(probability_array[i][0][4] * 100) + " %"
+
 			f.write("@@@@@    query: " + querylist[i][0] + "\n")
 			f.write("@@@@@    expected: " + change_int_to_api_type(classes[i:i+1][0]) + "\n")
 			f.write("@@@@@    predicted: " + change_int_to_api_type(predictor.predict(set_to_validate_on[i:i+1])[0]) + "\n")
 			f.write("@@@@@    probabilities: " + "\n")
-			f.write("@@@@@                   calendar: " + str(probability_array[i][0][0] * 100) + " %" + "\n")
-			f.write("@@@@@                   schedule suggest: " + str(probability_array[i][0][1] * 100) + " %" + "\n")
-			f.write("@@@@@                   google docs: " + str(probability_array[i][0][2] * 100) + " %" + "\n")
-			f.write("@@@@@                   wolfram: " + str(probability_array[i][0][3] * 100) + " %" + "\n")
-			f.write("@@@@@                   wikipedia: " + str(probability_array[i][0][4] * 100) + " %" + "\n")
+			f.write("@@@@@                   schedule suggest: " + str(probability_array[i][0][0]) + " %" + "\n")
+			f.write("@@@@@                   calendar: " + str(probability_array[i][0][1]) + " %" + "\n")
+			f.write("@@@@@                   calendar show: " + str(probability_array[i][0][2]) + " %" + "\n")
+			f.write("@@@@@                   google docs: " + str(probability_array[i][0][3]) + " %" + "\n")
+			f.write("@@@@@                   google drawings: " + str(probability_array[i][0][4]) + " %" + "\n")
+			f.write("@@@@@                   wolfram: " + str(probability_array[i][0][5]) + " %" + "\n")
+			f.write("@@@@@                   wikipedia: " + str(probability_array[i][0][6]) + " %" + "\n")
 			f.write('\n');
 	probability_matrix.append(probability_array)
 	return number_valid
 
+
+def threshold_calculator(probabilities, query):
+
+	probabilities = probabilities.tolist()
+
+	if probabilities[0] > .8 or probabilities[1] > .1:
+		cal_parse = cal.parse(query)
+		# print cal_parse
+		if cal_parse[1] == 0 or cal_parse[1] == 1:
+			return [1]
+		else:
+			return [2]
+	elif probabilities[2] > .1 or probabilities[3] > .1 or probabilities[4] > .1:
+		return [probabilities.index(max(probabilities[2:5])) + 1]
+	elif probabilities[5] > .1 or probabilities[6]:
+		return [probabilities.index(max(probabilities[5:7])) + 1]
+	else:
+		return [probabilities.index(max(probabilities)) + 1]
 
 
 def change_query_string_to_int_array(set_to_train_on):
@@ -134,43 +149,46 @@ def change_api_type_array_to_int_array(class_array):
 
 def change_api_type_to_int(class_type):
 # this is a switch statement on the api type
-	if class_type == "calendar":
+	if class_type == "schedule_suggest":
 		return 1
-	elif class_type == "calendar_show":
+	elif class_type == "calendar":
 		return 2
-	elif class_type == "schedule_suggest":
+	elif class_type == "calendar_show":
 		return 3
 	elif class_type == "google_docs":
 		return 4
-	elif class_type == "wolfram":
-		return 5
-	elif class_type == "wikipedia":
-		return 6
 	elif class_type == "google_drawings":
+		return 5
+	elif class_type == "wolfram":
+		return 6
+	elif class_type == "wikipedia":
 		return 7
-	else:# Defaults the google search if something messes up
+	elif class_type == "google":# Defaults the google search if something messes up
 		return 8
+	else:
+		return 9
 
 def change_int_to_api_type(class_type):
 # this is a switch statement on the api type
 	if class_type == 1:
-		return "calendar"
-	elif class_type == 2:
-		return "calendar_show"
-	elif class_type == 3:
 		return "schedule_suggest"
+	elif class_type == 2:
+		return "calendar"
+	elif class_type == 3:
+		return "calendar_show"
 	elif class_type == 4:
 		return "google_docs"
 	elif class_type == 5:
-		return "wolfram"
-	elif class_type == 6:
-		return "wikipedia"
-	elif class_type == 7:
 		return "google_drawings"
+	elif class_type == 6:
+		return "wolfram"
+	elif class_type == 7:
+		return "wikipedia"
 	elif class_type == 8:
 		return "google"
 	else: #shit fucked up
 		return "WHAT HAPPENED?!"
+
 def percent_to_index(percentage, length_of_array):
 	return int(percentage*length_of_array)
 
@@ -188,7 +206,7 @@ def interpret_for_scikit(sentences, temp_array):
 			sentence = oclock_remover(sentence)
 
 			tree = parser.parse(sentence)
-			#print tree
+			## print tree
 			# first just check if its just a noun phrase, then go to wiki
 			if 'NP' == tree.label() or \
 			'NP+NP'== tree.label() or \
@@ -197,7 +215,7 @@ def interpret_for_scikit(sentences, temp_array):
 			'NP+NX'== tree.label() or \
 			'FRAG'== tree.label() or \
 			'NX' == tree.label():
-				print 'interpreting as just a noun phrase'
+				# print 'interpreting as just a noun phrase'
 				words = sentence
 				noun_phrase = []
 				# this is code for finding the noun phrase
@@ -215,7 +233,7 @@ def interpret_for_scikit(sentences, temp_array):
 					 	noun_phrase[0] == 'an' or noun_phrase[0] == 'the'):
 						del noun_phrase[0]
 
-				#print noun_phrase
+				## print noun_phrase
 				noun_phrase = ' '.join(noun_phrase)
 
 				text = '{"api_type": "wikipedia", \
@@ -259,24 +277,24 @@ def interpret_for_scikit(sentences, temp_array):
 						and any(x in verb_subtree.leaves() for x in doc_verbs):
 							for subtree in element.subtrees():
 									if 'NP' in subtree.label() and any(x in subtree.leaves() for x in doc_nouns):
-										print 'Interpreting as doc request'
+										# print 'Interpreting as doc request'
 										temp_array[0] = 1
 										return
 
 									if 'NP' in subtree.label() and any(x in subtree.leaves() for x in drawing_nouns):
-										print 'Interpreting as drawing request'
+										# print 'Interpreting as drawing request'
 										temp_array[9] = 1
 										return
 
 									if 'NP' in subtree.label() and any(x in subtree.leaves() for x in calendar_nouns):
-										print 'Interpreting as calendar request'
+										# print 'Interpreting as calendar request'
 										temp_array[1] = 1
 										return
 
 						if 'VB' in verb_subtree.label() \
 						and any(x in verb_subtree.leaves() for x in schedule_verbs):
 
-							print "Interpreting as schedule request"
+							# print "Interpreting as schedule request"
 							return schedule_for_scikit(element, tree, temp_array)
 
 
@@ -303,7 +321,7 @@ def interpret_for_scikit(sentences, temp_array):
 								temp_array[8] = 1
 							# TODO: Implement logic here to catch "when"-questions related to scheduling.
 
-							print "Interpreting as Wolfram query"
+							# print "Interpreting as Wolfram query"
 							return wolfram_for_scikit(element,temp_array)
 
 		# If we hit here and haven't returned, then the query didn't match any of our patterns,
@@ -313,10 +331,9 @@ def interpret_for_scikit(sentences, temp_array):
 		return
 
 	except Exception as e:
-		print "Error in NLTK Brain: ", e.message
-		print sentence 
-
-	return '{"api_type": "blank_query"}'
+		# print "Error in NLTK Brain: ", e.message
+		# print sentence
+		return
 
 def schedule_for_scikit(element, tree, temp_array):
 # Find the "schedule word" in a NP, if one exists
@@ -333,7 +350,7 @@ def schedule_for_scikit(element, tree, temp_array):
 	words = am_pm_adder(words)
 
 	cal_parse = cal.parse(words)
-	#print cal_parse
+	## print cal_parse
 	if cal_parse[1] == 0 or cal_parse[1] == 1:
 		starttime, endtime = schedule_suggest(cal_parse, words)
 		starttime = starttime.strftime('%Y-%m-%dT%H:%M:%S')
@@ -365,7 +382,7 @@ def query_to_array(query):
 # index 4: where is in query
 # index 5: who is in query
 # index 6: has fewer than 5 words
-# print query + "\n"
+# # print query + "\n"
 # makes it into an array
 	query_array = query.split(' ')
 
@@ -374,10 +391,10 @@ def query_to_array(query):
 # if len(query) < 5:
 # 	temp_array[9] = 1
 	#uses 10, till
-	check_word_lists(query_array, temp_array, 26)
+	check_word_lists(query_array, temp_array, 28)
 
 	#uses 6
-	check_for_w_words(query, temp_array, 20)
+	check_for_w_words(query, temp_array, 21)
 
 
 	return temp_array
@@ -399,12 +416,14 @@ def check_word_lists(query_array, temp_array, index):
 			temp_array[index + 5] = 1
 		if query_array[i] in group_nouns:
 			temp_array[index + 6] = 1
-		if query_array[i] in avail_words:
+		if query_array[i] in drawing_nouns:
 			temp_array[index + 7] = 1
-		if query_array[i] in time_words:
+		if query_array[i] in avail_words:
 			temp_array[index + 8] = 1
-		if query_array[i] in schedule_suggest_verbs:
+		if query_array[i] in time_words:
 			temp_array[index + 9] = 1
+		if query_array[i] in schedule_suggest_verbs:
+			temp_array[index + 10] = 1
 
 def check_for_w_words(query, temp_array, index):
 #checks substings and length
@@ -445,7 +464,7 @@ def make_single_predictor(training_set, test_set_percentage):
 	else:
 		train_predictor(training_feature_arrays[:index + 1], training_class_array[:index + 1], api_predictor)
 		valid_num = validate_predictor(training_feature_arrays[index + 1:], training_class_array[index + 1:], api_predictor, probabilities_array)
-		print "The number of valid predictions is: " + str(valid_num) + "\nThe total number of predictions made is: " + str(len(training_feature_arrays[index + 1:])) + "\nThe validation ratio is: " + str(float(valid_num)/(len(training_feature_arrays[index + 1:])))
+		# print "The number of valid predictions is: " + str(valid_num) + "\nThe total number of predictions made is: " + str(len(training_feature_arrays[index + 1:])) + "\nThe validation ratio is: " + str(float(valid_num)/(len(training_feature_arrays[index + 1:])))
 	return api_predictor
 
 
@@ -471,13 +490,15 @@ def multiple_predictors_for_testing(training_set, test_set_percentage, probabili
 		valid_num = validate_predictor(training_feature_arrays[index + 1:], training_class_array[index + 1:], api_predictor, probability_matrix,training_set[index+1:])
 	return valid_num
 
-def multiple_predictors_for_testing_and_multiple_training_sets(ts_cal, ts_ss, ts_gd, ts_wolf, ts_wiki, ts_gs, test_set_percentage, probability_matrix, f):
+def multiple_predictors_for_testing_and_multiple_training_sets(ts_cal, ts_ss, ts_cs, ts_gd, ts_gdr, ts_wolf, ts_wiki, ts_gs, test_set_percentage, probability_matrix, f):
 # api predicting bernoulli naive bayesian classifier
 	api_predictor = BernoulliNB()
 # random shuffles of training_sets
 	random.shuffle(ts_cal) #calendar
 	random.shuffle(ts_ss) #schedule suggest
+	random.shuffle(ts_cs) #calendar show
 	random.shuffle(ts_gd) #google docs
+	random.shuffle(ts_gdr) #google drawings
 	random.shuffle(ts_wolf) #wolram
 	random.shuffle(ts_wiki) #wikipedia
 	random.shuffle(ts_gs) #google search
@@ -485,7 +506,9 @@ def multiple_predictors_for_testing_and_multiple_training_sets(ts_cal, ts_ss, ts
 # returns the index of the percent of the test sets we want to test on
 	index_cal = percent_to_index(test_set_percentage, len(ts_cal))
 	index_ss = percent_to_index(test_set_percentage, len(ts_ss))
+	index_cs = percent_to_index(test_set_percentage, len(ts_cs))
 	index_gd = percent_to_index(test_set_percentage, len(ts_gd))
+	index_gdr = percent_to_index(test_set_percentage, len(ts_gdr))
 	index_wolf = percent_to_index(test_set_percentage, len(ts_wolf))
 	index_wiki = percent_to_index(test_set_percentage, len(ts_wiki))
 	index_gs = percent_to_index(test_set_percentage, len(ts_gs))
@@ -493,8 +516,8 @@ def multiple_predictors_for_testing_and_multiple_training_sets(ts_cal, ts_ss, ts
 # concatenate the test set list
 # TREVOR!!! THIS IS TO GET YOUR ATTENTION HERE.  JUST COMMENT THE FOLLOWING LINES OUT
 # AND TAKE WHATEVER SUBSET OF THE LISTS YOU WANT HERE. FOLLOW THE SYNTAX BELOW
-	training_set = ts_cal[:index_cal + 1] + ts_ss[:index_ss + 1] + ts_gd[:index_gd + 1] + ts_wolf[:index_wolf + 1] +  ts_wiki[:index_wiki + 1]
-	validation_set = ts_cal[index_cal + 1:] + ts_ss[index_ss + 1:] + ts_gd[index_gd + 1:] + ts_wolf[index_wolf + 1:] +  ts_wiki[index_wiki + 1:]
+	training_set = ts_cal[:index_cal + 1] + ts_ss[:index_ss + 1] + ts_cs[:index_cs + 1] + ts_gd[:index_gd + 1] + ts_gdr[:index_gdr + 1] + ts_wolf[:index_wolf + 1] +  ts_wiki[:index_wiki + 1]
+	validation_set = ts_cal[index_cal + 1:] + ts_ss[index_ss + 1:] + ts_cs[:index_cs + 1] + ts_gd[index_gd + 1:] + ts_gdr[:index_gdr + 1] + ts_wolf[index_wolf + 1:] +  ts_wiki[index_wiki + 1:]
 
 # now we shuffle to mix up the list
 	random.shuffle(training_set)
@@ -514,7 +537,7 @@ def multiple_predictors_for_testing_and_multiple_training_sets(ts_cal, ts_ss, ts
 	valid_num = validate_predictor(training_feature_arrays_valid, training_class_array_valid, api_predictor, probability_matrix, validation_set, f)
 	return valid_num
 
-def predictor_validation_list_to_plot_and_multiple_train_sets(num_tests, ts_cal, ts_ss, ts_gd, ts_wolf, ts_wiki, ts_gs, test_set_percentage):
+def predictor_validation_list_to_plot_and_multiple_train_sets(num_tests, ts_cal, ts_ss, ts_cs, ts_gd, ts_gdr, ts_wolf, ts_wiki, ts_gs, test_set_percentage):
 	f = open('failed_predictions', 'w')
 	num_valid_list = []
 	percentage_valid_list = []
@@ -523,25 +546,27 @@ def predictor_validation_list_to_plot_and_multiple_train_sets(num_tests, ts_cal,
 
 	index_cal = percent_to_index(test_set_percentage, len(ts_cal))
 	index_ss = percent_to_index(test_set_percentage, len(ts_ss))
+	index_cs = percent_to_index(test_set_percentage, len(ts_cs))
 	index_gd = percent_to_index(test_set_percentage, len(ts_gd))
+	index_gdr = percent_to_index(test_set_percentage, len(ts_gdr))
 	index_wolf = percent_to_index(test_set_percentage, len(ts_wolf))
 	index_wiki = percent_to_index(test_set_percentage, len(ts_wiki))
 	index_gs = percent_to_index(test_set_percentage, len(ts_gs))
 
-	validation_set = ts_cal[index_cal + 1:] + ts_ss[index_ss + 1:] + ts_gd[index_gd + 1:] + ts_wolf[index_wolf + 1:] +  ts_wiki[index_wiki + 1:] +  ts_gs[index_gs + 1:]
+	validation_set = ts_cal[index_cal + 1:] + ts_ss[index_ss + 1:] + ts_cs[index_cs + 1:] +  ts_gd[index_gd + 1:] + ts_gdr[index_gdr + 1:] + ts_wolf[index_wolf + 1:] +  ts_wiki[index_wiki + 1:] +  ts_gs[index_gs + 1:]
 
 	probability_matrix = []
 
 
 	total_validated_on = len(validation_set)
 	for i in range(num_tests):
-		num_valid_temp = multiple_predictors_for_testing_and_multiple_training_sets(ts_cal, ts_ss, ts_gd, ts_wolf, ts_wiki, ts_gs, test_set_percentage, probability_matrix, f)
+		num_valid_temp = multiple_predictors_for_testing_and_multiple_training_sets(ts_cal, ts_ss, ts_cs, ts_gd, ts_gdr, ts_wolf, ts_wiki, ts_gs, test_set_percentage, probability_matrix, f)
 		num_valid_list.append(num_valid_temp)
 		percentage_valid_list.append(float(num_valid_temp)/total_validated_on)
 # plots
 	fig, ax = plt.subplots()
 # histogram our data with numpy
-	data = num_valid_list
+	data = percentage_valid_list
 	n, bins = np.histogram(data, 10)
 # get the corners of the rectangles for the histogram
 	left = np.array(bins[:-1])
@@ -653,6 +678,32 @@ def generate_questions_google_docs():
 			f.write("('" + doc_verbs[i] + " us a " + doc_nouns[j] + "', 'google_docs'),\n")
 			f.write("('" + doc_verbs[i] + " us " + doc_nouns[j] + "', 'google_docs'),\n")
 
+def generate_questions_google_drawings():
+	f = open('generated_questions_google_drawings', 'w')
+	for i in range(len(doc_verbs)):
+		for j in range(len(drawing_nouns)):
+			f.write("('" + doc_verbs[i] + " " + drawing_nouns[j] + "', 'google_drawings'),\n")
+			f.write("('" + doc_verbs[i] + " a " + drawing_nouns[j] + "', 'google_drawings'),\n")
+			f.write("('" + doc_verbs[i] + " a Google " + drawing_nouns[j] + "', 'google_drawings'),\n")
+			f.write("('" + doc_verbs[i] + " Google " + drawing_nouns[j] + "', 'google_drawings'),\n")
+			f.write("('" + doc_verbs[i] + " me " + drawing_nouns[j] + "', 'google_drawings'),\n")
+			f.write("('" + doc_verbs[i] + " me a " + drawing_nouns[j] + "', 'google_drawings'),\n")
+			f.write("('" + doc_verbs[i] + " us a " + drawing_nouns[j] + "', 'google_drawings'),\n")
+			f.write("('" + doc_verbs[i] + " us " + drawing_nouns[j] + "', 'google_drawings'),\n")
+
+def generate_questions_google_calendar_show():
+	f = open('generated_questions_google_calendar_show', 'w')
+	for i in range(len(doc_verbs)):
+		for j in range(len(calendar_nouns)):
+			f.write("('" + doc_verbs[i] + " " + calendar_nouns[j] + "', 'calendar_show'),\n")
+			f.write("('" + doc_verbs[i] + " a " + calendar_nouns[j] + "', 'calendar_show'),\n")
+			f.write("('" + doc_verbs[i] + " a Google " + calendar_nouns[j] + "', 'calendar_show'),\n")
+			f.write("('" + doc_verbs[i] + " Google " + calendar_nouns[j] + "', 'calendar_show'),\n")
+			f.write("('" + doc_verbs[i] + " me " + calendar_nouns[j] + "', 'calendar_show'),\n")
+			f.write("('" + doc_verbs[i] + " me a " + calendar_nouns[j] + "', 'calendar_show'),\n")
+			f.write("('" + doc_verbs[i] + " us a " + calendar_nouns[j] + "', 'calendar_show'),\n")
+			f.write("('" + doc_verbs[i] + " us " + calendar_nouns[j] + "', 'calendar_show'),\n")
+
 # def generate_questions_wolfram():
 # 	f = open('generated_questions_wolfram', 'w')
 # 	for i in range(len(doc_verbs)):
@@ -682,6 +733,159 @@ def generate_questions_google_docs():
 
 
 
-#generate_questions_google_docs()
 
-predictor_validation_list_to_plot_and_multiple_train_sets(10, training_set_calendar, training_set_schedule_suggest, training_set_google_docs, training_set_wolfram, training_set_wikipedia, training_set_google, .8)
+
+
+
+
+def pickle_predictor(predictor):
+	print "starting to pickle predictor"
+	train_predictor_for_brain(predictor, training_set_calendar, training_set_schedule_suggest, training_set_google_calendar_show, training_set_google_docs, training_set_google_drawings, training_set_wolfram, training_set_wikipedia, training_set_google)
+	pickled_string = cPickle.dumps(predictor)
+	f = open('brain/pickled_predictor.txt', 'w')
+	f.write(pickled_string)
+	f.close()
+	print "finished pickling predictor"
+
+
+
+
+
+def train_predictor_for_brain(predictor, ts_cal, ts_ss, ts_cs, ts_gd, ts_gdr, ts_wolf, ts_wiki, ts_goog):
+	print "starting predictor training, please be patient, this will take a while"
+	training_set = ts_cal + ts_ss + ts_cs + ts_gd + ts_gdr + ts_wolf + ts_wiki + ts_goog
+
+	training_feature_arrays_train = change_query_string_to_int_array(training_set)
+	training_class_array_train = change_api_type_array_to_int_array(training_set)
+	train_predictor(training_feature_arrays_train, training_class_array_train, predictor)
+	print "finished training predictor"
+
+
+
+def threshold_calculator_for_predict(probabilities, query):
+
+	probabilities = probabilities.tolist()[0]
+	print probabilities
+	if probabilities[0] > .8 or probabilities[1] > .1:
+		cal_parse = cal.parse(query)
+		if cal_parse[1] == 0 or cal_parse[1] == 1:
+			return 1
+		else:
+			return 2
+	elif probabilities[2] > .1 or probabilities[3] > .1 or probabilities[4] > .1:
+		return probabilities.index(max(probabilities[2:5])) + 1
+	elif probabilities[5] > .1 or probabilities[6] > .1:
+		return probabilities.index(max(probabilities[5:7])) + 1
+	else:
+		return probabilities.index(max(probabilities)) + 1
+
+#Trevor fill this in!!!
+def question_noun_phrase(query):
+	if(len(query.split()) <= 1):
+		return query
+
+	query = oclock_remover(query)
+	query = benedict_remover(query)
+
+	tree = parser.parse(query)
+
+	if 'NP' == tree.label() or \
+	'NP+NP'== tree.label() or \
+	'NX+NX'== tree.label() or \
+	'NX+NP'== tree.label() or \
+	'NP+NX'== tree.label() or \
+	'FRAG'== tree.label() or \
+	'NX' == tree.label():
+		words = query
+		noun_phrase = []
+		# this is code for finding the noun phrase
+		noun_phrase = tree.leaves()
+
+		# this code removes the article from the beginning
+		if noun_phrase:
+			if (noun_phrase[0] == 'a' or \
+			 	noun_phrase[0] == 'an' or noun_phrase[0] == 'the'):
+				del noun_phrase[0]
+
+		#print noun_phrase
+		noun_phrase = ' '.join(noun_phrase)
+
+		return noun_phrase
+
+	for element in [tree] + [e for e in tree]: # Include the root element in the for loop
+		if "SBAR" in element.label():
+			for subtree in element.subtrees():
+				if "W" in subtree.label():
+					noun_phrase = []
+					print noun_phrase
+					# this is code for finding the noun phrase
+					for noun_subtree in element.subtrees():
+						if not "SBAR" in noun_subtree.label() \
+						and not "W" in noun_subtree.label() \
+						and "NP" in noun_subtree.label() \
+						and len(noun_subtree.leaves()) > len(noun_phrase):
+
+							noun_phrase = noun_subtree.leaves()
+
+					# this code removes the article from the beginning
+					if noun_phrase:
+						if (noun_phrase[0] == 'a' or \
+						 	noun_phrase[0] == 'an' or noun_phrase[0] == 'the'):
+							del noun_phrase[0]
+
+					noun_phrase = ' '.join(noun_phrase)
+
+					return noun_phrase
+
+	return ""
+
+
+# EVAN THIS IS WHERE WE MAKE THE JSON I NEED TO SOMEHOW PUT THE DATETIME STUFF IN IT
+def make_json(query, api_type, api_number):
+
+	if api_type == "wolfram" or api_type == "wikipedia" or "google":
+		if query != "":
+			noun_phrase = question_noun_phrase(query)
+			return '{"api_number": "' + str(api_number) + '", "api_type": "' + api_type + '", "query": "' + query + '", "noun_phrase": "' + noun_phrase +'"}'
+		else:
+			return '{"api_number": "' + str(api_number) + '", "api_type": "' + api_type + '", "query": "blank", "noun_phrase": ""}'
+
+	#THIS IS THE SPECIFIC SPOT WE NEED TO ADD DATETIME STUFF AND THE ATTENDEES ARRAY
+	if api_type == "calendar" or api_type == "schedule_suggest":
+		return '{"api_number": "' + str(api_number) +'", "api_type": "' + api_type + '", "query": "' + query + '", "noun_phrase": ""}'
+
+	# EVAN WE NEED THE ATTENDEES ARRAY IN THIS ONE
+	if api_type == "calendar_show" or api_type == "google_docs" or api_type == "google_drawings":
+		return '{"api_number": "' + str(api_number) +'", "api_type": "' + api_type + '", "query": "' + query + '", "noun_phrase": ""}'
+
+
+
+def predict_api_type(predictor, query):
+
+	query_array = query_to_array(query)
+
+	probability_predict = predictor.predict_proba(query_array)
+
+	api_return = threshold_calculator_for_predict(probability_predict, query)
+
+	api_type = change_int_to_api_type(api_return)
+
+	return make_json(query, api_type, api_return)
+
+
+
+
+#predictor_to_be_pickled = BernoulliNB()
+
+#pickle_predictor(predictor_to_be_pickled)
+
+
+
+
+
+
+#print question_noun_phrase("big dogs eating cabbage")
+#generate_questions_google_calendar_show()
+#generate_questions_google_drawings()
+
+#predictor_validation_list_to_plot_and_multiple_train_sets(1, training_set_calendar, training_set_schedule_suggest, training_set_google_calendar_show, training_set_google_docs, training_set_google_drawings, training_set_wolfram, training_set_wikipedia, training_set_google, .8)

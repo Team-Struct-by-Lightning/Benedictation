@@ -1,70 +1,24 @@
-@@@@@    query: schedule a meeting for January 28th at 5 pm
+@@@@@    query: Benedict, set an appointment for tomorrow at 7
 @@@@@    expected: calendar
 @@@@@    predicted: schedule_suggest
 @@@@@    probabilities: 
-@@@@@                   calendar: 14.3690676894 %
-@@@@@                   schedule suggest: 85.5168278411 %
-@@@@@                   google docs: 0.00847276317061 %
-@@@@@                   wolfram: 0.0125910613885 %
-@@@@@                   wikipedia: 0.0930406449054 %
+@@@@@                   schedule suggest: 0.976958494622 %
+@@@@@                   calendar: 0.023040497725 %
+@@@@@                   calendar show: 2.65174883675e-08 %
+@@@@@                   google docs: 3.81928085085e-07 %
+@@@@@                   google drawings: 8.21535462674e-10 %
+@@@@@                   wolfram: 5.909985678e-08 %
+@@@@@                   wikipedia: 5.39286103693e-07 %
 
-@@@@@    query: Benedict, schedule a meeting for next Tuesday
-@@@@@    expected: schedule_suggest
-@@@@@    predicted: calendar
-@@@@@    probabilities: 
-@@@@@                   calendar: 53.7880813434 %
-@@@@@                   schedule suggest: 46.1973961552 %
-@@@@@                   google docs: 0.00407781011692 %
-@@@@@                   wolfram: 0.00308329072764 %
-@@@@@                   wikipedia: 0.00736140050133 %
-
-@@@@@    query: when are all of us free
-@@@@@    expected: schedule_suggest
-@@@@@    predicted: wolfram
-@@@@@    probabilities: 
-@@@@@                   calendar: 0.00424543828697 %
-@@@@@                   schedule suggest: 39.4610271725 %
-@@@@@                   google docs: 0.00695370893197 %
-@@@@@                   wolfram: 58.336582169 %
-@@@@@                   wikipedia: 2.19119151135 %
-
-@@@@@    query: open doc
-@@@@@    expected: google_docs
+@@@@@    query: 273 kelvin greater than 100 degrees celcius
+@@@@@    expected: wolfram
 @@@@@    predicted: wikipedia
 @@@@@    probabilities: 
-@@@@@                   calendar: 0.000698946057186 %
-@@@@@                   schedule suggest: 0.035975987035 %
-@@@@@                   google docs: 38.5006215731 %
-@@@@@                   wolfram: 0.112304782583 %
-@@@@@                   wikipedia: 61.3503987112 %
-
-@@@@@    query: open doc
-@@@@@    expected: google_docs
-@@@@@    predicted: wikipedia
-@@@@@    probabilities: 
-@@@@@                   calendar: 0.000434793258949 %
-@@@@@                   schedule suggest: 0.0354284086879 %
-@@@@@                   google docs: 37.5380772612 %
-@@@@@                   wolfram: 0.308828454086 %
-@@@@@                   wikipedia: 62.1172310828 %
-
-@@@@@    query: schedule a meeting for January 28th at 5 pm
-@@@@@    expected: calendar
-@@@@@    predicted: schedule_suggest
-@@@@@    probabilities: 
-@@@@@                   calendar: 20.2851532649 %
-@@@@@                   schedule suggest: 79.5104556048 %
-@@@@@                   google docs: 0.0116289449212 %
-@@@@@                   wolfram: 0.047894237456 %
-@@@@@                   wikipedia: 0.144867947893 %
-
-@@@@@    query: when are all of us free
-@@@@@    expected: schedule_suggest
-@@@@@    predicted: wolfram
-@@@@@    probabilities: 
-@@@@@                   calendar: 0.00341818678278 %
-@@@@@                   schedule suggest: 4.58060861117 %
-@@@@@                   google docs: 0.00810154179063 %
-@@@@@                   wolfram: 93.3622576795 %
-@@@@@                   wikipedia: 2.04561398071 %
+@@@@@                   schedule suggest: 0.000110596470297 %
+@@@@@                   calendar: 8.21137764704e-07 %
+@@@@@                   calendar show: 1.11550556026e-05 %
+@@@@@                   google docs: 0.00251586648901 %
+@@@@@                   google drawings: 6.6862823027e-06 %
+@@@@@                   wolfram: 0.0129953926985 %
+@@@@@                   wikipedia: 0.984359481866 %
 
