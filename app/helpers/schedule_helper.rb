@@ -10,24 +10,24 @@ module ScheduleHelper
 	GoogleAPIKeys = YAML.load_file("#{::Rails.root}/config/google.yml")[::Rails.env]
 
 	# Get the list of all users currently in the room from Redis.
-	def get_attendees() 
+	def get_attendees()
 		url = request.referrer.split("/")	# Get the URL of where the request CAME from, not the url that was requested.
         redis_key = url[-1].to_s + ":" + url[-2].to_s + ":emails";
 		attendees = $redis.lrange(redis_key,0,-1)
 		#logger.error "@@@@@@@@@@@@ ATTENDEES: " + attendees.to_s
 		return attendees
-	end	
+	end
 
 	def calendar_json(json_hash)
 		full_group = json_hash['group_flag']
-		
+
 		if full_group == "True"
 			attendee_array = get_attendees()
 			attendee_array.map! { |attendee_email| {'email' => attendee_email} }
 		else
 			attendee_array = current_user.email
 		end
-		
+
 		json_event = {
 				'summary' => json_hash['summary'],
 				'location' => json_hash['location'],
@@ -45,8 +45,8 @@ module ScheduleHelper
 
 	def schedule_json(json_hash)
 
-		start_str = json_hash['start']['datetime']
-		end_str = json_hash['end']['datetime']
+		start_str = json_hash['start']
+		end_str = json_hash['end']
 		duration = json_hash['duration'] || 1.hour
 		time_resolution = json_hash['time_resolution'] || 30.minutes
 		lower_bound = json_hash['lower_bound'] || 8
@@ -64,7 +64,7 @@ module ScheduleHelper
 			user_av = get_user_availability(attendee_email, start_str, end_str, lower_bound, upper_bound, time_resolution, tz_offset)
 			overall_availability.each_with_index do |x, i|
 				overall_availability[i] = x & user_av[i]
-			end	
+			end
 		end
 		logger.error "overall_availability: " + overall_availability.inspect
 		return available_times_json(overall_availability, start_range, duration, time_resolution)
@@ -100,7 +100,7 @@ module ScheduleHelper
 		events = result.data.calendars[user_email].busy
 
 		start_range = DateTime.parse(start_str)
-		end_range   = DateTime.parse(end_str)		
+		end_range   = DateTime.parse(end_str)
 		days = (end_range - start_range).to_i
 		userAvailabilityArray = Array.new(days+1) { 2**nslots - 1}	# Array of Fixnums of 18-bit width
 
@@ -119,7 +119,7 @@ module ScheduleHelper
 				stime = [event_start, day_start].max
 				etime = [event_end, day_end].min
 				logger.error stime.to_s + " to " + etime.to_s
-				time_index = (event_start.to_time - day_start.to_time) / time_resolution	
+				time_index = (event_start.to_time - day_start.to_time) / time_resolution
 
 				# Loop over the time this event covers, in 30 minute increments.
 				while stime < etime
@@ -127,16 +127,16 @@ module ScheduleHelper
 					bitmask = 1 << time_index
 					userAvailabilityArray[day_index] = userAvailabilityArray[day_index] ^ bitmask
 					stime += time_resolution
-					time_index += 1 
+					time_index += 1
 				end
-				day_index += 1	
-			end	
+				day_index += 1
+			end
 		end
 
 		# Make sure the bitwise bullshit is working
 		userAvailabilityArray.each do |x|
 			logger.error "%018b" % x
-		end	
+		end
 
 		return userAvailabilityArray
 	end
@@ -157,11 +157,11 @@ module ScheduleHelper
 					start_time = (start_range + day) + (tr*n).minutes
 					end_time = (start_range + day) + (tr*(n+d)).minutes
 					available_times.append({"start" => start_time, "end" => end_time})
-				end	
+				end
 			end
 		end
 		return available_times.to_json
-	end	
+	end
 
 	def create_calendar_event(json)
 		client = Google::APIClient.new
