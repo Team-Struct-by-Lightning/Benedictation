@@ -78,8 +78,10 @@ body {
 }
 
 .render-spot {
-  position: fixed;
-  top: 70px;
+  position: absolute;
+  width: 100%;
+  height: 88%;
+  top: 0px;
   z-index: 50;
 }
 
@@ -93,18 +95,23 @@ body {
 
 .calendar-frame {
   position:relative;
-  top: -65px;
+  top: -10px;
+  left: 15px;
+  height:95%;
+  width:96.5%;
 }
 
 .doc-frame {
   position:relative;
-  top: -55px;
+  top: -35px;
+  width: 96.5%;
   height: 96%;
 }
 
 .drawing-frame {
   position:relative;
-  top: -55px;
+  top: -35px;
+  width: 96.5%;
   height: 96%;
 }
 
@@ -120,8 +127,7 @@ body {
   width: 609px;
   max-height: 470px;
   position: relative;
-  top: 11px;
-  left: -3px;
+
 }
 
 .wikipedia-frame {
@@ -141,191 +147,39 @@ body {
 
 .center-border {
   min-height: 200px !important;
-}
-
-
-.google-border {
   box-shadow: 0px 0px 10px #777777;
   border-radius: 4px;
-  position: fixed;
-  top: 100px;
-  width: 58%;
-  height: 80%;
-  left: 190px;
-  padding-left: 27px;
-  padding-right: 20px;
-  padding-bottom: 25px;
-  padding-top: 5px;
+  position: relative;
+  margin:15px;
+  width: auto;
+  height: 100%;
+  
+
   background-color: white;
 }
 
-.suggestion-border {
-  box-shadow: 0px 0px 10px #777777;
-  border-radius: 4px;
-  position: fixed;
-  top: 100px;
-  width: 58%;
-  height: 80%;
-  left: 190px;
-  padding-left: 27px;
-  padding-right: 20px;
-  padding-bottom: 25px;
-  padding-top: 5px;
-  background-color: white;
-}
 
-.calendar-border {
-  box-shadow: 0px 0px 10px #777777;
-  border-radius: 4px;
-  position: fixed;
-  top: 100px;
-  width: 58%;
-  height: 80%;
-  left: 190px;
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-bottom: 27px;
-  padding-top: 5px;
-  background-color: white;
-}
-
-.doc-border {
-  box-shadow: 0px 0px 10px #777777;
-  border-radius: 4px;
-  position: fixed;
-  top: 100px;
-  width: 58%;
-  height: 80%;
-  left: 190px;
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-bottom: 27px;
-  padding-top: 5px;
-  background-color: white;
-}
-
-.drawing-border {
-  box-shadow: 0px 0px 10px #777777;
-  border-radius: 4px;
-  position: fixed;
-  top: 100px;
-  width: 58%;
-  height: 80%;
-  left: 190px;
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-bottom: 27px;
-  padding-top: 5px;
-  background-color: white;
-}
-
-.four-oh-four-border {
-  box-shadow: 0px 0px 10px #777777;
-  border-radius: 4px;
-  position: fixed;
-  top: 100px;
-  width: 58%;
-  height: 80%;
-  left: 190px;
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-bottom: 27px;
-  padding-top: 5px;
-  background-color: white;
-}
 
 .search-border {
   max-height: 525px;
   /*padding-bottom: 0px !important;*/
 }
 
-.wikipedia-border {
-  box-shadow: 0px 0px 10px #777777;
-  border-radius: 4px;
-  position: fixed;
-  top: 100px;
-  width: 58%;
-  height: 80%;
-  left: 190px;
-  padding-left: 27px;
-  padding-right: 20px;
-  padding-bottom: 25px;
-  padding-top: 30px;
-  background-color: white;
-}
 
-.wolfram-border {
-  box-shadow: 0px 0px 10px #777777;
-  border-radius: 4px;
-  position: fixed;
-  top: 100px;
-  height: 80%;
-  width: 58%;
-  left: 190px;
-  padding-left: 27px;
-  padding-right: 20px;
-  padding-bottom: 25px;
-  padding-top: 5px;
-  background-color: white;
-}
 
-.wolfram-remove {
-  position: relative;
-  top: 5px!important;
-  left: 99.35% !important;
-  color: black;
-  z-index: 20;
 
-}
-
-.wikipedia-remove {
-  position: relative;
-  top: -20px!important;
-  left: 99.35% !important;
-  color: black;
-  z-index: 20;
-}
-
-.suggestion-remove {
-  position: relative;
-  top: -145px !important;
-  left: 99.5% !important;
-  color: black;
-  z-index: 20;
-}
-
-.four-oh-four-remove {
-  position: relative;
-  top: -20px!important;
-  left: 99.35% !important;
-  color: black;
-  z-index: 20;
-}
-
-.google-remove {
-  position: relative;
-  top: -50px !important;
-  left: 99.25% !important;
-  color: black;
-  z-index: 20;
-}
-
-.drive-remove {
-  position: relative;
-  top: -62px !important;
-  left: 99.35% !important;
-  color: black;
-  z-index: 20;
-}
 
 #wikipedia-iframe {
   position: relative;
-  width: 102%;
-  height: 103%;
-  top: -27px;
-  left: -10px;
+  width: 99%;
+  height: 95%;
+
 }
 
+#wolfram-iframe{
+ width:96.5%; 
+
+}
 
 
 
@@ -404,11 +258,11 @@ div.wikipedia-frame body{
 }
 
 #remove_item_id {
-  position: relative;
-  top: -56px;
+  position: absolute;
   color: black;
   z-index: 20;
-  left: 617px;
+  left: 97%;
+  top: 10px;
 }
 
 #remove_item_id:hover {
@@ -422,10 +276,13 @@ div.wikipedia-frame body{
   letter-spacing: -.5px !important;
   font-size: 22px;
   left: 0%;
-  top: -12px;
+  top: 5px;
   text-align: center;
 }
 
+.google-remove{
+  top:-56px;
+}
 .suggestion-title{
   position: relative;
   z-index: 10;
@@ -621,12 +478,15 @@ div.wikipedia-frame body{
   height:500px;
 }
 #drop-spot{
-  position: fixed;
-  width: 58%;
-  height: 100%;
-  top: 75px;
-  left: 200px;
+  position: relative;
+  width: auto;
+  height: 88%;
+  margin: 15px;
   background-color: #CCCCCC;
+}
+#drop-spot .video-tag {
+  width:95%;
+
 }
 
 .color-div {
