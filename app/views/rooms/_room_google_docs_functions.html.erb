@@ -102,7 +102,8 @@ function create_new_document(myData){
       file_id = resp.id;
       console.log("attendees : ", myData['attendees_array']);
       console.log("file_id : ", file_id);
-      current_user_email = "<%= current_user.email %>";
+      //current_user_email = "<%= current_user.email %>";
+      /*
       if (myData['doc_link'] != undefined){
         for(var i = 0; i < myData['attendees_array'].length; i++){
           if (myData['attendees_array'][i]['email'] == current_user_email){
@@ -123,6 +124,19 @@ function create_new_document(myData){
           });
         }
       }
+      */
+
+      var permission_body = {
+        'type': 'anyone',
+        'role': 'writer'
+      };
+      var p_request = gapi.client.drive.permissions.insert({
+        'fileId': file_id,
+        'resource': permission_body
+      });
+      p_request.execute(function(p_resp) { 
+          console.log("permission response : ", console.log(p_resp));
+      });
       
 
       myData['current_time'] = today.getHours() + ":" + min + ":" + sec;
