@@ -97,7 +97,7 @@ function clickable(me,api_clicked) {
                 item['api_type'] = api_clicked;
             }
                 api_type = item['api_type'];
-           
+
             // the aforementioned 'if/else if' block
             if (api_type == 'calendar' || api_type == 'calendar_show') {
                 // the title at the top of the div
@@ -122,7 +122,7 @@ function clickable(me,api_clicked) {
                 // this appends the calendar iframe, title, remove x glyph, and the border
                 // to the room layout table
                 $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border calendar-border"> <h1 class="google-title">' + user_name_title + '</h1> <a class="glyphicon glyphicon-remove google-remove" id="remove_item_id"></a>' + '<iframe class="calendar-frame" src=' + email_url + ' style=" border-width:0 " width="100%" height="100%" frameborder="0" scrolling="no"></iframe></div>' + '</div>');
-            } 
+            }
 
             else if (api_type == 'schedule_suggest') {
                 var render_item_id = "render" + div_id;
@@ -138,7 +138,7 @@ function clickable(me,api_clicked) {
                 else {
                     result_name = 'results';
                 }
-                
+
                 // Generate radio button and label elements for each suggestion.
                 // Limit to the first n, and then show more, perhaps?
                 // Minor improvement: Don't show the day twice if it's the same day...
@@ -167,7 +167,7 @@ function clickable(me,api_clicked) {
                                               '  <div class="suggestions-list"></div></div></div>');
                 $('.suggestions-list').append(suggestions_form);
                 $('.center-border').append(sched_submit_btn);
-            } 
+            }
 
             else if (api_type == 'google') {
                 // title of the center render
@@ -194,16 +194,17 @@ function clickable(me,api_clicked) {
                 searchControl.draw(document.getElementById("searchcontrol"), drawOptions);
                 // execute an inital search
                 searchControl.execute(search_query);
-            } 
+            }
             else if (api_type == 'google_docs') {
                 //console.log("WERE HERE AND NEWKEY IS " + item['some_new_thing']);
+                console.log("user name", user_name);
                 var document_link = item['doc_link'];
                 if (document_link == undefined) {
                     $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border four-oh-four-border"> <a class="glyphicon glyphicon-remove four-oh-four-remove" id="remove_item_id"></a>' + '<div id = "four-oh-four-container" style = "width:100%; height:100%; margin-top:25px;background-color:white;"><h1 class="four-oh-four-big-text-left">404!</h1><h1 class="four-oh-four-big-text-right">404!</h1><%= image_tag("giraffe_suit.jpg", :class => "four-oh-four-giraffe") %><h1 class="four-oh-four-text"> We are sorry, we were unable to handle your request at this time. Please try again shortly. </h1></div></div>' + '</div>');
                 } else {
                     $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border doc-border"> <h1 class="google-title" style = "margin-bottom: 22px;">' + user_name + '\'s Google Document</h1> <a class="glyphicon glyphicon-remove drive-remove" id="remove_item_id"></a>' + '<iframe class="doc-frame" src=' + document_link + ' style=" border-width:0 " width="100%" height="100%" frameborder="0" scrolling="no"></iframe></div>' + '</div>');
                 }
-            } 
+            }
             else if (api_type == 'google_drawings') {
                 //console.log("WERE HERE AND NEWKEY IS " + item['some_new_thing']);
                 var document_link = item['doc_link'];
@@ -213,7 +214,7 @@ function clickable(me,api_clicked) {
                 else {
                     $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border drawing-border"> <h1 class="google-title" style = "margin-bottom: 22px;">' + user_name + '\'s Google Drawing</h1> <a class="glyphicon glyphicon-remove drive-remove" id="remove_item_id"></a>' + '<iframe class="drawing-frame" src=' + document_link + ' style=" border-width:0 " width="100%" height="100%" frameborder="0" scrolling="no"></iframe></div>' + '</div>');
                 }
-            } 
+            }
             else if (api_type == 'wikipedia') {
                 console.log("room center renders html: ", item['api_html']);
                 // adds the word render to the unique id of the div based on
@@ -246,7 +247,7 @@ function clickable(me,api_clicked) {
 
                 $('#wikipedia-iframe').contents().find('#pt-createaccount').hide();
                 $('#wikipedia-iframe').contents().find('#pt-login').hide();
-            } 
+            }
             else if (api_type == 'wolfram') {
                 // adds the word render to the unique id of the div based on
                 // the info stored in its redis key
@@ -281,7 +282,7 @@ function clickable(me,api_clicked) {
                 $('#wolfram-iframe').contents().find('html').css('min-width', '300px');
                 $('#wolfram-iframe').contents().find('html').css('width', '584px');
                 $('#wolfram-iframe').contents().find('body').css('min-width', '300px');
-               
+
                 // this disables all links within the wolfram div so that we do not have
                 // any redirects from our iframe
                 $('#wolfram-iframe').contents().find('a').click(function(event) {
@@ -444,7 +445,7 @@ function wolfram_text(render_item_id) {
             });
         }
     });
-} 
+}
 
 // Called when the "Submit" button is pressed on schedule suggestion.
 function scheduleSubmit(event) {
