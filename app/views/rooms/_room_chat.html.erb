@@ -222,6 +222,17 @@ function appendNewBennyReply(json_murph) { <% image_name = "" %> console.log("js
         var parameter3 = 'clickable("' + json_murph.key + '"' + ',' + '"' + third_choice_api + '")';
         $('.benny-list-body').addClass('benny-list-body-func');
         $('.benny-list-body').append('<div class="benny-item benny-wolfram" id=' + benny_item_id + '>' + '<a onclick=' + parameter1 + '>' + '<img class="favicon question-favicon" src="' + first_choice_image_name + '" />' + '</a>' + '<a onclick=' + parameter2 + '>' + '<img class="favicon left-fav-small" src="' + second_choice_image_name + '" />' + '</a>' + '<a onclick=' + parameter3 + '>' + '<img class="favicon right-fav-small" src="' + third_choice_image_name + '" />' + '</a>' + '<a class="name-and-summary-wolfram">' + name + '</a>' + '<a class="benny-link question-link" onclick=' + parameter1 + ' id=' + benny_item_link_id + '> Query: ' + query + '</div>');
+        //if any of the parameters are blank, then remove the clickable part and decrease opacity
+          if(second_choice_api == ""){
+           $("#" + benny_item_id.replace(/([ #;&,.+*~\':"!^$[\]()=>|\/])/g,'\\$1') + " > a:nth-child(2)").removeAttr("onclick");
+           $("#" + benny_item_id.replace(/([ #;&,.+*~\':"!^$[\]()=>|\/])/g,'\\$1') + " > a:nth-child(2)").css("opacity", "0.3");
+           $("#" + benny_item_id.replace(/([ #;&,.+*~\':"!^$[\]()=>|\/])/g,'\\$1') + " .left-fav-small").css("cursor", "default");
+        }
+        if(third_choice_api == ""){
+           $("#" + benny_item_id.replace(/([ #;&,.+*~\':"!^$[\]()=>|\/])/g,'\\$1') + " > a:nth-child(3)").removeAttr("onclick");
+           $("#" + benny_item_id.replace(/([ #;&,.+*~\':"!^$[\]()=>|\/])/g,'\\$1') + " > a:nth-child(3)").css("opacity", "0.3");
+           $("#" + benny_item_id.replace(/([ #;&,.+*~\':"!^$[\]()=>|\/])/g,'\\$1') + " .right-fav-small").css("cursor", "default");
+        }
     } else if (json_murph.api_type == 'google') { <% image_name = "google-fav.jpg" %>
         var query = ""
         if (json_murph.query == "") {
@@ -247,6 +258,17 @@ function appendNewBennyReply(json_murph) { <% image_name = "" %> console.log("js
         var parameter3 = 'clickable("' + json_murph.key + '"' + ',' + '"' + third_choice_api + '")';
         $('.benny-list-body').addClass('benny-list-body-func');
         $('.benny-list-body').append('<div class="benny-item benny-wolfram" id=' + benny_item_id + '>' + '<a onclick=' + parameter1 + '>' + '<img class="favicon question-favicon" src="' + first_choice_image_name + '" />' + '</a>' + '<a onclick=' + parameter2 + '>' + '<img class="favicon left-fav-small" src="' + second_choice_image_name + '" />' + '</a>' + '<a onclick=' + parameter3 + '>' + '<img class="favicon right-fav-small" src="' + third_choice_image_name + '" />' + '</a>' + '<a class="name-and-summary-wolfram">' + name + '</a>' + '<a class="benny-link question-link" onclick=' + parameter1 + ' id=' + benny_item_link_id + '> Query: ' + query + '</div>');
+        //if any of the parameters are blank, then remove the clickable part and decrease opacity
+        if(second_choice_api == ""){
+           $("#" + benny_item_id.replace(/([ #;&,.+*~\':"!^$[\]()=>|\/])/g,'\\$1') + " > a:nth-child(2)").removeAttr("onclick");
+           $("#" + benny_item_id.replace(/([ #;&,.+*~\':"!^$[\]()=>|\/])/g,'\\$1') + " > a:nth-child(2)").css("opacity", "0.3");
+           $("#" + benny_item_id.replace(/([ #;&,.+*~\':"!^$[\]()=>|\/])/g,'\\$1') + " .left-fav-small").css("cursor", "default");
+        }
+        if(third_choice_api == ""){
+           $("#" + benny_item_id.replace(/([ #;&,.+*~\':"!^$[\]()=>|\/])/g,'\\$1') + " > a:nth-child(3)").removeAttr("onclick");
+           $("#" + benny_item_id.replace(/([ #;&,.+*~\':"!^$[\]()=>|\/])/g,'\\$1') + " > a:nth-child(3)").css("opacity", "0.3");
+           $("#" + benny_item_id.replace(/([ #;&,.+*~\':"!^$[\]()=>|\/])/g,'\\$1') + " .right-fav-small").css("cursor", "default");
+        }
     } else if (json_murph.api_type == 'google_docs' || json_murph.api_type == 'docs_show') { <% image_name = "google_docs.png" %>
         var key_array = json_murph.key.split(":");
         var key_array_slice = key_array.slice(0, 4);
@@ -290,6 +312,17 @@ function appendNewBennyReply(json_murph) { <% image_name = "" %> console.log("js
         var parameter3 = 'clickable("' + json_murph.key + '"' + ',' + '"' + third_choice_api + '")';
         $('.benny-list-body').addClass('benny-list-body-func');
         $('.benny-list-body').append('<div class="benny-item benny-wolfram" id=' + benny_item_id + '>' + '<a onclick=' + parameter1 + '>' + '<img class="favicon question-favicon" src="' + first_choice_image_name + '" />' + '</a>' + '<a onclick=' + parameter2 + '>' + '<img class="favicon left-fav-small" src="' + second_choice_image_name + '" />' + '</a>' + '<a onclick=' + parameter3 + '>' + '<img class="favicon right-fav-small" src="' + third_choice_image_name + '" />' + '</a>' + '<a class="name-and-summary-wolfram">' + name + '</a>' + '<a class="benny-link question-link" onclick=' + parameter1 + ' id=' + benny_item_link_id + '> Query: ' + query + '</div>');
+        //if any of the parameters are blank, then remove the clickable part and decrease opacity
+        if(second_choice_api == ""){
+           $("#" + benny_item_id.replace(/([ #;&,.+*~\':"!^$[\]()=>|\/])/g,'\\$1') + " > a:nth-child(2)").removeAttr("onclick");
+           $("#" + benny_item_id.replace(/([ #;&,.+*~\':"!^$[\]()=>|\/])/g,'\\$1') + " > a:nth-child(2)").css("opacity", "0.3");
+           $("#" + benny_item_id.replace(/([ #;&,.+*~\':"!^$[\]()=>|\/])/g,'\\$1') + " .left-fav-small").css("cursor", "default");
+        }
+        if(third_choice_api == ""){
+           $("#" + benny_item_id.replace(/([ #;&,.+*~\':"!^$[\]()=>|\/])/g,'\\$1') + " > a:nth-child(3)").removeAttr("onclick");
+           $("#" + benny_item_id.replace(/([ #;&,.+*~\':"!^$[\]()=>|\/])/g,'\\$1') + " > a:nth-child(3)").css("opacity", "0.3");
+           $("#" + benny_item_id.replace(/([ #;&,.+*~\':"!^$[\]()=>|\/])/g,'\\$1') + " .right-fav-small").css("cursor", "default");
+        }
     } else if (json_murph.api_type == 'No Result' || json_murph.api_type == 'Blank Query') {
         $('.benny-list-body').append('<div class="benny-item benny-no-result" id=' + benny_item_id + '>' + '<a class="glyphicon glyphicon-question-sign" id="benny-query-question-mark" onmouseover="hoverHelp()"></a>' + '<a class="no-result-benny-link"> Sorry we could not match your request. ' + 'For suggestions, click "Help" above.</a>' + '<a class="name-and-summary-no-result">' + name + '</a>' + '</div>');
         var benny_childs = $('.benny-list-body').children()

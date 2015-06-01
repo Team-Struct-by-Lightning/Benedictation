@@ -92,11 +92,12 @@ function clickable(me,api_clicked) {
             // api the Redis item corresponds to
 
             // if the thing clicked was wolfram, wiki, or google, then the api_clicked parameter of this function will exist, and the argument length will be 2 + "this" = 3.
-            if(arguments.length == 3){
+            if(typeof api_clicked !== 'undefined'){
                 console.log("we got a question api.");
                 item['api_type'] = api_clicked;
             }
-            api_type = item['api_type'];
+                api_type = item['api_type'];
+           
             // the aforementioned 'if/else if' block
             if (api_type == 'calendar' || api_type == 'calendar_show') {
                 // the title at the top of the div

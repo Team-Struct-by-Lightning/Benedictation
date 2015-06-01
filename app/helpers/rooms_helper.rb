@@ -88,71 +88,6 @@ module RoomsHelper
 		end
 	end
 
-	# def query_wolfram_alpha(json_hash, order)
-	# 	puts "json_hash: ",json_hash.inspect
-	# 	coder = HTMLEntities.new
-	# 	query_string = json_hash['query'].to_s
-	# 	query_string = query_string.split(" '").join
-	# 	query_string = query_string.split("'").join
-	# 	# puts "&&&&&&&&&&&&&&&&: " + query_string
-	# 	app_id = WolframAPIKey["app_id"]
-	# 	wolfram_url = URI.parse("http://api.wolframalpha.com/v2/query?appid=P3P4W5-LGWA2A3RU2&input=" + URI.encode(query_string.strip) + "&format=html").to_s
-	# 	doc = Nokogiri::XML(open(wolfram_url))
-	# 	# <queryresult success='false' OR # <pod title='Definition' means we should do wiki instead of wolfram
-	# 	api_html = ""
-	# 	if doc.xpath("//queryresult").attr("success").to_s == 'false' or doc.xpath("//queryresult").attr("numpods").to_s == '0' or doc.xpath('//*[@title="Definition"]').length != 0
-	# 		#get wiki hash if any of the above were true
-	# 		if call_from == "origin"
-	# 			json_hash['api_type'] = 'wikipedia'
-	# 			json_hash = query_wikipedia(json_hash, "wolfram")
-	# 		else
-	# 			json_hash['api_type'] = 'google'
-	# 		end
-	# 	# otherwise the api type is definitely wolfram
-	# 	else
-	# 		# grab the wolfram html
-	# 		markups = []
-	# 		doc.xpath("//markup").each do |markup|
-	# 			markups << markup.text
-	# 		end
-	# 		api_html = markups.join.to_s.split('"').join("'")
-	# 		api_html = api_html.split("\n").join()
-	# 		json_hash['api_html'] = api_html
-	# 	end
-	# 	json_hash
-	# end
-
-	# def query_wikipedia(json_hash, call_from)
-	# 	query_string = json_hash['noun_phrase'].to_s
-	# 	# check if we should change to google search
-	# 	if query_string == ""
-	# 		query_string = json_hash['query'].to_s
-	# 	else
-	# 		puts "Non-trivial noun phrase found"
-	# 	end
-
-	# 	page = Wikipedia.find(query_string)
-
-	# 	if page.content.nil?
-	# 		if call_from == "origin"
-	# 			json_hash['api_type'] = 'wolfram'
-	# 			json_hash = query_wolfram_alpha(json_hash, "wiki")
-	# 		else
-	# 			json_hash['api_type'] = 'google'
-	# 		end
-
-	# 	else
-	# 		# its definitely wikipedia
-	# 		wikipedia_url = URI.parse("https://en.wikipedia.org/wiki/" + URI.encode(query_string.strip) + "?action=render").to_s
-	# 		page = Nokogiri::HTML(open(wikipedia_url))
-	# 		api_html = page.inner_html.split('"').join("'") # change to using single quotes
-	# 		api_html = api_html.split("\n").join() # get rid of newline characters
-	# 		json_hash['api_html'] = api_html
-	# 	end
-	# 	puts "@@@@@@@@@@@WIKI@@@@@@@@@@@@@@@@@@" + json_hash['api_html'].to_s
-	# 	json_hash
-	# end
-
 	def query_wolfram_alpha(json_hash, order)
 		puts "json_hash: ",json_hash.inspect
 		coder = HTMLEntities.new
@@ -167,7 +102,7 @@ module RoomsHelper
 		api_html = ""
 		if doc.xpath("//queryresult").attr("success").to_s == 'false' or doc.xpath("//queryresult").attr("numpods").to_s == '0' or doc.xpath('//*[@title="Definition"]').length != 0
 			json_hash[order] = ""
-			json_hash[order + "_image_name"] = ActionController::Base.helpers.asset_path('wikipedia.ico')
+			json_hash[order + "_image_name"] = ActionController::Base.helpers.asset_path('wolfram.jpg')
 		# otherwise the api type is definitely wolfram
 		else
 			# grab the wolfram html
