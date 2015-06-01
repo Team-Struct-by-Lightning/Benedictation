@@ -78,16 +78,16 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
                         text = predict_api_type(api_predictor, x)
                         break
                     else:
-                        text = '{"api_type": "google", "query": "", "noun_phrase": ""}'
+                        text = '{"api_type": "google", "query": "unknown", "noun_phrase": ""}'
             else:
-                text = '{"api_type": "google", "query": "", "noun_phrase": ""}'
+                text = '{"api_type": "google", "query": "unknown", "noun_phrase": ""}'
 
         except Exception as e:
             print e.message
-            text = '{"api_type": "google", "query": "", "noun_phrase": ""}'
+            text = '{"api_type": "google", "query": "unknown", "noun_phrase": ""}'
 
         if not text:
-            text = '{"api_type": "google", "query": "", "noun_phrase": ""}'
+            text = '{"api_type": "google", "query": "unknown", "noun_phrase": ""}'
         self.write_message(text)
         print "we have finished writing @@@@@"
 
@@ -112,18 +112,19 @@ class SpeechWSHandler_Test(tornado.websocket.WebSocketHandler):
                 for x in text:
                     if x != "":
                         text = predict_api_type(api_predictor, x)
+                        print text
                         break
                     else:
-                        text = '{"api_type": "google", "query": "", "noun_phrase": ""}'
+                        text = '{"api_type": "google", "query": "unknown", "noun_phrase": ""}'
             else:
-                text = '{"api_type": "google", "query": "", "noun_phrase": ""}'
+                text = '{"api_type": "google", "query": "unknown", "noun_phrase": ""}'
 
         except Exception as e:
             print e.message
-            text = '{"api_type": "google", "query": "", "noun_phrase": ""}'
+            text = '{"api_type": "google", "query": "unknown", "noun_phrase": ""}'
 
         if not text:
-            text = '{"api_type": "google", "query": "", "noun_phrase": ""}'
+            text = '{"api_type": "google", "query": "unknown", "noun_phrase": ""}'
         self.write_message(text)
         print "we have finished writing @@@@@"
 
@@ -150,7 +151,6 @@ if __name__ == "__main__":
     api_predictor_pickled_string = f.read()
     api_predictor = cPickle.loads(api_predictor_pickled_string)
 
-    print "predictor has been trained"
     if 'ip-172-31-10-207' in str(socket.gethostname()):   # If on AWS
 
         benny_ssl_options = {

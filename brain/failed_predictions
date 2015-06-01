@@ -1,0 +1,24 @@
+@@@@@    query: Benedict, set an appointment for tomorrow at 7
+@@@@@    expected: calendar
+@@@@@    predicted: schedule_suggest
+@@@@@    probabilities: 
+@@@@@                   schedule suggest: 0.976958494622 %
+@@@@@                   calendar: 0.023040497725 %
+@@@@@                   calendar show: 2.65174883675e-08 %
+@@@@@                   google docs: 3.81928085085e-07 %
+@@@@@                   google drawings: 8.21535462674e-10 %
+@@@@@                   wolfram: 5.909985678e-08 %
+@@@@@                   wikipedia: 5.39286103693e-07 %
+
+@@@@@    query: 273 kelvin greater than 100 degrees celcius
+@@@@@    expected: wolfram
+@@@@@    predicted: wikipedia
+@@@@@    probabilities: 
+@@@@@                   schedule suggest: 0.000110596470297 %
+@@@@@                   calendar: 8.21137764704e-07 %
+@@@@@                   calendar show: 1.11550556026e-05 %
+@@@@@                   google docs: 0.00251586648901 %
+@@@@@                   google drawings: 6.6862823027e-06 %
+@@@@@                   wolfram: 0.0129953926985 %
+@@@@@                   wikipedia: 0.984359481866 %
+

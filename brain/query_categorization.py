@@ -760,8 +760,8 @@ def train_predictor_for_brain(predictor, ts_cal, ts_ss, ts_cs, ts_gd, ts_gdr, ts
 
 def threshold_calculator_for_predict(probabilities, query):
 
-	probabilities = probabilities.tolist()
-
+	probabilities = probabilities.tolist()[0]
+	print probabilities
 	if probabilities[0] > .8 or probabilities[1] > .1:
 		cal_parse = cal.parse(query)
 		if cal_parse[1] == 0 or cal_parse[1] == 1:
