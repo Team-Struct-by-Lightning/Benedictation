@@ -5814,7 +5814,10 @@ Caller.prototype.setRemoteDescription = function(description) {
 }
 
 Caller.prototype.addStream = function(stream) {
-  this.channel.addStream(stream);
+    if(typeof stream !== 'undefined'){
+    this.channel.addStream(stream);
+
+    }
   return this;
 }
 
@@ -5903,18 +5906,33 @@ Caller.prototype._onmessage = function(data) {
 
 Caller.prototype.createStreamOptions = function() {
   var stream = this.stream;
-  if (b.isChrome() && this.source === 'local') {
+  console.log("stream: ",stream);
+  if (b.isChrome() && this.source === 'local' && typeof stream !== 'undefined'){
     stream = new MediaStream(this.stream);
   }
+      // if we are in a chat
+      if(typeof stream === 'undefined'){
+            return {
+            stream: "none",
+            rawStream: "none",
+            callerID: this.ID,
+            ID: this.ID,
+            joined_at: this.joined_at,
+            getVideo: "none",
+            getAudio: "none"
+      }
+  }
 
-  return {
-    stream: URL.createObjectURL(stream),
-    rawStream: stream,
-    callerID: this.ID,
-    ID: this.ID,
-    joined_at: this.joined_at,
-    getVideo: this._createVideoElement.bind(this),
-    getAudio: this._createAudioElement.bind(this)
+  else {
+              return {
+            stream: URL.createObjectURL(stream),
+            rawStream: stream,
+            callerID: this.ID,
+            ID: this.ID,
+            joined_at: this.joined_at,
+            getVideo: this._createVideoElement.bind(this),
+            getAudio: this._createAudioElement.bind(this)
+          }
   }
 }
 
