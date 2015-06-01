@@ -49,7 +49,6 @@
 
 .chat-page-chat-body {
   min-height: 400px !important;
-  max-height: 400px !important;
   overflow: auto;
   word-wrap: break-word;
 }
@@ -142,15 +141,10 @@
   left: 301px;
 }
 
-.chat-page-chat-header{
-  color: #CCCCCC;
-  text-decoration: none !important;
-  position: relative;
-  left: 5%;
-}
+
 
 .fixed-header-div {
-	position: fixed;
+  position: fixed;
   width: 100%;
   left: 250px;
   background-color: #999999;
@@ -302,20 +296,20 @@
 
 
 #members-online {
-	text-decoration: none !important;
-	color: #000000;
+  text-decoration: none !important;
+  color: #000000;
   position: relative;
   font-size: larger;
 }
 
 #members-online:hover {
-	text-decoration: none !important;
-	color: #000000;
+  text-decoration: none !important;
+  color: #000000;
 }
 
 #members-online:visited {
-	text-decoration: none !important;
-	color: #000000;
+  text-decoration: none !important;
+  color: #000000;
 }
 
 
@@ -337,7 +331,7 @@ html{
 }
 
 #group-name-in-chat-header{
-	position: absolute;
+  position: absolute;
   left: 9%;
   top: 8px;
   font-size: 25px;
@@ -346,7 +340,7 @@ html{
 }
 
 #go-to-room-in-chat-header {
-	position: absolute;
+  position: absolute;
   width: 121px;
   left: 10px;
   font-size: small;
@@ -358,25 +352,25 @@ html{
 
 
 #go-to-room-in-chat-header:hover {
-	color: #777777;
+  color: #777777;
 }
 
 #leave-group-chat-header {
-	position: absolute;
+  position: absolute;
   left: 10px;
   top: 18px;
   font-size: small;
   text-decoration: none !important;
   height: 20px !important;
-	color: #000000;
+  color: #000000;
 }
 
 #leave-group-chat-header:hover {
-	color: #777777;
+  color: #777777;
 }
 
 #leave-group-text {
-	position: relative;
+  position: relative;
   top: -21px;
   left: 20px;
   word-spacing: -12px;
@@ -391,14 +385,14 @@ html{
 }
 
 #go-to-room-text {
-	position: relative;
+  position: relative;
   top: -21px;
   left: 20px;
   word-spacing: -12px;
 }
 
 #group-image {
-	position: absolute;
+  position: absolute;
   left: 3%;
   height: 39%;
   top: 15px;
@@ -446,14 +440,14 @@ html{
 }
 
 #delete-group {
-	position: relative;
+  position: relative;
   width: 40px;
   left: 0px;
   top: 14px;
 }
 
 .group-name {
-	position: relative;
+  position: relative;
   margin: 0px;
   top: -13px;
   left: 10px;
@@ -461,49 +455,49 @@ html{
 }
 
 #add-user {
-	position: relative;
+  position: relative;
   top: -41px;
   left: 160px;
   width: 40px;
 }
 
 #go-to-room {
-	position: relative;
+  position: relative;
   top: -55px;
   left: 195px;
   width: 40px;
 }
 
 #group-row {
-	height: 40px;
+  height: 40px;
 }
 
 #first-group-row {
-	height: 50px;
+  height: 50px;
 }
 
 .edit_relationship {
-	height: 40px;
+  height: 40px;
 }
 
 .sidebar-title {
-	position: relative !important;
+  position: relative !important;
 }
 
 .create-group-list {
-	position: relative !important;
-	top: 50px;
+  position: relative !important;
+  top: 50px;
 }
 
 
 #create-group-list {
-	top: 50px;
+  top: 50px;
 }
 
 .group-sidebar-list {
-	position: relative !important;
-	overflow-y: scroll;
-	max-height: 300px;
+  position: relative !important;
+  overflow-y: scroll;
+  max-height: 300px;
 }
 
 .sidebar-item{
@@ -514,7 +508,7 @@ html{
 }
 
 #group-sidebar-list {
-	top: 60px;
+  top: 60px;
 }
 
 /* Here's the new stuff */
@@ -528,7 +522,6 @@ html{
   height: 100%;
 }
 
-
 #chat-box {
   height: 100%;
 }
@@ -541,9 +534,6 @@ html{
   left: 50%
 }
 
-#chat-box{
-  margin-bottom: 0px;
-}
 .center-div-group #js-input-im {
   width: 100% !important;
   left: 0px !important;
@@ -551,9 +541,7 @@ html{
 }
 
 .center-div-group #chat-location {
-  padding-top: 0px;
-  padding-left: 10px;
-  width: 100% !important;
+  width: 100%;
 }
 
 
@@ -563,5 +551,4 @@ html{
   max-height: none;
   border-radius: 3px;
 }
-
 
