@@ -831,7 +831,7 @@ def get_datetime(query):
 	cal_parse = cal.parse(query)
 	## print cal_parse
 	if cal_parse[1] == 0 or cal_parse[1] == 1:
-		starttime, endtime = schedule_suggest(cal_parse, words)
+		starttime, endtime = schedule_suggest(cal_parse, query)
 		starttime = starttime.strftime('%Y-%m-%dT%H:%M:%S')
 		endtime   = endtime.strftime('%Y-%m-%dT%H:%M:%S')
 	else:
@@ -841,8 +841,7 @@ def get_datetime(query):
 
 # EVAN THIS IS WHERE WE MAKE THE JSON I NEED TO SOMEHOW PUT THE DATETIME STUFF IN IT
 def make_json(query, api_type, api_number):
-
-	if api_type == "wolfram" or api_type == "wikipedia" or "google":
+	if api_type == "wolfram" or api_type == "wikipedia" or api_type == "google":
 		if query != "":
 			noun_phrase = question_noun_phrase(query)
 			return '{"api_number": "' + str(api_number) + '", "api_type": "' + api_type + '", "query": "' + query + '", "noun_phrase": "' + noun_phrase +'"}'
@@ -850,8 +849,9 @@ def make_json(query, api_type, api_number):
 			return '{"api_number": "' + str(api_number) + '", "api_type": "' + api_type + '", "query": "blank", "noun_phrase": ""}'
 
 	#THIS IS THE SPECIFIC SPOT WE NEED TO ADD DATETIME STUFF AND THE ATTENDEES ARRAY
-	starttime, endtime = get_datetime(query)
 	if api_type == "calendar" or api_type == "schedule_suggest":
+		starttime, endtime = get_datetime(query)
+		print "starttime: ", starttime, "     ", "endtime: ", endtime
 		return '{"api_number": "' + str(api_number) +'", "api_type": "' + api_type + '", "query": "' + query + '", "noun_phrase": "", "start": "' + starttime + '", "end": "' + endtime + '" }'
 
 	# EVAN WE NEED THE ATTENDEES ARRAY IN THIS ONE
