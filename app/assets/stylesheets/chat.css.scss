@@ -47,7 +47,11 @@
   left: 27%;
 }
 
-
+.chat-page-chat-body {
+  min-height: 400px !important;
+  overflow: auto;
+  word-wrap: break-word;
+}
 .ul-group-head {
   position: relative;
   left: 450px;
@@ -504,7 +508,7 @@ html{
 /* Here's the new stuff */
 
 .center-div-group #chat-body {
-  width: 100%;
+  width: 80%;
   left:250px;
   position: relative;
   box-shadow: 0px 0px 20px #222222;
