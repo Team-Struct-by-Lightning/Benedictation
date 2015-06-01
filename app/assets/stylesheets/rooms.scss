@@ -309,15 +309,15 @@ div.wikipedia-frame body{
   font-size: 6vw;
   width: 25%;
   position: relative;
-  top: 18%;
+  top: 68px;
   left: 5%;
 }
 
 .four-oh-four-big-text-right {
   font-size: 6vw;
   width: 25%;
-  position: absolute;
-  top: 21%;
+  position: relative;
+  top: -38px;
   left: 65%;
 }
 
@@ -332,10 +332,7 @@ div.wikipedia-frame body{
   top: 3% !important;
 }
 
-.four-oh-four-remove {
-  top: 5px !important;
-  left: 99.35% !important;
-}
+
 
 .four-oh-four-text {
   position: absolute;
@@ -1289,5 +1286,5 @@ div.gs-clusterUrl{
 }
 
 #searchcontrol{
-  margin-top: -30px;
+  margin-top: 20px;
 }
