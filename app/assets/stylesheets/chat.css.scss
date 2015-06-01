@@ -49,6 +49,7 @@
 
 .chat-page-chat-body {
   min-height: 400px !important;
+  max-height: 400px !important;
   overflow: auto;
   word-wrap: break-word;
 }
@@ -141,7 +142,12 @@
   left: 301px;
 }
 
-
+.chat-page-chat-header{
+  color: #CCCCCC;
+  text-decoration: none !important;
+  position: relative;
+  left: 5%;
+}
 
 .fixed-header-div {
 	position: fixed;
@@ -157,9 +163,9 @@
   background-color: #999999;
   position: fixed;
   width: 160px;
-  right: 30px;
-  height: 300px;
-  top: 130px;
+  right: 10px;
+  height: 455px;
+  top: 113px;
   padding: 15px;
   border-radius: 5px;
 }
@@ -508,18 +514,23 @@ html{
 /* Here's the new stuff */
 
 .center-div-group #chat-body {
-  width: 80%;
+  width: 65%;
+  top:3px;
+  margin-left: 10px;
   left:250px;
   position: relative;
   box-shadow: 0px 0px 20px #222222;
 }
 
 .center-div-group #chat-location {
-  width: 700px;
 }
-
+#chat-box{
+  margin-bottom: 0px;
+}
 .center-div-group #js-input-im {
-  width: 700px !important;
+  padding-top: 0px;
+  padding-left: 10px;
+  width: 100% !important;
 }
 
 
