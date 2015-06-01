@@ -9,8 +9,10 @@
 // data is parsed from it to find the Redis key
 // and then the correct api render is selected,
 // populated, and appended to the center of the page
-function clickable(me) {
+
+function clickable(me,api_clicked) {
     console.log("me: ",me);
+    console.log("api_clicked: ",api_clicked);
     // here we get the children of the center drop spot
     // and if there is a video in the center of the page
     // we append it back to the sidebar so that we can clear up
@@ -88,6 +90,12 @@ function clickable(me) {
             // Redis which is a JSON object.  We first check the api type
             // and we have an if statement that let's us determine which
             // api the Redis item corresponds to
+
+            // if the thing clicked was wolfram, wiki, or google, then the api_clicked parameter of this function will exist, and the argument length will be 2.
+            if(arguments.length == 2){
+                console.log("we got a question api.");
+                item['api_type'] = api_clicked;
+            }
             api_type = item['api_type'];
             // the aforementioned 'if/else if' block
             if (api_type == 'calendar' || api_type == 'calendar_show') {
