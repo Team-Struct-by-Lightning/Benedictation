@@ -163,8 +163,10 @@ def change_api_type_to_int(class_type):
 		return 6
 	elif class_type == "wikipedia":
 		return 7
-	else:# Defaults the google search if something messes up
+	elif class_type == "google":# Defaults the google search if something messes up
 		return 8
+	else:
+		return 9
 
 def change_int_to_api_type(class_type):
 # this is a switch statement on the api type
@@ -182,6 +184,8 @@ def change_int_to_api_type(class_type):
 		return "wolfram"
 	elif class_type == 7:
 		return "wikipedia"
+	elif class_type == 8:
+		return "google"
 	else: #shit fucked up
 		return "WHAT HAPPENED?!"
 
@@ -736,7 +740,7 @@ def generate_questions_google_calendar_show():
 
 def pickle_predictor(predictor):
 	print "starting to pickle predictor"
-	train_predictor_for_brain(predictor, training_set_calendar, training_set_schedule_suggest, training_set_google_calendar_show, training_set_google_docs, training_set_google_drawings, training_set_wolfram, training_set_wikipedia)
+	train_predictor_for_brain(predictor, training_set_calendar, training_set_schedule_suggest, training_set_google_calendar_show, training_set_google_docs, training_set_google_drawings, training_set_wolfram, training_set_wikipedia, training_set_google)
 	pickled_string = cPickle.dumps(predictor)
 	f = open('brain/pickled_predictor.txt', 'w')
 	f.write(pickled_string)
@@ -747,9 +751,9 @@ def pickle_predictor(predictor):
 
 
 
-def train_predictor_for_brain(predictor, ts_cal, ts_ss, ts_cs, ts_gd, ts_gdr, ts_wolf, ts_wiki):
+def train_predictor_for_brain(predictor, ts_cal, ts_ss, ts_cs, ts_gd, ts_gdr, ts_wolf, ts_wiki, ts_goog):
 	print "starting predictor training, please be patient, this will take a while"
-	training_set = ts_cal + ts_ss + ts_cs + ts_gd + ts_gdr + ts_wolf + ts_wiki
+	training_set = ts_cal + ts_ss + ts_cs + ts_gd + ts_gdr + ts_wolf + ts_wiki + ts_goog
 
 	training_feature_arrays_train = change_query_string_to_int_array(training_set)
 	training_class_array_train = change_api_type_array_to_int_array(training_set)
@@ -770,22 +774,64 @@ def threshold_calculator_for_predict(probabilities, query):
 			return 2
 	elif probabilities[2] > .1 or probabilities[3] > .1 or probabilities[4] > .1:
 		return probabilities.index(max(probabilities[2:5])) + 1
-	elif probabilities[5] > .1 or probabilities[6]:
+	elif probabilities[5] > .1 or probabilities[6] > .1:
 		return probabilities.index(max(probabilities[5:7])) + 1
 	else:
 		return probabilities.index(max(probabilities)) + 1
 
 #Trevor fill this in!!!
 def question_noun_phrase(query):
-	return ""
 
+	tree = parser.parse(query)
+	## print tree
+	# first just check if its just a noun phrase, then go to wiki
+	if 'NP' == tree.label() or \
+	'NP+NP'== tree.label() or \
+	'NX+NX'== tree.label() or \
+	'NX+NP'== tree.label() or \
+	'NP+NX'== tree.label() or \
+	'FRAG'== tree.label() or \
+	'NX' == tree.label():
+		# print 'interpreting as just a noun phrase'
+		noun_phrase = []
+		# this is code for finding the noun phrase
+		for noun_subtree in tree.subtrees():
+			if not "SBAR" in noun_subtree.label() \
+			and not "W" in noun_subtree.label() \
+			and "NP" in noun_subtree.label() \
+			and len(noun_subtree.leaves()) > len(noun_phrase):
+
+				noun_phrase = noun_subtree.leaves()
+
+		# this code removes the article from the beginning
+		if noun_phrase:
+			if (noun_phrase[0] == 'a' or \
+			 	noun_phrase[0] == 'an' or noun_phrase[0] == 'the'):
+				del noun_phrase[0]
+
+		## print noun_phrase
+		noun_phrase = ' '.join(noun_phrase)
+	return noun_phrase
+
+
+# EVAN THIS IS WHERE WE MAKE THE JSON I NEED TO SOMEHOW PUT THE DATETIME STUFF IN IT
 def make_json(query, api_type, api_number):
 
-	if api_type == "wolfram" or api_type == "wikipedia":
-		noun_phrase = question_noun_phrase(query)
-		return '{"api_number": "' + str(api_number) + '", "api_type": "' + api_type + '", "query": "' + query + '", "noun_phrase": "' + noun_phrase +'"}'
-	else:
+	if api_type == "wolfram" or api_type == "wikipedia" or "google":
+		if query != "":
+			noun_phrase = question_noun_phrase(query)
+			return '{"api_number": "' + str(api_number) + '", "api_type": "' + api_type + '", "query": "' + query + '", "noun_phrase": "' + noun_phrase +'"}'
+		else:
+			return '{"api_number": "' + str(api_number) + '", "api_type": "' + api_type + '", "query": "blank", "noun_phrase": ""}'
+
+	#THIS IS THE SPECIFIC SPOT WE NEED TO ADD DATETIME STUFF AND THE ATTENDEES ARRAY
+	if api_type == "calendar" or api_type == "schedule_suggest"
 		return '{"api_number": "' + str(api_number) +'", "api_type": "' + api_type + '", "query": "' + query + '", "noun_phrase": ""}'
+
+	# EVAN WE NEED THE ATTENDEES ARRAY IN THIS ONE
+	if api_type == "calendar_show" or api_type == "google_docs" or api_type == "google_drawings"
+		return '{"api_number": "' + str(api_number) +'", "api_type": "' + api_type + '", "query": "' + query + '", "noun_phrase": ""}'
+
 
 
 def predict_api_type(predictor, query):
