@@ -16,6 +16,7 @@ from query_training_set import *
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import matplotlib.path as path
+import cPickle
 
 #training set of strings
 #it is a list of query, api_type
@@ -773,9 +774,9 @@ def make_json(query, api_type, api_number):
 
 	if api_type == "wolfram" or api_type == "wikipedia":
 		noun_phrase = question_noun_phrase(query)
-		return '{"api_number": "' + api_number + '", "api_type": "' + api_type + '", "query": "' + query + '", "noun_phrase": "' + noun_phrase +'"}'
+		return '{"api_number": "' + str(api_number) + '", "api_type": "' + api_type + '", "query": "' + query + '", "noun_phrase": "' + noun_phrase +'"}'
 	else:
-		return '{"api_number": "' + api_number +'", "api_type": "' + api_type + '", "query": "' + query + '", "noun_phrase": ""}'
+		return '{"api_number": "' + str(api_number) +'", "api_type": "' + api_type + '", "query": "' + query + '", "noun_phrase": ""}'
 
 
 def predict_api_type(predictor, query):
