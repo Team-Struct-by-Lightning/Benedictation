@@ -734,6 +734,14 @@ def generate_questions_google_calendar_show():
 
 
 
+def pickle_predictor(predictor):
+	print "starting to pickle predictor"
+	train_predictor_for_brain(predictor, training_set_calendar, training_set_schedule_suggest, training_set_google_calendar_show, training_set_google_docs, training_set_google_drawings, training_set_wolfram, training_set_wikipedia)
+	pickled_string = cPickle.dumps(predictor)
+	f = open('brain/pickled_predictor.txt', 'w')
+	f.write(pickled_string)
+	f.close()
+	print "finished pickling predictor"
 
 
 
@@ -746,6 +754,7 @@ def train_predictor_for_brain(predictor, ts_cal, ts_ss, ts_cs, ts_gd, ts_gdr, ts
 	training_feature_arrays_train = change_query_string_to_int_array(training_set)
 	training_class_array_train = change_api_type_array_to_int_array(training_set)
 	train_predictor(training_feature_arrays_train, training_class_array_train, predictor)
+	print "finished training predictor"
 
 
 
@@ -794,13 +803,9 @@ def predict_api_type(predictor, query):
 
 
 
+#predictor_to_be_pickled = BernoulliNB()
 
-
-
-
-
-
-
+#pickle_predictor(predictor_to_be_pickled)
 
 
 

@@ -11,7 +11,7 @@ import wave
 import os
 import random
 import socket
-
+import cPickle
 
 #SciKit Learn Library Imports/Dependencies
 import numpy as np
@@ -145,10 +145,10 @@ if __name__ == "__main__":
     # and parse the JSON output
 
     data = loads(urlopen("http://httpbin.org/ip ").read())
+    f = open('brain/pickled_predictor.txt', 'r')
 
-    api_predictor = BernoulliNB()
-
-    train_predictor_for_brain(api_predictor, training_set_calendar, training_set_schedule_suggest, training_set_google_calendar_show, training_set_google_docs, training_set_google_drawings, training_set_wolfram, training_set_wikipedia)
+    api_predictor_pickled_string = f.read()
+    api_predictor = cPickle.loads(api_predictor_pickled_string)
 
     print "predictor has been trained"
     if 'ip-172-31-10-207' in str(socket.gethostname()):   # If on AWS
