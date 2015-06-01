@@ -26,10 +26,7 @@ comm.on('local', function(options) {
     localVideo.muted = true;
     var children = $("#video-list").children();
     var i;
-    //for (i = 0; i < children.size(); i++) {
-    // console.log("child to play receive: ", children[i]);
     children[0].play();
-    //}
     console.log("Obtained user camera/microphone approval");
     // fill in chat history from redis
     var chat_history;

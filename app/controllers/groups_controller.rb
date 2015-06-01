@@ -39,6 +39,22 @@ class GroupsController < ApplicationController
     render nothing: true
   end
 
+  def update_unique_benny_query_history
+    $redis.set(params[:query], params[:value])
+    render nothing: true 
+  end
+
+  def get_unique_benny_query
+    hash = {}
+    api_json = $redis.get(params[:query])
+    if api_json.nil?
+      hash['result'] = api_json.to_s
+    else
+      hash['result'] = api_json
+    end
+    render :json => hash
+  end
+
 	def show
     @group = Group.find(params[:id])
   end

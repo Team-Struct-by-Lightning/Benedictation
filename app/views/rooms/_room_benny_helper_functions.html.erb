@@ -1,41 +1,49 @@
 // This file contains functions specific to sending data to and from the Python NLP interpreter
 // and the API request handler in the Rooms controller.
 // These are moved here to help keep _room_icecomm and _room_chat specific to icecomm and chat, respectively.
-
-
 // This function takes a JSON object as returned from the Python server,
 // and sends it to the API request handler in the Rooms controller. The rooms controller sends the hash to a rooms helper called choose_api, which modifies the hash and adds new attributes as needed, and then returns the modified hash (called json_hash in the code below.) This removes the need for redis here.
-
 // First make sure the users oauth token is up to date
 <%= current_user.refresh_token_if_expired %>
-
-
-var postAPIRequest = function(myData) {
-    console.log("in postAPIRequest");
-    $.ajax({
-        type: "POST",
-        url: "/check_api",
-        data: {
-            jsonData: JSON.stringify(myData)
-        },
-        success: function(json_hash) {
-            console.log("JSON returned from /check_api: ",json_hash);
-            if (json_hash.api_type === 'google_docs') {
-                create_new_document(json_hash);
+var postAPIRequest = function(myData, oldornew) {
+    if (oldornew == "new") {
+        console.log("in postAPIRequest");
+        $.ajax({
+            type: "POST",
+            url: "/check_api",
+            data: {
+                jsonData: JSON.stringify(myData)
+            },
+            success: function(json_hash) {
+                console.log("JSON returned from /check_api: ", json_hash);
+                if (json_hash.api_type === 'google_docs') {
+                    create_new_document(json_hash);
+                } else if (json_hash.api_type === 'google_drawings') {
+                    create_new_drawing(json_hash);
+                } else {
+                    // for wolfram and wiki, the json_hash was modified to hold the required/correct api_type attribute according to the heiarchy, 
+                    // in addition to containing a new api_html attribute for renders. 
+                    // For calendar, the json is unmodified from the python server's version.
+                    sendBennyReply(json_hash);
+                }
+                // update redis with json if question api
+                if (json_hash.api_type == "wikipedia" | json_hash.api_type == "wolfram" || json_hash.api_type == "google") {
+                    $.ajax({
+                        type: "POST",
+                        url: "/update_unique_benny_query_history",
+                        data: {
+                            query: json_hash['query'],
+                            value: JSON.stringify(json_hash)
+                        }
+                    });
+                }
             }
-            else if(json_hash.api_type === 'google_drawings'){
-                create_new_drawing(json_hash);
-            } 
-            else {
-                // for wolfram and wiki, the json_hash was modified to hold the required/correct api_type attribute according to the heiarchy, 
-                // in addition to containing a new api_html attribute for renders. 
-                // For calendar, the json is unmodified from the python server's version.
-                sendBennyReply(json_hash);
-            }
-        }
-    });
+        });
+    } else {
+        // if query has been made before, then myData can be passed directly to sendBennyReply
+        sendBennyReply(myData);
+    }
 }
-
 // Called when a websocket (either speechrec or text) receives a reply from the Python server.
 var onBennyReply = function(e) {
     console.log("data from server: ", e.data);
@@ -43,7 +51,6 @@ var onBennyReply = function(e) {
     recordSpeech.recording = 0;
     count_b = 0;
     if (e.data === "") return
-
     try {
         // Get the list of everyone currently in the room from Redis.
         var url = (window.location.pathname).split("/");
@@ -71,13 +78,37 @@ var onBennyReply = function(e) {
                 }
                 var myData = JSON.parse(e.data);
                 myData["attendees_array"] = attendees_to_send;
-                postAPIRequest(myData);
+                // check if query already exists and is a question api
+                var api_type = myData["api_type"];
+                if (api_type == "google" || api_type == "wikipedia" || api_type == "wolfram") {
+                    $.ajax({
+                        type: "GET",
+                        url: "/get_unique_benny_query",
+                        dataType: "json",
+                        data: {
+                            'query': myData["query"]
+                        },
+                        success: function(return_val) {
+                            api_json = return_val['result']
+                            console.log("api_json: ", api_json);
+                            // if query is new
+                            if (api_json == "") {
+                                postAPIRequest(myData, "new");
+                            } else {
+                                // post the benny reply dire
+                                postAPIRequest(JSON.parse(api_json), "old");
+                            }
+                        }
+                    });
+                } else {
+                    // non-question api should always be new data
+                    postAPIRequest(myData, "new")
+                }
             }
         });
     } catch (e) {
         console.error("Malformed or nonexistent data received from Benny server");
     }
-
     recordSpeech.recording = 0;
     count_b = 0;
 }
