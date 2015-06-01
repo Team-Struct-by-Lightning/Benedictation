@@ -101,13 +101,35 @@ module RoomsHelper
 		# <queryresult success='false' OR # <pod title='Definition' means we should do wiki instead of wolfram
 		api_html = ""
 		if doc.xpath("//queryresult").attr("success").to_s == 'false' or doc.xpath("//queryresult").attr("numpods").to_s == '0' or doc.xpath('//*[@title="Definition"]').length != 0
-			json_hash[order] = ""
-			json_hash[order + "_image_name"] = ActionController::Base.helpers.asset_path('wolfram.jpg')
+			if json_hash['api_type'] == ""
+				if order == "first"
+					json_hash['second'] = ""
+					json_hash['second' + "_image_name"] = ActionController::Base.helpers.asset_path('wolfram.jpg')
+				elsif order == "second"
+					json_hash['third'] = ""
+					json_hash['third' + "_image_name"] = ActionController::Base.helpers.asset_path('wolfram.jpg')
+				else
+					json_hash['third'] = ""
+					json_hash['third' + "_image_name"] = ActionController::Base.helpers.asset_path('wolfram.jpg')
+				end
+			else
+				# grab the wolfram html
+				json_hash[order] = ""
+				json_hash[order + "_image_name"] = ActionController::Base.helpers.asset_path('wolfram.jpg')
+			end
+
+
 		# otherwise the api type is definitely wolfram
 		else
-			# grab the wolfram html
-			json_hash[order] = "wolfram"
-			json_hash[order + "_image_name"] = ActionController::Base.helpers.asset_path('wolfram.jpg')
+			if json_hash['api_type'] == ""
+				json_hash['api_type'] = 'wolfram'
+				json_hash['first'] = 'wolfram'
+				json_hash['first' + "_image_name"] = ActionController::Base.helpers.asset_path('wolfram.jpg')
+			else
+				# grab the wolfram html
+				json_hash[order] = "wolfram"
+				json_hash[order + "_image_name"] = ActionController::Base.helpers.asset_path('wolfram.jpg')
+			end
 			markups = []
 			doc.xpath("//markup").each do |markup|
 				markups << markup.text
@@ -132,21 +154,48 @@ module RoomsHelper
 
 		if page.content.nil?
 
-			json_hash[order] = ""
-			json_hash[order + "_image_name"] = ActionController::Base.helpers.asset_path('wikipedia.ico')
+			if json_hash['api_type'] == ""
+				if order == "first"
+					json_hash['second'] = ""
+					json_hash['second' + "_image_name"] = ActionController::Base.helpers.asset_path('wikipedia.ico')
+				elsif order == "second"
+					json_hash['third'] = ""
+					json_hash['third' + "_image_name"] = ActionController::Base.helpers.asset_path('wikipedia.ico')
+				else
+					json_hash['third'] = ""
+					json_hash['third' + "_image_name"] = ActionController::Base.helpers.asset_path('wikipedia.ico')
+				end
+			else
+				# grab the wolfram html
+				json_hash[order] = ""
+				json_hash[order + "_image_name"] = ActionController::Base.helpers.asset_path('wikipedia.ico')
+			end
 
 
 		else
-			json_hash[order] = "wikipedia"
-			json_hash[order + "_image_name"] = ActionController::Base.helpers.asset_path('wikipedia.ico')
+			if json_hash['api_type'] == ""
+				json_hash['api_type'] = 'wikipedia'
+				json_hash['first'] = 'wikipedia'
+				json_hash['first' + "_image_name"] = ActionController::Base.helpers.asset_path('wikipedia.ico')
+			else
+				# grab the wolfram html
+				json_hash[order] = "wikipedia"
+				json_hash[order + "_image_name"] = ActionController::Base.helpers.asset_path('wikipedia.ico')
+			end
 		end
 		json_hash
 	end
 
 	def query_google(json_hash, order)
-		puts "we got into googs"
-		json_hash[order] = "google"
-		json_hash[order + "_image_name"] = ActionController::Base.helpers.asset_path('google-fav.jpg')
+		if json_hash['api_type'] == ""
+			json_hash['api_type'] = 'google'
+			json_hash['first'] = 'google'
+			json_hash['first' + "_image_name"] = ActionController::Base.helpers.asset_path('google-fav.jpg')
+		else
+			# grab the wolfram html
+			json_hash[order] = "google"
+			json_hash[order + "_image_name"] = ActionController::Base.helpers.asset_path('google-fav.jpg')
+		end
 		json_hash
 	end
 
@@ -154,16 +203,19 @@ module RoomsHelper
 	def query(json_hash)
 		case json_hash['api_type']
 		when 'wolfram'
+			json_hash['api_type'] = ""
 			json_hash = query_wolfram_alpha(json_hash, 'first')
 			json_hash = query_wikipedia(json_hash, 'second')
 			json_hash = query_google(json_hash, 'third')
 			json_hash
 		when 'wikipedia'
+			json_hash['api_type'] = ""
 			json_hash = query_wikipedia(json_hash, 'first')
 			json_hash = query_wolfram_alpha(json_hash, 'second')
 			json_hash = query_google(json_hash, 'third')
 			json_hash
 		when 'google'
+			json_hash['api_type'] = ""
 			json_hash = query_google(json_hash, 'first')
 			json_hash = query_wolfram_alpha(json_hash, 'second')
 			json_hash = query_wikipedia(json_hash, 'third')
