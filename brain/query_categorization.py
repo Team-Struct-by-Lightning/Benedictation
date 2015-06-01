@@ -777,6 +777,63 @@ def threshold_calculator_for_predict(probabilities, query):
 
 #Trevor fill this in!!!
 def question_noun_phrase(query):
+
+	if(len(query.split()) <= 1):
+		return query 
+
+	query = oclock_remover(query)
+	query = benedict_remover(query)
+
+	tree = parser.parse(query)
+
+	if 'NP' == tree.label() or \
+	'NP+NP'== tree.label() or \
+	'NX+NX'== tree.label() or \
+	'NX+NP'== tree.label() or \
+	'NP+NX'== tree.label() or \
+	'FRAG'== tree.label() or \
+	'NX' == tree.label():
+		words = query
+		noun_phrase = []
+		# this is code for finding the noun phrase
+		noun_phrase = tree.leaves()
+
+		# this code removes the article from the beginning
+		if noun_phrase:
+			if (noun_phrase[0] == 'a' or \
+			 	noun_phrase[0] == 'an' or noun_phrase[0] == 'the'):
+				del noun_phrase[0]
+
+		#print noun_phrase
+		noun_phrase = ' '.join(noun_phrase)
+
+		return noun_phrase
+
+	for element in [tree] + [e for e in tree]: # Include the root element in the for loop
+		if "SBAR" in element.label():
+			for subtree in element.subtrees():
+				if "W" in subtree.label():
+					noun_phrase = []
+					print noun_phrase
+					# this is code for finding the noun phrase
+					for noun_subtree in element.subtrees():
+						if not "SBAR" in noun_subtree.label() \
+						and not "W" in noun_subtree.label() \
+						and "NP" in noun_subtree.label() \
+						and len(noun_subtree.leaves()) > len(noun_phrase):
+
+							noun_phrase = noun_subtree.leaves()
+
+					# this code removes the article from the beginning
+					if noun_phrase:
+						if (noun_phrase[0] == 'a' or \
+						 	noun_phrase[0] == 'an' or noun_phrase[0] == 'the'):
+							del noun_phrase[0]
+
+					noun_phrase = ' '.join(noun_phrase)
+
+					return noun_phrase
+
 	return ""
 
 def make_json(query, api_type, api_number):
@@ -812,7 +869,7 @@ def predict_api_type(predictor, query):
 
 
 
-
+print question_noun_phrase("big dogs eating cabbage")
 #generate_questions_google_calendar_show()
 #generate_questions_google_drawings()
 
