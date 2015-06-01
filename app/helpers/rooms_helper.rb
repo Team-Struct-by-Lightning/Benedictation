@@ -167,10 +167,12 @@ module RoomsHelper
 		api_html = ""
 		if doc.xpath("//queryresult").attr("success").to_s == 'false' or doc.xpath("//queryresult").attr("numpods").to_s == '0' or doc.xpath('//*[@title="Definition"]').length != 0
 			json_hash[order] = ""
+			json_hash[order + "_image_name"] = ActionController::Base.helpers.asset_path('wikipedia.ico')
 		# otherwise the api type is definitely wolfram
 		else
 			# grab the wolfram html
 			json_hash[order] = "wolfram"
+			json_hash[order + "_image_name"] = ActionController::Base.helpers.asset_path('wolfram.jpg')
 			markups = []
 			doc.xpath("//markup").each do |markup|
 				markups << markup.text
@@ -185,7 +187,7 @@ module RoomsHelper
 	def query_wikipedia(json_hash, order)
 		query_string = json_hash['noun_phrase'].to_s
 		# check if we should change to google search
-		if query_string == ""
+		if query_string == "" or query_string.nil?
 			query_string = json_hash['query'].to_s
 		else
 			puts "Non-trivial noun phrase found"
@@ -196,9 +198,12 @@ module RoomsHelper
 		if page.content.nil?
 
 			json_hash[order] = ""
+			json_hash[order + "_image_name"] = ActionController::Base.helpers.asset_path('wikipedia.ico')
+
 
 		else
 			json_hash[order] = "wikipedia"
+			json_hash[order + "_image_name"] = ActionController::Base.helpers.asset_path('wikipedia.ico')
 		end
 		json_hash
 	end
@@ -206,6 +211,7 @@ module RoomsHelper
 	def query_google(json_hash, order)
 		puts "we got into googs"
 		json_hash[order] = "google"
+		json_hash[order + "_image_name"] = ActionController::Base.helpers.asset_path('google-fav.jpg')
 		json_hash
 	end
 

@@ -91,8 +91,8 @@ function clickable(me,api_clicked) {
             // and we have an if statement that let's us determine which
             // api the Redis item corresponds to
 
-            // if the thing clicked was wolfram, wiki, or google, then the api_clicked parameter of this function will exist, and the argument length will be 2.
-            if(arguments.length == 2){
+            // if the thing clicked was wolfram, wiki, or google, then the api_clicked parameter of this function will exist, and the argument length will be 2 + "this" = 3.
+            if(arguments.length == 3){
                 console.log("we got a question api.");
                 item['api_type'] = api_clicked;
             }

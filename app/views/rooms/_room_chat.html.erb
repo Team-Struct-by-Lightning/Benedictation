@@ -1,33 +1,25 @@
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////====CHAT====////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-
 //variables for the chat box
 var $sendButton = $("#js-send-button-im");
 var $inputIM = $("#js-input-im");
 var $chatBody = $("#js-chat-body");
-
-
 var $speechRecBody = $("#speech-rec-body");
 var localId = comm.getLocalID();
-
 var $bennySendButton = $("#benny-send-button-im");
 var $bennyInputIM = $("#benny-input-text");
-
 $sendButton.on('click', sendIM);
 $bennySendButton.on('click', sendMessage);
-
 // click the send button when enter key is pressed
-$inputIM.keydown(function (event) {
+$inputIM.keydown(function(event) {
     var keypressed = event.keyCode || event.which;
     if (keypressed == 13) {
         $sendButton.click();
     }
 });
-
 var text_query_flag = 0;
-
-$bennyInputIM.keydown(function (event) {
+$bennyInputIM.keydown(function(event) {
     var keypressed = event.keyCode || event.which;
     if (keypressed == 13) {
         $bennySendButton.click();
@@ -38,8 +30,6 @@ $bennyInputIM.keydown(function (event) {
         text_query_flag = 1;
     }
 });
-
-
 // Set up the WebSocket connection to the NLP interpreter.
 var myLocation = location.host.split(":")[0];
 var port = "8888";
@@ -50,38 +40,28 @@ if (location.protocol !== "https:") {
     myLocation = myLocation.split(":")[0];
 }
 var bennySocket = new WebSocket(websocketprotocol + myLocation + ":" + port + uri); // initialize
-bennySocket.onmessage = onBennyReply;   // defined in _room_benny_helper_functions
-
+bennySocket.onmessage = onBennyReply; // defined in _room_benny_helper_functions
 function sendMessage() {
-  waitForSocketConnection(bennySocket, function() {
-      bennySocket.send($bennyInputIM.val());
-      $bennyInputIM.val("");
-  });
+    waitForSocketConnection(bennySocket, function() {
+        bennySocket.send($bennyInputIM.val());
+        $bennyInputIM.val("");
+    });
 };
 
-function waitForSocketConnection(socket, callback){
-  setTimeout(
-      function(){
-          if (socket.readyState === 1) {
-              if(callback !== undefined){
-                  callback();
-              }
-              return;
-          } else {
-              waitForSocketConnection(socket,callback);
-          }
-      }, 5);
+function waitForSocketConnection(socket, callback) {
+    setTimeout(function() {
+        if (socket.readyState === 1) {
+            if (callback !== undefined) {
+                callback();
+            }
+            return;
+        } else {
+            waitForSocketConnection(socket, callback);
+        }
+    }, 5);
 };
-
-// With Turbolinks pages will change without a full reload, so you can't rely on the usual window.beforepageunload event. Instead Turbolinks fires events on document to provide hooks into the lifecycle of the page.
-$(document).on("page:fetch", function() {
-    console.log('turbolinks page fetch event');
-});
-
 // Send a new chat message to everyone else in the room.
-function sendIM() {
-    <%= puts "FROM CHAT" %>
-    "<% current_user.refresh_token_if_expired %>"
+function sendIM() { <%= puts "FROM CHAT" %> "<% current_user.refresh_token_if_expired %>"
     var message = $inputIM.val();
     var content = "<%= current_user.name %>" + "@@@" + "<%= current_user.uid %>" + "@@@" + "<%= current_user.oauth_token %>" + "@@@" + message;
     comm.send(content)
@@ -109,7 +89,6 @@ function sendIM() {
     });
     $inputIM.val("");
 }
-
 // Send your a Benedict query result to everyone else in the room,
 // so it will appear in the Benedict query sidebar.
 function sendBennyReply(json_api_reply) {
@@ -117,58 +96,46 @@ function sendBennyReply(json_api_reply) {
     var id = String(url[url.length - 2]);
     var name = String(url[url.length - 1])
     var key = name + ":" + id + ":bennyhistory";
-
     console.log("now gonna push it to redis");
-
     $.ajax({
-           type: "GET",
-           url: "/get_redis_length",
-           dataType: "json",
-           data: {
-               'redis_key': key
-           },
-           success: function(item) {
-            console.log("@@@success (item) in sendBennyReply: ",item);
-                var len = parseInt(item['result'], 10);
-                var user_name =  "<%= current_user.name %>";
-                var name_arr = user_name.split(" ");
-                var new_name = name_arr.join(":");
-                var key_user_id_and_index =  String(len) + ":" + name + ":" + id + ":bennyhistory:" +"<%= current_user.email %>" + ":" + new_name;
-
-                json_api_reply['name'] = "<%= current_user.name %>"
-                json_api_reply['key'] = key_user_id_and_index;
-                console.log("json_api_reply in sendBennyReply: ",json_api_reply);
-
-
-                $.ajax({
-                    type: "POST",
-                    url: "/update_redis",
-                    data: {
-                        redis_key: key,
-                        message: JSON.stringify(json_api_reply)
-                    }
-                });
-                if (json_api_reply['api_type'] != "No Result" && json_api_reply['api_type'] != "Blank Query") {
-                    // benny_json = {
-                    //     name: "<%= current_user.name %>",
-                    //     data: json_api_reply,
-                    //     key: key_user_id_and_index,
-                    //     callerID: "<%= current_user.name %>"
-                    // };
-                    // send benny reply to everyone else
-                    console.log("sending this through comm.send: ",json_api_reply);
-                    comm.send(json_api_reply);
-                    // append benny reply to your own page
-                    appendNewBennyReply(json_api_reply);
+        type: "GET",
+        url: "/get_redis_length",
+        dataType: "json",
+        data: {
+            'redis_key': key
+        },
+        success: function(item) {
+            console.log("@@@success (item) in sendBennyReply: ", item);
+            var len = parseInt(item['result'], 10);
+            var user_name = "<%= current_user.name %>";
+            var name_arr = user_name.split(" ");
+            var new_name = name_arr.join(":");
+            var key_user_id_and_index = String(len) + ":" + name + ":" + id + ":bennyhistory:" + "<%= current_user.email %>" + ":" + new_name;
+            json_api_reply['name'] = "<%= current_user.name %>"
+            json_api_reply['key'] = key_user_id_and_index;
+            console.log("json_api_reply in sendBennyReply: ", json_api_reply);
+            $.ajax({
+                type: "POST",
+                url: "/update_redis",
+                data: {
+                    redis_key: key,
+                    message: JSON.stringify(json_api_reply)
                 }
+            });
+            if (json_api_reply['api_type'] != "No Result" && json_api_reply['api_type'] != "Blank Query") {
+                // send benny reply to everyone else
+                console.log("sending this through comm.send: ", json_api_reply);
+                comm.send(json_api_reply);
+                // append benny reply to your own page
+                appendNewBennyReply(json_api_reply);
             }
+        }
     });
 }
 
 function appendNewIM_text_only(message_string) {
     $chatBody.append(message_string);
 }
-
 // stick new instant message onto the chat body
 function appendNewIM(options) {
     console.log(options);
@@ -184,39 +151,26 @@ function appendNewIM(options) {
     message_data.join("@@@");
     mediaObjectIM(caller_name, caller_uid, caller_token, message_data);
 }
-
 // This function appends a new Benedict query reply onto the sidebar.
 // This is where the sidebar div is created.
 var benny_note_number = 0;
-function appendNewBennyReply(json_murph) {
-    <% image_name = "" %>
-    console.log("json_murph: ",json_murph);
-    console.log("json.parse: ",json_murph);
-    var name = truncation(json_murph.name, 14);
 
+function appendNewBennyReply(json_murph) { <% image_name = "" %> console.log("json_murph: ", json_murph);
+    console.log("json.parse: ", json_murph);
+    var name = truncation(json_murph.name, 14);
     var query;
     if (json_murph.query) {
         query = json_murph.query;
         query = query.split(" '").join("'")
         query = query.split(" \u0027").join("'")
     }
-
-    // if (json_murph.api_type != 'Blank Query') {
-    //     benny_note_number = benny_note_number + 1;
-    //     $('#benny-help-temp').remove();
-    // }
-
     benny_note_number = benny_note_number + 1;
     $('#benny-help-temp').remove();
-
-    if (json_murph.api_type == 'calendar' || json_murph.api_type == 'calendar_show'){
-
-        <% image_name = "googz.ico" %>
+    if (json_murph.api_type == 'calendar' || json_murph.api_type == 'calendar_show') { <% image_name = "googz.ico" %>
         var summary = ""
-        if (json_murph.summary == ""){
+        if (json_murph.summary == "") {
             summary = "No summary."
-        }
-        else {
+        } else {
             if (json_murph.api_type != 'calendar_show') {
                 summary = truncation(json_murph.summary, 40);
             }
@@ -229,25 +183,11 @@ function appendNewBennyReply(json_murph) {
         var parameter = 'clickable("' + json_murph.key + '")';
         $('.benny-list-body').addClass('benny-list-body-func');
         if (json_murph.api_type === 'calendar') {
-            $('.benny-list-body').append('<div class="benny-item benny-calendar" id=' + benny_item_id +'>' +
-                            '<%= image_tag("#{image_name}", class: "favicon") %>' +
-                            '<a class="name-and-summary-calendar">' + name + '</a>' +
-                            '<a class="benny-link" onclick=' + parameter + ' id=' +
-                            benny_item_link_id + '> Summary: ' + summary + '</a>' +
-                            '</div>');
+            $('.benny-list-body').append('<div class="benny-item benny-calendar" id=' + benny_item_id + '>' + '<%= image_tag("#{image_name}", class: "favicon") %>' + '<a class="name-and-summary-calendar">' + name + '</a>' + '<a class="benny-link" onclick=' + parameter + ' id=' + benny_item_link_id + '> Summary: ' + summary + '</a>' + '</div>');
+        } else {
+            $('.benny-list-body').append('<div class="benny-item benny-calendar" id=' + benny_item_id + '>' + '<%= image_tag("#{image_name}", class: "favicon") %>' + '<a class="name-and-summary-calendar">' + name + '</a>' + '<a class="benny-link" onclick=' + parameter + ' id=' + benny_item_link_id + '> View calendar </a>' + '</div>');
         }
-        else {
-            $('.benny-list-body').append('<div class="benny-item benny-calendar" id=' + benny_item_id +'>' +
-                '<%= image_tag("#{image_name}", class: "favicon") %>' +
-                '<a class="name-and-summary-calendar">' + name + '</a>' +
-                '<a class="benny-link" onclick=' + parameter + ' id=' +
-                benny_item_link_id + '> View calendar </a>' +
-                '</div>');
-        }
-    }
-
-    else if(json_murph.api_type == 'schedule_suggest') {
-        <% image_name = "googz.ico" %>
+    } else if (json_murph.api_type == 'schedule_suggest') { <% image_name = "googz.ico" %>
         var key_array = json_murph.key.split(":");
         var key_array_slice = key_array.slice(0, 4);
         var key = key_array_slice.join(":");
@@ -255,121 +195,81 @@ function appendNewBennyReply(json_murph) {
         var benny_item_link_id = "benny_query" + key;
         var parameter = 'clickable("' + json_murph.key + '")';
         $('.benny-list-body').addClass('benny-list-body-func');
-
-        $('.benny-list-body').append('<div class="benny-item benny-calendar" id=' + benny_item_id +'>' +
-                            '<%= image_tag("#{image_name}", class: "favicon") %>' +
-                            '<a class="name-and-summary-calendar">' + name + '</a>' +
-                            '<a class="benny-link" onclick=' + parameter + ' id=' +
-                            benny_item_link_id + '> Suggested times </a>' +
-                            '</div>');
-    }
-
-    else if (json_murph.api_type == 'wolfram'){
-        <% image_name = "wolfram.jpg" %>
-        if (json_murph.query == ""){
+        $('.benny-list-body').append('<div class="benny-item benny-calendar" id=' + benny_item_id + '>' + '<%= image_tag("#{image_name}", class: "favicon") %>' + '<a class="name-and-summary-calendar">' + name + '</a>' + '<a class="benny-link" onclick=' + parameter + ' id=' + benny_item_link_id + '> Suggested times </a>' + '</div>');
+    } else if (json_murph.api_type == 'wolfram') { <% image_name = "wolfram.jpg" %>
+        if (json_murph.query == "") {
             query = "No query.";
-        }
-        else {
+        } else {
             query = truncation(query, 40);
-
         }
         var key_array = json_murph.key.split(":");
         var key_array_slice = key_array.slice(0, 4);
         var key = key_array_slice.join(":");
         var benny_item_id = "benny" + key;
         var benny_item_link_id = "benny_query" + key;
+        // first, second, third order of apis
+        var first_choice_api = json_murph.first;
+        var second_choice_api = json_murph.second;
+        var third_choice_api = json_murph.third;
+        // first, second, and third order of api images
+        var first_choice_image_name = json_murph.first_image_name;
+        var second_choice_image_name = json_murph.second_image_name;
+        var third_choice_image_name = json_murph.third_image_name;
+
         console.log("benny item link id in chat: ", benny_item_link_id);
-        var parameter = 'clickable("' + json_murph.key + '")';
+        var parameter1 = 'clickable("' + json_murph.key + '"' + ',' + '"' + first_choice_api + '")';
+        var parameter2 = 'clickable("' + json_murph.key + '"' + ',' + '"' + second_choice_api + '")';
+        var parameter3 = 'clickable("' + json_murph.key + '"' + ',' + '"' + third_choice_api + '")';
         $('.benny-list-body').addClass('benny-list-body-func');
-        $('.benny-list-body').append('<div class="benny-item benny-wolfram" id=' + benny_item_id +'>' +
-                            '<%= image_tag("#{image_name}", class: "favicon question-favicon") %>' +
-                            '<%= image_tag("wikipedia.ico", class: "favicon left-fav-small") %>' +
-                            '<%= image_tag("google-fav.jpg", class: "favicon right-fav-small") %>' +
-                            '<a class="name-and-summary-wolfram">' + name + '</a>' +
-                            '<a class="benny-link question-link" onclick=' + parameter + ' id=' +
-                            benny_item_link_id + '> Query: ' + query + '</a>' +
-                            '</div>');
-    }
-    else if (json_murph.api_type == 'google') {
-        <% image_name = "google-fav.jpg" %>
+        $('.benny-list-body').append('<div class="benny-item benny-wolfram" id=' + benny_item_id + '>' + '<a onclick=' + parameter1 + '>' + '<img class="favicon question-favicon" src="' + first_choice_image_name + '" />' + '</a>' + '<a onclick=' + parameter2 + '>' + '<img class="favicon left-fav-small" src="' + second_choice_image_name + '" />' + '</a>' + '<a onclick=' + parameter3 + '>' + '<img class="favicon right-fav-small" src="' + third_choice_image_name + '" />' + '</a>' + '<a class="name-and-summary-wolfram">' + name + '</a>' + '<a class="benny-link question-link" onclick=' + parameter1 + ' id=' + benny_item_link_id + '> Query: ' + query + '</div>');
+    } else if (json_murph.api_type == 'google') { <% image_name = "google-fav.jpg" %>
         var query = ""
-        if (json_murph.query == ""){
+        if (json_murph.query == "") {
             query = "No query.";
-        }
-        else {
+        } else {
             query = truncation(json_murph.query, 40);
-
         }
-
+        var key_array = json_murph.key.split(":");
+        var key_array_slice = key_array.slice(0, 4);
+        var key = key_array_slice.join(":");
+        var benny_item_id = "benny" + key;
+        var benny_item_link_id = "benny_query" + key;
+        // first, second, third order of apis
+        var first_choice_api = json_murph.first;
+        var second_choice_api = json_murph.second;
+        var third_choice_api = json_murph.third;
+        // first, second, and third order of api images
+        var first_choice_image_name = json_murph.first_image_name;
+        var second_choice_image_name = json_murph.second_image_name;
+        var third_choice_image_name = json_murph.third_image_name;
+        var parameter1 = 'clickable("' + json_murph.key + '"' + ',' + '"' + first_choice_api + '")';
+        var parameter2 = 'clickable("' + json_murph.key + '"' + ',' + '"' + second_choice_api + '")';
+        var parameter3 = 'clickable("' + json_murph.key + '"' + ',' + '"' + third_choice_api + '")';
+        $('.benny-list-body').addClass('benny-list-body-func');
+        $('.benny-list-body').append('<div class="benny-item benny-wolfram" id=' + benny_item_id + '>' + '<a onclick=' + parameter1 + '>' + '<img class="favicon question-favicon" src="' + first_choice_image_name + '" />' + '</a>' + '<a onclick=' + parameter2 + '>' + '<img class="favicon left-fav-small" src="' + second_choice_image_name + '" />' + '</a>' + '<a onclick=' + parameter3 + '>' + '<img class="favicon right-fav-small" src="' + third_choice_image_name + '" />' + '</a>' + '<a class="name-and-summary-wolfram">' + name + '</a>' + '<a class="benny-link question-link" onclick=' + parameter1 + ' id=' + benny_item_link_id + '> Query: ' + query + '</div>');
+    } else if (json_murph.api_type == 'google_docs' || json_murph.api_type == 'docs_show') { <% image_name = "google_docs.png" %>
         var key_array = json_murph.key.split(":");
         var key_array_slice = key_array.slice(0, 4);
         var key = key_array_slice.join(":");
         var benny_item_id = "benny" + key;
         var benny_item_link_id = "benny_query" + key;
         var parameter = 'clickable("' + json_murph.key + '")';
-
         $('.benny-list-body').addClass('benny-list-body-func');
-        $('.benny-list-body').append('<div class="benny-item benny-google" id=' + benny_item_id +'>' +
-                            '<%= image_tag("#{image_name}", class: "favicon question-favicon", id:"google-fav") %>' +
-                            '<%= image_tag("wolfram.jpg", class: "favicon left-fav-small") %>' +
-                            '<%= image_tag("wikipedia.ico", class: "favicon right-fav-small") %>' +
-                            '<a class="name-and-summary-wolfram">' + name + '</a>' +
-                            '<a class="benny-link google-link" onclick=' + parameter + ' id=' +
-                            benny_item_link_id + '> Query: ' + query + '</a>' +
-                            '</div>');
-
-
-    }
-    else if (json_murph.api_type == 'google_docs' || json_murph.api_type == 'docs_show'){
-        <% image_name = "google_docs.png" %>
-
+        $('.benny-list-body').append('<div class="benny-item benny-google" id=' + benny_item_id + '>' + '<%= image_tag("#{image_name}", class: "favicon", id:"google-fav") %>' + '<a class="name-and-summary-calendar">' + name + '</a>' + '<a class="benny-link" onclick=' + parameter + ' id=' + benny_item_link_id + '> Document created by Benedict at ' + json_murph['current_time'] + ' </a>' + '</div>');
+    } else if (json_murph.api_type == 'google_drawings') { <% image_name = "google_drawing.ico" %>
         var key_array = json_murph.key.split(":");
         var key_array_slice = key_array.slice(0, 4);
         var key = key_array_slice.join(":");
         var benny_item_id = "benny" + key;
         var benny_item_link_id = "benny_query" + key;
         var parameter = 'clickable("' + json_murph.key + '")';
-
-
         $('.benny-list-body').addClass('benny-list-body-func');
-        $('.benny-list-body').append('<div class="benny-item benny-google" id=' + benny_item_id +'>' +
-                            '<%= image_tag("#{image_name}", class: "favicon", id:"google-fav") %>' +
-                            '<a class="name-and-summary-calendar">' + name + '</a>' +
-                            '<a class="benny-link" onclick=' + parameter + ' id=' +
-                            benny_item_link_id + '> Document created by Benedict at '+ json_murph['current_time'] +
-                            ' </a>' +
-                            '</div>');
-    }
-    else if (json_murph.api_type == 'google_drawings'){
-        <% image_name = "google_drawing.ico" %>
-
-        var key_array = json_murph.key.split(":");
-        var key_array_slice = key_array.slice(0, 4);
-        var key = key_array_slice.join(":");
-        var benny_item_id = "benny" + key;
-        var benny_item_link_id = "benny_query" + key;
-        var parameter = 'clickable("' + json_murph.key + '")';
-
-
-        $('.benny-list-body').addClass('benny-list-body-func');
-        $('.benny-list-body').append('<div class="benny-item benny-google" id=' + benny_item_id +'>' +
-                            '<%= image_tag("#{image_name}", class: "favicon", id:"google-fav") %>' +
-                            '<a class="name-and-summary-calendar">' + name + '</a>' +
-                            '<a class="benny-link" onclick=' + parameter + ' id=' +
-                            benny_item_link_id + '> Drawing created by Benedict at '+ json_murph['current_time'] +
-                            ' </a>' +
-                            '</div>');
-    }
-    else if(json_murph.api_type == 'wikipedia'){
-        console.log("woooo, wiki-freakin-pedia!!!!");
-
-        <% image_name = "wikipedia.ico" %>
-        if (json_murph.query == ""){
+        $('.benny-list-body').append('<div class="benny-item benny-google" id=' + benny_item_id + '>' + '<%= image_tag("#{image_name}", class: "favicon", id:"google-fav") %>' + '<a class="name-and-summary-calendar">' + name + '</a>' + '<a class="benny-link" onclick=' + parameter + ' id=' + benny_item_link_id + '> Drawing created by Benedict at ' + json_murph['current_time'] + ' </a>' + '</div>');
+    } else if (json_murph.api_type == 'wikipedia') { <% image_name = "wikipedia.ico" %>
+        if (json_murph.query == "") {
             query = "No query.";
-        }
-        else {
+        } else {
             query = truncation(query, 40);
-
         }
         var key_array = json_murph.key.split(":");
         var key_array_slice = key_array.slice(0, 4);
@@ -377,38 +277,30 @@ function appendNewBennyReply(json_murph) {
         var benny_item_id = "benny" + key;
         var benny_item_link_id = "benny_query" + key;
         console.log("benny item link id in chat: ", benny_item_link_id);
-        var parameter = 'clickable("' + json_murph.key + '")';
+        // first, second, third order of apis
+        var first_choice_api = json_murph.first;
+        var second_choice_api = json_murph.second;
+        var third_choice_api = json_murph.third;
+        // first, second, and third order of api images
+        var first_choice_image_name = json_murph.first_image_name;
+        var second_choice_image_name = json_murph.second_image_name;
+        var third_choice_image_name = json_murph.third_image_name;
+        var parameter1 = 'clickable("' + json_murph.key + '"' + ',' + '"' + first_choice_api + '")';
+        var parameter2 = 'clickable("' + json_murph.key + '"' + ',' + '"' + second_choice_api + '")';
+        var parameter3 = 'clickable("' + json_murph.key + '"' + ',' + '"' + third_choice_api + '")';
         $('.benny-list-body').addClass('benny-list-body-func');
-        $('.benny-list-body').append('<div class="benny-item benny-wikipedia" id=' + benny_item_id +'>' +
-                            '<%= image_tag("#{image_name}", class: "favicon question-favicon", alt: "' + key + '") %>' +
-                            '<%= image_tag("wolfram.jpg", class: "favicon left-fav-small", alt: "' + key + '") %>' +
-                            '<%= image_tag("google-fav.jpg", class: "favicon right-fav-small", alt: "' + key + '") %>' +
-                            '<a class="name-and-summary-wikipedia">' + name + '</a>' +
-                            '<a class="benny-link question-link" onclick=' + parameter + ' id=' +
-                            benny_item_link_id + '> Query: ' + query + '</a>' +
-                            '</div>');
-
-    }
-    else if (json_murph.api_type == 'No Result' || json_murph.api_type == 'Blank Query') {
-
-        $('.benny-list-body').append('<div class="benny-item benny-no-result" id=' + benny_item_id +'>' +
-                        '<a class="glyphicon glyphicon-question-sign" id="benny-query-question-mark" onmouseover="hoverHelp()"></a>' +
-                        '<a class="no-result-benny-link"> Sorry we could not match your request. ' +
-                        'For suggestions, click "Help" above.</a>' +
-                        '<a class="name-and-summary-no-result">' + name + '</a>' +
-                        '</div>');
+        $('.benny-list-body').append('<div class="benny-item benny-wolfram" id=' + benny_item_id + '>' + '<a onclick=' + parameter1 + '>' + '<img class="favicon question-favicon" src="' + first_choice_image_name + '" />' + '</a>' + '<a onclick=' + parameter2 + '>' + '<img class="favicon left-fav-small" src="' + second_choice_image_name + '" />' + '</a>' + '<a onclick=' + parameter3 + '>' + '<img class="favicon right-fav-small" src="' + third_choice_image_name + '" />' + '</a>' + '<a class="name-and-summary-wolfram">' + name + '</a>' + '<a class="benny-link question-link" onclick=' + parameter1 + ' id=' + benny_item_link_id + '> Query: ' + query + '</div>');
+    } else if (json_murph.api_type == 'No Result' || json_murph.api_type == 'Blank Query') {
+        $('.benny-list-body').append('<div class="benny-item benny-no-result" id=' + benny_item_id + '>' + '<a class="glyphicon glyphicon-question-sign" id="benny-query-question-mark" onmouseover="hoverHelp()"></a>' + '<a class="no-result-benny-link"> Sorry we could not match your request. ' + 'For suggestions, click "Help" above.</a>' + '<a class="name-and-summary-no-result">' + name + '</a>' + '</div>');
         var benny_childs = $('.benny-list-body').children()
         var item_to_toggle = benny_childs[benny_childs.length - 1];
-        $(item_to_toggle).delay(20000).slideToggle( function() {
-             item_to_toggle.remove();
-             if (benny_note_number != 0) {
+        $(item_to_toggle).delay(20000).slideToggle(function() {
+            item_to_toggle.remove();
+            if (benny_note_number != 0) {
                 benny_note_number = benny_note_number - 1;
-             }
-             bennyNotificationNumber();
-         });
-
-
-
+            }
+            bennyNotificationNumber();
+        });
     }
     var height = 0;
     $('.benny-item').each(function(i, value) {
@@ -417,15 +309,12 @@ function appendNewBennyReply(json_murph) {
     $('.benny-list-body').animate({
         scrollTop: height
     }, 'fast');
-
-
     $('#progressbar').hide();
     $('.progress-label').hide();
     $('#record-query-button').show();
     $('.svg-box').show();
     text_query_flag = 0;
 }
-
 // media object to append to the page each time there's a new chat
 function mediaObjectIM(user, uid, token, message) {
     var url_string = "https://www.googleapis.com/plus/v1/people/" + uid + "?access_token=" + token;
@@ -444,63 +333,47 @@ function mediaObjectIM(user, uid, token, message) {
         }, 'fast');
     });
 }
-
 // this is a function to mirror the ruby truncate
 // function so that queries do not overflow the benny
 // query divs
-function truncation(string, len){
-    if (string.length > len + 3){
+function truncation(string, len) {
+    if (string.length > len + 3) {
         var new_string;
         if (string.charAt(len - 1) == ' ') {
-            new_string = string.substr(0, len-2) + "...";
-        }
-        else {
-            new_string = string.substr(0, len-1) + "...";
+            new_string = string.substr(0, len - 2) + "...";
+        } else {
+            new_string = string.substr(0, len - 1) + "...";
         }
         return new_string;
-    }
-    else {
+    } else {
         return string;
     }
 }
-
 // this is a function that lights up the question mark in
 // the blank and no query divs
-function hoverHelp(){
+function hoverHelp() {
     $('#help-icon2').css('color', '#FFFFFF');
-    $("#benny-query-question-mark").hover( function(){
-            $('#help-icon2').css('color', '#FFFFFF');
-        }, function(){
-            $('#help-icon2').css('color', '#777777');
-        });
+    $("#benny-query-question-mark").hover(function() {
+        $('#help-icon2').css('color', '#FFFFFF');
+    }, function() {
+        $('#help-icon2').css('color', '#777777');
+    });
 }
-
 // This is the interval that checks whether or not benny
 // notifications need to be hidden
 var benny_notification_interval = setInterval(bennyNotificationNumber, 300);
-
 // this is the function that is called by the interval
 // that actually does the hiding of the benny notification
 // number
-function bennyNotificationNumber(){
-    if (benny_note_number <= 0 ) {
-         $('.notification-number').hide();
-    }
-    else {
-         $('.notification-number').html(benny_note_number.toString());
-         $('.notification-number').show();
+function bennyNotificationNumber() {
+    if (benny_note_number <= 0) {
+        $('.notification-number').hide();
+    } else {
+        $('.notification-number').html(benny_note_number.toString());
+        $('.notification-number').show();
     }
 }
-
-
 $(".favicon").click(function() {
     console.log("we are clicking!");
     console.log($this.alt);
 })
-
-
-
-
-
-
-
