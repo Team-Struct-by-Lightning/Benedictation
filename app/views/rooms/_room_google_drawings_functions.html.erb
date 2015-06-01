@@ -102,22 +102,42 @@ function create_new_drawing(myData){
       }
 
       file_id = resp.id;
-
-      for(var i = 0; i < myData['attendees_array'].length; i++){
-        var permission_body = {
+      
+      //current_user_email = "<%= current_user.email %>";
+      /*
+      if (myData['doc_link'] != undefined){
+        for(var i = 0; i < myData['attendees_array'].length; i++){
+          if (myData['attendees_array'][i]['email'] == current_user_email){
+            continue;
+          }
+          var permission_body = {
           'value': myData['attendees_array'][i]['email'],
-          'type': 'user',
-          'role': 'owner'
-        };
-        var p_request = gapi.client.drive.permissions.insert({
-          'fileId': file_id,
-          'resource': permission_body
-        });
-        p_request.execute(function(p_resp) { 
-            console.log("Adding permission");
-            //console.log(p_resp);
-        });
+          'type': 'anyone',
+          'role': 'writer'
+          };
+          var p_request = gapi.client.drive.permissions.insert({
+            'fileId': file_id,
+            'resource': permission_body
+          });
+          p_request.execute(function(p_resp) { 
+              console.log("permission response");
+              console.log(p_resp);
+          });
+        }
       }
+      */
+
+      var permission_body = {
+        'type': 'anyone',
+        'role': 'writer'
+      };
+      var p_request = gapi.client.drive.permissions.insert({
+        'fileId': file_id,
+        'resource': permission_body
+      });
+      p_request.execute(function(p_resp) { 
+          console.log("permission response : ", console.log(p_resp));
+      });
       
 
       myData['current_time'] = today.getHours() + ":" + min + ":" + sec;

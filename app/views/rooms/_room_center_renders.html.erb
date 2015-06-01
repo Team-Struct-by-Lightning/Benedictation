@@ -9,8 +9,10 @@
 // data is parsed from it to find the Redis key
 // and then the correct api render is selected,
 // populated, and appended to the center of the page
-function clickable(me) {
+
+function clickable(me,api_clicked) {
     console.log("me: ",me);
+    console.log("api_clicked: ",api_clicked);
     // here we get the children of the center drop spot
     // and if there is a video in the center of the page
     // we append it back to the sidebar so that we can clear up
@@ -88,7 +90,14 @@ function clickable(me) {
             // Redis which is a JSON object.  We first check the api type
             // and we have an if statement that let's us determine which
             // api the Redis item corresponds to
-            api_type = item['api_type'];
+
+            // if the thing clicked was wolfram, wiki, or google, then the api_clicked parameter of this function will exist, and the argument length will be 2 + "this" = 3.
+            if(typeof api_clicked !== 'undefined'){
+                console.log("we got a question api.");
+                item['api_type'] = api_clicked;
+            }
+                api_type = item['api_type'];
+           
             // the aforementioned 'if/else if' block
             if (api_type == 'calendar' || api_type == 'calendar_show') {
                 // the title at the top of the div
@@ -113,10 +122,12 @@ function clickable(me) {
                 // this appends the calendar iframe, title, remove x glyph, and the border
                 // to the room layout table
                 $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border calendar-border"> <h1 class="google-title">' + user_name_title + '</h1> <a class="glyphicon glyphicon-remove google-remove" id="remove_item_id"></a>' + '<iframe class="calendar-frame" src=' + email_url + ' style=" border-width:0 " width="100%" height="100%" frameborder="0" scrolling="no"></iframe></div>' + '</div>');
-            } else if (api_type == 'schedule_suggest') {
+            } 
+
+            else if (api_type == 'schedule_suggest') {
                 var render_item_id = "render" + div_id;
                 var title = "Suggested times";
-                var suggestions = item['suggested_times']; // is this JSON or string?
+                var suggestions = item['suggested_times']; // This is a string.
                 var result = suggestions.split('},{').length;
                 var result_name;
                 var result_val_string = String(result);
@@ -127,17 +138,38 @@ function clickable(me) {
                 else {
                     result_name = 'results';
                 }
-                // var suggestionOptions = "<div><ul>"
-                // for(suggestion in suggestions) {
-                //   suggestionOptions += "<li>" +
-                // }
-                // suggestionOptions += "</ul></div>"
+                
+                // Generate radio button and label elements for each suggestion.
+                // Limit to the first n, and then show more, perhaps?
+                // Minor improvement: Don't show the day twice if it's the same day...
+                suggestions_obj = JSON.parse(suggestions)
+                var suggestions_form = $('<form id="suggestions_form"></form>')
+                for(var i=0; i<suggestions_obj.length; i++) {
+                    suggestion = suggestions_obj[i];
+                    var date_str = DateFormat.format.date(suggestion.start, "E MMM D, h:mm p") + " to " + DateFormat.format.date(suggestion.end, "E MMM D, h:mm p");
+                    //console.log(date_str);
+                    // Create a radio button: value is i, so we can look up the corresponding option
+                    var radio_elem = $('<input type="radio" name="sched-option" value="' + i + '">' + date_str + '</input>');
+                    radio_elem.appendTo(suggestions_form);
+                }
+                var sched_submit_btn = $('<button id="schedule_submit">Schedule It</button>');
+                var user_name = "<%= current_user.name %>";
+                console.log(user_name);
+                if(user_name != item['name']) {
+                    sched_submit_btn.hide()
+                }
+                sched_submit_btn.click(scheduleSubmit);
+
                 $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' +
-                                                '  <div class="center-border suggestion-border"> <h1 class="suggestion-title">' +
-                                                title + '</h1> <h2 class="suggested-time-list-title">Select the time you wish to schedule</h2><p class="num-results">' +
-                                                result_val_string + ' ' + result_name + '</p><a class="glyphicon glyphicon-remove suggestion-remove" id="remove_item_id"></a>' +
-                                                '  <div class="suggestions-list"> ' + suggestions + '</div></div></div>');
-            } else if (api_type == 'google') {
+                                               '  <div class="center-border suggestion-border"> <h1 class="suggestion-title">' +
+                                               title + '</h1> <h2 class="suggested-time-list-title">Select the time you wish to schedule</h2><p class="num-results">' +
+                                               result_val_string + ' ' + result_name + '</p><a class="glyphicon glyphicon-remove suggestion-remove" id="remove_item_id"></a>' +
+                                              '  <div class="suggestions-list"></div></div></div>');
+                $('.suggestions-list').append(suggestions_form);
+                $('.center-border').append(sched_submit_btn);
+            } 
+
+            else if (api_type == 'google') {
                 // title of the center render
                 var title = "Google Search Results";
                 // adds the word render to the unique id of the div based on
@@ -162,7 +194,8 @@ function clickable(me) {
                 searchControl.draw(document.getElementById("searchcontrol"), drawOptions);
                 // execute an inital search
                 searchControl.execute(search_query);
-            } else if (api_type == 'google_docs') {
+            } 
+            else if (api_type == 'google_docs') {
                 //console.log("WERE HERE AND NEWKEY IS " + item['some_new_thing']);
                 var document_link = item['doc_link'];
                 if (document_link == undefined) {
@@ -170,7 +203,8 @@ function clickable(me) {
                 } else {
                     $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border doc-border"> <h1 class="google-title" style = "margin-bottom: 22px;">' + user_name + '\'s Google Document</h1> <a class="glyphicon glyphicon-remove drive-remove" id="remove_item_id"></a>' + '<iframe class="doc-frame" src=' + document_link + ' style=" border-width:0 " width="100%" height="100%" frameborder="0" scrolling="no"></iframe></div>' + '</div>');
                 }
-            } else if (api_type == 'google_drawings') {
+            } 
+            else if (api_type == 'google_drawings') {
                 //console.log("WERE HERE AND NEWKEY IS " + item['some_new_thing']);
                 var document_link = item['doc_link'];
                 if (document_link == undefined) {
@@ -179,7 +213,8 @@ function clickable(me) {
                 else {
                     $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border drawing-border"> <h1 class="google-title" style = "margin-bottom: 22px;">' + user_name + '\'s Google Drawing</h1> <a class="glyphicon glyphicon-remove drive-remove" id="remove_item_id"></a>' + '<iframe class="drawing-frame" src=' + document_link + ' style=" border-width:0 " width="100%" height="100%" frameborder="0" scrolling="no"></iframe></div>' + '</div>');
                 }
-            } else if (api_type == 'wikipedia') {
+            } 
+            else if (api_type == 'wikipedia') {
                 console.log("room center renders html: ", item['api_html']);
                 // adds the word render to the unique id of the div based on
                 // the info stored in its redis key
@@ -211,8 +246,8 @@ function clickable(me) {
 
                 $('#wikipedia-iframe').contents().find('#pt-createaccount').hide();
                 $('#wikipedia-iframe').contents().find('#pt-login').hide();
-
-            } else if (api_type == 'wolfram') {
+            } 
+            else if (api_type == 'wolfram') {
                 // adds the word render to the unique id of the div based on
                 // the info stored in its redis key
                 var render_item_id = "render" + div_id;
@@ -246,10 +281,7 @@ function clickable(me) {
                 $('#wolfram-iframe').contents().find('html').css('min-width', '300px');
                 $('#wolfram-iframe').contents().find('html').css('width', '584px');
                 $('#wolfram-iframe').contents().find('body').css('min-width', '300px');
-                $('#wolfram-iframe').css('position', 'relative');
-                $('#wolfram-iframe').css('max-height', '90%');
-                $('#wolfram-iframe').css('top', '10px');
-                $('#wolfram-iframe').css('left', '-3px');
+               
                 // this disables all links within the wolfram div so that we do not have
                 // any redirects from our iframe
                 $('#wolfram-iframe').contents().find('a').click(function(event) {
@@ -325,10 +357,7 @@ function wolfram_text(render_item_id) {
     $('#wolfram-iframe').contents().find('html').css('min-width', '300px');
     $('#wolfram-iframe').contents().find('html').css('width', '584px');
     $('#wolfram-iframe').contents().find('body').css('min-width', '300px');
-    $('#wolfram-iframe').css('position', 'relative');
-    $('#wolfram-iframe').css('max-height', '90%');
-    $('#wolfram-iframe').css('top', '10px');
-    $('#wolfram-iframe').css('left', '-3px');
+
     // this disables all links within the wolfram div so that we do not have
     // any redirects from our iframe
     $('#wolfram-iframe').contents().find('a').click(function(event) {
@@ -393,10 +422,7 @@ function wolfram_text(render_item_id) {
             $('#wolfram-iframe').contents().find('html').css('min-width', '300px');
             $('#wolfram-iframe').contents().find('html').css('width', '584px');
             $('#wolfram-iframe').contents().find('body').css('min-width', '300px');
-            $('#wolfram-iframe').css('position', 'relative');
-            $('#wolfram-iframe').css('max-height', '471px');
-            $('#wolfram-iframe').css('top', '10px');
-            $('#wolfram-iframe').css('left', '-3px');
+
             // this disables all links within the wolfram div so that we do not have
             // any redirects from our iframe
             $('#wolfram-iframe').contents().find('a').click(function(event) {
@@ -418,4 +444,90 @@ function wolfram_text(render_item_id) {
             });
         }
     });
-} <% end %>
+} 
+
+// Called when the "Submit" button is pressed on schedule suggestion.
+function scheduleSubmit(event) {
+    var suggestions = event.view.suggestions_obj;
+    var i = $('input[name=sched-option]:checked').val();
+    var suggestion = suggestions[i];
+    var start_time = suggestion.start;
+    var end_time   = suggestion.end;
+
+    // Handle TZ offsets. They are coming from suggestion object in local time +00:00
+    // and need to be in local time -07:00, or in UTC +00:00.
+    // Eventually this should be not hardcoded to -0700 but flexible to user's timezone
+    start_time = start_time.split('+')[0] + '-0700';
+    end_time   = end_time.split('+')[0] + '-0700';
+
+    // POST this to /check_api.
+    // Format just as if it had come back from the Python server.
+    var schedule_json = '{"attendees": [], \
+                        "api_type": "calendar", \
+                        "start": {"datetime": "' + start_time + '", \
+                        "timezone": "America/Los_Angeles"}, \
+                        "end": {"datetime": "' + end_time + '", \
+                        "timezone": "America/Los_Angeles"}, \
+                        "location": "", \
+                        "summary": "Meeting scheduled by Benedict", \
+                        "group_flag": "True"}';
+    $.ajax({
+        type: "POST",
+        url: "/check_api",
+        data: {
+            jsonData: schedule_json
+        },
+        success: function(return_json) {
+            sendBennyReply(return_json);
+        }
+    });
+
+    // Lol JK we aren't doing this redis shit anymore
+    // var url = (window.location.pathname).split("/");
+    // var id = String(url[url.length - 2]);
+    // var name = String(url[url.length - 1]);
+    // var emails_key = name + ":" + id + ":emails";
+    // var schedule_options_key = name + ":" + id + ":scheduleagree";
+    // WOO NESTED CALLBACKS FOUR DEEP LETS GO
+    // $.ajax({
+    //     type: "GET",
+    //     url: "/get_redis",
+    //     dataType: "json",
+    //     data: {
+    //         'redis_key': emails_key
+    //     },
+    //     //Push a key to Redis indicating what room this is, who you are & what you picked.
+    //     success: function(emails) {
+    //         $.ajax({
+    //             type: "POST",
+    //             url: "/update_redis",
+    //             dataType: "json",
+    //             data: {
+    //                 'redis_key': name + ":" + id + ":scheduleagree",
+    //                 'message': i  // This is the index of the option you picked
+    //             },
+
+    //             //Get from Redis the list of everyone's choices.
+    //             success: function() {
+    //                 $.ajax({
+    //                     type: "GET",
+    //                     url: "/get_redis",
+    //                     dataType: "json",
+    //                     data: {
+    //                         'redis_key': schedule_options_key
+    //                     },
+
+    //                     // Ensure the length of choices matches the length of emails;
+    //                     // and that all elements of choices are the same.
+    //                     success: function(choices) {
+    //                         alert(emails);
+    //                         alert(choices);
+    //                     }
+    //                 });
+    //             }
+    //         });
+    //     }
+    // });
+}
+
+<% end %>

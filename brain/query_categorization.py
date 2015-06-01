@@ -18,61 +18,6 @@ import matplotlib.patches as patches
 import matplotlib.path as path
 import cPickle
 
-#training set of strings
-#it is a list of query, api_type
-
-# training_set = [("Let's meet up on Friday at 3 p.m.", "calendar"),
-# ("Can we have a meeting next week", "schedule_suggest"),
-# #("Benedict, schedule a meeting for next Tuesday", "schedule_suggest"),
-# ("Next Wednesday let's have a conference", "schedule_suggest"),
-# ("Can you schedule me a meeting for tomorrow", "schedule_suggest"),
-# ("Could you find a time that works for all of us", "schedule_suggest"),
-# ("Can we have a weekly meeting on Thursdays", "schedule_suggest"),
-# ("Lets meet tomorrow at 12", "calendar"),
-# ("Set up a meeting for tomorrow at 12", "calendar"),
-# ("Let's meet later", "schedule_suggest"),
-# ("Can we meet tomorrow at 5 pm", "calendar"),
-# ("Can you schedule us a meeting for tomorrow at 3", "calendar"),
-# ("Lets meet tomorrow at 8 am", "calendar"),
-# ("Schedule a meeting tomorrow.", "schedule_suggest"),
-
-# ("could you open up a document", "google_docs"),
-# ("open up a document", "google_docs"),
-# ("open up a document please", "google_docs"),
-# ("create a document", "google_docs"),
-# ("view a document", "google_docs"),
-
-
-
-
-# ("What is the phase of the moon", "wolfram"),
-# ("What's the weather in Isla Vista", "wolfram"),
-# ("What is a galaxy", "wolfram"),
-# ("Where is Mexico", "wolfram"),
-# ("Where is Chicago", "wolfram"),
-# ("Where is Louisiana", "wolfram"),
-# ("Where is Los Angeles", "wolfram"),
-# ("Who is Kendrick Lamar", "wolfram"),
-# ("Who is the president of France", "wolfram"),
-# ("Who is the leader of Russia", "wolfram"),
-# ("What is the phase of the moon", "wolfram"),
-# ("What is the rate of expansion of the universe", "wolfram"),
-# ("What is the speed of light", "wolfram"),
-
-# ("Who Obama", "google"),
-# ("the world's biggest pie fair", "google"),
-# ("the best pizza place near me", "google"),
-# ("current time", "google"),
-# ("define webrtc", "google"),
-# ("synonyms for ejaculate", "google"),
-# ("western countries in order of attractiveness", "google"),
-# ("recipes for pasta", "google"),
-# ("local coffee shops", "google"),
-# ("is Goleta beach open right now", "google"),
-# #("good places to get chinese food", "google"),
-# ("dog biscuits actually good for humans", "google")]
-
-
 
 def train_predictor(set_to_train_on, classes, predictor):
 	predictor.fit(set_to_train_on, classes)
@@ -86,7 +31,7 @@ def validate_predictor(set_to_validate_on, classes, predictor, probability_matri
 		probability_array.append(probability_predict)
 		api_return = threshold_calculator(probability_array[i][0], querylist[i][0])
 
-## print "$$$$$$$$$$$$$$$ " + str(predictor.predict(set_to_validate_on[i:i+1])) + " " + str(classes[i:i+1])
+	## print "$$$$$$$$$$$$$$$ " + str(predictor.predict(set_to_validate_on[i:i+1])) + " " + str(classes[i:i+1])
 		# print "api_return: ", api_return[0], " class_expect: ", classes[i:i+1][0]
 		if int(api_return[0]) == int(classes[i]):
 			number_valid += 1
@@ -128,27 +73,27 @@ def threshold_calculator(probabilities, query):
 
 
 def change_query_string_to_int_array(set_to_train_on):
-# Convert training set to binary feature arrays
+	# Convert training set to binary feature arrays
 	training_feature_arrays = []
 	for i in range (len(set_to_train_on)):
 		temp_query_array = query_to_array(set_to_train_on[i][0])
-# appends the integer features to the feature array
+	# appends the integer features to the feature array
 		training_feature_arrays.append(temp_query_array)
 	return training_feature_arrays
 
 
 def change_api_type_array_to_int_array(class_array):
-# this is used to hold the integer value of the api_type
+	# this is used to hold the integer value of the api_type
 	training_class_array = []
 	for i in range (len(class_array)):
 		temp_class = change_api_type_to_int(class_array[i][1])
-# changes class to the class array
+	# changes class to the class array
 		training_class_array.append(temp_class)
 	return training_class_array
 
 
 def change_api_type_to_int(class_type):
-# this is a switch statement on the api type
+	# this is a switch statement on the api type
 	if class_type == "schedule_suggest":
 		return 1
 	elif class_type == "calendar":
@@ -169,7 +114,7 @@ def change_api_type_to_int(class_type):
 		return 9
 
 def change_int_to_api_type(class_type):
-# this is a switch statement on the api type
+	# this is a switch statement on the api type
 	if class_type == 1:
 		return "schedule_suggest"
 	elif class_type == 2:
@@ -204,7 +149,7 @@ def interpret_for_scikit(sentences, temp_array):
 
 
 			sentence = oclock_remover(sentence)
-
+			parser = Parser()
 			tree = parser.parse(sentence)
 			## print tree
 			# first just check if its just a noun phrase, then go to wiki
@@ -264,8 +209,6 @@ def interpret_for_scikit(sentences, temp_array):
 				temp_array[19] = 1
 			if 'SINV' in tree.label():
 				temp_array[20] = 1
-
-
 
 
 			for element in [tree] + [e for e in tree]: # Include the root element in the for loop
@@ -336,7 +279,8 @@ def interpret_for_scikit(sentences, temp_array):
 		return
 
 def schedule_for_scikit(element, tree, temp_array):
-# Find the "schedule word" in a NP, if one exists
+	
+	# Find the "schedule word" in a NP, if one exists
 	schedule_word = "Meeting"
 	for subtree in element.subtrees():
 		if 'NP' in subtree.label() and any(x in subtree.leaves() for x in schedule_nouns):
@@ -345,10 +289,10 @@ def schedule_for_scikit(element, tree, temp_array):
 					schedule_word = x
 
 
-
 	words = ' '.join(element.leaves())
 	words = am_pm_adder(words)
 
+	#cal = Calendar()
 	cal_parse = cal.parse(words)
 	## print cal_parse
 	if cal_parse[1] == 0 or cal_parse[1] == 1:
@@ -364,6 +308,35 @@ def schedule_for_scikit(element, tree, temp_array):
 
 	return
 
+def schedule_suggest(cal_parse, words):
+	starttime = None
+	endtime = None
+	if cal_parse[1] == 0:		# No date or time
+		if "this week" in words:
+			starttime = datetime.today() + relativedelta(weekday=MO(-1), hour=8, minute=0, second=0)
+			endtime = starttime + relativedelta(weekday=FR, hour=17)
+		elif "this month" in words:
+			starttime = datetime.today() + relativedelta(day=1, hour=8, minute=0, second=0)
+			endtime = starttime + relativedelta(day=31, weekday=FR(-1), hour=17)	# Last Friday of the month.
+		else:	# Default to finding a time today.
+			starttime = datetime.today()
+			endtime = starttime + relativedelta(hour=17, minute=0, second=0)
+
+	elif cal_parse[1] == 1:		# Date without a time
+		if cal_parse[0][6] == 0 and cal_parse[0][3] == 9 and cal_parse[0][4] == 0:
+			if "next week" in words:
+				starttime = datetime.fromtimestamp(mktime(cal_parse[0])) + relativedelta(hour=8)
+				endtime = starttime + relativedelta(weekday=FR, hour=17)
+		elif cal_parse[0][6] == 0 and cal_parse[0][3] == 9 and cal_parse[0][4] == 0:
+			if "next month" in words:
+				starttime = datetime.fromtimestamp(mktime(cal_parse[0]))	+ relativedelta(hour=8)
+				endtime = starttime + relativedelta(day=31, weekday=FR(-1), hour=17)	# Last Friday of the month.
+		else:
+			starttime = datetime.fromtimestamp(mktime(cal_parse[0])) + relativedelta(hour=8, minute=0, second=0)
+			endtime = starttime + relativedelta(hour=17)
+
+	return starttime, endtime
+
 def wolfram_for_scikit(element, temp_array):
 	words = ' '.join(element.leaves())
 
@@ -372,24 +345,24 @@ def wolfram_for_scikit(element, temp_array):
 
 def query_to_array(query):
 	temp_array = np.array([0 for i in range(50)])
-# call list of functions to populate the array
-####
-# NEW
-# index 0: what is in query
-# index 1: when is in query
-# index 2: why is in query
-# index 3: how is in query
-# index 4: where is in query
-# index 5: who is in query
-# index 6: has fewer than 5 words
-# # print query + "\n"
-# makes it into an array
+	# call list of functions to populate the array
+	####
+	# NEW
+	# index 0: what is in query
+	# index 1: when is in query
+	# index 2: why is in query
+	# index 3: how is in query
+	# index 4: where is in query
+	# index 5: who is in query
+	# index 6: has fewer than 5 words
+	# # print query + "\n"
+	# makes it into an array
 	query_array = query.split(' ')
 
 	interpret_for_scikit([query], temp_array)
 
-# if len(query) < 5:
-# 	temp_array[9] = 1
+	# if len(query) < 5:
+	# 	temp_array[9] = 1
 	#uses 10, till
 	check_word_lists(query_array, temp_array, 28)
 
@@ -426,9 +399,9 @@ def check_word_lists(query_array, temp_array, index):
 			temp_array[index + 10] = 1
 
 def check_for_w_words(query, temp_array, index):
-#checks substings and length
-#if "what" in query:
-#temp_array[9] = 1
+	#checks substings and length
+	#if "what" in query:
+	#temp_array[9] = 1
 	if "when" in query:
 		temp_array[index] = 1
 	if "why" in query:
@@ -444,18 +417,18 @@ def check_for_w_words(query, temp_array, index):
 
 def make_single_predictor(training_set, test_set_percentage):
 	assert(len(training_set) > 1)
-# api predicting bernoulli naive bayesian classifier
+	# api predicting bernoulli naive bayesian classifier
 	api_predictor = BernoulliNB()
-# random shuffles of training_set
+	# random shuffles of training_set
 	random.shuffle(training_set)
-# convert training set to binary feature arrays
+	# convert training set to binary feature arrays
 	training_feature_arrays = change_query_string_to_int_array(training_set)
-# this is used to hold the integer value of the api_type
+	# this is used to hold the integer value of the api_type
 	training_class_array = change_api_type_array_to_int_array(training_set)
-# this is the array of the probability confidence of picking a
-# particular class
+	# this is the array of the probability confidence of picking a
+	# particular class
 	probabilities_array = []
-# returns the index of the percent of the test set we want to test on
+	# returns the index of the percent of the test set we want to test on
 	index = percent_to_index(test_set_percentage, len(training_set))
 	valid_num = 0
 	if index == len(training_feature_arrays):
@@ -467,19 +440,17 @@ def make_single_predictor(training_set, test_set_percentage):
 		# print "The number of valid predictions is: " + str(valid_num) + "\nThe total number of predictions made is: " + str(len(training_feature_arrays[index + 1:])) + "\nThe validation ratio is: " + str(float(valid_num)/(len(training_feature_arrays[index + 1:])))
 	return api_predictor
 
-
-
 def multiple_predictors_for_testing(training_set, test_set_percentage, probability_matrix):
 	assert(len(training_set) > 1)
-# api predicting bernoulli naive bayesian classifier
+	# api predicting bernoulli naive bayesian classifier
 	api_predictor = BernoulliNB()
-# random shuffles of training_set
+	# random shuffles of training_set
 	random.shuffle(training_set)
-# convert training set to binary feature arrays
+	# convert training set to binary feature arrays
 	training_feature_arrays = change_query_string_to_int_array(training_set)
-# this is used to hold the integer value of the api_type
+	# this is used to hold the integer value of the api_type
 	training_class_array = change_api_type_array_to_int_array(training_set)
-# returns the index of the percent of the test set we want to test on
+	# returns the index of the percent of the test set we want to test on
 	index = percent_to_index(test_set_percentage, len(training_set))
 	valid_num = 0
 	if index == len(training_feature_arrays):
@@ -491,9 +462,9 @@ def multiple_predictors_for_testing(training_set, test_set_percentage, probabili
 	return valid_num
 
 def multiple_predictors_for_testing_and_multiple_training_sets(ts_cal, ts_ss, ts_cs, ts_gd, ts_gdr, ts_wolf, ts_wiki, ts_gs, test_set_percentage, probability_matrix, f):
-# api predicting bernoulli naive bayesian classifier
+	# api predicting bernoulli naive bayesian classifier
 	api_predictor = BernoulliNB()
-# random shuffles of training_sets
+	# random shuffles of training_sets
 	random.shuffle(ts_cal) #calendar
 	random.shuffle(ts_ss) #schedule suggest
 	random.shuffle(ts_cs) #calendar show
@@ -503,7 +474,7 @@ def multiple_predictors_for_testing_and_multiple_training_sets(ts_cal, ts_ss, ts
 	random.shuffle(ts_wiki) #wikipedia
 	random.shuffle(ts_gs) #google search
 
-# returns the index of the percent of the test sets we want to test on
+	# returns the index of the percent of the test sets we want to test on
 	index_cal = percent_to_index(test_set_percentage, len(ts_cal))
 	index_ss = percent_to_index(test_set_percentage, len(ts_ss))
 	index_cs = percent_to_index(test_set_percentage, len(ts_cs))
@@ -513,21 +484,21 @@ def multiple_predictors_for_testing_and_multiple_training_sets(ts_cal, ts_ss, ts
 	index_wiki = percent_to_index(test_set_percentage, len(ts_wiki))
 	index_gs = percent_to_index(test_set_percentage, len(ts_gs))
 
-# concatenate the test set list
-# TREVOR!!! THIS IS TO GET YOUR ATTENTION HERE.  JUST COMMENT THE FOLLOWING LINES OUT
-# AND TAKE WHATEVER SUBSET OF THE LISTS YOU WANT HERE. FOLLOW THE SYNTAX BELOW
+	# concatenate the test set list
+	# TREVOR!!! THIS IS TO GET YOUR ATTENTION HERE.  JUST COMMENT THE FOLLOWING LINES OUT
+	# AND TAKE WHATEVER SUBSET OF THE LISTS YOU WANT HERE. FOLLOW THE SYNTAX BELOW
 	training_set = ts_cal[:index_cal + 1] + ts_ss[:index_ss + 1] + ts_cs[:index_cs + 1] + ts_gd[:index_gd + 1] + ts_gdr[:index_gdr + 1] + ts_wolf[:index_wolf + 1] +  ts_wiki[:index_wiki + 1]
 	validation_set = ts_cal[index_cal + 1:] + ts_ss[index_ss + 1:] + ts_cs[:index_cs + 1] + ts_gd[index_gd + 1:] + ts_gdr[:index_gdr + 1] + ts_wolf[index_wolf + 1:] +  ts_wiki[index_wiki + 1:]
 
-# now we shuffle to mix up the list
+	# now we shuffle to mix up the list
 	random.shuffle(training_set)
 	random.shuffle(validation_set)
 
-# convert training set to binary feature arrays
+	# convert training set to binary feature arrays
 	training_feature_arrays_train = change_query_string_to_int_array(training_set)
 	training_feature_arrays_valid = change_query_string_to_int_array(validation_set)
 
-# this is used to hold the integer value of the api_type
+	# this is used to hold the integer value of the api_type
 	training_class_array_train = change_api_type_array_to_int_array(training_set)
 	training_class_array_valid = change_api_type_array_to_int_array(validation_set)
 
@@ -541,8 +512,8 @@ def predictor_validation_list_to_plot_and_multiple_train_sets(num_tests, ts_cal,
 	f = open('failed_predictions', 'w')
 	num_valid_list = []
 	percentage_valid_list = []
-# this is the array of the probability confidence of picking a
-# particular class
+	# this is the array of the probability confidence of picking a
+	# particular class
 
 	index_cal = percent_to_index(test_set_percentage, len(ts_cal))
 	index_ss = percent_to_index(test_set_percentage, len(ts_ss))
@@ -563,25 +534,25 @@ def predictor_validation_list_to_plot_and_multiple_train_sets(num_tests, ts_cal,
 		num_valid_temp = multiple_predictors_for_testing_and_multiple_training_sets(ts_cal, ts_ss, ts_cs, ts_gd, ts_gdr, ts_wolf, ts_wiki, ts_gs, test_set_percentage, probability_matrix, f)
 		num_valid_list.append(num_valid_temp)
 		percentage_valid_list.append(float(num_valid_temp)/total_validated_on)
-# plots
+	# plots
 	fig, ax = plt.subplots()
-# histogram our data with numpy
+	# histogram our data with numpy
 	data = percentage_valid_list
 	n, bins = np.histogram(data, 10)
-# get the corners of the rectangles for the histogram
+	# get the corners of the rectangles for the histogram
 	left = np.array(bins[:-1])
 	right = np.array(bins[1:])
 	bottom = np.zeros(len(left))
 	top = bottom + n
-# we need a (numrects x numsides x 2) numpy array for the path helper
-# function to build a compound path
+	# we need a (numrects x numsides x 2) numpy array for the path helper
+	# function to build a compound path
 	XY = np.array([[left,left,right,right], [bottom,top,top,bottom]]).T
-# get the Path object
+	# get the Path object
 	barpath = path.Path.make_compound_path_from_polys(XY)
-# make a patch out of it
+	# make a patch out of it
 	patch = patches.PathPatch(barpath, facecolor='blue', edgecolor='gray', alpha=0.8)
 	ax.add_patch(patch)
-# update the view limits
+	# update the view limits
 	ax.set_xlim(left[0], right[-1])
 	ax.set_ylim(bottom.min(), top.max())
 	plt.show()
@@ -590,8 +561,8 @@ def predictor_validation_list_to_plot_and_multiple_train_sets(num_tests, ts_cal,
 def predictor_validation_list_to_plot(num_tests, training_set, test_set_percentage):
 	num_valid_list = []
 	percentage_valid_list = []
-# this is the array of the probability confidence of picking a
-# particular class
+	# this is the array of the probability confidence of picking a
+	# particular class
 	probability_matrix = []
 	index = percent_to_index(test_set_percentage, len(training_set))
 	total_validated_on = len(training_set[index + 1:])
@@ -599,25 +570,25 @@ def predictor_validation_list_to_plot(num_tests, training_set, test_set_percenta
 		num_valid_temp = multiple_predictors_for_testing(training_set, test_set_percentage, probability_matrix)
 		num_valid_list.append(num_valid_temp)
 		percentage_valid_list.append(float(num_valid_temp)/total_validated_on)
-# plots
+	# plots
 	fig, ax = plt.subplots()
-# histogram our data with numpy
+	# histogram our data with numpy
 	data = num_valid_list
 	n, bins = np.histogram(data, 10)
-# get the corners of the rectangles for the histogram
+	# get the corners of the rectangles for the histogram
 	left = np.array(bins[:-1])
 	right = np.array(bins[1:])
 	bottom = np.zeros(len(left))
 	top = bottom + n
-# we need a (numrects x numsides x 2) numpy array for the path helper
-# function to build a compound path
+	# we need a (numrects x numsides x 2) numpy array for the path helper
+	# function to build a compound path
 	XY = np.array([[left,left,right,right], [bottom,top,top,bottom]]).T
-# get the Path object
+	# get the Path object
 	barpath = path.Path.make_compound_path_from_polys(XY)
-# make a patch out of it
+	# make a patch out of it
 	patch = patches.PathPatch(barpath, facecolor='blue', edgecolor='gray', alpha=0.8)
 	ax.add_patch(patch)
-# update the view limits
+	# update the view limits
 	ax.set_xlim(left[0], right[-1])
 	ax.set_ylim(bottom.min(), top.max())
 	plt.show()
@@ -736,8 +707,6 @@ def generate_questions_google_calendar_show():
 
 
 
-
-
 def pickle_predictor(predictor):
 	print "starting to pickle predictor"
 	train_predictor_for_brain(predictor, training_set_calendar, training_set_schedule_suggest, training_set_google_calendar_show, training_set_google_docs, training_set_google_drawings, training_set_wolfram, training_set_wikipedia, training_set_google)
@@ -786,7 +755,7 @@ def question_noun_phrase(query):
 
 	query = oclock_remover(query)
 	query = benedict_remover(query)
-
+	parser = Parser()
 	tree = parser.parse(query)
 
 	if 'NP' == tree.label() or \
@@ -839,6 +808,17 @@ def question_noun_phrase(query):
 
 	return ""
 
+def get_datetime(query):
+	cal_parse = cal.parse(query)
+	## print cal_parse
+	if cal_parse[1] == 0 or cal_parse[1] == 1:
+		starttime, endtime = schedule_suggest(cal_parse, words)
+		starttime = starttime.strftime('%Y-%m-%dT%H:%M:%S')
+		endtime   = endtime.strftime('%Y-%m-%dT%H:%M:%S')
+	else:
+		starttime, endtime = time_converter(cal_parse[0])
+
+	return starttime, endtime
 
 # EVAN THIS IS WHERE WE MAKE THE JSON I NEED TO SOMEHOW PUT THE DATETIME STUFF IN IT
 def make_json(query, api_type, api_number):
@@ -851,8 +831,9 @@ def make_json(query, api_type, api_number):
 			return '{"api_number": "' + str(api_number) + '", "api_type": "' + api_type + '", "query": "blank", "noun_phrase": ""}'
 
 	#THIS IS THE SPECIFIC SPOT WE NEED TO ADD DATETIME STUFF AND THE ATTENDEES ARRAY
+	starttime, endtime = get_datetime(query)
 	if api_type == "calendar" or api_type == "schedule_suggest":
-		return '{"api_number": "' + str(api_number) +'", "api_type": "' + api_type + '", "query": "' + query + '", "noun_phrase": ""}'
+		return '{"api_number": "' + str(api_number) +'", "api_type": "' + api_type + '", "query": "' + query + '", "noun_phrase": "", "start": "' + starttime + '", "end": "' + endtime + '" }'
 
 	# EVAN WE NEED THE ATTENDEES ARRAY IN THIS ONE
 	if api_type == "calendar_show" or api_type == "google_docs" or api_type == "google_drawings":
@@ -889,3 +870,34 @@ def predict_api_type(predictor, query):
 #generate_questions_google_drawings()
 
 #predictor_validation_list_to_plot_and_multiple_train_sets(1, training_set_calendar, training_set_schedule_suggest, training_set_google_calendar_show, training_set_google_docs, training_set_google_drawings, training_set_wolfram, training_set_wikipedia, training_set_google, .8)
+
+
+
+def schedule_suggest(cal_parse, words):
+	starttime = None
+	endtime = None
+	if cal_parse[1] == 0:		# No date or time
+		if "this week" in words:
+			starttime = datetime.today() + relativedelta(weekday=MO(-1), hour=8, minute=0, second=0)
+			endtime = starttime + relativedelta(weekday=FR, hour=17)
+		elif "this month" in words:
+			starttime = datetime.today() + relativedelta(day=1, hour=8, minute=0, second=0)
+			endtime = starttime + relativedelta(day=31, weekday=FR(-1), hour=17)	# Last Friday of the month.
+		else:	# Default to finding a time today.
+			starttime = datetime.today()
+			endtime = starttime + relativedelta(hour=17, minute=0, second=0)
+
+	elif cal_parse[1] == 1:		# Date without a time
+		if cal_parse[0][6] == 0 and cal_parse[0][3] == 9 and cal_parse[0][4] == 0:
+			if "next week" in words:
+				starttime = datetime.fromtimestamp(mktime(cal_parse[0])) + relativedelta(hour=8)
+				endtime = starttime + relativedelta(weekday=FR, hour=17)
+		elif cal_parse[0][6] == 0 and cal_parse[0][3] == 9 and cal_parse[0][4] == 0:
+			if "next month" in words:
+				starttime = datetime.fromtimestamp(mktime(cal_parse[0]))	+ relativedelta(hour=8)
+				endtime = starttime + relativedelta(day=31, weekday=FR(-1), hour=17)	# Last Friday of the month.
+		else:
+			starttime = datetime.fromtimestamp(mktime(cal_parse[0])) + relativedelta(hour=8, minute=0, second=0)
+			endtime = starttime + relativedelta(hour=17)
+
+	return starttime, endtime

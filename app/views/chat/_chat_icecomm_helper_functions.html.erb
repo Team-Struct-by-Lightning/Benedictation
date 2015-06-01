@@ -1,8 +1,4 @@
 comm.on('local', function(options) {
-    // check if center div's display is none for the current group_id
-    var display = $chatBody.parents('.center-div-group').css("display"); //block
-    // icecomm_roomname.split("/")[1]!=group_id && $chatBody.parents('.center-div-group').css("display")=="block" && 
-    
         // fill in chat history from redis
         var chat_history;
         // send to redis
