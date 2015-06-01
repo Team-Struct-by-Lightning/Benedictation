@@ -20,6 +20,8 @@ Rails.application.routes.draw do
   post '/clear_redis' => "groups#clear_redis"
   get '/get_redis_item' => "groups#get_redis_item"
   get '/get_redis_length' => "groups#get_redis_length"
+  post '/update_unique_benny_query_history' => "groups#update_unique_benny_query_history"
+  get '/get_unique_benny_query' => "groups#get_unique_benny_query"
 
   resources :sessions, only: [:create, :destroy]
   resource :home, only: [:show]
