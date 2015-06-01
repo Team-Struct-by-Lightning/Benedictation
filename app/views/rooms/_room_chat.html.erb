@@ -287,7 +287,7 @@ function appendNewBennyReply(json_murph) {
                             '<%= image_tag("google-fav.jpg", class: "favicon right-fav-small") %>' +
                             '<a class="name-and-summary-wolfram">' + name + '</a>' +
                             '<a class="benny-link question-link" onclick=' + parameter + ' id=' +
-                            benny_item_link_id + '> Query: ' + query + '?</a>' +
+                            benny_item_link_id + '> Query: ' + query + '</a>' +
                             '</div>');
     }
     else if (json_murph.api_type == 'google') {
@@ -385,7 +385,7 @@ function appendNewBennyReply(json_murph) {
                             '<%= image_tag("google-fav.jpg", class: "favicon right-fav-small", alt: "' + key + '") %>' +
                             '<a class="name-and-summary-wikipedia">' + name + '</a>' +
                             '<a class="benny-link question-link" onclick=' + parameter + ' id=' +
-                            benny_item_link_id + '> Query: ' + query + '?</a>' +
+                            benny_item_link_id + '> Query: ' + query + '</a>' +
                             '</div>');
 
     }

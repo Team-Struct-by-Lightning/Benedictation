@@ -20,17 +20,24 @@ function clickable(me) {
     // although we hope for only 1 video to be in the center, we
     // create a for loop just in case there was an edge case we missed
     for (i = 0; i < children.length; i++) {
-        if ($(children[i]).hasClass("video-center")) {
+        if ($(children[i]).hasClass("video-tag")) {
             var video = children[i];
-            document.getElementById(get_free_spot()).appendChild(children[i]);
             // we need this line so that the video will be set to play
             // upon appending it back to the video list
+            $("#video-list").append(video);
             $(video).get(0).play();
         }
     }
     // we remove the current item taking up the render spot so that
     // we do not accumulate a ton of divs in the center of the page
-    $('.render-spot').remove();
+    var children_renders = $(".room-layout-table").children();
+    var i;
+    for (i = 0; i < children_renders.size(); i++) {
+        if ($(children_renders[i]).hasClass("render-spot")) {
+            $('.render-spot').remove();
+        }
+
+    }
     // this sequence of commands parses the 'me' parameter
     // 'me' is a colon delimeted string that contains and
     // when split on a colon is an array of length 5 or more
@@ -310,6 +317,13 @@ function wolfram_text(render_item_id) {
     var wolframdiv = '<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border wolfram-border"> <a class="glyphicon glyphicon-remove wolfram-remove" id="remove_item_id"></a>' + '<iframe id="wolfram-iframe" style=" border-width:0" width="100%" height="94%" max-height="470" position="relative" ' + ' top="11" left="-3" frameborder="0"></iframe></div>' + '</div>';
     // appends the wolframdiv to the room layout table.
     // this makes it appear in the center of the page
+    var children_renders = $(".room-layout-table").children();
+    var i;
+    for (i = 0; i < children_renders.size(); i++) {
+        if ($(children_renders[i]).hasClass("render-spot")) {
+            $('.render-spot').remove();
+        }
+    }
     $('.room-layout-table').append(wolframdiv);
     // adds the loading gif to the iframe body so that it lets the user know
     // info is being crunched on the backend
@@ -374,6 +388,14 @@ function wolfram_text(render_item_id) {
             $('#wolfram-iframe').remove();
             // appends the wolframdiv to the room layout table.
             // this makes it appear in the center of the page
+            var children_renders = $(".room-layout-table").children();
+            var i;
+            for (i = 0; i < children_renders.size(); i++) {
+                if ($(children_renders[i]).hasClass("render-spot")) {
+                    $('.render-spot').remove();
+                }
+
+            }
             $('.room-layout-table').append(wolframdiv);
             // appends the raw wolfram html to the iframe
             // notice this is the syntax we use and will have to use throughout

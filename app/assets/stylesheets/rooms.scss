@@ -5,20 +5,28 @@
 @import "bootstrap";
 
 
-.video-tag {
 
-  z-index: 1999 !important;
+
+body {
+  height:100%;
+  background-color: #cccccc !important;
 }
 
 
+
+
 #video-list {
+    min-height: 600px;
+
+    margin-left:5px;
+    margin-top:5px;
     position: relative;
     top: 12px;
     height: 100%;
     width: 160px;
     float: left;
     background-color: #cccccc;
-    z-index: 1998 !important;
+
 }
 
 
@@ -63,7 +71,7 @@
 
 .room-layout-table {
   position: fixed;
-  left:160px;
+  left:170px;
   right:300px;
 	width: auto;
   height:100%;
@@ -614,9 +622,9 @@ div.wikipedia-frame body{
 }
 #drop-spot{
   position: fixed;
-  width: 660px;
+  width: 58%;
   height: 100%;
-  top: 25px;
+  top: 75px;
   left: 200px;
   background-color: #CCCCCC;
 }
@@ -1229,14 +1237,18 @@ transform: scale(.05);
 }
 
 .active-drop-spot{
-  border: 2px dashed black;
+  border: 2px dashed black !important;
 }
 
 .video-tag{
   width: 100%;
-  height:100%;
+  height: auto;
   margin: 0;
   cursor:move;
+  border: solid;
+  border-color: black;
+  border-width: 3px;
+  box-shadow: 0px 0px 10px #333333;
 }
 
 html {
@@ -1311,7 +1323,7 @@ html {
     margin-top: -50px;
     padding-right: 10px;
     padding-left: 10px;
-    top: 55px;
+    top: 45px;
     overflow-x: hidden;
 }
 

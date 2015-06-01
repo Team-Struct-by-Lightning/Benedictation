@@ -4,6 +4,7 @@ class GroupsController < ApplicationController
 
   skip_before_filter  :verify_authenticity_token
 
+
   # redis chat history stuff
   def update_redis
     #append to end of chat history (key = groupname:groupid:chathistory)

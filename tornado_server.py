@@ -11,10 +11,25 @@ import wave
 import os
 import random
 import socket
+import cPickle
+
+#SciKit Learn Library Imports/Dependencies
+import numpy as np
+import random
+from sklearn.naive_bayes import BernoulliNB
+from brain.nlp import *
+from query_training_set import *
+
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+import matplotlib.path as path
+
 
 # Import the brain!
 import brain.speechrec as speechrec
-from brain.nlp import interpret
+from brain.nlp import *
+
+from brain.query_categorization import *
 
 class EmailWSHandler(tornado.websocket.WebSocketHandler):
     def open(self):
@@ -57,17 +72,22 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
             os.remove(outfilename)                          # an empty hyp [""] if nothing found
 
             print text
-            if text and (x != "" for x in text):
-                text = interpret(text)
+            if text:
+                for x in text:
+                    if x != "":
+                        text = predict_api_type(api_predictor, x)
+                        break
+                    else:
+                        text = '{"api_type": "google", "query": "unknown", "noun_phrase": ""}'
             else:
-                text = '{"api_type": "Blank Query"}'
+                text = '{"api_type": "google", "query": "unknown", "noun_phrase": ""}'
 
         except Exception as e:
             print e.message
-            text = '{"api_type": "Blank Query"}'
+            text = '{"api_type": "google", "query": "unknown", "noun_phrase": ""}'
 
         if not text:
-            text = '{"api_type": "Blank Query"}'
+            text = '{"api_type": "google", "query": "unknown", "noun_phrase": ""}'
         self.write_message(text)
         print "we have finished writing @@@@@"
 
@@ -88,18 +108,23 @@ class SpeechWSHandler_Test(tornado.websocket.WebSocketHandler):
         text = None
         try:
             text = [message]
-            print "server received: ",text
-            if text and (x != "" for x in text):
-                text = interpret(text)
+            if text:
+                for x in text:
+                    if x != "":
+                        text = predict_api_type(api_predictor, x)
+                        print text
+                        break
+                    else:
+                        text = '{"api_type": "google", "query": "unknown", "noun_phrase": ""}'
             else:
-                text = '{"api_type": "Blank Query"}'
+                text = '{"api_type": "google", "query": "unknown", "noun_phrase": ""}'
 
         except Exception as e:
             print e.message
-            text = '{"api_type": "Blank Query"}'
+            text = '{"api_type": "google", "query": "unknown", "noun_phrase": ""}'
 
         if not text:
-            text = '{"api_type": "Blank Query"}'
+            text = '{"api_type": "google", "query": "unknown", "noun_phrase": ""}'
         self.write_message(text)
         print "we have finished writing @@@@@"
 
@@ -121,6 +146,11 @@ if __name__ == "__main__":
     # and parse the JSON output
 
     data = loads(urlopen("http://httpbin.org/ip ").read())
+    f = open('brain/pickled_predictor.txt', 'r')
+
+    api_predictor_pickled_string = f.read()
+    api_predictor = cPickle.loads(api_predictor_pickled_string)
+
     if 'ip-172-31-10-207' in str(socket.gethostname()):   # If on AWS
 
         benny_ssl_options = {

@@ -117,18 +117,12 @@ $(document).on('click','#remove_item_id',function(){
 // the video sidebar
 
   $("#video-list").droppable({
-      drop: function() {
-        var children = $("#video-list").children();
-        var i;
-        for (i = 0; i < children.size(); i++) {
-          console.log("child to play drop: ", children[i]);
-          children[i].pause();
-          }
-        }
-      }).sortable({
+    activeClass: "active-drop-spot",
+  }).sortable({
         connectWith: ".video-tag",
-        helper: 'clone',
+        //helper: 'clone',
         appendTo: 'body',
+        opacity: .7,
         distance: 20,
         revert: false,
         stop: function(event) {
@@ -156,54 +150,54 @@ $(document).on('click','#remove_item_id',function(){
               children[i].play();
             }
         },
-        start: function(event, ui){
-          $(this).css("width", "160px" );
-          $(this).css("height", "120px");
-          console.log("EVENT in start:   ", event);
-        }
+
     });
 
     $("#drop-spot").droppable({
-        activeClass: "active-drop-spot",
-        drop: function(event, ui) {
-            //ui.draggable is the motha focking video thingy json draggable
-
-            var children = $("#drop-spot").children();
-            console.log("children ", children);
-            //$(ui).css('width', '100%');
-            //$(ui).css('height', '100%');
-            if (children.size() > 1) {
-                $("#video-list").append(function() {
-                  //$(this).get(0).play();
-                    console.log("inside of the append function" + $(this));
-                    console.log($(this).index());
-                    return children[($(this).index()+ 1) % 2];
-                });
-            }
-        }
+        activeClass: "active-drop-spot"
     }).sortable({
         revert: false,
         connectWith: ".video-tag",
+        opacity: .7,
         cursorAt: {
           left: 80,
           top: 60
         },
 
         receive: function(event, ui) {
+            var children_renders = $(".room-layout-table").children();
+            var i;
+            for (i = 0; i < children_renders.size(); i++) {
+                if ($(children_renders[i]).hasClass("render-spot")) {
+                    $('.render-spot').remove();
+                }
+
+            }
+
+
+
             var children = $("#drop-spot").children();
             var i;
             $(ui).css('width', '100%');
             $(ui).css('height', '100%');
             for (i = 0; i < children.size(); i++) {
-              console.log("children have ben received in the drop: ", children[i]);
               children[i].play();
             }
-             if (children.size() > 1) {
+            var children_render = $(".render-spot").children();
+            if (children_render.size() > 0) {
+              children_render[0].remove();
+            }
+            if (children.size() > 1) {
+              console.log(" we have more than one children in the drop spot");
                 $("#video-list").append(function() {
                     //$(this).get(0).play();
-                    console.log($(this));
-                    console.log($(this).index());
-                    return children[($(this).index()+ 1) % 2];
+
+                  for (i = 0; i < children.size(); i++) {
+                    console.log("children have ben received in the drop: ", children[i]);
+                    if (ui != children[i]) {
+                      return children[i];
+                    }
+                  }
                 });
             }
         },

@@ -27,7 +27,7 @@ comm.on('local', function(options) {
     var children = $("#video-list").children();
     var i;
     //for (i = 0; i < children.size(); i++) {
-       // console.log("child to play receive: ", children[i]);
+    // console.log("child to play receive: ", children[i]);
     children[0].play();
     //}
     console.log("Obtained user camera/microphone approval");
@@ -98,44 +98,21 @@ comm.on('local', function(options) {
     speechRecorder = new Recorder(input);
 });
 comm.on('connected', function(options) {
-    $("#video-list").append(options.getVideo());
-    var new_video = document.getElementById(options.callerID);
-
-    new_video.className = "video-tag";
-    // $(new_video).draggable({
-    //     revert: function(socketObj) {
-    //         if (socketObj === false) {
-    //             // Drop was rejected, revert the helper.
-    //             var $helper = $("#localVideo");
-    //             $helper.animate($helper.originalPosition);
-    //             $helper.animate({
-    //                 width: "100%",
-    //                 height: "100%"
-    //             });
-    //             return true;
-    //         } else {
-    //             // Drop was accepted, don't revert.
-    //             return false;
-    //         }
-    //     },
-    //     opacity: .7,
-    //     create: function(event, ui) {
-    //         $(this).draggable("option", "cursorAt", {
-    //             left: Math.floor(80),
-    //             top: Math.floor(60)
-    //         });
-    //     },
-    //     start: function(event, ui) {
-    //         if ($(this).width() > 160) {
-    //             $(this).css("width", "160px");
-    //             $(this).css("height", "120px");
-    //         }
-    //     }
-    // });
+    // check to see if getVideo exists (it won't for users in chat page)
+    var returnFromCallable = typeof options.getVideo === 'function' && options.getVideo();
+    // append video if it exists
+    if (returnFromCallable) {
+        $("#video-list").append(options.getVideo());
+        var new_video = document.getElementById(options.callerID);
+        new_video.className = "video-tag";
+    }
 });
 comm.on('disconnect', function(options) {
     console.log('disconnect happening');
-    document.getElementById(options.ID).remove();
+    var blah = document.getElementById(options.ID);
+    if (typeof blah !== 'null') {
+        document.getElementById(options.ID).remove();
+    }
 });
 // clear the chat history for random rooms
 jQuery(window).bind("beforeunload", function() {

@@ -14,7 +14,7 @@ var w = new WebSocket(websocketprotocol + myLocation + ":" + port + uri);
 </script>
 <div id="sidebar-wrapper">
    <ul class="sidebar-nav sidebar-title">
-      <li class="sidebar-brand" id="first-group-row"><a id="menu-toggle" href="">Groups<span id="main_icon" class="glyphicon glyphicon-align-justify" value="0"></span></a></li>
+      <li class="sidebar-brand" id="first-group-row"><a id="menu-toggle">Groups</a></li>
    </ul>
    <ul class="sidebar-nav create-group-list" id="create-group-list">
       <li id="sidebar-temp-room-list-item">
@@ -38,7 +38,7 @@ var w = new WebSocket(websocketprotocol + myLocation + ":" + port + uri);
          <%= form_for(current_user.active_relationships.find_by(id: relationship_id),
             html: { method: :delete }) do |f| %>
          </a>
-         <a class="menu-group" id=<%= "menu-group" + group_id.to_s%>><%= "#" + group_name%></a>
+         <a class="menu-group" id=<%= "menu-group" + ":" + group_id.to_s + ":" + group_name_url_string.to_s%>><%= "#" + group_name%></a>
 
          </a>
          <% end %>
