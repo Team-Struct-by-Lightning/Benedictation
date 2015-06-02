@@ -27,6 +27,7 @@ class GroupsController < ApplicationController
 
   def get_redis_item_name
     json = $redis.lrange(params[:redis_key],0,-1)[params[:index].to_i]
+    puts "@@@@@@json: " + json.to_s
     json = JSON.parse(json)
     json['user_name'] = params[:user_name]
     puts json

@@ -51,6 +51,7 @@ function clickable(me,api_clicked) {
     // arr[5] through arr[5+n] n \in \N \cup \{ 0 \}
     //                        (natural numbers including 0)
     // split on colon
+
     var arr = me.split(':');
     // take the redis index
     var index = arr[0];
@@ -58,6 +59,15 @@ function clickable(me,api_clicked) {
     var user_email = arr[4];
     // get the user's names
     var name_array = arr.slice(5, arr.length);
+    console.log("name array: ",name_array);
+    var calendar = false;
+    // if its a calendar api
+    if(name_array[name_array.length - 1] == "calendar"){
+        calendar = true;
+        name_array = name_array.slice(0,name_array.length - 1);
+    }
+    console.log("calendar: ",calendar);
+
     // join the different parts of the user's names on space
     var user_name = name_array.join(" ");
     // get the redis key
@@ -77,6 +87,9 @@ function clickable(me,api_clicked) {
     console.log("key: ",key);
     console.log("index: ",index);
     console.log("user name:", user_name);
+    if(calendar){
+        key = key + ":calendar";
+    }
     $.ajax({
         type: "GET",
         url: "/get_redis_item_name",

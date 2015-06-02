@@ -26,7 +26,7 @@ var postAPIRequest = function(myData, oldornew) {
                     // For calendar, the json is unmodified from the python server's version.
                     sendBennyReply(json_hash);
                 }
-                // update redis with json if question api
+                // update redis with unique json if question api
                 if (json_hash.api_type == "wikipedia" | json_hash.api_type == "wolfram" || json_hash.api_type == "google") {
                     $.ajax({
                         type: "POST",
