@@ -1,5 +1,7 @@
 class GroupsController < ApplicationController
 
+  require 'json'
+
   include GroupsHelper
 
   skip_before_filter  :verify_authenticity_token
@@ -21,6 +23,14 @@ class GroupsController < ApplicationController
 
   def get_redis_item
     render :json => $redis.lrange(params[:redis_key],0,-1)[params[:index].to_i]
+  end
+
+  def get_redis_item_name
+    json = $redis.lrange(params[:redis_key],0,-1)[params[:index].to_i]
+    json = JSON.parse(json)
+    json['user_name'] = params[:user_name]
+    puts json
+    render :json => json
   end
 
   def get_redis_length
