@@ -107,7 +107,7 @@ comm.on('connected', function(options) {
 comm.on('disconnect', function(options) {
     console.log('disconnect happening');
     var blah = document.getElementById(options.ID);
-    if (typeof blah !== 'null') {
+    if (blah != null) {
         document.getElementById(options.ID).remove();
     }
 });
