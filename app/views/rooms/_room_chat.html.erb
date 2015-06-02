@@ -191,6 +191,7 @@ function appendNewBennyReply(json_murph) { <% image_name = "" %> console.log("js
     }
     benny_note_number = benny_note_number + 1;
     $('#benny-help-temp').remove();
+
     if (json_murph.api_type == 'calendar' || json_murph.api_type == 'calendar_show') { <% image_name = "googz.ico" %>
         var summary = "Meeting scheduled by Benedict."
         var key_array = json_murph.key.split(":");
@@ -206,16 +207,22 @@ function appendNewBennyReply(json_murph) { <% image_name = "" %> console.log("js
         } else {
             $('.benny-list-body').append('<div class="benny-item benny-calendar" id=' + benny_item_id + '>' + '<%= image_tag("#{image_name}", class: "favicon") %>' + '<a class="name-and-summary-calendar">' + name + '</a>' + '<a class="benny-link" onclick=' + parameter + ' id=' + benny_item_link_id + '> View calendar </a>' + '</div>');
         }
-    } else if (json_murph.api_type == 'schedule_suggest') { <% image_name = "googz.ico" %>
+    } 
+
+    else if (json_murph.api_type == 'schedule_suggest') { <% image_name = "googz.ico" %>
         var key_array = json_murph.key.split(":");
         var key_array_slice = key_array.slice(0, 4);
         var key = key_array_slice.join(":");
         var benny_item_id = "benny" + key;
         var benny_item_link_id = "benny_query" + key;
         var parameter = 'clickable("' + json_murph.key + '")';
+        var title_string = "Suggested times";
+        if(json_murph["resubmit"] == true) { title_string = "Suggested times (updated)"; }
         $('.benny-list-body').addClass('benny-list-body-func');
-        $('.benny-list-body').append('<div class="benny-item benny-calendar benny-schedsuggest" id=' + benny_item_id + '>' + '<%= image_tag("#{image_name}", class: "favicon") %>' + '<a class="name-and-summary-calendar">' + name + '</a>' + '<a class="benny-link" onclick=' + parameter + ' id=' + benny_item_link_id + '> Suggested times </a>' + '</div>');
-    } else if (json_murph.api_type == 'wolfram') { <% image_name = "wolfram.jpg" %>
+        $('.benny-list-body').append('<div class="benny-item benny-calendar benny-schedsuggest" id=' + benny_item_id + '>' + '<%= image_tag("#{image_name}", class: "favicon") %>' + '<a class="name-and-summary-calendar">' + name + '</a>' + '<a class="benny-link" onclick=' + parameter + ' id=' + benny_item_link_id + '>' + title_string + '</a>' + '</div>');
+    } 
+    
+    else if (json_murph.api_type == 'wolfram') { <% image_name = "wolfram.jpg" %>
         if (json_murph.query == "") {
             query = "No query.";
         } else {
@@ -251,7 +258,9 @@ function appendNewBennyReply(json_murph) { <% image_name = "" %> console.log("js
             $("#" + benny_item_id.replace(/([ #;&,.+*~\':"!^$[\]()=>|\/])/g, '\\$1') + " > a:nth-child(3)").css("opacity", "0.3");
             $("#" + benny_item_id.replace(/([ #;&,.+*~\':"!^$[\]()=>|\/])/g, '\\$1') + " .right-fav-small").css("cursor", "default");
         }
-    } else if (json_murph.api_type == 'google') { <% image_name = "google-fav.jpg" %>
+    } 
+    
+    else if (json_murph.api_type == 'google') { <% image_name = "google-fav.jpg" %>
         var query = ""
         if (json_murph.query == "") {
             query = "No query.";
@@ -287,7 +296,9 @@ function appendNewBennyReply(json_murph) { <% image_name = "" %> console.log("js
             $("#" + benny_item_id.replace(/([ #;&,.+*~\':"!^$[\]()=>|\/])/g, '\\$1') + " > a:nth-child(3)").css("opacity", "0.3");
             $("#" + benny_item_id.replace(/([ #;&,.+*~\':"!^$[\]()=>|\/])/g, '\\$1') + " .right-fav-small").css("cursor", "default");
         }
-    } else if (json_murph.api_type == 'google_docs' || json_murph.api_type == 'docs_show') { <% image_name = "google_docs.png" %>
+    } 
+    
+    else if (json_murph.api_type == 'google_docs' || json_murph.api_type == 'docs_show') { <% image_name = "google_docs.png" %>
         var key_array = json_murph.key.split(":");
         var key_array_slice = key_array.slice(0, 4);
         var key = key_array_slice.join(":");
@@ -296,7 +307,9 @@ function appendNewBennyReply(json_murph) { <% image_name = "" %> console.log("js
         var parameter = 'clickable("' + json_murph.key + '")';
         $('.benny-list-body').addClass('benny-list-body-func');
         $('.benny-list-body').append('<div class="benny-item benny-google" id=' + benny_item_id + '>' + '<%= image_tag("#{image_name}", class: "favicon", id:"google-fav") %>' + '<a class="name-and-summary-calendar">' + name + '</a>' + '<a class="benny-link" onclick=' + parameter + ' id=' + benny_item_link_id + '> Document created by Benedict at ' + json_murph['current_time'] + ' </a>' + '</div>');
-    } else if (json_murph.api_type == 'google_drawings') { <% image_name = "google_drawing.ico" %>
+    } 
+    
+    else if (json_murph.api_type == 'google_drawings') { <% image_name = "google_drawing.ico" %>
         var key_array = json_murph.key.split(":");
         var key_array_slice = key_array.slice(0, 4);
         var key = key_array_slice.join(":");
@@ -305,7 +318,9 @@ function appendNewBennyReply(json_murph) { <% image_name = "" %> console.log("js
         var parameter = 'clickable("' + json_murph.key + '")';
         $('.benny-list-body').addClass('benny-list-body-func');
         $('.benny-list-body').append('<div class="benny-item benny-google" id=' + benny_item_id + '>' + '<%= image_tag("#{image_name}", class: "favicon", id:"google-fav") %>' + '<a class="name-and-summary-calendar">' + name + '</a>' + '<a class="benny-link" onclick=' + parameter + ' id=' + benny_item_link_id + '> Drawing created by Benedict at ' + json_murph['current_time'] + ' </a>' + '</div>');
-    } else if (json_murph.api_type == 'wikipedia') { <% image_name = "wikipedia.ico" %>
+    } 
+    
+    else if (json_murph.api_type == 'wikipedia') { <% image_name = "wikipedia.ico" %>
         if (json_murph.query == "") {
             query = "No query.";
         } else {
@@ -341,7 +356,9 @@ function appendNewBennyReply(json_murph) { <% image_name = "" %> console.log("js
             $("#" + benny_item_id.replace(/([ #;&,.+*~\':"!^$[\]()=>|\/])/g, '\\$1') + " > a:nth-child(3)").css("opacity", "0.3");
             $("#" + benny_item_id.replace(/([ #;&,.+*~\':"!^$[\]()=>|\/])/g, '\\$1') + " .right-fav-small").css("cursor", "default");
         }
-    } else if (json_murph.api_type == 'No Result' || json_murph.api_type == 'Blank Query') {
+    } 
+
+    else if (json_murph.api_type == 'No Result' || json_murph.api_type == 'Blank Query') {
         $('.benny-list-body').append('<div class="benny-item benny-no-result" id=' + benny_item_id + '>' + '<a class="glyphicon glyphicon-question-sign" id="benny-query-question-mark" onmouseover="hoverHelp()"></a>' + '<a class="no-result-benny-link"> Sorry we could not match your request. ' + 'For suggestions, click "Help" above.</a>' + '<a class="name-and-summary-no-result">' + name + '</a>' + '</div>');
         var benny_childs = $('.benny-list-body').children()
         var item_to_toggle = benny_childs[benny_childs.length - 1];

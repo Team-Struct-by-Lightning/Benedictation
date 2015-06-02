@@ -14,8 +14,6 @@ function clickable(me,api_clicked) {
     console.log("me: ",me);
     console.log("api_clicked: ",api_clicked);
 
-    console.log($(this).parent())
-
     // here we get the children of the center drop spot
     // and if there is a video in the center of the page
     // we append it back to the sidebar so that we can clear up
@@ -93,6 +91,7 @@ function clickable(me,api_clicked) {
     if(calendar){
         key = key + ":calendar";
     }
+    console.log("this: " + $(this));
     $.ajax({
         type: "GET",
         url: "/get_redis_item_name",
@@ -104,7 +103,6 @@ function clickable(me,api_clicked) {
         },
         success: function(item) {
             console.log("item: ",item);
-            console.log(this);
             user_name = item['user_name'];
             // Upon success of the GET request, we return an item from
             // Redis which is a JSON object.  We first check the api type
@@ -152,7 +150,9 @@ function clickable(me,api_clicked) {
 
                 var submitter = false;
                 var user_name = "<%= current_user.name %>";
-                if(user_name == item['name']) { submitter = true; }
+                console.log("current user: ", user_name);
+                console.log("submitter: ", item['name']);
+                if(user_name === item['name']) { submitter = true; }
 
                 // Generate radio button and label elements for each suggestion.
                 var suggestions_obj = JSON.parse(suggestions);
@@ -552,6 +552,7 @@ function scheduleUpdate(event) {
                         "end": "' + event.data.end + '", \
                         "duration": "' + parseInt(duration)*60 + '", \
                         "location": "", \
+                        "resubmit": true, \
                         "group_flag": "True"}';
 
     $.ajax({

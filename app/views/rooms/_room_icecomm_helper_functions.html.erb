@@ -137,7 +137,6 @@ jQuery(window).bind("beforeunload", function() {
             }
         });
     }
-    }
     // if last person is leaving the room and it's a random room, then clear the chat history
     if ((comm.getRoomSize() == 1) && !(parseInt(id) || 0)) {
         console.log("Clearing chat history from redis for temporary room.");
