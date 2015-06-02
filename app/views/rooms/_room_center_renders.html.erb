@@ -142,6 +142,9 @@ function clickable(me,api_clicked) {
                     result_name = 'results';
                 }
 
+                var submitter = false;
+                if(user_name != item['name']) { submitter = true; }
+
                 // Generate radio button and label elements for each suggestion.
                 // Limit to the first n, and then show more, perhaps?
                 // Minor improvement: Don't show the day twice if it's the same day...
@@ -154,18 +157,20 @@ function clickable(me,api_clicked) {
                     // Create a radio button: value is i, so we can look up the corresponding option
                     var radio_elem = $('<input type="radio" name="sched-option" value="' + i + '">' + date_str + '</input>');
                     radio_elem.appendTo(suggestions_form);
+                    if(!submitter) radio_elem.hide();
                 }
                 var sched_submit_btn = $('<button id="schedule_submit">Schedule It</button>');
                 var user_name = "<%= current_user.name %>";
-                console.log(user_name);
-                if(user_name != item['name']) {
-                    sched_submit_btn.hide()
-                }
+                if(!submitter) sched_submit_btn.hide();
                 sched_submit_btn.click(scheduleSubmit);
+
+
+                var title_string = "Which of these times would you like to meet?";
+                if(submitter) title_string = "Select the time you would like to schedule.";
 
                 $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' +
                                                '  <div class="center-border suggestion-border"> <h1 class="suggestion-title">' +
-                                               title + '</h1> <h2 class="suggested-time-list-title">Select the time you wish to schedule</h2><p class="num-results">' +
+                                               title + '</h1> <h2 class="suggested-time-list-title">' + title_string + '</h2><p class="num-results">' +
                                                result_val_string + ' ' + result_name + '</p><a class="glyphicon glyphicon-remove suggestion-remove" id="remove_item_id"></a>' +
                                               '  <div class="suggestions-list"></div></div></div>');
                 $('.suggestions-list').append(suggestions_form);
@@ -465,15 +470,11 @@ function scheduleSubmit(event) {
     end_time   = end_time.split('+')[0] + '-0700';
 
     // POST this to /check_api.
-    // Format just as if it had come back from the Python server.
     var schedule_json = '{"attendees": [], \
                         "api_type": "calendar", \
-                        "start": {"datetime": "' + start_time + '", \
-                        "timezone": "America/Los_Angeles"}, \
-                        "end": {"datetime": "' + end_time + '", \
-                        "timezone": "America/Los_Angeles"}, \
+                        "start": ' + start_time + ', \
+                        "end": ' + end_time + ', \
                         "location": "", \
-                        "summary": "Meeting scheduled by Benedict", \
                         "group_flag": "True"}';
     $.ajax({
         type: "POST",
@@ -485,53 +486,11 @@ function scheduleSubmit(event) {
             sendBennyReply(return_json);
         }
     });
+}
 
-    // Lol JK we aren't doing this redis shit anymore
-    // var url = (window.location.pathname).split("/");
-    // var id = String(url[url.length - 2]);
-    // var name = String(url[url.length - 1]);
-    // var emails_key = name + ":" + id + ":emails";
-    // var schedule_options_key = name + ":" + id + ":scheduleagree";
-    // WOO NESTED CALLBACKS FOUR DEEP LETS GO
-    // $.ajax({
-    //     type: "GET",
-    //     url: "/get_redis",
-    //     dataType: "json",
-    //     data: {
-    //         'redis_key': emails_key
-    //     },
-    //     //Push a key to Redis indicating what room this is, who you are & what you picked.
-    //     success: function(emails) {
-    //         $.ajax({
-    //             type: "POST",
-    //             url: "/update_redis",
-    //             dataType: "json",
-    //             data: {
-    //                 'redis_key': name + ":" + id + ":scheduleagree",
-    //                 'message': i  // This is the index of the option you picked
-    //             },
+// Support: 
+function scheduleMoreOptions(event) {
 
-    //             //Get from Redis the list of everyone's choices.
-    //             success: function() {
-    //                 $.ajax({
-    //                     type: "GET",
-    //                     url: "/get_redis",
-    //                     dataType: "json",
-    //                     data: {
-    //                         'redis_key': schedule_options_key
-    //                     },
-
-    //                     // Ensure the length of choices matches the length of emails;
-    //                     // and that all elements of choices are the same.
-    //                     success: function(choices) {
-    //                         alert(emails);
-    //                         alert(choices);
-    //                     }
-    //                 });
-    //             }
-    //         });
-    //     }
-    // });
 }
 
 <% end %>
