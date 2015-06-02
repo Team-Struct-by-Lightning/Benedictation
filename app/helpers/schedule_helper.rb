@@ -14,7 +14,8 @@ module ScheduleHelper
 		url = request.referrer.split("/")	# Get the URL of where the request CAME from, not the url that was requested.
         redis_key = url[-1].to_s + ":" + url[-2].to_s + ":emails";
 		attendees = $redis.lrange(redis_key,0,-1)
-		#logger.error "@@@@@@@@@@@@ ATTENDEES: " + attendees.to_s
+		attendees.uniq!
+		logger.error "@@@@@@@@@@@@ ATTENDEES: " + attendees.to_s
 		return attendees
 	end
 
@@ -47,10 +48,10 @@ module ScheduleHelper
 
 		start_str = json_hash['start']
 		end_str = json_hash['end']
-		duration = json_hash['duration'] || 1.hour
-		time_resolution = json_hash['time_resolution'] || 30.minutes
-		lower_bound = json_hash['lower_bound'] || 8
-		upper_bound = json_hash['upper_bound'] || 17
+		duration = (json_hash['duration'] || 1.hour).to_i
+		time_resolution = (json_hash['time_resolution'] || 30.minutes).to_i
+		lower_bound = (json_hash['lower_bound'] || 8).to_i
+		upper_bound = (json_hash['upper_bound'] || 17).to_i
 		tz_offset = json_hash['tz_offset'] || '-0700'
 		nslots = (1.hour / time_resolution) * (upper_bound - lower_bound)
 
@@ -67,7 +68,8 @@ module ScheduleHelper
 			end
 		end
 		logger.error "overall_availability: " + overall_availability.inspect
-		return available_times_json(overall_availability, start_range, duration, time_resolution)
+		json_hash['suggested_times'] = available_times_json(overall_availability, start_range, duration, time_resolution)
+		return json_hash
 	end
 
 	# Get the availability for one user as an array of bit vectors.
@@ -118,7 +120,7 @@ module ScheduleHelper
 				day_end   = day.to_datetime.change(hour: upper_bound, offset: tz_offset)
 				stime = [event_start, day_start].max
 				etime = [event_end, day_end].min
-				logger.error stime.to_s + " to " + etime.to_s
+				#logger.error stime.to_s + " to " + etime.to_s
 				time_index = (event_start.to_time - day_start.to_time) / time_resolution
 
 				# Loop over the time this event covers, in 30 minute increments.
@@ -134,9 +136,9 @@ module ScheduleHelper
 		end
 
 		# Make sure the bitwise bullshit is working
-		userAvailabilityArray.each do |x|
-			logger.error "%018b" % x
-		end
+		# userAvailabilityArray.each do |x|
+		# 	logger.error "%018b" % x
+		# end
 
 		return userAvailabilityArray
 	end

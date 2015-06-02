@@ -13,6 +13,9 @@
 function clickable(me,api_clicked) {
     console.log("me: ",me);
     console.log("api_clicked: ",api_clicked);
+
+    console.log($(this).parent())
+
     // here we get the children of the center drop spot
     // and if there is a video in the center of the page
     // we append it back to the sidebar so that we can clear up
@@ -88,6 +91,7 @@ function clickable(me,api_clicked) {
         },
         success: function(item) {
             console.log("item: ",item);
+            console.log(this);
             user_name = item['user_name'];
             // Upon success of the GET request, we return an item from
             // Redis which is a JSON object.  We first check the api type
@@ -99,17 +103,17 @@ function clickable(me,api_clicked) {
                 console.log("we got a question api.");
                 item['api_type'] = api_clicked;
             }
-                api_type = item['api_type'];
+            api_type = item['api_type'];
 
             // the aforementioned 'if/else if' block
             if (api_type == 'calendar' || api_type == 'calendar_show') {
                 // the title at the top of the div
-                var user_name_title = user_name + "\'s Google Calendar";
+                var user_name_title = '<%= current_user.name %>'+ "\'s Google Calendar";
                 // this is used in the email_url and also we use this
                 // if the user does not have their Google + name set up.
                 // We grab the email without the '@gmail.com' part
                 // of the string
-                var email_name = user_email.split('@')[0];
+                var email_name = '<%= current_user.email %>'.split('@')[0];
                 // this is hardcoded to our time zone but this needs to be scaled so that we handle
                 // different timezones
 
@@ -131,55 +135,74 @@ function clickable(me,api_clicked) {
                 var render_item_id = "render" + div_id;
                 var title = "Suggested times";
                 var suggestions = item['suggested_times']; // This is a string.
-                var result = suggestions.split('},{').length;
-                var result_name;
-                var result_val_string = String(result);
-
-                if (result == 1) {
-                    result_name = 'result';
-                }
-                else {
-                    result_name = 'results';
-                }
+                var num_results = String(suggestions.split('},{').length);
 
                 var submitter = false;
+                var user_name = "<%= current_user.name %>";
                 if(user_name == item['name']) { submitter = true; }
 
                 // Generate radio button and label elements for each suggestion.
-                // Limit to the first n, and then show more, perhaps?
-                // Minor improvement: Don't show the day twice if it's the same day...
-                suggestions_obj = JSON.parse(suggestions)
-                var suggestions_ul = $('<ul id="suggestions_ul" style="padding-top: 15px"></ul>')
+                var suggestions_obj = JSON.parse(suggestions);
+                var suggestions_ul = $('<form id="schedule_suggest_form"><ul id="suggestions_ul" style="padding-top: 15px"></ul></form>')
                 for(var i=0; i<suggestions_obj.length; i++) {
                     suggestion = suggestions_obj[i];
                     var date_str = DateFormat.format.date(suggestion.start, "E MMM D, h:mm p") + " to " + DateFormat.format.date(suggestion.end, "E MMM D, h:mm p");
 
                     if(submitter) {
                         // Create a radio button: value is i, so we can look up the corresponding option
-                        //var radio_elem = $('<input type="radio" name="sched-option" value="' + i + '">' + date_str + '</input>');
                         var radio_elem = $('<div class="radio"><label><input type="radio" name="sched-option" value="' + i + '">' + date_str + '</label></div>');
                         radio_elem.appendTo(suggestions_ul);
                     }
                     else {
                         $('<li>' + date_str + "</li>").appendTo(suggestions_ul);
-                    }
-                    
+                    }                   
                 }
-                var sched_submit_btn = $('<button id="schedule_submit">Schedule It</button>');
-                var user_name = "<%= current_user.name %>";
-                if(!submitter) sched_submit_btn.hide();
-                sched_submit_btn.click(scheduleSubmit);
 
                 var title_string = "Which of these times would you like to meet?";
                 if(submitter) title_string = "Select the time you would like to schedule.";
 
+                // Build and append the dropdown menu for duration.                
+                var duration_options = {"30 minutes": 30, "1 hour": 60, "2 hours": 120, "3 hours": 180, "4 hours": 240}
+                var duration_dropdown = $('<ul class="dropdown-menu" role="menu"></ul>');
+                for(i in duration_options) {
+                    duration_dropdown.append('<li role="presentation"><a role="menuitem" class="duration-menu-item" option="' + duration_options[i] + '">' + i + '</a></li>');
+                }
+                var duration_menu = $('<div class="dropdown"><button class="btn btn-default dropdown-toggle" \
+                    id="duration-dropdown" data-toggle="dropdown" chosen=60>Duration<span class="caret"></span></button> </div>')
+                    .append(duration_dropdown);
+
                 $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' +
-                                               '  <div class="center-border suggestion-border"> <h1 class="suggestion-title">' +
-                                               title + '</h1> <h2 class="suggested-time-list-title">' + title_string + '</h2><p class="num-results">' +
-                                               result_val_string + ' ' + result_name + '</p><a class="glyphicon glyphicon-remove suggestion-remove" id="remove_item_id"></a>' +
-                                              '  <div class="suggestions-list"></div></div></div>');
+                                               '<div class="center-border suggestion-border"> <h1 class="suggestion-title">' + title + 
+                                               '</h1> <h2 class="suggested-time-list-title">' + title_string + 
+                                               '</h2><p class="num-results">' + num_results + ' results' + 
+                                               '</p><a class="glyphicon glyphicon-remove suggestion-remove" id="remove_item_id"></a>' +
+                                               '<div class="suggestions-list"></div></div></div>');
                 $('.suggestions-list').append(suggestions_ul);
-                $('.center-border').append(sched_submit_btn);
+                $('.center-border').append(duration_menu);
+
+                // Set up the submit button, only if you're the one who submitted the initial request.
+                if(submitter) {
+                    var submit_data = {suggestions: suggestions_obj};
+                    var sched_submit_btn = $('<button id="schedule_submit" class="btn btn-primary">Schedule It</button>');  
+                    sched_submit_btn.click(submit_data, scheduleSubmit);
+                    $('.center-border').append(sched_submit_btn);
+                }
+                
+                // Set up the button to resubmit the schedule suggest request if duration, users etc. changed.
+                if(submitter) {
+                    var update_btn = $('<button id="schedule_update" class="btn btn-default">Update Results</button>');
+                    update_btn.click({start: item['start'], end: item['end']}, scheduleUpdate);
+                    $('.center-border').append(update_btn);
+                }
+
+                // Called when one of the options in the duration dropdown is clicked.
+                $(".duration-menu-item").click(function(e) {
+                    e.preventDefault();
+                    var duration_chosen = $(this).attr("option");
+                    var text = $(this).html();
+                    $('#duration-dropdown').html(text + '<span class="caret"></span>');
+                    $('#duration-dropdown').attr("chosen", duration_chosen);
+                });
             }
 
             else if (api_type == 'google') {
@@ -462,11 +485,14 @@ function wolfram_text(render_item_id) {
 
 // Called when the "Submit" button is pressed on schedule suggestion.
 function scheduleSubmit(event) {
-    var suggestions = event.view.suggestions_obj;
+    event.preventDefault();
+    var suggestions = event.data.suggestions;
     var i = $('input[name=sched-option]:checked').val();
     var suggestion = suggestions[i];
     var start_time = suggestion.start;
     var end_time   = suggestion.end;
+    var duration   = $('#duration-dropdown').attr("chosen")
+    console.log("Duration: ", duration)
 
     // Handle TZ offsets. They are coming from suggestion object in local time +00:00
     // and need to be in local time -07:00, or in UTC +00:00.
@@ -479,6 +505,7 @@ function scheduleSubmit(event) {
                         "api_type": "calendar", \
                         "start": "' + start_time + '", \
                         "end": "' + end_time + '", \
+                        "duration": "' + duration + '", \
                         "location": "", \
                         "group_flag": "True"}';
     $.ajax({
@@ -496,9 +523,33 @@ function scheduleSubmit(event) {
     });
 }
 
-// Support: 
-function scheduleMoreOptions(event) {
+function scheduleUpdate(event) {
+    event.preventDefault();
+    console.log("HELLO");
+    var duration = $('#duration-dropdown').attr("chosen");
+    if(duration === "") { duration = "60" }
 
+    var schedule_json = '{"attendees": [], \
+                        "api_type": "schedule_suggest", \
+                        "start": "' + event.data.start + '", \
+                        "end": "' + event.data.end + '", \
+                        "duration": "' + parseInt(duration)*60 + '", \
+                        "location": "", \
+                        "group_flag": "True"}';
+
+    $.ajax({
+        type: "POST",
+        url: "/check_api",
+        data: {
+            jsonData: schedule_json
+        },
+        success: function(return_json) {
+            sendBennyReply(return_json);
+
+            // Remove the old center render, you don't need it anymore.
+            $(".center-border").remove()
+        }
+    });
 }
 
 <% end %>

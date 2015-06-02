@@ -188,7 +188,7 @@ function appendNewBennyReply(json_murph) { <% image_name = "" %> console.log("js
         var benny_item_link_id = "benny_query" + key;
         var parameter = 'clickable("' + json_murph.key + '")';
         $('.benny-list-body').addClass('benny-list-body-func');
-        $('.benny-list-body').append('<div class="benny-item benny-calendar" id=' + benny_item_id + '>' + '<%= image_tag("#{image_name}", class: "favicon") %>' + '<a class="name-and-summary-calendar">' + name + '</a>' + '<a class="benny-link" onclick=' + parameter + ' id=' + benny_item_link_id + '> Suggested times </a>' + '</div>');
+        $('.benny-list-body').append('<div class="benny-item benny-calendar benny-schedsuggest" id=' + benny_item_id + '>' + '<%= image_tag("#{image_name}", class: "favicon") %>' + '<a class="name-and-summary-calendar">' + name + '</a>' + '<a class="benny-link" onclick=' + parameter + ' id=' + benny_item_link_id + '> Suggested times </a>' + '</div>');
     } else if (json_murph.api_type == 'wolfram') { <% image_name = "wolfram.jpg" %>
         if (json_murph.query == "") {
             query = "No query.";

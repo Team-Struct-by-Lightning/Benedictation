@@ -68,8 +68,7 @@ module RoomsHelper
 			json_hash #return unmodified json hash
 		when 'schedule_suggest'
 			logger.error 'We will find a time that works'
-			json_event = schedule_json(json_hash)
-			json_hash['suggested_times'] = json_event
+			json_hash = schedule_json(json_hash)
 			json_hash
 		when 'google_docs'
 			puts "We will access the google docs api!"
