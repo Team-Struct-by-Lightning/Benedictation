@@ -149,14 +149,15 @@ function clickable(me,api_clicked) {
                 // Limit to the first n, and then show more, perhaps?
                 // Minor improvement: Don't show the day twice if it's the same day...
                 suggestions_obj = JSON.parse(suggestions)
-                var suggestions_ul = $('<ul id="suggestions_ul"></ul>')
+                var suggestions_ul = $('<ul id="suggestions_ul" style="padding-top: 15px"></ul>')
                 for(var i=0; i<suggestions_obj.length; i++) {
                     suggestion = suggestions_obj[i];
                     var date_str = DateFormat.format.date(suggestion.start, "E MMM D, h:mm p") + " to " + DateFormat.format.date(suggestion.end, "E MMM D, h:mm p");
 
                     if(submitter) {
                         // Create a radio button: value is i, so we can look up the corresponding option
-                        var radio_elem = $('<input type="radio" name="sched-option" value="' + i + '">' + date_str + '</input>');
+                        //var radio_elem = $('<input type="radio" name="sched-option" value="' + i + '">' + date_str + '</input>');
+                        var radio_elem = $('<div class="radio"><label><input type="radio" name="sched-option" value="' + i + '">' + date_str + '</label></div>');
                         radio_elem.appendTo(suggestions_ul);
                     }
                     else {
@@ -476,8 +477,8 @@ function scheduleSubmit(event) {
     // POST this to /check_api.
     var schedule_json = '{"attendees": [], \
                         "api_type": "calendar", \
-                        "start": ' + start_time + ', \
-                        "end": ' + end_time + ', \
+                        "start": "' + start_time + '", \
+                        "end": "' + end_time + '", \
                         "location": "", \
                         "group_flag": "True"}';
     $.ajax({
