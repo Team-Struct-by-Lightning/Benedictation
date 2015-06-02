@@ -120,6 +120,7 @@ jQuery(window).bind("beforeunload", function() {
     var benny_key = name + ":" + id + ":bennyhistory";
     var emails_key = name + ":" + id + ":emails";
     // if last person is leaving the room, always clear benny histories.
+    // new: also clear emails list.
     if ((comm.getRoomSize() == 1)) {
         $.ajax({
             type: "POST",
@@ -128,6 +129,14 @@ jQuery(window).bind("beforeunload", function() {
                 redis_key: benny_key
             }
         });
+        $.ajax({
+            type: "POST",
+            url: "/clear_redis",
+            data: {
+                redis_key: emails_key
+            }
+        });
+    }
     }
     // if last person is leaving the room and it's a random room, then clear the chat history
     if ((comm.getRoomSize() == 1) && !(parseInt(id) || 0)) {
