@@ -17,7 +17,7 @@ schedule_verbs = ['add', 'set', 'make', 'create', 'get', 'schedule', 'appoint',
 schedule_suggest_verbs = ['suggest', 'recommend', 'propose', 'show']
 
 schedule_nouns = ['appointment', 'meeting','meetup', 'reservation', 'session'
-				 'talk', 'call', 'powwow', 'meet', 'rendezvous', 'event', 'conference']
+				 'talk', 'call', 'time', 'powwow', 'meet', 'rendezvous', 'event', 'conference']
 
 doc_verbs = ['open', 'open up', 'view', 'launch', 'look','display', 'check', 'start',
 				'begin','create', 'make', 'get', 'have', 'set', 'generate', 'show', 'pull']

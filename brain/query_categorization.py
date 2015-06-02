@@ -733,7 +733,7 @@ def train_predictor_for_brain(predictor, ts_cal, ts_ss, ts_cs, ts_gd, ts_gdr, ts
 
 def check_word_lists_threshold(query_array, class_index):
 	for i in range(len(query_array)):
-		if class_index == 2:
+		if class_index == 0 or class_index == 1 or class_index == 2:
 			if query_array[i] in schedule_nouns:
 				return 1
 		if class_index == 3:
@@ -748,12 +748,41 @@ def threshold_calculator_for_predict(probabilities, query):
 
 	probabilities = probabilities.tolist()[0]
 	print probabilities
-	if probabilities[0] > .8 or probabilities[1] > .1:
+	if probabilities[0] > .7 or probabilities[1] > .1:
 		cal_parse = cal.parse(query)
 		if cal_parse[1] == 0 or cal_parse[1] == 1:
-			return 1
+			if check_word_lists_threshold(query.split(' '), class_index): 
+				return 1
+			else:
+				if probabilities[2] > .1 or probabilities[3] > .1 or probabilities[4] > .1:
+					class_index = probabilities.index(max(probabilities[2:5]))
+					if check_word_lists_threshold(query.split(' '), class_index):
+						return class_index + 1
+					elif probabilities[5] > .1 or probabilities[6] > .1:
+						return probabilities.index(max(probabilities[5:7])) + 1
+					else:
+						return probabilities.index(max(probabilities)) + 1
+				elif probabilities[5] > .1 or probabilities[6] > .1:
+					return probabilities.index(max(probabilities[5:7])) + 1
+				else:
+					return probabilities.index(max(probabilities)) + 1
 		else:
-			return 2
+			if check_word_lists_threshold(query.split(' '), class_index):
+				return 2
+			else:
+				if probabilities[2] > .1 or probabilities[3] > .1 or probabilities[4] > .1:
+					class_index = probabilities.index(max(probabilities[2:5]))
+					if check_word_lists_threshold(query.split(' '), class_index):
+						return class_index + 1
+					elif probabilities[5] > .1 or probabilities[6] > .1:
+						return probabilities.index(max(probabilities[5:7])) + 1
+					else:
+						return probabilities.index(max(probabilities)) + 1
+				elif probabilities[5] > .1 or probabilities[6] > .1:
+					return probabilities.index(max(probabilities[5:7])) + 1
+				else:
+					return probabilities.index(max(probabilities)) + 1
+
 	elif probabilities[2] > .1 or probabilities[3] > .1 or probabilities[4] > .1:
 		class_index = probabilities.index(max(probabilities[2:5]))
 		if check_word_lists_threshold(query.split(' '), class_index):
