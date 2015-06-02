@@ -904,9 +904,9 @@ def predict_api_type(predictor, query):
 
 
 
-#predictor_to_be_pickled = BernoulliNB()
+predictor_to_be_pickled = BernoulliNB()
 
-#pickle_predictor(predictor_to_be_pickled)
+pickle_predictor(predictor_to_be_pickled)
 
 
 
