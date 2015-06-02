@@ -104,12 +104,12 @@ function clickable(me,api_clicked) {
             // the aforementioned 'if/else if' block
             if (api_type == 'calendar' || api_type == 'calendar_show') {
                 // the title at the top of the div
-                var user_name_title = user_name + "\'s Google Calendar";
+                var user_name_title = '<%= current_user.name %>'+ "\'s Google Calendar";
                 // this is used in the email_url and also we use this
                 // if the user does not have their Google + name set up.
                 // We grab the email without the '@gmail.com' part
                 // of the string
-                var email_name = user_email.split('@')[0];
+                var email_name = '<%= current_user.email %>'.split('@')[0];
                 // this is hardcoded to our time zone but this needs to be scaled so that we handle
                 // different timezones
 
