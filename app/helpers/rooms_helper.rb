@@ -113,11 +113,9 @@ module RoomsHelper
 					json_hash['third' + "_image_name"] = ActionController::Base.helpers.asset_path('wolfram.jpg')
 				end
 			else
-				# grab the wolfram html
 				json_hash[order] = ""
 				json_hash[order + "_image_name"] = ActionController::Base.helpers.asset_path('wolfram.jpg')
 			end
-
 
 		# otherwise the api type is definitely wolfram
 		else

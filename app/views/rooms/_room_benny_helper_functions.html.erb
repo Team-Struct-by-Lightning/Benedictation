@@ -90,13 +90,29 @@ var onBennyReply = function(e) {
                         },
                         success: function(return_val) {
                             api_json = return_val['result']
-                            console.log("api_json: ", api_json);
                             // if query is new
                             if (api_json == "") {
                                 postAPIRequest(myData, "new");
                             } else {
-                                // post the benny reply dire
-                                postAPIRequest(JSON.parse(api_json), "old");
+                                // post the benny reply directly
+                                api_json = JSON.parse(api_json);
+                                if (api_type == "wolfram") {
+                                    $.ajax({
+                                        type: "GET",
+                                        url: "/get_wolfram_html",
+                                        dataType: "json",
+                                        data: {
+                                            'query': api_json['query']
+                                        },
+                                        success: function(return_val) {
+                                            wolfram_html = return_val['result']
+                                            api_json['api_html'] = wolfram_html;
+                                            postAPIRequest(api_json, "old");
+                                        }
+                                    });
+                                } else {
+                                    postAPIRequest(api_json, "old");
+                                }
                             }
                         }
                     });

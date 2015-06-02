@@ -277,8 +277,12 @@ function clickable(me,api_clicked) {
             else if (api_type == 'wolfram') {
                 // adds the word render to the unique id of the div based on
                 // the info stored in its redis key
+                var api_html = "";
                 var render_item_id = "render" + div_id;
-                api_html = item['api_html'];
+                
+               
+                  api_html = item['api_html'];
+                
                 var query = item['query'];
                 // these two lines makes sure the space added before the apostrophes
                 // from nltk is removed
