@@ -76,16 +76,19 @@ function clickable(me,api_clicked) {
     // are the 'redis_key' and the 'index'
     console.log("key: ",key);
     console.log("index: ",index);
+    console.log("user name:", user_name);
     $.ajax({
         type: "GET",
-        url: "/get_redis_item",
+        url: "/get_redis_item_name",
         dataType: "json",
         data: {
             'redis_key': key,
-            'index': index
+            'index': index,
+            'user_name': user_name
         },
         success: function(item) {
             console.log("item: ",item);
+            user_name = item['user_name'];
             // Upon success of the GET request, we return an item from
             // Redis which is a JSON object.  We first check the api type
             // and we have an if statement that let's us determine which

@@ -167,14 +167,7 @@ function appendNewBennyReply(json_murph) { <% image_name = "" %> console.log("js
     benny_note_number = benny_note_number + 1;
     $('#benny-help-temp').remove();
     if (json_murph.api_type == 'calendar' || json_murph.api_type == 'calendar_show') { <% image_name = "googz.ico" %>
-        var summary = ""
-        if (json_murph.summary == "") {
-            summary = "No summary."
-        } else {
-            if (json_murph.api_type != 'calendar_show') {
-                summary = truncation(json_murph.summary, 40);
-            }
-        }
+        var summary = "Meeting scheduled by Benedict."
         var key_array = json_murph.key.split(":");
         var key_array_slice = key_array.slice(0, 4);
         var key = key_array_slice.join(":");
