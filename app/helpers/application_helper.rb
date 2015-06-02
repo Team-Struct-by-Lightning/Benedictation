@@ -1,5 +1,8 @@
 module ApplicationHelper
     include SessionsHelper
+    
+
+
 
     def get_random_string
         SecureRandom.urlsafe_base64

@@ -1,11 +1,32 @@
 class GroupsController < ApplicationController
 
   require 'json'
+  require 'open-uri'
+  require 'nokogiri'
+  WolframAPIKey = YAML.load_file("#{::Rails.root}/config/wolfram.yml")[::Rails.env]
 
   include GroupsHelper
 
   skip_before_filter  :verify_authenticity_token
 
+def get_wolfram_html
+      query = params[:query]
+      query = query.to_s
+      query = query.split(" '").join
+      query = query.split("'").join
+      app_id = WolframAPIKey["app_id"]
+      wolfram_url = URI.parse("http://api.wolframalpha.com/v2/query?appid=P3P4W5-LGWA2A3RU2&input=" + URI.encode(query.strip) + "&format=html").to_s
+      doc = Nokogiri::XML(open(wolfram_url))
+      markups = []
+      doc.xpath("//markup").each do |markup|
+        markups << markup.text
+      end
+      api_html = markups.join.to_s.split('"').join("'")
+      api_html = api_html.split("\n").join()
+      hash = {}
+      hash['result'] = api_html
+      render :json => hash
+    end
 
   # redis chat history stuff
   def update_redis
