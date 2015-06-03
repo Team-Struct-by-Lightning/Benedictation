@@ -857,6 +857,7 @@ def question_noun_phrase(query):
 
 	return ""
 
+# HEY WORK DAMN YOU
 def get_datetime(query):
 	cal_parse = cal.parse(query)
 	## print cal_parse

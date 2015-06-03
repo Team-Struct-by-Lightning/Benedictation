@@ -590,7 +590,7 @@ function scheduleUpdate(event) {
                         "end": "' + event.data.end + '", \
                         "duration": "' + parseInt(duration)*60 + '", \
                         "location": "", \
-                        "resubmit": true, \
+                        "submitter":' + submitter + ', \
                         "group_flag": "True"}';
 
     $.ajax({
