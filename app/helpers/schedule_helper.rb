@@ -69,7 +69,9 @@ module ScheduleHelper
 				overall_availability[i] = x & user_av[i]
 			end
 		end
-		logger.error "overall_availability: " + overall_availability.inspect
+		# overall_availability.each do |x|
+		# 	logger.error "%018b" % x
+		# end	
 		json_hash['suggested_times'] = available_times_json(overall_availability, start_range, duration, time_resolution)
 		return json_hash
 	end
@@ -122,12 +124,13 @@ module ScheduleHelper
 				day_end   = day.to_datetime.change(hour: upper_bound, offset: tz_offset)
 				stime = [event_start, day_start].max
 				etime = [event_end, day_end].min
-				#logger.error stime.to_s + " to " + etime.to_s
+				logger.error stime.to_s + " to " + etime.to_s
 				time_index = (event_start.to_time - day_start.to_time) / time_resolution
 
 				# Loop over the time this event covers, in 30 minute increments.
+				time_resolution = 30.minutes
 				while stime < etime
-					# logger.error "time: " + stime.to_s + ", index: " + time_index.to_s
+					logger.error "time: " + stime.to_s + ", index: " + time_index.to_s
 					bitmask = 1 << time_index
 					userAvailabilityArray[day_index] = userAvailabilityArray[day_index] ^ bitmask
 					stime += time_resolution
@@ -137,10 +140,10 @@ module ScheduleHelper
 			end
 		end
 
-		# Make sure the bitwise bullshit is working
-		# userAvailabilityArray.each do |x|
-		# 	logger.error "%018b" % x
-		# end
+		#Make sure the bitwise bullshit is working
+		userAvailabilityArray.each do |x|
+			logger.error "%018b" % x
+		end
 
 		return userAvailabilityArray
 	end
@@ -158,6 +161,7 @@ module ScheduleHelper
 			available_times[day_key] = []
 			bits = availability.to_s(2).split("").map {|x| !(x.to_i.zero?) }	# True is free False is busy
 			bits.reverse!
+			logger.error "day: " + day.to_s + " bits: " + bits.inspect
 			bits.each_with_index do |bit, n|
 				if bit and bits[n ... n+d].all?
 					start_time = start_range + day + (tr*n).minutes
