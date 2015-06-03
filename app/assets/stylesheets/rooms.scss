@@ -428,6 +428,12 @@ div.wikipedia-frame body{
   overflow-y: scroll;
 }
 
+.suggestions-datepicker {
+  position: relative;
+  top: -95px;
+  max-height: 150px;
+  overflow-y: scroll;
+}
 
 .num-results {
   position: relative;

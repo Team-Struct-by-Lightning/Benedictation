@@ -33,12 +33,12 @@ module ScheduleHelper
 				'summary' => json_hash['summary'],
 				'location' => json_hash['location'],
 				'start' => {
-					'dateTime' => json_hash['start']['datetime'],
-					'timeZone' => json_hash['start']['timezone']
+					'dateTime' => json_hash['start'] + '-0700'
+					#'timeZone' => 'America/Los Angeles'
 				},
 				'end' => {
-					'dateTime' => json_hash['end']['datetime'],
-					'timeZone' => json_hash['end']['timezone']
+					'dateTime' => json_hash['end'] + '-0700'
+					#'timeZone' => 'America/Los Angeles'
 				},
 				'attendees' => attendee_array
 		}
@@ -176,13 +176,15 @@ module ScheduleHelper
 		  client.authorization.fetch_access_token!
 		end
 
+		logger.error json
 		service = client.discovered_api('calendar', 'v3')
 		result = client.execute(:api_method => service.events.insert,
 								:parameters => {'calendarId' => 'primary'},
 								:body 		=> JSON.dump(json),
 								:headers	=> {'Content-Type' => 'application/json'})
 
-		print result.data.id
+		logger.error result.inspect
+
 	end
 
 	def undo_calendar_event(id)

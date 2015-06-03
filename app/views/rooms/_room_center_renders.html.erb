@@ -189,7 +189,7 @@ function clickable(me,api_clicked) {
                                                '</h1> <h2 class="suggested-time-list-title">' + title_string + 
                                                '</h2><p class="num-results">' + num_results + ' results' + 
                                                '</p><a class="glyphicon glyphicon-remove suggestion-remove" id="remove_item_id"></a>' +
-                                               '<div class="suggestions-list"></div></div></div>');
+                                               '<div class="suggestions-datepicker"></div><div class="suggestions-list"></div></div></div>');
                 $('.suggestions-list').append(suggestions_ul);
                 $('.center-border').append(duration_menu);
 
@@ -216,6 +216,34 @@ function clickable(me,api_clicked) {
                     $('#duration-dropdown').html(text + '<span class="caret"></span>');
                     $('#duration-dropdown').attr("chosen", duration_chosen);
                 });
+
+                // Set up the datepicker
+                // This is very inefficient; improvements may later come
+                var valid_dates = {}
+                for(i in suggestions_obj) {
+                    var datetime = suggestions_obj[i];
+                    var datestr = datetime.start.split("T")[0].replace("-", "/");
+                    var date = new Date(datestr);
+                    valid_dates[date.valueOf()] = true
+                }
+                console.log(valid_dates);
+                var date_picker = $("<div id=datepicker></div>").datepicker({
+                    // convert suggested times into dates
+                    // if the date is in that list return true else return false
+                    beforeShowDay: function(date) {
+                        if(date.valueOf() in valid_dates) {
+                            console.log("TRUE");
+                            return [true, ''];
+                        }
+                        else {
+                            return [false, ''];
+                        }
+                    },
+                    onSelect: function(date) {
+                        // Show a list of times for that date, off to the right.
+                    }
+                });
+                date_picker.appendTo('.center-border');
             }
 
             else if (api_type == 'google') {

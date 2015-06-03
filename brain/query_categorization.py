@@ -880,8 +880,10 @@ def make_json(query, api_type, api_number):
 	#THIS IS THE SPECIFIC SPOT WE NEED TO ADD DATETIME STUFF AND THE ATTENDEES ARRAY
 	if api_type == "calendar" or api_type == "schedule_suggest":
 		starttime, endtime = get_datetime(query)
+		summary = "Meeting scheduled by Benedict"
 		print "starttime: ", starttime, "     ", "endtime: ", endtime
-		return '{"api_number": "' + str(api_number) +'", "api_type": "' + api_type + '", "query": "' + query + '", "noun_phrase": "", "summary": "Meeting scheduled by Benedict.", "start": "' + starttime + '", "end": "' + endtime + '" }'
+		return '{"api_number": "' + str(api_number) +'", "api_type": "' + api_type + '", "query": "' + query + '", "summary": "' + summary + '", "start": "' + starttime + '", "end": "' + endtime + '" }'
+
 
 	# EVAN WE NEED THE ATTENDEES ARRAY IN THIS ONE
 	if api_type == "calendar_show" or api_type == "google_docs" or api_type == "google_drawings":
