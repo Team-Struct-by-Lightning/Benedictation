@@ -145,36 +145,19 @@ function clickable(me,api_clicked) {
             else if (api_type == 'schedule_suggest') {
                 var render_item_id = "render" + div_id;
                 var title = "Suggested times";
-                var suggestions = item['suggested_times']; // This is a string.
+                var suggestions = item['suggested_times'];
                 var num_results = String(suggestions.split('},{').length);
+                var suggestions_obj = JSON.parse(suggestions);
 
                 var submitter = false;
                 var user_name = "<%= current_user.name %>";
                 console.log("current user: ", user_name);
                 console.log("submitter: ", item['name']);
                 if(user_name === item['name']) { submitter = true; }
-
-                // Generate radio button and label elements for each suggestion.
-                var suggestions_obj = JSON.parse(suggestions);
-                var suggestions_ul = $('<form id="schedule_suggest_form"><ul id="suggestions_ul" style="padding-top: 15px"></ul></form>')
-                for(var i=0; i<suggestions_obj.length; i++) {
-                    suggestion = suggestions_obj[i];
-                    var date_str = DateFormat.format.date(suggestion.start, "E MMM D, h:mm p") + " to " + DateFormat.format.date(suggestion.end, "E MMM D, h:mm p");
-
-                    if(submitter) {
-                        // Create a radio button: value is i, so we can look up the corresponding option
-                        var radio_elem = $('<div class="radio"><label><input type="radio" name="sched-option" value="' + i + '">' + date_str + '</label></div>');
-                        radio_elem.appendTo(suggestions_ul);
-                    }
-                    else {
-                        $('<li>' + date_str + "</li>").appendTo(suggestions_ul);
-                    }                   
-                }
-
+                
                 var title_string = "Which of these times would you like to meet?";
-                if(submitter) title_string = "Select the time you would like to schedule.";
+                if(submitter) title_string = "Select the time you would like to schedule.";                
 
-                // Build and append the dropdown menu for duration.                
                 var duration_options = {"30 minutes": 30, "1 hour": 60, "2 hours": 120, "3 hours": 180, "4 hours": 240}
                 var duration_dropdown = $('<ul class="dropdown-menu" role="menu"></ul>');
                 for(i in duration_options) {
@@ -190,14 +173,12 @@ function clickable(me,api_clicked) {
                                                '</h2><p class="num-results">' + num_results + ' results' + 
                                                '</p><a class="glyphicon glyphicon-remove suggestion-remove" id="remove_item_id"></a>' +
                                                '<div class="suggestions-datepicker"></div><div class="suggestions-list"></div></div></div>');
-                $('.suggestions-list').append(suggestions_ul);
+                //$('.suggestions-list').append(suggestions_ul);
                 $('.center-border').append(duration_menu);
 
                 // Set up the submit button, only if you're the one who submitted the initial request.
                 if(submitter) {
-                    var submit_data = {suggestions: suggestions_obj};
-                    var sched_submit_btn = $('<button id="schedule_submit" class="btn btn-primary">Schedule It</button>');  
-                    sched_submit_btn.click(submit_data, scheduleSubmit);
+                    var sched_submit_btn = $('<button id="schedule_submit" class="btn btn-primary">Schedule It</button>'); 
                     $('.center-border').append(sched_submit_btn);
                 }
                 
@@ -218,30 +199,27 @@ function clickable(me,api_clicked) {
                 });
 
                 // Set up the datepicker
-                // This is very inefficient; improvements may later come
-                var valid_dates = {}
-                for(i in suggestions_obj) {
-                    var datetime = suggestions_obj[i];
-                    var datestr = datetime.start.split("T")[0].replace("-", "/");
-                    var date = new Date(datestr);
-                    valid_dates[date.valueOf()] = true
-                }
-                console.log(valid_dates);
-                var date_picker = $("<div id=datepicker></div>").datepicker({
-                    // convert suggested times into dates
-                    // if the date is in that list return true else return false
-                    beforeShowDay: function(date) {
-                        if(date.valueOf() in valid_dates) {
-                            console.log("TRUE");
-                            return [true, ''];
-                        }
-                        else {
-                            return [false, ''];
-                        }
-                    },
-                    onSelect: function(date) {
-                        // Show a list of times for that date, off to the right.
-                    }
+                var date_picker = $('<div class="schedule-datepicker">').datepicker({
+                  beforeShowDay: function(date) {
+                      var d = date.toISOString().split("T")[0];
+                      if(d in suggestions_obj) {
+                          return [true, ''];
+                      }
+                      else {
+                          return [false, ''];
+                      }
+                  },
+                  onSelect: function(date) {
+                      var da = date.split("/");
+                      var d  = da[2] + "-" + da[0] + "-" + da[1];
+                      var times = suggestions_obj[d];
+                      var suggestions_list = generateScheduleOptions(d, times, submitter);
+
+                      $('.suggestions-list').empty();
+                      $('.suggestions-list').append(suggestions_list);
+
+                      $('#schedule_submit').click({times: suggestions_obj}, scheduleSubmit);
+                  }
                 });
                 date_picker.appendTo('.center-border');
             }
@@ -531,19 +509,18 @@ function wolfram_text(render_item_id) {
 // Called when the "Submit" button is pressed on schedule suggestion.
 function scheduleSubmit(event) {
     event.preventDefault();
-    var suggestions = event.data.suggestions;
+    var times = event.data.times; // List of {start: ..., end: ...} objects
+    console.log(times);
     var i = $('input[name=sched-option]:checked').val();
-    var suggestion = suggestions[i];
-    var start_time = suggestion.start;
-    var end_time   = suggestion.end;
+    var time = times[i];
     var duration   = $('#duration-dropdown').attr("chosen")
     console.log("Duration: ", duration)
 
     // Handle TZ offsets. They are coming from suggestion object in local time +00:00
     // and need to be in local time -07:00, or in UTC +00:00.
     // Eventually this should be not hardcoded to -0700 but flexible to user's timezone
-    start_time = start_time.split('+')[0] + '-0700';
-    end_time   = end_time.split('+')[0] + '-0700';
+    start_time = time.start.split('+')[0] + '-0700';
+    end_time   = time.end.split('+')[0] + '-0700';
 
     // POST this to /check_api.
     var schedule_json = '{"attendees": [], \
@@ -596,6 +573,27 @@ function scheduleUpdate(event) {
             $(".center-border").remove()
         }
     });
+}
+
+// parameter times is actually an array of [{"start": ..., "end": ...}]
+// return a jQuery object you can append somewhere
+function generateScheduleOptions(date, times, submitter) {
+    var title_string     = "Available times for " + date;
+    var suggestions_list = $('<div>' + title_string + '<ul id="suggestions_ul" style="padding-top: 15px"></ul></div>')
+    for(var i=0; i<times.length; i++) {
+        var time = times[i];
+        var date_str = DateFormat.format.date(time.start, "E MMM D, h:mm p") + " to " + DateFormat.format.date(time.end, "h:mm p");
+
+        if(submitter) {
+            // Create a radio button: value is i, so we can look up the corresponding option
+            var radio_elem = $('<div class="radio"><label><input type="radio" name="sched-option" value="' + i + '">' + date_str + '</label></div>');
+            radio_elem.appendTo(suggestions_list);
+        }
+        else {
+            $('<li>' + date_str + "</li>").appendTo(suggestions_list);
+        }    
+    }
+    return suggestions_list;
 }
 
 <% end %>

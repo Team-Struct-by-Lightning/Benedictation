@@ -13,29 +13,33 @@
 
   		suggestions_obj = JSON.parse(suggestions)
   		
-  		var valid_dates = {}
-        for(i in suggestions_obj) {
-            var datetime = suggestions_obj[i];
-            var datestr = datetime.start.split("T")[0].replace("-", "/");
-            var date = new Date(datetime.start);
-            valid_dates[date.valueOf()] = true
-        }
-        console.log(valid_dates);
-        alert(valid_dates[0]);
 
-        $("#datepicker").datepicker({
-	        // convert suggested times into dates
-	        // if the date is in that list return true else return false
-	        beforeShowDay: function(date) {
-	            if(date.valueOf() in valid_dates) {
-	                console.log("TRUE");
-	                return [true, ''];
-	            }
-	            else {
-	                return [false, ''];
-	            }
-	        }
-	    });
+	    // Set up the datepicker
+      $("#datepicker").datepicker({
+          // convert suggested times into dates
+          // if the date is in that list return true else return false
+          beforeShowDay: function(date) {
+              var d = date.toISOString().split("T")[0];
+              console.log(d);
+              if(d in suggestions_obj) {
+                  console.log("TRUE");
+                  return [true, ''];
+              }
+              else {
+                  return [false, ''];
+              }
+          },
+          onSelect: function(date) {
+              console.log(date);
+              console.log(date.toISOString());
+              //var date_str = date.toISOString().split("T")[0]
+              //var times = suggestions_obj[date_str];
+              //console.log("date_str: ", date_str);
+              //console.log("times: ", times);
+              //var suggestions_list = generateScheduleOptions(date_str, times);
+
+          }
+      });
 
   	</script>
   </body>

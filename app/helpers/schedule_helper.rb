@@ -148,17 +148,19 @@ module ScheduleHelper
 	# Return a JSON object of the form [{"start": time, "end": time}, {...} ...]
 	# 1 IS FREE 0 IS BUSY
 	def available_times_json(availabilityArray, start_range, duration, time_resolution)
-		available_times = []
+		available_times = {}
 		d = duration / time_resolution
 		tr = (time_resolution.to_i) / 60
 		availabilityArray.each_with_index do |availability, day|
+			day_key = (start_range + day).to_date.to_s
+			available_times[day_key] = []
 			bits = availability.to_s(2).split("").map {|x| !(x.to_i.zero?) }	# True is free False is busy
 			bits.reverse!
 			bits.each_with_index do |bit, n|
 				if bit and bits[n ... n+d].all?
-					start_time = (start_range + day) + (tr*n).minutes
-					end_time = (start_range + day) + (tr*(n+d)).minutes
-					available_times.append({"start" => start_time, "end" => end_time})
+					start_time = start_range + day + (tr*n).minutes
+					end_time = start_range + day + (tr*(n+d)).minutes
+					available_times[day_key].append({"start" => start_time, "end" => end_time})
 				end
 			end
 		end
