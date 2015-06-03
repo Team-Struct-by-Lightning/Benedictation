@@ -857,19 +857,17 @@ def question_noun_phrase(query):
 
 	return ""
 
-# HEY WORK DAMN YOU
 def get_datetime(query):
 	cal_parse = cal.parse(query)
 	## print cal_parse
 	if cal_parse[1] == 0 or cal_parse[1] == 1:
-		starttime, endtime = schedule_suggest(cal_parse, query)
-		starttime = starttime.strftime('%Y-%m-%dT%H:%M:%S')
-		endtime   = endtime.strftime('%Y-%m-%dT%H:%M:%S')
+		starttime, endtime = schedule_suggest(cal_parse, query)		
 	else:
-		starttime, endtime = time_converter(cal_parse[0])
+		starttime = datetime.fromtimestamp(mktime(cal_parse[0]))
+		endtime = starttime + timedelta(hours = 1)
 
-	starttime = starttime + '-0700'
-	endtime = endtime + '-0700'
+	starttime = starttime.strftime('%Y-%m-%dT%H:%M:%S') + '-0700'
+	endtime   = endtime.strftime('%Y-%m-%dT%H:%M:%S') + '-0700'
 
 	return starttime, endtime
 

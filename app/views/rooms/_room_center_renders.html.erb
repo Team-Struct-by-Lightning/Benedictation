@@ -156,9 +156,10 @@ function buildCenterRender(item, div_id, api_clicked) {
         var num_results = String(suggestions.split('},{').length);
         var suggestions_obj = JSON.parse(suggestions);
 
-        var submitter = false;
+        var submitter = item["submitter"] || false;
         var user_name = "<%= current_user.name %>";
         if(user_name === item['name']) { submitter = true; }
+
         
         var title_string = "Which of these times would you like to meet?";
         if(submitter) title_string = "Select the time you would like to schedule.";                
@@ -189,7 +190,7 @@ function buildCenterRender(item, div_id, api_clicked) {
         // Set up the button to resubmit the schedule suggest request if duration, users etc. changed.
         if(submitter) {
             var update_btn = $('<button id="schedule_update" class="btn btn-default">Update Results</button>');
-            update_btn.click({start: item['start'], end: item['end']}, scheduleUpdate);
+            update_btn.click({start: item['start'], end: item['end'], sub: submitter}, scheduleUpdate);
             $('.center-border').append(update_btn);
         }
 
@@ -519,11 +520,8 @@ function scheduleSubmit(event) {
     var duration   = $('#duration-dropdown').attr("chosen")
     console.log("Duration: ", duration)
 
-    // Handle TZ offsets. They are coming from suggestion object in local time +00:00
-    // and need to be in local time -07:00, or in UTC +00:00.
-    // Eventually this should be not hardcoded to -0700 but flexible to user's timezone
-    start_time = time.start.split('+')[0] + '-0700';
-    end_time   = time.end.split('+')[0] + '-0700';
+    start_time = time.start.split('+')[0];
+    end_time   = time.end.split('+')[0];
 
     // POST this to /check_api.
     var schedule_json = '{"attendees": [], \
@@ -570,7 +568,6 @@ function scheduleSubmit(event) {
                 if ($(children_renders[i]).hasClass("render-spot")) {
                     $('.render-spot').remove();
                 }
-
             }
 
             buildCenterRender(return_json);
@@ -590,7 +587,7 @@ function scheduleUpdate(event) {
                         "end": "' + event.data.end + '", \
                         "duration": "' + parseInt(duration)*60 + '", \
                         "location": "", \
-                        "submitter":' + submitter + ', \
+                        "submitter":' + "true" + ', \
                         "group_flag": "True"}';
 
     $.ajax({

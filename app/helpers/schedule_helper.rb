@@ -20,6 +20,8 @@ module ScheduleHelper
 	end
 
 	def calendar_json(json_hash)
+		logger.error "@@@ CALENDAR HASH: " + json_hash.inspect
+
 		full_group = json_hash['group_flag']
 
 		if full_group == "True"
