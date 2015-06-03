@@ -102,269 +102,272 @@ function clickable(me,api_clicked) {
             'user_name': user_name
         },
         success: function(item) {
-            console.log("item: ",item);
-            user_name = item['user_name'];
-            // Upon success of the GET request, we return an item from
-            // Redis which is a JSON object.  We first check the api type
-            // and we have an if statement that let's us determine which
-            // api the Redis item corresponds to
-
-            // if the thing clicked was wolfram, wiki, or google, then the api_clicked parameter of this function will exist, and the argument length will be 2 + "this" = 3.
-            if(typeof api_clicked !== 'undefined'){
-                console.log("we got a question api.");
-                item['api_type'] = api_clicked;
-            }
-            api_type = item['api_type'];
-
-            // the aforementioned 'if/else if' block
-            if (api_type == 'calendar' || api_type == 'calendar_show') {
-                // the title at the top of the div
-                var user_name_title = '<%= current_user.name %>'+ "\'s Google Calendar";
-                // this is used in the email_url and also we use this
-                // if the user does not have their Google + name set up.
-                // We grab the email without the '@gmail.com' part
-                // of the string
-                var email_name = '<%= current_user.email %>'.split('@')[0];
-                // this is hardcoded to our time zone but this needs to be scaled so that we handle
-                // different timezones
-
-                //var tz = jstz.determine(); // Determines the time zone of the browser client
-                //var user_timezone = tz.name(); // Returns the name of the time zone eg "Europe/Berlin"
-                 var user_timezone = '<%= user_timezone = "America/Los_Angeles" %>';
-                // this is the url string dependent on the user that will be put into
-                // the iframe src field
-                var email_url = "https://www.google.com/calendar/embed?showPrint=0&amp;showTz=0&amp;mode=WEEK&amp;height=600&amp;wkst=1&amp;bgcolor=%23ffffff&amp;src=" + email_name + "%40gmail.com&amp;color=%234E5D6C&amp;ctz=" + user_timezone;
-                // adds the word render to the unique id of the div based on
-                // the info stored in its redis key
-                var render_item_id = "render" + div_id;
-                // this appends the calendar iframe, title, remove x glyph, and the border
-                // to the room layout table
-                $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border calendar-border"> <h1 class="google-title">' + user_name_title + '</h1> <a class="glyphicon glyphicon-remove google-remove" id="remove_item_id"></a>' + '<iframe class="calendar-frame" src=' + email_url + ' style=" border-width:0 " width="100%" height="100%" frameborder="0" scrolling="no"></iframe></div>' + '</div>');
-            }
-
-            else if (api_type == 'schedule_suggest') {
-                var render_item_id = "render" + div_id;
-                var title = "Suggested times";
-                var suggestions = item['suggested_times'];
-                var num_results = String(suggestions.split('},{').length);
-                var suggestions_obj = JSON.parse(suggestions);
-
-                var submitter = false;
-                var user_name = "<%= current_user.name %>";
-                console.log("current user: ", user_name);
-                console.log("submitter: ", item['name']);
-                if(user_name === item['name']) { submitter = true; }
-                
-                var title_string = "Which of these times would you like to meet?";
-                if(submitter) title_string = "Select the time you would like to schedule.";                
-
-                var duration_options = {"30 minutes": 30, "1 hour": 60, "2 hours": 120, "3 hours": 180, "4 hours": 240}
-                var duration_dropdown = $('<ul class="dropdown-menu" role="menu"></ul>');
-                for(i in duration_options) {
-                    duration_dropdown.append('<li role="presentation"><a role="menuitem" class="duration-menu-item" option="' + duration_options[i] + '">' + i + '</a></li>');
-                }
-                var duration_menu = $('<div class="dropdown"><button class="btn btn-default dropdown-toggle" \
-                    id="duration-dropdown" data-toggle="dropdown" chosen=60>Duration<span class="caret"></span></button> </div>')
-                    .append(duration_dropdown);
-
-                $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' +
-                                               '<div class="center-border suggestion-border"> <h1 class="suggestion-title">' + title + 
-                                               '</h1> <h2 class="suggested-time-list-title">' + title_string + 
-                                               '</h2><p class="num-results">' + num_results + ' results' + 
-                                               '</p><a class="glyphicon glyphicon-remove suggestion-remove" id="remove_item_id"></a>' +
-                                               '<div class="suggestions-datepicker"></div><div class="suggestions-list"></div></div></div>');
-                //$('.suggestions-list').append(suggestions_ul);
-                $('.center-border').append(duration_menu);
-
-                // Set up the submit button, only if you're the one who submitted the initial request.
-                if(submitter) {
-                    var sched_submit_btn = $('<button id="schedule_submit" class="btn btn-primary">Schedule It</button>'); 
-                    $('.center-border').append(sched_submit_btn);
-                }
-                
-                // Set up the button to resubmit the schedule suggest request if duration, users etc. changed.
-                if(submitter) {
-                    var update_btn = $('<button id="schedule_update" class="btn btn-default">Update Results</button>');
-                    update_btn.click({start: item['start'], end: item['end']}, scheduleUpdate);
-                    $('.center-border').append(update_btn);
-                }
-
-                // Called when one of the options in the duration dropdown is clicked.
-                $(".duration-menu-item").click(function(e) {
-                    e.preventDefault();
-                    var duration_chosen = $(this).attr("option");
-                    var text = $(this).html();
-                    $('#duration-dropdown').html(text + '<span class="caret"></span>');
-                    $('#duration-dropdown').attr("chosen", duration_chosen);
-                });
-
-                // Set up the datepicker
-                var date_picker = $('<div class="schedule-datepicker">').datepicker({
-                  beforeShowDay: function(date) {
-                      var d = date.toISOString().split("T")[0];
-                      if(d in suggestions_obj) {
-                          return [true, ''];
-                      }
-                      else {
-                          return [false, ''];
-                      }
-                  },
-                  onSelect: function(date) {
-                      var da = date.split("/");
-                      var d  = da[2] + "-" + da[0] + "-" + da[1];
-                      var times = suggestions_obj[d];
-                      var suggestions_list = generateScheduleOptions(d, times, submitter);
-
-                      $('.suggestions-list').empty();
-                      $('.suggestions-list').append(suggestions_list);
-
-                      $('#schedule_submit').click(times, scheduleSubmit);
-                  }
-                });
-                date_picker.appendTo('.center-border');
-            }
-
-            else if (api_type == 'google') {
-                // title of the center render
-                var title = "Google Search Results";
-                // adds the word render to the unique id of the div based on
-                // the info stored in its redis key
-                var render_item_id = "render" + div_id;
-                // the query to be input through search control
-                var search_query = item['query'];
-                // this appends the google search border, remove x glyph, and
-                // search results to the room layout table
-                $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border google-border search-border"> <h1 class="google-title">' + title + '</h1> <a class="glyphicon glyphicon-remove google-remove" id="remove_item_id"></a>' + '<div id="searchcontrol">Loading</div>' + '</div>' + '</div>');
-                var searchControl = new google.search.SearchControl();
-                // Add in a full set of searchers
-                searchControl.addSearcher(new google.search.WebSearch());
-                searchControl.addSearcher(new google.search.ImageSearch());
-                searchControl.addSearcher(new google.search.VideoSearch());
-                searchControl.addSearcher(new google.search.NewsSearch());
-                // create a drawOptions object
-                var drawOptions = new google.search.DrawOptions();
-                // tell the searcher to draw itself in linear mode
-                drawOptions.setDrawMode(google.search.SearchControl.DRAW_MODE_TABBED);
-                // tell the searcher to draw itself and tell it where to attach
-                searchControl.draw(document.getElementById("searchcontrol"), drawOptions);
-                // execute an inital search
-                searchControl.execute(search_query);
-            }
-            else if (api_type == 'google_docs') {
-                //console.log("WERE HERE AND NEWKEY IS " + item['some_new_thing']);
-                console.log("user name", user_name);
-                var document_link = item['doc_link'];
-                if (document_link == undefined) {
-                    $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border four-oh-four-border"> <a class="glyphicon glyphicon-remove four-oh-four-remove" id="remove_item_id"></a>' + '<div id = "four-oh-four-container" style = "width:100%; height:100%; margin-top:25px;background-color:white;"><h1 class="four-oh-four-big-text-left">404!</h1><h1 class="four-oh-four-big-text-right">404!</h1><%= image_tag("giraffe_suit.jpg", :class => "four-oh-four-giraffe") %><h1 class="four-oh-four-text"> We are sorry, we were unable to handle your request at this time. Please try again shortly. </h1></div></div>' + '</div>');
-                } else {
-                    $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border doc-border"> <h1 class="google-title" style = "margin-bottom: 22px;">' + user_name + '\'s Google Document</h1> <a class="glyphicon glyphicon-remove drive-remove" id="remove_item_id"></a>' + '<iframe class="doc-frame" src=' + document_link + ' style=" border-width:0 " width="100%" height="100%" frameborder="0" scrolling="no"></iframe></div>' + '</div>');
-                }
-            }
-            else if (api_type == 'google_drawings') {
-                //console.log("WERE HERE AND NEWKEY IS " + item['some_new_thing']);
-                var document_link = item['doc_link'];
-                if (document_link == undefined) {
-                    $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border four-oh-four-border"> <a class="glyphicon glyphicon-remove four-oh-four-remove" id="remove_item_id"></a>' + '<div id = "four-oh-four-container" style = "width:100%; height:100%; margin-top:25px;background-color:white;"><h1 class="four-oh-four-big-text-left">404!</h1><h1 class="four-oh-four-big-text-right">404!</h1><%= image_tag("giraffe_suit.jpg", :class => "four-oh-four-giraffe") %><h1 class="four-oh-four-text"> We are sorry, we were unable to handle your request at this time. Please try again shortly. </h1></div></div>' + '</div>');
-                }
-                else {
-                    $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border drawing-border"> <h1 class="google-title" style = "margin-bottom: 22px;">' + user_name + '\'s Google Drawing</h1> <a class="glyphicon glyphicon-remove drive-remove" id="remove_item_id"></a>' + '<iframe class="drawing-frame" src=' + document_link + ' style=" border-width:0 " width="100%" height="100%" frameborder="0" scrolling="no"></iframe></div>' + '</div>');
-                }
-            }
-            else if (api_type == 'wikipedia') {
-                console.log("room center renders html: ", item['api_html']);
-                // adds the word render to the unique id of the div based on
-                // the info stored in its redis key
-                var render_item_id = "render" + div_id;
-                api_html = item['api_html'];
-                var query = item['query'];
-                // these two lines makes sure the space added before the apostrophes
-                // from nltk is removed
-                query = query.split(" '").join("'");
-                query = query.split(" \u0027").join("'");
-                var noun_phrase = item['noun_phrase'];
-                console.log(noun_phrase);
-
-                if (noun_phrase != "" || noun_phrase != undefined) {
-                    noun_phrase = noun_phrase.split(" ").join("_");
-                    wiki_url = "https://en.wikipedia.org/wiki/" + noun_phrase;
-                }
-                else {
-                    noun_phrase = query.split(" ").join("_");
-                    wiki_url = "https://en.wikipedia.org/wiki/" + noun_phrase;
-                }
-                // this is the raw html for the wiki render spot containing
-                // the border, the iframe, and the remove x glyph
-                var wikidiv = '<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border wikipedia-border"> <a class="glyphicon glyphicon-remove wikipedia-remove" id="remove_item_id"></a>' + '<iframe src="' + wiki_url +'" id="wikipedia-iframe" style=" border-width:0" width="609" height="500" max-height="470" position="relative" ' + ' top="11" left="-3" frameborder="0"></iframe></div>' + '</div>';
-                // appends the wikidiv to the room layout table.
-                // this makes it appear in the center of the page
-                $('.room-layout-table').append(wikidiv);
-                //$('#wikipedia-iframe').contents().find('html').html(api_html);
-
-                $('#wikipedia-iframe').contents().find('#pt-createaccount').hide();
-                $('#wikipedia-iframe').contents().find('#pt-login').hide();
-            }
-            else if (api_type == 'wolfram') {
-                // adds the word render to the unique id of the div based on
-                // the info stored in its redis key
-                var api_html = "";
-                var render_item_id = "render" + div_id;
-                
-               
-                  api_html = item['api_html'];
-                
-                var query = item['query'];
-                // these two lines makes sure the space added before the apostrophes
-                // from nltk is removed
-                query = query.split(" '").join("'");
-                query = query.split(" \u0027").join("'");
-                // this is the raw html for the wolfram render spot containing
-                // the border, the iframe, and the remove x glyph
-                var wolframdiv = '<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border wolfram-border"> <a class="glyphicon glyphicon-remove wolfram-remove" id="remove_item_id"></a>' + '<iframe id="wolfram-iframe" style=" border-width:0" width="100%" height="94%" max-height="470" position="relative" ' + ' top="11" left="-3" frameborder="0"></iframe></div>' + '</div>';
-                // appends the wolframdiv to the room layout table.
-                // this makes it appear in the center of the page
-                $('.room-layout-table').append(wolframdiv);
-                $('#wolfram-iframe').contents().find('html').html(api_html);
-                $('#wolfram-iframe').contents().find('body').prepend('<form action="#"><fieldset id="input" class="wolfram-text-box"' + ' style="position: relative;margin-bottom: 48px;margin-top: 10px;"><input id="i" name="i" maxlength="200"' + ' type="text" autocomplete="off" value="' + query + '" class=""><input id="dataset-input" name="dataset" ' + 'value="" type="hidden"><div id="imath" style="display: none;"><div class="im" style="display: none;"> ' + '</div><div class="ac"></div><ul class="moreInput">       <li class="inputtab inputtab-keyboard" data-tab="keyboard">' + '<a href="#"></a>       </li><li class="inputtab inputtab-images" data-tab="images"><a href="#"></a>   ' + '      </li><li class="inputtab inputtab-datainput" data-tab="datainput"><a href="#"></a>   ' + '     </li><li class="inputtab inputtab-genfiles" data-tab="genfiles"><a href="#"></a>   ' + '  </li></ul></div><noscript>&amp;lt;input type="hidden" name="asynchronous" value="false" /&amp;gt;</noscript> ' + ' <a id="star-inputfield" class="star-input star-disabled" href="#" style="display: none;"></a><div id="equal" title="compute"></div></fieldset></form>');
-                // this prepends the title/logo to the body of the iframe
-                $('#wolfram-iframe').contents().find('body').prepend('<div id="logo-wrapper" class="ir normalLogo"><a href="/" class="ir normalLogo" id="logo" title="Wolfram|Alpha Computational Knowledge Engine">Wolfram|Alpha Computational Knowledge Engine</a></div>');
-                // dynamically adds the css to the elements in the iframe,
-                // first taking wolfram's css from their page
-                // note: this has to be dynamic, because our styling does not
-                // apply to these elements (iframe bs)
-                if (location.host === "benedictation.io") {
-                    $('#wolfram-iframe').contents().find('head').html('<%= stylesheet_link_tag "wolfram_css.css" %>');
-                } else {
-                    $('#wolfram-iframe').contents().find('head').html('<%= stylesheet_link_tag "#{Rails.root}/vendor/assets/stylesheets/wolfram_css.css" %>');
-                }
-                $('#wolfram-iframe').contents().find('#logo-wrapper').css('top', '4px');
-                $('#wolfram-iframe').contents().find('#logo-wrapper').css('position', 'relative');
-                $('#wolfram-iframe').contents().find('html').css('min-width', '300px');
-                $('#wolfram-iframe').contents().find('html').css('width', '584px');
-                $('#wolfram-iframe').contents().find('body').css('min-width', '300px');
-
-                // this disables all links within the wolfram div so that we do not have
-                // any redirects from our iframe
-                $('#wolfram-iframe').contents().find('a').click(function(event) {
-                    event.preventDefault();
-                });
-                // this is a function that listens for the enter key press within the
-                // text-box and then calls the wolfram_text function (explained below)
-                $('#wolfram-iframe').contents().find('.wolfram-text-box').keydown(function(event) {
-                    var keypressed = event.keyCode || event.which;
-                    if (keypressed == 13) {
-                        wolfram_text(render_item_id);
-                    }
-                });
-                // this is the function that listens for the equal submit button to be
-                // clicked within the text-box and then calls the wolfram_text function
-                // (explained below), note:  this is an alternative to pressing enter
-                $('#wolfram-iframe').contents().find('#equal').click(function() {
-                    wolfram_text(render_item_id);
-                });
-            }
+            buildCenterRender(item, div_id, api_clicked)
         }
     });
 }
+
+function buildCenterRender(item, div_id, api_clicked) {
+    console.log("item: ",item);
+    user_name = item['user_name'];
+    // Upon success of the GET request, we return an item from
+    // Redis which is a JSON object.  We first check the api type
+    // and we have an if statement that let's us determine which
+    // api the Redis item corresponds to
+
+    // if the thing clicked was wolfram, wiki, or google, then the api_clicked parameter of this function will exist, and the argument length will be 2 + "this" = 3.
+    var api_type = "";
+    if(typeof api_clicked !== 'undefined'){
+        console.log("we got a question api.");
+        item['api_type'] = api_clicked;
+    }
+    api_type = item['api_type'];
+
+    // the aforementioned 'if/else if' block
+    if (api_type == 'calendar' || api_type == 'calendar_show') {
+        // the title at the top of the div
+        var user_name_title = '<%= current_user.name %>'+ "\'s Google Calendar";
+        // this is used in the email_url and also we use this
+        // if the user does not have their Google + name set up.
+        // We grab the email without the '@gmail.com' part
+        // of the string
+        var email_name = '<%= current_user.email %>'.split('@')[0];
+        // this is hardcoded to our time zone but this needs to be scaled so that we handle
+        // different timezones
+
+        //var tz = jstz.determine(); // Determines the time zone of the browser client
+        //var user_timezone = tz.name(); // Returns the name of the time zone eg "Europe/Berlin"
+         var user_timezone = '<%= user_timezone = "America/Los_Angeles" %>';
+        // this is the url string dependent on the user that will be put into
+        // the iframe src field
+        var email_url = "https://www.google.com/calendar/embed?showPrint=0&amp;showTz=0&amp;mode=WEEK&amp;height=600&amp;wkst=1&amp;bgcolor=%23ffffff&amp;src=" + email_name + "%40gmail.com&amp;color=%234E5D6C&amp;ctz=" + user_timezone;
+        // adds the word render to the unique id of the div based on
+        // the info stored in its redis key
+        var render_item_id = "render" + div_id;
+        // this appends the calendar iframe, title, remove x glyph, and the border
+        // to the room layout table
+        $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border calendar-border"> <h1 class="google-title">' + user_name_title + '</h1> <a class="glyphicon glyphicon-remove google-remove" id="remove_item_id"></a>' + '<iframe class="calendar-frame" src=' + email_url + ' style=" border-width:0 " width="100%" height="100%" frameborder="0" scrolling="no"></iframe></div>' + '</div>');
+    }
+
+    else if (api_type == 'schedule_suggest') {
+        var render_item_id = "render" + div_id;
+        var title = "Suggested times";
+        var suggestions = item['suggested_times'];
+        var num_results = String(suggestions.split('},{').length);
+        var suggestions_obj = JSON.parse(suggestions);
+
+        var submitter = false;
+        var user_name = "<%= current_user.name %>";
+        if(user_name === item['name']) { submitter = true; }
+        
+        var title_string = "Which of these times would you like to meet?";
+        if(submitter) title_string = "Select the time you would like to schedule.";                
+
+        var duration_options = {"30 minutes": 30, "1 hour": 60, "2 hours": 120, "3 hours": 180, "4 hours": 240}
+        var duration_dropdown = $('<ul class="dropdown-menu" role="menu"></ul>');
+        for(i in duration_options) {
+            duration_dropdown.append('<li role="presentation"><a role="menuitem" class="duration-menu-item" option="' + duration_options[i] + '">' + i + '</a></li>');
+        }
+        var duration_menu = $('<div class="dropdown"><button class="btn btn-default dropdown-toggle" \
+            id="duration-dropdown" data-toggle="dropdown" chosen=60>Duration<span class="caret"></span></button> </div>')
+            .append(duration_dropdown);
+
+        $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' +
+                                       '<div class="center-border suggestion-border"> <h1 class="suggestion-title">' + title + 
+                                       '</h1> <h2 class="suggested-time-list-title">' + title_string + 
+                                       '</h2><p class="num-results">' + num_results + ' results' + 
+                                       '</p><a class="glyphicon glyphicon-remove suggestion-remove" id="remove_item_id"></a>' +
+                                       '<div class="suggestions-datepicker"></div><div class="suggestions-list"></div></div></div>');
+        $('.center-border').append(duration_menu);
+
+        // Set up the submit button, only if you're the one who submitted the initial request.
+        if(submitter) {
+            var sched_submit_btn = $('<button id="schedule_submit" class="btn btn-primary">Schedule It</button>'); 
+            $('.center-border').append(sched_submit_btn);
+        }
+        
+        // Set up the button to resubmit the schedule suggest request if duration, users etc. changed.
+        if(submitter) {
+            var update_btn = $('<button id="schedule_update" class="btn btn-default">Update Results</button>');
+            update_btn.click({start: item['start'], end: item['end']}, scheduleUpdate);
+            $('.center-border').append(update_btn);
+        }
+
+        // Called when one of the options in the duration dropdown is clicked.
+        $(".duration-menu-item").click(function(e) {
+            e.preventDefault();
+            var duration_chosen = $(this).attr("option");
+            var text = $(this).html();
+            $('#duration-dropdown').html(text + '<span class="caret"></span>');
+            $('#duration-dropdown').attr("chosen", duration_chosen);
+        });
+
+        // Set up the datepicker
+        var date_picker = $('<div class="schedule-datepicker">').datepicker({
+          beforeShowDay: function(date) {
+              var d = date.toISOString().split("T")[0];
+              if(d in suggestions_obj) {
+                  return [true, ''];
+              }
+              else {
+                  return [false, ''];
+              }
+          },
+          onSelect: function(date) {
+              var da = date.split("/");
+              var d  = da[2] + "-" + da[0] + "-" + da[1];
+              var times = suggestions_obj[d];
+              var suggestions_list = generateScheduleOptions(d, times, submitter);
+
+              $('.suggestions-list').empty();
+              $('.suggestions-list').append(suggestions_list);
+
+              $('#schedule_submit').click(times, scheduleSubmit);
+          }
+        });
+        date_picker.appendTo('.center-border');
+    }
+
+    else if (api_type == 'google') {
+        // title of the center render
+        var title = "Google Search Results";
+        // adds the word render to the unique id of the div based on
+        // the info stored in its redis key
+        var render_item_id = "render" + div_id;
+        // the query to be input through search control
+        var search_query = item['query'];
+        // this appends the google search border, remove x glyph, and
+        // search results to the room layout table
+        $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border google-border search-border"> <h1 class="google-title">' + title + '</h1> <a class="glyphicon glyphicon-remove google-remove" id="remove_item_id"></a>' + '<div id="searchcontrol">Loading</div>' + '</div>' + '</div>');
+        var searchControl = new google.search.SearchControl();
+        // Add in a full set of searchers
+        searchControl.addSearcher(new google.search.WebSearch());
+        searchControl.addSearcher(new google.search.ImageSearch());
+        searchControl.addSearcher(new google.search.VideoSearch());
+        searchControl.addSearcher(new google.search.NewsSearch());
+        // create a drawOptions object
+        var drawOptions = new google.search.DrawOptions();
+        // tell the searcher to draw itself in linear mode
+        drawOptions.setDrawMode(google.search.SearchControl.DRAW_MODE_TABBED);
+        // tell the searcher to draw itself and tell it where to attach
+        searchControl.draw(document.getElementById("searchcontrol"), drawOptions);
+        // execute an inital search
+        searchControl.execute(search_query);
+    }
+    else if (api_type == 'google_docs') {
+        //console.log("WERE HERE AND NEWKEY IS " + item['some_new_thing']);
+        console.log("user name", user_name);
+        var document_link = item['doc_link'];
+        if (document_link == undefined) {
+            $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border four-oh-four-border"> <a class="glyphicon glyphicon-remove four-oh-four-remove" id="remove_item_id"></a>' + '<div id = "four-oh-four-container" style = "width:100%; height:100%; margin-top:25px;background-color:white;"><h1 class="four-oh-four-big-text-left">404!</h1><h1 class="four-oh-four-big-text-right">404!</h1><%= image_tag("giraffe_suit.jpg", :class => "four-oh-four-giraffe") %><h1 class="four-oh-four-text"> We are sorry, we were unable to handle your request at this time. Please try again shortly. </h1></div></div>' + '</div>');
+        } else {
+            $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border doc-border"> <h1 class="google-title" style = "margin-bottom: 22px;">' + user_name + '\'s Google Document</h1> <a class="glyphicon glyphicon-remove drive-remove" id="remove_item_id"></a>' + '<iframe class="doc-frame" src=' + document_link + ' style=" border-width:0 " width="100%" height="100%" frameborder="0" scrolling="no"></iframe></div>' + '</div>');
+        }
+    }
+    else if (api_type == 'google_drawings') {
+        //console.log("WERE HERE AND NEWKEY IS " + item['some_new_thing']);
+        var document_link = item['doc_link'];
+        if (document_link == undefined) {
+            $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border four-oh-four-border"> <a class="glyphicon glyphicon-remove four-oh-four-remove" id="remove_item_id"></a>' + '<div id = "four-oh-four-container" style = "width:100%; height:100%; margin-top:25px;background-color:white;"><h1 class="four-oh-four-big-text-left">404!</h1><h1 class="four-oh-four-big-text-right">404!</h1><%= image_tag("giraffe_suit.jpg", :class => "four-oh-four-giraffe") %><h1 class="four-oh-four-text"> We are sorry, we were unable to handle your request at this time. Please try again shortly. </h1></div></div>' + '</div>');
+        }
+        else {
+            $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border drawing-border"> <h1 class="google-title" style = "margin-bottom: 22px;">' + user_name + '\'s Google Drawing</h1> <a class="glyphicon glyphicon-remove drive-remove" id="remove_item_id"></a>' + '<iframe class="drawing-frame" src=' + document_link + ' style=" border-width:0 " width="100%" height="100%" frameborder="0" scrolling="no"></iframe></div>' + '</div>');
+        }
+    }
+    else if (api_type == 'wikipedia') {
+        console.log("room center renders html: ", item['api_html']);
+        // adds the word render to the unique id of the div based on
+        // the info stored in its redis key
+        var render_item_id = "render" + div_id;
+        api_html = item['api_html'];
+        var query = item['query'];
+        // these two lines makes sure the space added before the apostrophes
+        // from nltk is removed
+        query = query.split(" '").join("'");
+        query = query.split(" \u0027").join("'");
+        var noun_phrase = item['noun_phrase'];
+        console.log(noun_phrase);
+
+        if (noun_phrase != "" || noun_phrase != undefined) {
+            noun_phrase = noun_phrase.split(" ").join("_");
+            wiki_url = "https://en.wikipedia.org/wiki/" + noun_phrase;
+        }
+        else {
+            noun_phrase = query.split(" ").join("_");
+            wiki_url = "https://en.wikipedia.org/wiki/" + noun_phrase;
+        }
+        // this is the raw html for the wiki render spot containing
+        // the border, the iframe, and the remove x glyph
+        var wikidiv = '<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border wikipedia-border"> <a class="glyphicon glyphicon-remove wikipedia-remove" id="remove_item_id"></a>' + '<iframe src="' + wiki_url +'" id="wikipedia-iframe" style=" border-width:0" width="609" height="500" max-height="470" position="relative" ' + ' top="11" left="-3" frameborder="0"></iframe></div>' + '</div>';
+        // appends the wikidiv to the room layout table.
+        // this makes it appear in the center of the page
+        $('.room-layout-table').append(wikidiv);
+        //$('#wikipedia-iframe').contents().find('html').html(api_html);
+
+        $('#wikipedia-iframe').contents().find('#pt-createaccount').hide();
+        $('#wikipedia-iframe').contents().find('#pt-login').hide();
+    }
+    else if (api_type == 'wolfram') {
+        // adds the word render to the unique id of the div based on
+        // the info stored in its redis key
+        var api_html = "";
+        var render_item_id = "render" + div_id;
+        
+       
+          api_html = item['api_html'];
+        
+        var query = item['query'];
+        // these two lines makes sure the space added before the apostrophes
+        // from nltk is removed
+        query = query.split(" '").join("'");
+        query = query.split(" \u0027").join("'");
+        // this is the raw html for the wolfram render spot containing
+        // the border, the iframe, and the remove x glyph
+        var wolframdiv = '<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border wolfram-border"> <a class="glyphicon glyphicon-remove wolfram-remove" id="remove_item_id"></a>' + '<iframe id="wolfram-iframe" style=" border-width:0" width="100%" height="94%" max-height="470" position="relative" ' + ' top="11" left="-3" frameborder="0"></iframe></div>' + '</div>';
+        // appends the wolframdiv to the room layout table.
+        // this makes it appear in the center of the page
+        $('.room-layout-table').append(wolframdiv);
+        $('#wolfram-iframe').contents().find('html').html(api_html);
+        $('#wolfram-iframe').contents().find('body').prepend('<form action="#"><fieldset id="input" class="wolfram-text-box"' + ' style="position: relative;margin-bottom: 48px;margin-top: 10px;"><input id="i" name="i" maxlength="200"' + ' type="text" autocomplete="off" value="' + query + '" class=""><input id="dataset-input" name="dataset" ' + 'value="" type="hidden"><div id="imath" style="display: none;"><div class="im" style="display: none;"> ' + '</div><div class="ac"></div><ul class="moreInput">       <li class="inputtab inputtab-keyboard" data-tab="keyboard">' + '<a href="#"></a>       </li><li class="inputtab inputtab-images" data-tab="images"><a href="#"></a>   ' + '      </li><li class="inputtab inputtab-datainput" data-tab="datainput"><a href="#"></a>   ' + '     </li><li class="inputtab inputtab-genfiles" data-tab="genfiles"><a href="#"></a>   ' + '  </li></ul></div><noscript>&amp;lt;input type="hidden" name="asynchronous" value="false" /&amp;gt;</noscript> ' + ' <a id="star-inputfield" class="star-input star-disabled" href="#" style="display: none;"></a><div id="equal" title="compute"></div></fieldset></form>');
+        // this prepends the title/logo to the body of the iframe
+        $('#wolfram-iframe').contents().find('body').prepend('<div id="logo-wrapper" class="ir normalLogo"><a href="/" class="ir normalLogo" id="logo" title="Wolfram|Alpha Computational Knowledge Engine">Wolfram|Alpha Computational Knowledge Engine</a></div>');
+        // dynamically adds the css to the elements in the iframe,
+        // first taking wolfram's css from their page
+        // note: this has to be dynamic, because our styling does not
+        // apply to these elements (iframe bs)
+        if (location.host === "benedictation.io") {
+            $('#wolfram-iframe').contents().find('head').html('<%= stylesheet_link_tag "wolfram_css.css" %>');
+        } else {
+            $('#wolfram-iframe').contents().find('head').html('<%= stylesheet_link_tag "#{Rails.root}/vendor/assets/stylesheets/wolfram_css.css" %>');
+        }
+        $('#wolfram-iframe').contents().find('#logo-wrapper').css('top', '4px');
+        $('#wolfram-iframe').contents().find('#logo-wrapper').css('position', 'relative');
+        $('#wolfram-iframe').contents().find('html').css('min-width', '300px');
+        $('#wolfram-iframe').contents().find('html').css('width', '584px');
+        $('#wolfram-iframe').contents().find('body').css('min-width', '300px');
+
+        // this disables all links within the wolfram div so that we do not have
+        // any redirects from our iframe
+        $('#wolfram-iframe').contents().find('a').click(function(event) {
+            event.preventDefault();
+        });
+        // this is a function that listens for the enter key press within the
+        // text-box and then calls the wolfram_text function (explained below)
+        $('#wolfram-iframe').contents().find('.wolfram-text-box').keydown(function(event) {
+            var keypressed = event.keyCode || event.which;
+            if (keypressed == 13) {
+                wolfram_text(render_item_id);
+            }
+        });
+        // this is the function that listens for the equal submit button to be
+        // clicked within the text-box and then calls the wolfram_text function
+        // (explained below), note:  this is an alternative to pressing enter
+        $('#wolfram-iframe').contents().find('#equal').click(function() {
+            wolfram_text(render_item_id);
+        });
+    }
+}
+
 // This function is called to simulate a wolfram request in the text box,
 // it removes the original iframe, replaces it with a loading gif,
 // and then rerenders the new query in the same spot
@@ -372,138 +375,138 @@ function clickable(me,api_clicked) {
 // it removes the original iframe, replaces it with a loading gif,
 // and then rerenders the new query in the same spot
 function wolfram_text(render_item_id) {
-    // this creates a JSON object where we change the query from the original query from benny
-    // to the one entered in the text box
-    var myData = '{"api_type": "wolfram", "query": "' + $('#wolfram-iframe').contents().find('.wolfram-text-box').children().val() + '"}';
-    var myData = JSON.parse(myData);
-    // we remove the wolfram iframe so that we can process the next query
-    $('#wolfram-iframe').remove();
-    // this is the raw html for the wolfram render spot containing
-    // the border, the iframe, and the remove x glyph
-    var wolframdiv = '<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border wolfram-border"> <a class="glyphicon glyphicon-remove wolfram-remove" id="remove_item_id"></a>' + '<iframe id="wolfram-iframe" style=" border-width:0" width="100%" height="94%" max-height="470" position="relative" ' + ' top="11" left="-3" frameborder="0"></iframe></div>' + '</div>';
-    // appends the wolframdiv to the room layout table.
-    // this makes it appear in the center of the page
-    var children_renders = $(".room-layout-table").children();
-    var i;
-    for (i = 0; i < children_renders.size(); i++) {
-        if ($(children_renders[i]).hasClass("render-spot")) {
-            $('.render-spot').remove();
+// this creates a JSON object where we change the query from the original query from benny
+// to the one entered in the text box
+var myData = '{"api_type": "wolfram", "query": "' + $('#wolfram-iframe').contents().find('.wolfram-text-box').children().val() + '"}';
+var myData = JSON.parse(myData);
+// we remove the wolfram iframe so that we can process the next query
+$('#wolfram-iframe').remove();
+// this is the raw html for the wolfram render spot containing
+// the border, the iframe, and the remove x glyph
+var wolframdiv = '<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border wolfram-border"> <a class="glyphicon glyphicon-remove wolfram-remove" id="remove_item_id"></a>' + '<iframe id="wolfram-iframe" style=" border-width:0" width="100%" height="94%" max-height="470" position="relative" ' + ' top="11" left="-3" frameborder="0"></iframe></div>' + '</div>';
+// appends the wolframdiv to the room layout table.
+// this makes it appear in the center of the page
+var children_renders = $(".room-layout-table").children();
+var i;
+for (i = 0; i < children_renders.size(); i++) {
+    if ($(children_renders[i]).hasClass("render-spot")) {
+        $('.render-spot').remove();
+    }
+}
+$('.room-layout-table').append(wolframdiv);
+// adds the loading gif to the iframe body so that it lets the user know
+// info is being crunched on the backend
+$('#wolfram-iframe').contents().find('body').prepend('<%= image_tag("computing.gif", class: "wolfram-loading") %>');
+//this adds in the wolfram loading glyph css
+$('#wolfram-iframe').contents().find('.wolfram-loading').css('position', 'relative');
+$('#wolfram-iframe').contents().find('.wolfram-loading').css('left', '268px');
+$('#wolfram-iframe').contents().find('.wolfram-loading').css('top', '135px');
+$('#wolfram-iframe').contents().find('.wolfram-loading').css('transform', 'scale(3.0)');
+// this prepends the text box to the body of the iframe (whose text we highjack *teehee*)
+$('#wolfram-iframe').contents().find('body').prepend('<form action="#"><fieldset id="input" class="wolfram-text-box"' + ' style="position: relative;margin-bottom: 48px;margin-top: 10px;"><input id="i" name="i" maxlength="200"' + ' type="text" autocomplete="off" value="' + myData["query"] + '" class=""><input id="dataset-input" name="dataset" ' + 'value="" type="hidden"><div id="imath" style="display: none;"><div class="im" style="display: none;"> ' + '</div><div class="ac"></div><ul class="moreInput">       <li class="inputtab inputtab-keyboard" data-tab="keyboard">' + '<a href="#"></a>       </li><li class="inputtab inputtab-images" data-tab="images"><a href="#"></a>   ' + '      </li><li class="inputtab inputtab-datainput" data-tab="datainput"><a href="#"></a>   ' + '     </li><li class="inputtab inputtab-genfiles" data-tab="genfiles"><a href="#"></a>   ' + '  </li></ul></div><noscript>&amp;lt;input type="hidden" name="asynchronous" value="false" /&amp;gt;</noscript> ' + ' <a id="star-inputfield" class="star-input star-disabled" href="#" style="display: none;"></a><div id="equal" title="compute"></div></fieldset></form>');
+// this prepends the title/logo to the body of the iframe
+$('#wolfram-iframe').contents().find('body').prepend('<div id="logo-wrapper" class="ir normalLogo"><a href="/" class="ir normalLogo" id="logo" title="Wolfram|Alpha Computational Knowledge Engine">Wolfram|Alpha Computational Knowledge Engine</a></div>');
+// dynamically adds the css to the elements in the iframe,
+// first taking wolfram's css from their page
+// note: this has to be dynamic, because our styling does not
+// apply to these elements (iframe bs)
+if (location.host === "benedictation.io") {
+    $('#wolfram-iframe').contents().find('head').html('<%= stylesheet_link_tag "wolfram_css.css" %>');
+} else {
+    $('#wolfram-iframe').contents().find('head').html('<%= stylesheet_link_tag "#{Rails.root}/vendor/assets/stylesheets/wolfram_css.css" %>');
+}
+$('#wolfram-iframe').contents().find('#logo-wrapper').css('top', '4px');
+$('#wolfram-iframe').contents().find('#logo-wrapper').css('position', 'relative');
+$('#wolfram-iframe').contents().find('html').css('min-width', '300px');
+$('#wolfram-iframe').contents().find('html').css('width', '584px');
+$('#wolfram-iframe').contents().find('body').css('min-width', '300px');
+
+// this disables all links within the wolfram div so that we do not have
+// any redirects from our iframe
+$('#wolfram-iframe').contents().find('a').click(function(event) {
+    event.preventDefault();
+});
+// this is an AJAX RESTful POST request that is routed
+// through the URL "/check_api" through the rooms
+// controller to the function 'api_help', which calls
+// 'check_api' in the rooms helper.  The object passed in
+// is JSON object containing the wolfram query, and api_type
+$.ajax({
+    type: "POST",
+    url: "/check_api",
+    data: {
+        jsonData: JSON.stringify(myData)
+    },
+    success: function(wolfram_json) {
+        // add wolfram html to the json object so that we can render the text
+        // box results on the same page
+        query = wolfram_json['query'];
+        wolfram_html = wolfram_json['api_html'];
+        // these two lines makes sure the space added before the apostrophes
+        // from nltk is removed
+        query = query.split(" '").join("'");
+        query = query.split(" \u0027").join("'");
+        // this is the raw html for the wolfram render spot containing
+        // the border, the iframe, and the remove x glyph
+        var wolframdiv = '<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border wolfram-border"> <a class="glyphicon glyphicon-remove wolfram-remove" id="remove_item_id"></a>' + '<iframe id="wolfram-iframe" style=" border-width:0" width="100%" height="94%" max-height="470" position="relative" ' + ' top="11" left="-3" frameborder="0"></iframe></div>' + '</div>';
+        // we remove the wolfram iframe so that we can process the next query
+        // or in this particular case, removes the loading gif
+        $('#wolfram-iframe').remove();
+        // appends the wolframdiv to the room layout table.
+        // this makes it appear in the center of the page
+        var children_renders = $(".room-layout-table").children();
+        var i;
+        for (i = 0; i < children_renders.size(); i++) {
+            if ($(children_renders[i]).hasClass("render-spot")) {
+                $('.render-spot').remove();
+            }
+
         }
-    }
-    $('.room-layout-table').append(wolframdiv);
-    // adds the loading gif to the iframe body so that it lets the user know
-    // info is being crunched on the backend
-    $('#wolfram-iframe').contents().find('body').prepend('<%= image_tag("computing.gif", class: "wolfram-loading") %>');
-    //this adds in the wolfram loading glyph css
-    $('#wolfram-iframe').contents().find('.wolfram-loading').css('position', 'relative');
-    $('#wolfram-iframe').contents().find('.wolfram-loading').css('left', '268px');
-    $('#wolfram-iframe').contents().find('.wolfram-loading').css('top', '135px');
-    $('#wolfram-iframe').contents().find('.wolfram-loading').css('transform', 'scale(3.0)');
-    // this prepends the text box to the body of the iframe (whose text we highjack *teehee*)
-    $('#wolfram-iframe').contents().find('body').prepend('<form action="#"><fieldset id="input" class="wolfram-text-box"' + ' style="position: relative;margin-bottom: 48px;margin-top: 10px;"><input id="i" name="i" maxlength="200"' + ' type="text" autocomplete="off" value="' + myData["query"] + '" class=""><input id="dataset-input" name="dataset" ' + 'value="" type="hidden"><div id="imath" style="display: none;"><div class="im" style="display: none;"> ' + '</div><div class="ac"></div><ul class="moreInput">       <li class="inputtab inputtab-keyboard" data-tab="keyboard">' + '<a href="#"></a>       </li><li class="inputtab inputtab-images" data-tab="images"><a href="#"></a>   ' + '      </li><li class="inputtab inputtab-datainput" data-tab="datainput"><a href="#"></a>   ' + '     </li><li class="inputtab inputtab-genfiles" data-tab="genfiles"><a href="#"></a>   ' + '  </li></ul></div><noscript>&amp;lt;input type="hidden" name="asynchronous" value="false" /&amp;gt;</noscript> ' + ' <a id="star-inputfield" class="star-input star-disabled" href="#" style="display: none;"></a><div id="equal" title="compute"></div></fieldset></form>');
-    // this prepends the title/logo to the body of the iframe
-    $('#wolfram-iframe').contents().find('body').prepend('<div id="logo-wrapper" class="ir normalLogo"><a href="/" class="ir normalLogo" id="logo" title="Wolfram|Alpha Computational Knowledge Engine">Wolfram|Alpha Computational Knowledge Engine</a></div>');
-    // dynamically adds the css to the elements in the iframe,
-    // first taking wolfram's css from their page
-    // note: this has to be dynamic, because our styling does not
-    // apply to these elements (iframe bs)
-    if (location.host === "benedictation.io") {
-        $('#wolfram-iframe').contents().find('head').html('<%= stylesheet_link_tag "wolfram_css.css" %>');
-    } else {
-        $('#wolfram-iframe').contents().find('head').html('<%= stylesheet_link_tag "#{Rails.root}/vendor/assets/stylesheets/wolfram_css.css" %>');
-    }
-    $('#wolfram-iframe').contents().find('#logo-wrapper').css('top', '4px');
-    $('#wolfram-iframe').contents().find('#logo-wrapper').css('position', 'relative');
-    $('#wolfram-iframe').contents().find('html').css('min-width', '300px');
-    $('#wolfram-iframe').contents().find('html').css('width', '584px');
-    $('#wolfram-iframe').contents().find('body').css('min-width', '300px');
+        $('.room-layout-table').append(wolframdiv);
+        // appends the raw wolfram html to the iframe
+        // notice this is the syntax we use and will have to use throughout
+        // in order to change the contents of an iframe after instantiation
+        $('#wolfram-iframe').contents().find('html').html(wolfram_html);
+        // this prepends the text box to the body of the iframe (whose text we highjack *teehee*)
+        $('#wolfram-iframe').contents().find('body').prepend('<form action="#"><fieldset id="input" class="wolfram-text-box"' + ' style="position: relative;margin-bottom: 48px;margin-top: 10px;"><input id="i" name="i" maxlength="200"' + ' type="text" autocomplete="off" value="' + query + '" class=""><input id="dataset-input" name="dataset" ' + 'value="" type="hidden"><div id="imath" style="display: none;"><div class="im" style="display: none;"> ' + '</div><div class="ac"></div><ul class="moreInput">       <li class="inputtab inputtab-keyboard" data-tab="keyboard">' + '<a href="#"></a>       </li><li class="inputtab inputtab-images" data-tab="images"><a href="#"></a>   ' + '      </li><li class="inputtab inputtab-datainput" data-tab="datainput"><a href="#"></a>   ' + '     </li><li class="inputtab inputtab-genfiles" data-tab="genfiles"><a href="#"></a>   ' + '  </li></ul></div><noscript>&amp;lt;input type="hidden" name="asynchronous" value="false" /&amp;gt;</noscript> ' + ' <a id="star-inputfield" class="star-input star-disabled" href="#" style="display: none;"></a><div id="equal" title="compute"></div></fieldset></form>');
+        // this prepends the title/logo to the body of the iframe
+        $('#wolfram-iframe').contents().find('body').prepend('<div id="logo-wrapper" class="ir normalLogo"><a href="/" class="ir normalLogo" id="logo" title="Wolfram|Alpha Computational Knowledge Engine">Wolfram|Alpha Computational Knowledge Engine</a></div>');
+        // dynamically adds the css to the elements in the iframe,
+        // first taking wolfram's css from their page
+        // note: this has to be dynamic, because our styling does not
+        // apply to these elements (iframe bs)
+        if (location.host === "benedictation.io") {
+            $('#wolfram-iframe').contents().find('head').html('<%= stylesheet_link_tag "wolfram_css.css" %>');
+        } else {
+            $('#wolfram-iframe').contents().find('head').html('<%= stylesheet_link_tag "#{Rails.root}/vendor/assets/stylesheets/wolfram_css.css" %>');
+        }
+        $('#wolfram-iframe').contents().find('#logo-wrapper').css('top', '4px');
+        $('#wolfram-iframe').contents().find('#logo-wrapper').css('position', 'relative');
+        $('#wolfram-iframe').contents().find('html').css('min-width', '300px');
+        $('#wolfram-iframe').contents().find('html').css('width', '584px');
+        $('#wolfram-iframe').contents().find('body').css('min-width', '300px');
 
-    // this disables all links within the wolfram div so that we do not have
-    // any redirects from our iframe
-    $('#wolfram-iframe').contents().find('a').click(function(event) {
-        event.preventDefault();
-    });
-    // this is an AJAX RESTful POST request that is routed
-    // through the URL "/check_api" through the rooms
-    // controller to the function 'api_help', which calls
-    // 'check_api' in the rooms helper.  The object passed in
-    // is JSON object containing the wolfram query, and api_type
-    $.ajax({
-        type: "POST",
-        url: "/check_api",
-        data: {
-            jsonData: JSON.stringify(myData)
-        },
-        success: function(wolfram_json) {
-            // add wolfram html to the json object so that we can render the text
-            // box results on the same page
-            query = wolfram_json['query'];
-            wolfram_html = wolfram_json['api_html'];
-            // these two lines makes sure the space added before the apostrophes
-            // from nltk is removed
-            query = query.split(" '").join("'");
-            query = query.split(" \u0027").join("'");
-            // this is the raw html for the wolfram render spot containing
-            // the border, the iframe, and the remove x glyph
-            var wolframdiv = '<div class="render-spot" id=' + render_item_id + '>' + '  <div class="center-border wolfram-border"> <a class="glyphicon glyphicon-remove wolfram-remove" id="remove_item_id"></a>' + '<iframe id="wolfram-iframe" style=" border-width:0" width="100%" height="94%" max-height="470" position="relative" ' + ' top="11" left="-3" frameborder="0"></iframe></div>' + '</div>';
-            // we remove the wolfram iframe so that we can process the next query
-            // or in this particular case, removes the loading gif
-            $('#wolfram-iframe').remove();
-            // appends the wolframdiv to the room layout table.
-            // this makes it appear in the center of the page
-            var children_renders = $(".room-layout-table").children();
-            var i;
-            for (i = 0; i < children_renders.size(); i++) {
-                if ($(children_renders[i]).hasClass("render-spot")) {
-                    $('.render-spot').remove();
-                }
-
-            }
-            $('.room-layout-table').append(wolframdiv);
-            // appends the raw wolfram html to the iframe
-            // notice this is the syntax we use and will have to use throughout
-            // in order to change the contents of an iframe after instantiation
-            $('#wolfram-iframe').contents().find('html').html(wolfram_html);
-            // this prepends the text box to the body of the iframe (whose text we highjack *teehee*)
-            $('#wolfram-iframe').contents().find('body').prepend('<form action="#"><fieldset id="input" class="wolfram-text-box"' + ' style="position: relative;margin-bottom: 48px;margin-top: 10px;"><input id="i" name="i" maxlength="200"' + ' type="text" autocomplete="off" value="' + query + '" class=""><input id="dataset-input" name="dataset" ' + 'value="" type="hidden"><div id="imath" style="display: none;"><div class="im" style="display: none;"> ' + '</div><div class="ac"></div><ul class="moreInput">       <li class="inputtab inputtab-keyboard" data-tab="keyboard">' + '<a href="#"></a>       </li><li class="inputtab inputtab-images" data-tab="images"><a href="#"></a>   ' + '      </li><li class="inputtab inputtab-datainput" data-tab="datainput"><a href="#"></a>   ' + '     </li><li class="inputtab inputtab-genfiles" data-tab="genfiles"><a href="#"></a>   ' + '  </li></ul></div><noscript>&amp;lt;input type="hidden" name="asynchronous" value="false" /&amp;gt;</noscript> ' + ' <a id="star-inputfield" class="star-input star-disabled" href="#" style="display: none;"></a><div id="equal" title="compute"></div></fieldset></form>');
-            // this prepends the title/logo to the body of the iframe
-            $('#wolfram-iframe').contents().find('body').prepend('<div id="logo-wrapper" class="ir normalLogo"><a href="/" class="ir normalLogo" id="logo" title="Wolfram|Alpha Computational Knowledge Engine">Wolfram|Alpha Computational Knowledge Engine</a></div>');
-            // dynamically adds the css to the elements in the iframe,
-            // first taking wolfram's css from their page
-            // note: this has to be dynamic, because our styling does not
-            // apply to these elements (iframe bs)
-            if (location.host === "benedictation.io") {
-                $('#wolfram-iframe').contents().find('head').html('<%= stylesheet_link_tag "wolfram_css.css" %>');
-            } else {
-                $('#wolfram-iframe').contents().find('head').html('<%= stylesheet_link_tag "#{Rails.root}/vendor/assets/stylesheets/wolfram_css.css" %>');
-            }
-            $('#wolfram-iframe').contents().find('#logo-wrapper').css('top', '4px');
-            $('#wolfram-iframe').contents().find('#logo-wrapper').css('position', 'relative');
-            $('#wolfram-iframe').contents().find('html').css('min-width', '300px');
-            $('#wolfram-iframe').contents().find('html').css('width', '584px');
-            $('#wolfram-iframe').contents().find('body').css('min-width', '300px');
-
-            // this disables all links within the wolfram div so that we do not have
-            // any redirects from our iframe
-            $('#wolfram-iframe').contents().find('a').click(function(event) {
-                event.preventDefault();
-            });
-            // this is a function that listens for the enter key press within the
-            // text-box and then calls the wolfram_text function (explained below)
-            $('#wolfram-iframe').contents().find('.wolfram-text-box').keydown(function(event) {
-                var keypressed = event.keyCode || event.which;
-                if (keypressed == 13) {
-                    wolfram_text(render_item_id);
-                }
-            });
-            // this is the function that listens for the equal submit button to be
-            // clicked within the text-box and then calls the wolfram_text function
-            // (explained below), note:  this is an alternative to pressing enter
-            $('#wolfram-iframe').contents().find('#equal').click(function() {
+        // this disables all links within the wolfram div so that we do not have
+        // any redirects from our iframe
+        $('#wolfram-iframe').contents().find('a').click(function(event) {
+            event.preventDefault();
+        });
+        // this is a function that listens for the enter key press within the
+        // text-box and then calls the wolfram_text function (explained below)
+        $('#wolfram-iframe').contents().find('.wolfram-text-box').keydown(function(event) {
+            var keypressed = event.keyCode || event.which;
+            if (keypressed == 13) {
                 wolfram_text(render_item_id);
-            });
-        }
-    });
+            }
+        });
+        // this is the function that listens for the equal submit button to be
+        // clicked within the text-box and then calls the wolfram_text function
+        // (explained below), note:  this is an alternative to pressing enter
+        $('#wolfram-iframe').contents().find('#equal').click(function() {
+            wolfram_text(render_item_id);
+        });
+    }
+});
 }
 
 // Called when the "Submit" button is pressed on schedule suggestion.
@@ -537,10 +540,40 @@ function scheduleSubmit(event) {
             jsonData: schedule_json
         },
         success: function(return_json) {
-            sendBennyReply(return_json);
+            //sendBennyReply(return_json);
 
             // Remove the center render, you don't need it anymore.
-            $(".center-border").remove()
+            // $(".center-border").remove()
+
+            // what if we just redid the render directly?
+            // either call clickable(me) and get the "me" param (a redis key) from appendBennyReply
+            // or call the success: function(item) above and redo the clearing logic.
+
+            var children = $("#drop-spot").children();
+            console.log(children);
+            // although we hope for only 1 video to be in the center, we
+            // create a for loop just in case there was an edge case we missed
+            for (i = 0; i < children.length; i++) {
+                if ($(children[i]).hasClass("video-tag")) {
+                    var video = children[i];
+                    // we need this line so that the video will be set to play
+                    // upon appending it back to the video list
+                    $("#video-list").append(video);
+                    $(video).get(0).play();
+                }
+            }
+            // we remove the current item taking up the render spot so that
+            // we do not accumulate a ton of divs in the center of the page
+            var children_renders = $(".room-layout-table").children();
+            var i;
+            for (i = 0; i < children_renders.size(); i++) {
+                if ($(children_renders[i]).hasClass("render-spot")) {
+                    $('.render-spot').remove();
+                }
+
+            }
+
+            buildCenterRender(return_json);
         }
     });
 }
@@ -567,10 +600,32 @@ function scheduleUpdate(event) {
             jsonData: schedule_json
         },
         success: function(return_json) {
-            sendBennyReply(return_json);
 
-            // Remove the old center render, you don't need it anymore.
-            $(".center-border").remove()
+            var children = $("#drop-spot").children();
+            console.log(children);
+            // although we hope for only 1 video to be in the center, we
+            // create a for loop just in case there was an edge case we missed
+            for (i = 0; i < children.length; i++) {
+                if ($(children[i]).hasClass("video-tag")) {
+                    var video = children[i];
+                    // we need this line so that the video will be set to play
+                    // upon appending it back to the video list
+                    $("#video-list").append(video);
+                    $(video).get(0).play();
+                }
+            }
+            // we remove the current item taking up the render spot so that
+            // we do not accumulate a ton of divs in the center of the page
+            var children_renders = $(".room-layout-table").children();
+            var i;
+            for (i = 0; i < children_renders.size(); i++) {
+                if ($(children_renders[i]).hasClass("render-spot")) {
+                    $('.render-spot').remove();
+                }
+
+            }
+
+            buildCenterRender(return_json);
         }
     });
 }
