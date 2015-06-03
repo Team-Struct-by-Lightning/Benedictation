@@ -12,9 +12,36 @@ body {
   background-color: #cccccc !important;
 }
 
+.ui-datepicker{
+  top:25%;
+  display:block;
+  margin:10px;
+  position: fixed;
 
-
-
+}
+.suggestions-list { 
+  position: fixed;
+  left: 36%;
+  top: 27%;
+}
+.num-results{
+  visibility:hidden;
+}
+.dropdown{
+  left: 40%;
+  top: 56%;
+  position: fixed !important;
+}
+#schedule_update {
+  left: 47%;
+  top: 56%;
+  position:fixed;
+}
+#schedule_submit {
+  position: fixed;
+  top: 80%;
+  left: 40%;
+}
 #video-list {
     min-height: 600px;
 
@@ -74,7 +101,7 @@ body {
   position: fixed;
   left:170px;
   right:300px;
-	width: auto;
+  width: auto;
   height:100%;
 }
 
@@ -422,11 +449,17 @@ div.wikipedia-frame body{
 }
 
 .suggestions-list {
-  position: relative;
-  top: -95px;
   max-height: 150px;
   overflow-y: scroll;
 }
+#list_of_times_title{
+  font-size: 1.5em;
+}
+input[type=radio]{
+  margin-left: -150px !important;
+}
+
+
 
 .suggestions-datepicker {
   position: relative;
@@ -1133,11 +1166,11 @@ html {
 }
 
 #benny {
-	padding-bottom: 4%;
+  padding-bottom: 4%;
 }
 
 #header-nav-bar {
-	background: #000;
+  background: #000;
 }
 
 #js-chat-body {

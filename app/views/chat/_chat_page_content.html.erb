@@ -31,7 +31,7 @@
       <h1 id='center-div-header'>Hello <%= current_user.name %>!</h1>
 
       <p id="center-div-body">Use the sidebar on the left to create a new group or to enter a group
-        that has already been created. Click below to enter a temporary video chat room.
+        that has already been created. Click <b> Join a temporary video call </b> to join a temporary room.
     </div>
     <% Relationship.where(user_id: current_user.id).pluck(:id).each do |relationship_id| %>
         <% group = Relationship.find_by(id: relationship_id).group %>

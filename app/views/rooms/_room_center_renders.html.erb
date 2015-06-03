@@ -631,7 +631,7 @@ function scheduleUpdate(event) {
 // return a jQuery object you can append somewhere
 function generateScheduleOptions(date, times, submitter) {
     var title_string     = "Available times for " + date;
-    var suggestions_list = $('<div>' + title_string + '<ul id="suggestions_ul" style="padding-top: 15px"></ul></div>')
+    var suggestions_list = $('<div>' + '<div id = "list_of_times_title">' + title_string + '</div>' +'<ul id="suggestions_ul" style="padding-top: 15px"></ul></div>')
     for(var i=0; i<times.length; i++) {
         var time = times[i];
         var date_str = DateFormat.format.date(time.start, "E MMM D, h:mm p") + " to " + DateFormat.format.date(time.end, "h:mm p");
