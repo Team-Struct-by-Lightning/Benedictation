@@ -71,10 +71,8 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
 
             print "wrote to file"
             text = self.recognizer.recognize(outfilename)   # This should always return something
-            print "we got shit back and it the first is: ", str(text[0])
             os.remove(outfilename)                          # an empty hyp [""] if nothing found
-
-            print text
+            print "text is: ", text
             print "Before if text"
             if text:
                 print "we are in if text"
