@@ -218,7 +218,7 @@ function clickable(me,api_clicked) {
                       $('.suggestions-list').empty();
                       $('.suggestions-list').append(suggestions_list);
 
-                      $('#schedule_submit').click({times: suggestions_obj}, scheduleSubmit);
+                      $('#schedule_submit').click(times, scheduleSubmit);
                   }
                 });
                 date_picker.appendTo('.center-border');
@@ -509,7 +509,7 @@ function wolfram_text(render_item_id) {
 // Called when the "Submit" button is pressed on schedule suggestion.
 function scheduleSubmit(event) {
     event.preventDefault();
-    var times = event.data.times; // List of {start: ..., end: ...} objects
+    var times = event.data;
     console.log(times);
     var i = $('input[name=sched-option]:checked').val();
     var time = times[i];

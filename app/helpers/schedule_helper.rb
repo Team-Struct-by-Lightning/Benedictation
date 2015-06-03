@@ -30,14 +30,14 @@ module ScheduleHelper
 		end
 
 		json_event = {
-				'summary' => json_hash['summary'],
+				'summary' => "Meeting scheduled by Benedict",
 				'location' => json_hash['location'],
 				'start' => {
-					'dateTime' => json_hash['start'] + '-0700'
+					'dateTime' => json_hash['start']
 					#'timeZone' => 'America/Los Angeles'
 				},
 				'end' => {
-					'dateTime' => json_hash['end'] + '-0700'
+					'dateTime' => json_hash['end']
 					#'timeZone' => 'America/Los Angeles'
 				},
 				'attendees' => attendee_array
@@ -90,7 +90,7 @@ module ScheduleHelper
 		end
 
 		service = client.discovered_api('calendar', 'v3')
-
+		logger.error user_email
 		request_body = {:timeMin => start_str + tz_offset,
 						:timeMax => end_str + tz_offset,
 						:items   => [{:id => user_email}]

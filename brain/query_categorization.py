@@ -297,16 +297,18 @@ def schedule_for_scikit(element, tree, temp_array):
 	## print cal_parse
 	if cal_parse[1] == 0 or cal_parse[1] == 1:
 		starttime, endtime = schedule_suggest(cal_parse, words)
-		starttime = starttime.strftime('%Y-%m-%dT%H:%M:%S')
-		endtime   = endtime.strftime('%Y-%m-%dT%H:%M:%S')
 		api_type  = "schedule_suggest"
 		temp_array[3] = 1
 	else:
-		starttime, endtime = time_converter(cal_parse[0])
+		starttime = datetime.fromtimestamp(mktime(cal_parse[0]))
+		endtime = starttime + timedelta(hours = 1)
 		api_type = "calendar"
 		temp_array[4] = 1
 
-	return
+	starttime = starttime.strftime('%Y-%m-%dT%H:%M:%S') + '-0700'
+	endtime = endtime.strftime('%Y-%m-%dT%H:%M:%S') + '-0700'
+
+	return starttime, endtime
 
 def schedule_suggest(cal_parse, words):
 	starttime = None
@@ -319,7 +321,7 @@ def schedule_suggest(cal_parse, words):
 			starttime = datetime.today() + relativedelta(day=1, hour=8, minute=0, second=0)
 			endtime = starttime + relativedelta(day=31, weekday=FR(-1), hour=17)	# Last Friday of the month.
 		else:	# Default to finding a time today.
-			starttime = datetime.today()
+			starttime = datetime.today() + relativedelta(hour=8, minute=0, second=0)
 			endtime = starttime + relativedelta(hour=17, minute=0, second=0)
 
 	elif cal_parse[1] == 1:		# Date without a time
@@ -327,8 +329,7 @@ def schedule_suggest(cal_parse, words):
 			if "next week" in words:
 				starttime = datetime.fromtimestamp(mktime(cal_parse[0])) + relativedelta(hour=8)
 				endtime = starttime + relativedelta(weekday=FR, hour=17)
-		elif cal_parse[0][6] == 0 and cal_parse[0][3] == 9 and cal_parse[0][4] == 0:
-			if "next month" in words:
+			elif "next month" in words:
 				starttime = datetime.fromtimestamp(mktime(cal_parse[0]))	+ relativedelta(hour=8)
 				endtime = starttime + relativedelta(day=31, weekday=FR(-1), hour=17)	# Last Friday of the month.
 		else:
@@ -866,6 +867,8 @@ def get_datetime(query):
 	else:
 		starttime, endtime = time_converter(cal_parse[0])
 
+	starttime = starttime + '-0700'
+
 	return starttime, endtime
 
 # EVAN THIS IS WHERE WE MAKE THE JSON I NEED TO SOMEHOW PUT THE DATETIME STUFF IN IT
@@ -924,34 +927,3 @@ def predict_api_type(predictor, query):
 #generate_questions_google_drawings()
 
 #predictor_validation_list_to_plot_and_multiple_train_sets(1, training_set_calendar, training_set_schedule_suggest, training_set_google_calendar_show, training_set_google_docs, training_set_google_drawings, training_set_wolfram, training_set_wikipedia, training_set_google, .8)
-
-
-
-def schedule_suggest(cal_parse, words):
-	starttime = None
-	endtime = None
-	if cal_parse[1] == 0:		# No date or time
-		if "this week" in words:
-			starttime = datetime.today() + relativedelta(weekday=MO(-1), hour=8, minute=0, second=0)
-			endtime = starttime + relativedelta(weekday=FR, hour=17)
-		elif "this month" in words:
-			starttime = datetime.today() + relativedelta(day=1, hour=8, minute=0, second=0)
-			endtime = starttime + relativedelta(day=31, weekday=FR(-1), hour=17)	# Last Friday of the month.
-		else:	# Default to finding a time today.
-			starttime = datetime.today()
-			endtime = starttime + relativedelta(hour=17, minute=0, second=0)
-
-	elif cal_parse[1] == 1:		# Date without a time
-		if cal_parse[0][6] == 0 and cal_parse[0][3] == 9 and cal_parse[0][4] == 0:
-			if "next week" in words:
-				starttime = datetime.fromtimestamp(mktime(cal_parse[0])) + relativedelta(hour=8)
-				endtime = starttime + relativedelta(weekday=FR, hour=17)
-		elif cal_parse[0][6] == 0 and cal_parse[0][3] == 9 and cal_parse[0][4] == 0:
-			if "next month" in words:
-				starttime = datetime.fromtimestamp(mktime(cal_parse[0]))	+ relativedelta(hour=8)
-				endtime = starttime + relativedelta(day=31, weekday=FR(-1), hour=17)	# Last Friday of the month.
-		else:
-			starttime = datetime.fromtimestamp(mktime(cal_parse[0])) + relativedelta(hour=8, minute=0, second=0)
-			endtime = starttime + relativedelta(hour=17)
-
-	return starttime, endtime
