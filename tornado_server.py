@@ -84,19 +84,19 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
                         break
                     else:
                         print "x was totally blank"
-                        text = '{"api_type": "google", "query": "unknown", "noun_phrase": ""}'
+                        text = '{"api_type": "google", "query": "Sorry! I was unable to assist.", "noun_phrase": ""}'
             else:
                 print "text was not iffffed"
-                text = '{"api_type": "google", "query": "unknown", "noun_phrase": ""}'
+                text = '{"api_type": "google", "query": "Sorry! I was unable to assist.", "noun_phrase": ""}'
 
         except Exception as e:
             print "all your error are belong to us"
             print e.message
-            text = '{"api_type": "google", "query": "unknown", "noun_phrase": ""}'
+            text = '{"api_type": "google", "query": "Sorry! I was unable to assist.", "noun_phrase": ""}'
 
         if not text:
             print "NOT TEXT!!!"
-            text = '{"api_type": "google", "query": "unknown", "noun_phrase": ""}'
+            text = '{"api_type": "google", "query": "Sorry! I was unable to assist.", "noun_phrase": ""}'
         self.write_message(text)
         print "we have finished writing @@@@@"
 
@@ -124,16 +124,16 @@ class SpeechWSHandler_Test(tornado.websocket.WebSocketHandler):
                         print text
                         break
                     else:
-                        text = '{"api_type": "google", "query": "unknown", "noun_phrase": ""}'
+                        text = '{"api_type": "google", "query": "Sorry! I was unable to assist.", "noun_phrase": ""}'
             else:
-                text = '{"api_type": "google", "query": "unknown", "noun_phrase": ""}'
+                text = '{"api_type": "google", "query": "Sorry! I was unable to assist.", "noun_phrase": ""}'
 
         except Exception as e:
             print e.message
-            text = '{"api_type": "google", "query": "unknown", "noun_phrase": ""}'
+            text = '{"api_type": "google", "query": "Sorry! I was unable to assist.", "noun_phrase": ""}'
 
         if not text:
-            text = '{"api_type": "google", "query": "unknown", "noun_phrase": ""}'
+            text = '{"api_type": "google", "query": "Sorry! I was unable to assist.", "noun_phrase": ""}'
         self.write_message(text)
         print "we have finished writing @@@@@"
 
