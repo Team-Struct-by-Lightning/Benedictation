@@ -881,7 +881,7 @@ def make_json(query, api_type, api_number):
 	if api_type == "calendar" or api_type == "schedule_suggest":
 		starttime, endtime = get_datetime(query)
 		print "starttime: ", starttime, "     ", "endtime: ", endtime
-		return '{"api_number": "' + str(api_number) +'", "api_type": "' + api_type + '", "query": "' + query + '", "noun_phrase": "", "start": "' + starttime + '", "end": "' + endtime + '" }'
+		return '{"api_number": "' + str(api_number) +'", "api_type": "' + api_type + '", "query": "' + query + '", "noun_phrase": "", "summary": "Meeting scheduled by Benedict.", "start": "' + starttime + '", "end": "' + endtime + '" }'
 
 	# EVAN WE NEED THE ATTENDEES ARRAY IN THIS ONE
 	if api_type == "calendar_show" or api_type == "google_docs" or api_type == "google_drawings":
@@ -890,15 +890,19 @@ def make_json(query, api_type, api_number):
 
 
 def predict_api_type(predictor, query):
-
+	print "Before query to array"
 	query_array = query_to_array(query)
-
+	print "After query to array"
+	print "Before probability prediction"
 	probability_predict = predictor.predict_proba(query_array)
-
+	print "After probability prediction"
+	print "Before threshold calculator"
 	api_return = threshold_calculator_for_predict(probability_predict, query)
-
+	print "After threshold calculator"
+	print "Before change int to api type"
 	api_type = change_int_to_api_type(api_return)
-
+	print "After change int to api type"
+	print "Before return"
 	return make_json(query, api_type, api_return)
 
 
@@ -906,7 +910,7 @@ def predict_api_type(predictor, query):
 
 #predictor_to_be_pickled = BernoulliNB()
 
-#90pickle_predictor(predictor_to_be_pickled)
+#pickle_predictor(predictor_to_be_pickled)
 
 
 

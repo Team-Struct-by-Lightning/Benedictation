@@ -61,7 +61,9 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
 
     def on_message(self, message):
         text = None
+        print "Text be none"
         try:
+            print "we shall try it!"
             outfilename = 'output' + hex(random.getrandbits(128))[2:-1] + '.wav'
             f = open(outfilename , 'w')
             f.write(message)
@@ -69,24 +71,33 @@ class SpeechWSHandler(tornado.websocket.WebSocketHandler):
 
             print "wrote to file"
             text = self.recognizer.recognize(outfilename)   # This should always return something
+            print "we got shit back and it the first is: ", str(text[0])
             os.remove(outfilename)                          # an empty hyp [""] if nothing found
 
             print text
+            print "Before if text"
             if text:
+                print "we are in if text"
                 for x in text:
+                    print "we got into the x in text"
                     if x != "":
+                        print "x is not blank!"
                         text = predict_api_type(api_predictor, x)
                         break
                     else:
+                        print "x was totally blank"
                         text = '{"api_type": "google", "query": "unknown", "noun_phrase": ""}'
             else:
+                print "text was not iffffed"
                 text = '{"api_type": "google", "query": "unknown", "noun_phrase": ""}'
 
         except Exception as e:
+            print "all your error are belong to us"
             print e.message
             text = '{"api_type": "google", "query": "unknown", "noun_phrase": ""}'
 
         if not text:
+            print "NOT TEXT!!!"
             text = '{"api_type": "google", "query": "unknown", "noun_phrase": ""}'
         self.write_message(text)
         print "we have finished writing @@@@@"
