@@ -869,6 +869,7 @@ def get_datetime(query):
 		starttime, endtime = time_converter(cal_parse[0])
 
 	starttime = starttime + '-0700'
+	endtime = endtime + '-0700'
 
 	return starttime, endtime
 
@@ -885,8 +886,9 @@ def make_json(query, api_type, api_number):
 	if api_type == "calendar" or api_type == "schedule_suggest":
 		starttime, endtime = get_datetime(query)
 		summary = "Meeting scheduled by Benedict"
-		print "starttime: ", starttime, "     ", "endtime: ", endtime
-		return '{"api_number": "' + str(api_number) +'", "api_type": "' + api_type + '", "query": "' + query + '", "summary": "' + summary + '", "start": "' + starttime + '", "end": "' + endtime + '" }'
+		ret = '{"api_number": "' + str(api_number) +'", "api_type": "' + api_type + '", "query": "' + query + '", "summary": "' + summary + '", "start": "' + starttime + '", "end": "' + endtime + '" }'
+		print "@@@ RETURNING THIS FROM PYTHON: " + ret
+		return ret
 
 
 	# EVAN WE NEED THE ATTENDEES ARRAY IN THIS ONE

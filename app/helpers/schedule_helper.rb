@@ -91,8 +91,8 @@ module ScheduleHelper
 
 		service = client.discovered_api('calendar', 'v3')
 		logger.error user_email
-		request_body = {:timeMin => start_str + tz_offset,
-						:timeMax => end_str + tz_offset,
+		request_body = {:timeMin => start_str,
+						:timeMax => end_str,
 						:items   => [{:id => user_email}]
 					   }
 		result  = client.execute(:api_method => service.freebusy.query,
