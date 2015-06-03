@@ -182,7 +182,7 @@ module ScheduleHelper
 								:body 		=> JSON.dump(json),
 								:headers	=> {'Content-Type' => 'application/json'})
 
-		print result.data.id
+		logger.data result.data.id
 	end
 
 	def undo_calendar_event(id)
