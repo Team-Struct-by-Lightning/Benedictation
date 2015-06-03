@@ -751,7 +751,7 @@ def threshold_calculator_for_predict(probabilities, query):
 	if probabilities[0] > .7 or probabilities[1] > .1:
 		cal_parse = cal.parse(query)
 		if cal_parse[1] == 0 or cal_parse[1] == 1:
-			if check_word_lists_threshold(query.split(' '), class_index):
+			if check_word_lists_threshold(query.split(' '), 0):
 				return 1
 			else:
 				if probabilities[2] > .1 or probabilities[3] > .1 or probabilities[4] > .1:
@@ -767,7 +767,7 @@ def threshold_calculator_for_predict(probabilities, query):
 				else:
 					return probabilities.index(max(probabilities)) + 1
 		else:
-			if check_word_lists_threshold(query.split(' '), class_index):
+			if check_word_lists_threshold(query.split(' '), 0):
 				return 2
 			else:
 				if probabilities[2] > .1 or probabilities[3] > .1 or probabilities[4] > .1:
