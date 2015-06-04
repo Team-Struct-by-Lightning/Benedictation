@@ -22,10 +22,6 @@ Rails.application.routes.draw do
   get '/get_redis_item_name' => "groups#get_redis_item_name"
   get '/get_redis_length' => "groups#get_redis_length"
   post '/clear_redis_item' => "groups#clear_redis_item"
-  post '/update_unique_benny_query_history' => "groups#update_unique_benny_query_history"
-  get '/get_unique_benny_query' => "groups#get_unique_benny_query"
-  get '/get_wolfram_html' => "groups#get_wolfram_html"
-
   resources :sessions, only: [:create, :destroy]
   resource :home, only: [:show]
   resources :relationships,       only: [:create, :destroy]
