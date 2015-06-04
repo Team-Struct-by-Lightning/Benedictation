@@ -159,39 +159,45 @@ function buildCenterRender(item, div_id, api_clicked) {
         var submitter = item["submitter"] || false;
         var user_name = "<%= current_user.name %>";
         if(user_name === item['name']) { submitter = true; }
-
-        
+   
         var title_string = "Which of these times would you like to meet?";
         if(submitter) title_string = "Select the time you would like to schedule.";                
 
-        var duration_options = {"30 minutes": 30, "1 hour": 60, "2 hours": 120, "3 hours": 180, "4 hours": 240}
-        var duration_dropdown = $('<ul class="dropdown-menu" role="menu"></ul>');
-        for(i in duration_options) {
-            duration_dropdown.append('<li role="presentation"><a role="menuitem" class="duration-menu-item" option="' + duration_options[i] + '">' + i + '</a></li>');
-        }
-        var duration_menu = $('<div class="dropdown"><button class="btn btn-default dropdown-toggle" \
-            id="duration-dropdown" data-toggle="dropdown" chosen=60>Duration<span class="caret"></span></button> </div>')
-            .append(duration_dropdown);
-
+        // BUILD THE ACTUAL MUTHAFUCKIN HTML
         $('.room-layout-table').append('<div class="render-spot" id=' + render_item_id + '>' +
-                                       '<div class="center-border suggestion-border"> <h1 class="suggestion-title">' + title + 
-                                       '</h1> <h2 class="suggested-time-list-title">' + title_string + 
-                                       '</h2><p class="num-results">' + num_results + ' results' + 
-                                       '</p><a class="glyphicon glyphicon-remove suggestion-remove" id="remove_item_id"></a>' +
-                                       '<div class="suggestions-datepicker"></div><div class="suggestions-list"></div></div></div>');
-        $('.center-border').append(duration_menu);
+                                            '<div class="center-border suggestion-border">' + 
+                                                '<h1 class="suggestion-title">' + title + '</h1>' + 
+                                                '<h2 class="suggested-time-list-title">' + title_string + '</h2>' + 
+                                                '<p class="num-results">' + num_results + ' results' + '</p>' + 
+                                                '<a class="glyphicon glyphicon-remove suggestion-remove" id="remove_item_id"></a>' +
+                                                '<div class="sched-cal-and-list">' +
+                                                    '<span class="suggestions-datepicker"></span>' + 
+                                                    '<span class="suggestions-list"></span>' + 
+                                                '</div>' +
+                                                '<div class="duration-buttons-div"></div>' + 
+                                                '<div class="submit-div"></div>' +
+                                            '</div>' + 
+                                        '</div>');
+           
+        // Set up the duration dropdown, update button, and submit button for original submitter only.
+        if(submitter) {
+            var duration_options = {"30 minutes": 30, "1 hour": 60, "2 hours": 120, "3 hours": 180, "4 hours": 240}
+            var duration_dropdown = $('<ul class="dropdown-menu" role="menu"></ul>');
+            for(i in duration_options) {
+                duration_dropdown.append('<li role="presentation"><a role="menuitem" class="duration-menu-item" option="' + duration_options[i] + '">' + i + '</a></li>');
+            }
+            var duration_menu = $('<div class="dropdown"><button class="btn btn-default dropdown-toggle" \
+                id="duration-dropdown" data-toggle="dropdown" chosen=60>Duration<span class="caret"></span></button> </div>')
+                .append(duration_dropdown);
 
-        // Set up the submit button, only if you're the one who submitted the initial request.
-        if(submitter) {
-            var sched_submit_btn = $('<button id="schedule_submit" class="btn btn-primary">Schedule It</button>'); 
-            $('.center-border').append(sched_submit_btn);
-        }
-        
-        // Set up the button to resubmit the schedule suggest request if duration, users etc. changed.
-        if(submitter) {
+            $('.duration-buttons-div').append(duration_menu);
+
             var update_btn = $('<button id="schedule_update" class="btn btn-default">Update Results</button>');
             update_btn.click({start: item['start'], end: item['end'], sub: submitter}, scheduleUpdate);
-            $('.center-border').append(update_btn);
+            $('.duration-buttons-div').append(update_btn);
+
+            var sched_submit_btn = $('<button id="schedule_submit" class="btn btn-primary">Schedule It</button>'); 
+            $('.submit-div').append(sched_submit_btn);
         }
 
         // Called when one of the options in the duration dropdown is clicked.
@@ -204,7 +210,7 @@ function buildCenterRender(item, div_id, api_clicked) {
         });
 
         // Set up the datepicker
-        var date_picker = $('<div class="schedule-datepicker">').datepicker({
+        $('.suggestions-datepicker').datepicker({
           beforeShowDay: function(date) {
               var d = date.toISOString().split("T")[0];
               if(d in suggestions_obj) {
@@ -226,7 +232,6 @@ function buildCenterRender(item, div_id, api_clicked) {
               $('#schedule_submit').click(times, scheduleSubmit);
           }
         });
-        date_picker.appendTo('.center-border');
     }
 
     else if (api_type == 'google') {
