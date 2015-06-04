@@ -12,36 +12,6 @@ body {
   background-color: #cccccc !important;
 }
 
-.ui-datepicker{
-  top:25%;
-  display:block;
-  margin:10px;
-  position: fixed;
-
-}
-.suggestions-list { 
-  position: fixed;
-  left: 36%;
-  top: 27%;
-}
-.num-results{
-  visibility:hidden;
-}
-.dropdown{
-  left: 40%;
-  top: 56%;
-  position: fixed !important;
-}
-#schedule_update {
-  left: 47%;
-  top: 56%;
-  position:fixed;
-}
-#schedule_submit {
-  position: fixed;
-  top: 80%;
-  left: 40%;
-}
 #video-list {
     min-height: 600px;
 
@@ -56,6 +26,31 @@ body {
 
 }
 
+#schedule_update {
+  position: relative;
+  left: 27%;
+  box-shadow: 0px 0px 10px;
+}
+
+#schedule_submit {
+  position: relative;
+  top: -50px;
+  left: 66%;
+  box-shadow: 0px 0px 10px;
+}
+
+#duration-dropdown {
+  box-shadow: 0px 0px 10px;
+}
+
+.suggestions-list-div {
+  position: absolute;
+  top: 124px !important;
+  width: 46%;
+  max-height: 235px;
+  overflow-y: scroll;
+  left: 51%;
+}
 
 .question-favicon {
   width: 11%;
@@ -318,17 +313,18 @@ div.wikipedia-frame body{
   position: relative;
   z-index: 10;
   letter-spacing: -.5px !important;
-  font-size: 26px;
+  font-size: 35px;
   left: 0%;
+  top: 17px;
   text-align: center;
 }
 
 .suggested-time-list-title {
   width: 100%;
-  font-size: 115%;
+  font-size: 22px;
   position: relative;
   left: 0%;
-  top: -25px;
+  top: 11px;
   padding-top: 15px;
 }
 
@@ -448,15 +444,14 @@ div.wikipedia-frame body{
   color: black !important;
 }
 
-.suggestions-list {
-  max-height: 150px;
-  overflow-y: scroll;
-}
 #list_of_times_title{
-  font-size: 1.5em;
+  font-size: 1.3em;
 }
 
 
+#suggestions-ul {
+  padding-top: 4px;
+}
 
 
 .suggestions-datepicker {
@@ -525,6 +520,12 @@ div.wikipedia-frame body{
 #drop-spot .video-tag {
   width:95%;
 
+}
+
+.dropdown {
+  position: relative;
+  top: 34px;
+  left: 49px;
 }
 
 .color-div {
@@ -1187,6 +1188,17 @@ html {
 #speech-rec {
     width: 150%;
     margin-right: 50%;
+}
+
+
+.ui-datepicker {
+  display: block;
+  position: relative;
+  top: 117px;
+  left: 50px;
+  width: 37% !important;
+  min-width: 220px;
+  box-shadow: 0px 0px 10px;
 }
 
 
