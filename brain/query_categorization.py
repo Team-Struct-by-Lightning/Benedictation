@@ -31,8 +31,6 @@ def validate_predictor(set_to_validate_on, classes, predictor, probability_matri
 		probability_array.append(probability_predict)
 		api_return = threshold_calculator(probability_array[i][0], querylist[i][0])
 
-	## print "$$$$$$$$$$$$$$$ " + str(predictor.predict(set_to_validate_on[i:i+1])) + " " + str(classes[i:i+1])
-		# print "api_return: ", api_return[0], " class_expect: ", classes[i:i+1][0]
 		if int(api_return[0]) == int(classes[i]):
 			number_valid += 1
 		else:
@@ -59,7 +57,6 @@ def threshold_calculator(probabilities, query):
 
 	if probabilities[0] > .8 or probabilities[1] > .1:
 		cal_parse = cal.parse(query)
-		# print cal_parse
 		if cal_parse[1] == 0 or cal_parse[1] == 1:
 			return [1]
 		else:
@@ -131,7 +128,7 @@ def change_int_to_api_type(class_type):
 		return "wikipedia"
 	elif class_type == 8:
 		return "google"
-	else: #shit fucked up
+	else: #something messed up
 		return "WHAT HAPPENED?!"
 
 def percent_to_index(percentage, length_of_array):
@@ -347,23 +344,12 @@ def wolfram_for_scikit(element, temp_array):
 def query_to_array(query):
 	temp_array = np.array([0 for i in range(50)])
 	# call list of functions to populate the array
-	####
-	# NEW
-	# index 0: what is in query
-	# index 1: when is in query
-	# index 2: why is in query
-	# index 3: how is in query
-	# index 4: where is in query
-	# index 5: who is in query
-	# index 6: has fewer than 5 words
-	# # print query + "\n"
+
 	# makes it into an array
 	query_array = query.split(' ')
 
 	interpret_for_scikit([query], temp_array)
 
-	# if len(query) < 5:
-	# 	temp_array[9] = 1
 	#uses 10, till
 	check_word_lists(query_array, temp_array, 28)
 
@@ -861,7 +847,7 @@ def get_datetime(query):
 	cal_parse = cal.parse(query)
 	## print cal_parse
 	if cal_parse[1] == 0 or cal_parse[1] == 1:
-		starttime, endtime = schedule_suggest(cal_parse, query)		
+		starttime, endtime = schedule_suggest(cal_parse, query)
 	else:
 		starttime = datetime.fromtimestamp(mktime(cal_parse[0]))
 		endtime = starttime + timedelta(hours = 1)
@@ -888,8 +874,6 @@ def make_json(query, api_type, api_number):
 		print "@@@ RETURNING THIS FROM PYTHON: " + ret
 		return ret
 
-
-	# EVAN WE NEED THE ATTENDEES ARRAY IN THIS ONE
 	if api_type == "calendar_show" or api_type == "google_docs" or api_type == "google_drawings":
 		return '{"api_number": "' + str(api_number) +'", "api_type": "' + api_type + '", "query": "' + query + '", "noun_phrase": ""}'
 
